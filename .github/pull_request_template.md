@@ -2,7 +2,7 @@
 - [ ] 제목 예시  ex) 이슈이슈이슈제목 
 
 ## Issue
-issue link 
+- #ISSUE_NUM
 
 ## Overview
 
