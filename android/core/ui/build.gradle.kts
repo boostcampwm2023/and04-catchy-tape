@@ -36,4 +36,7 @@ android {
 dependencies {
 
     api(libs.material)
+
+    api(libs.navigation.fragment.ktx)
+    api(libs.navigation.ui.ktx)
 }
