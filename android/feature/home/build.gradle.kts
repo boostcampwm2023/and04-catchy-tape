@@ -39,5 +39,7 @@ android {
 
 dependencies {
 
+    implementation(project(":core:ui"))
+
     testImplementation(libs.junit)
 }
