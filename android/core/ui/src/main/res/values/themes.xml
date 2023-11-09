@@ -3,7 +3,33 @@
         <item name="android:colorPrimary">@color/primary</item>
         <item name="android:statusBarColor">@color/surface</item>
         <item name="android:windowLightStatusBar">true</item>
+
+        <item name="android:textColor">@color/on_surface</item>
     </style>
 
     <style name="Theme.CatchyTape" parent="Base.Theme.CatchyTape" />
+
+    <style name="TitleLarge">
+        <item name="android:textSize">22sp</item>
+    </style>
+
+    <style name="TitleMedium">
+        <item name="android:textSize">16sp</item>
+    </style>
+
+    <style name="TitleSmall">
+        <item name="android:textSize">14sp</item>
+    </style>
+
+    <style name="BodyLarge">
+        <item name="android:textSize">16sp</item>
+    </style>
+
+    <style name="BodyMedium">
+        <item name="android:textSize">14sp</item>
+    </style>
+
+    <style name="BodySmall">
+        <item name="android:textSize">12sp</item>
+    </style>
 </resources>
