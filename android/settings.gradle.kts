@@ -15,4 +15,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "Catchy Tape"
 include(":app")
- 
+include(":feature:home")
