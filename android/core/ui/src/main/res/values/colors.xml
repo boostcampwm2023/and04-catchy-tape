@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="key">#FFBB2649</color>
+
+    <color name="primary">#FFBB2649</color>
+    <color name="primary_container">#FFF8E9ED</color>
+    <color name="surface">#FFFCF4F6</color>
+    <color name="surface_bright">#FF212121</color> <!-- todo : 라이트 모드로 수정 -->
+    <color name="on_surface_variant">#FF757575</color>
+    <color name="on_surface">#FF212121</color>
+    <color name="error">#FFB00020</color>
+    <color name="outline_variant">#FF424242</color> <!-- todo : 라이트 모드로 수정 -->
+</resources>
