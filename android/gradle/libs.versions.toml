@@ -11,8 +11,9 @@ navigation = "2.5.3"
 junit = "4.13.2"
 
 [libraries]
+android-gradlePlugin = { group = "com.android.tools.build", name = "gradle", version.ref = "agp" }
+kotlin-gradlePlugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
 core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "core-ktx" }
-
 appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 
