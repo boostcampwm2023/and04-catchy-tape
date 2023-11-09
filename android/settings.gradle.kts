@@ -17,3 +17,4 @@ rootProject.name = "Catchy Tape"
 include(":app")
 include(":feature:home")
 include(":core:ui")
+include(":core:domain")
