@@ -10,8 +10,12 @@ dependencies {
 gradlePlugin {
     plugins {
         register("androidLibrary") {
-            id = "android.library"
+            id = "catchytape.android.library"
             implementationClass = "gradle.plugin.AndroidLibraryPlugin"
+        }
+        register("androidFeature") {
+            id = "catchytape.android.feature"
+            implementationClass = "gradle.plugin.AndroidFeaturePlugin"
         }
     }
 }
