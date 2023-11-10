@@ -17,17 +17,17 @@
     <string name="complete">완료</string>
     <string name="save">저장</string>
 
-    <string name="recent_play_song">최근 재생한 노래</string>
-    <string name="recent_add_song">최근 추가된 노래</string>
+    <string name="recently_played_song">최근 재생한 노래</string>
+    <string name="recently_added_song">최근 추가된 노래</string>
 
     <string name="new_playlist">새 재생목록</string>
     <string name="add_song">노래 추가</string>
 
     <string name="nickname">닉네임</string>
     <string name="my_page">마이페이지</string>
-    <string name="my_upload_song">내가 업로드한 노래</string>
-    <string name="upload_song">업로드한 노래</string>
-    <string name="upload_song_list">업로드한 노래 목록</string>
+    <string name="my_uploaded_song">내가 업로드한 노래</string>
+    <string name="uploaded_song">업로드한 노래</string>
+    <string name="uploaded_song_list">업로드한 노래 목록</string>
 
     <string name="upload">업로드</string>
     <string name="title">제목</string>
