@@ -8,6 +8,8 @@ material = "1.9.0"
 
 navigation = "2.5.3"
 
+gms = "20.7.0"
+
 junit = "4.13.2"
 
 [libraries]
@@ -19,6 +21,8 @@ material = { group = "com.google.android.material", name = "material", version.r
 
 navigation-fragment-ktx = { group = "androidx.navigation", name = "navigation-fragment-ktx", version.ref = "navigation" }
 navigation-ui-ktx = { group = "androidx.navigation", name = "navigation-ui-ktx", version.ref = "navigation" }
+
+google-play-services = { group = "com.google.android.gms", name = "play-services-auth", version.ref = "gms" }
 
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 
