@@ -5,6 +5,9 @@
 
     <data>
 
+        <variable
+            name="music"
+            type="com.ohdodok.catchytape.core.domain.model.Music" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
