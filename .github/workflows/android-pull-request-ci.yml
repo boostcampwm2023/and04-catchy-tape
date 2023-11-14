@@ -11,7 +11,7 @@ defaults:
     working-directory: ./android
 
 jobs:
-  verify:
+  unit_test:
     runs-on: ubuntu-latest
 
     steps:
