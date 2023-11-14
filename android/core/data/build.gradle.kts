@@ -30,4 +30,9 @@ android {
 dependencies {
 
     implementation(project(":core:domain"))
+
+    implementation(libs.retrofit)
+    implementation(libs.okhttp.logging.interceptor)
+    implementation(libs.kotlinx.serialization.json)
+    implementation(libs.kotlinx.serialization.converter)
 }
