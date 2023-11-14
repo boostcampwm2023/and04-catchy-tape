@@ -31,7 +31,7 @@ object NetworkModule {
 
     @Singleton
     @Provides
-    fun provideAccountUrlRetrofit(okHttpClient: OkHttpClient): Retrofit {
+    fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit {
         return Retrofit.Builder()
             .addConverterFactory(Json.asConverterFactory("application/json".toMediaType()))
             .client(okHttpClient)
