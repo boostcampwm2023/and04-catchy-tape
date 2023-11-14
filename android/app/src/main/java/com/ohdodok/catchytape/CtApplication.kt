@@ -12,7 +12,7 @@ class CtApplication : Application() {
             Timber.plant(object : Timber.DebugTree() {
                 override fun createStackElementTag(element: StackTraceElement): String {
                     return String.format(
-                        applicationContext.getString(R.string.timber_log_format),
+                        getString(R.string.timber_log_format),
                         super.createStackElementTag(element),
                         element.lineNumber,
                     )
