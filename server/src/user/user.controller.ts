@@ -20,10 +20,10 @@ export class UserController {
   @Post('signup')
   @UsePipes(ValidationPipe)
   @HttpCode(HTTP_STATUS_CODE.SUCCESS)
-  signup(@Body() userCreateDto: UserCreateDto): object {
+  signup(@Body() userCreateDto: UserCreateDto): { userId: string } {
     try {
       const userId: string = this.userService.createUser(userCreateDto);
-      return {userId};
+      return { userId };
     } catch (err) {
       throw new HttpException('SERVER ERROR', HTTP_STATUS_CODE.SERVER_ERROR);
     }
@@ -31,7 +31,9 @@ export class UserController {
 
   @Get('duplicate/:name')
   @HttpCode(HTTP_STATUS_CODE.NOT_DUPLICATED_NICKNAME)
-  async checkDuplicateNickname(@Param('name') name: string): Promise<object> {
+  async checkDuplicateNickname(
+    @Param('name') name: string,
+  ): Promise<{ nickname: string }> {
     if (await this.userService.isDuplicatedUserEmail(name)) {
       throw new HttpException(
         'DUPLICATED_NICKNAME',
@@ -39,6 +41,6 @@ export class UserController {
       );
     }
 
-    return {nickname: name};
+    return { nickname: name };
   }
 }
