@@ -43,6 +43,7 @@ android {
 dependencies {
 
     implementation(project(":feature:home"))
+    implementation(project(":feature:login"))
 
     implementation(libs.core.ktx)
     implementation(libs.appcompat)
