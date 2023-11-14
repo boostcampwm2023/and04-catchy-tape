@@ -37,6 +37,7 @@ android {
     }
     buildFeatures {
         dataBinding = true
+        buildConfig = true
     }
 }
 
@@ -51,6 +52,7 @@ dependencies {
     implementation(libs.navigation.fragment.ktx)
     implementation(libs.navigation.ui.ktx)
 
-    testImplementation(libs.junit)
+    implementation(libs.timber)
 
+    testImplementation(libs.junit)
 }

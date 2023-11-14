@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Catchy Tape</string>
+    <string name="timber_log_format">C: %s: / L: %s</string>
 </resources>
