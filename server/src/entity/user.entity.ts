@@ -1,20 +1,25 @@
-import { Column, Entity, Unique, CreateDateColumn } from "typeorm";
+import {
+  Column,
+  Entity,
+  CreateDateColumn,
+  BaseEntity,
+  PrimaryColumn,
+} from 'typeorm';
 
-@Entity({name: 'user'})
-@Unique(['userId'])
-export class User {
-    @Column()
-    userId: string;
+@Entity({ name: 'user' })
+export class User extends BaseEntity {
+  @PrimaryColumn()
+  userId: string;
 
-    @Column()   
-    nickname: string;
+  @Column()
+  nickname: string;
 
-    @Column({nullable: true})
-    photo: string | null;
+  @Column({ nullable: true })
+  photo: string | null;
 
-    @Column()
-    user_email: string;
+  @Column()
+  user_email: string;
 
-    @CreateDateColumn()
-    created_at: Date;
+  @CreateDateColumn()
+  created_at: Date;
 }

@@ -4,23 +4,26 @@ import { UserCreateDto } from 'src/dto/userCreate.dto';
 import { User } from 'src/entity/user.entity';
 import { Repository } from 'typeorm';
 import { v4 as uuid } from 'uuid';
+import { InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()
 export class UserService {
   //TODO: custom repository로 변경하기
-  constructor(private userRepository: Repository<User>) {}
+  constructor(
+    @InjectRepository(User) private userRepository: Repository<User>,
+  ) {}
 
   createUser(userCreateDto: UserCreateDto): string {
     const { nickname, email } = userCreateDto;
-    const newUser: User = {
+    const newUser: User = this.userRepository.create({
       userId: uuid(),
       nickname,
       photo: null,
       user_email: email,
       created_at: new Date(),
-    };
-    const user = this.userRepository.create(newUser);
-    this.userRepository.save(user);
+    });
+
+    this.userRepository.save(newUser);
     return newUser.userId;
   }
 
