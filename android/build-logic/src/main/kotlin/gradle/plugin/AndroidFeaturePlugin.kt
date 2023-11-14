@@ -15,6 +15,7 @@ class AndroidFeaturePlugin : Plugin<Project> {
 
             with(pluginManager) {
                 apply("catchytape.android.library")
+                apply("catchytape.android.hilt")
             }
 
             extensions.configure<LibraryExtension> {

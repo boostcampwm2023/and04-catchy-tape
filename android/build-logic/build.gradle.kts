@@ -17,5 +17,9 @@ gradlePlugin {
             id = "catchytape.android.feature"
             implementationClass = "gradle.plugin.AndroidFeaturePlugin"
         }
+        register("androidHilt") {
+            id = "catchytape.android.hilt"
+            implementationClass = "gradle.plugin.AndroidHiltPlugin"
+        }
     }
 }
