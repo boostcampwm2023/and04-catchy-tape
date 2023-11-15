@@ -30,14 +30,23 @@
 | Network | Retrofit, Kotlin Serialization | [역/직렬화 라이브러리 비교](https://github.com/boostcampwm2023/and04-catchy-tape/wiki/%EC%97%AD-%EC%A7%81%EB%A0%AC%ED%99%94-%EB%9D%BC%EC%9D%B4%EB%B8%8C%EB%9F%AC%EB%A6%AC-%EB%B9%84%EA%B5%90)
 | Jetpack | Navigation |
 | CI | Github Actions | [PR에 대한 단위 테스트 자동화](https://algosketch.tistory.com/178)
- 
+ <details>
+<summary>그 외 기록</summary>
+
+- [프로젝트 생성](https://github.com/boostcampwm2023/and04-catchy-tape/wiki/Android#%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8-%EC%83%9D%EC%84%B1%EC%8B%9C-%EA%B3%A0%EB%A0%A4%ED%95%9C-%EB%82%B4%EC%9A%A9)
+
+</details>
 
 
 ### 📡 Server
 | Category  | TechStack |
 | ------------- | ------------- |
 |   |   |
+<details>
+<summary>그 외 기록</summary>
 
+- 
+</details>
 
 ## Team. 🍗 오도독 
 
