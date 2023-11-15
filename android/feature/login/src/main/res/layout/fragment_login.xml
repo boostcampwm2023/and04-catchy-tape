@@ -15,6 +15,44 @@
         android:layout_height="match_parent">
 
 
+        <ImageView
+            android:id="@+id/iv_icon"
+            android:layout_width="@dimen/login_icon_size"
+            android:layout_height="@dimen/login_icon_size"
+            android:layout_marginTop="@dimen/login_icon_margin_vertical"
+            android:src="@drawable/ic_login_icon"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+        <ImageView
+            android:id="@+id/iv_logo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_logo"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/iv_icon" />
+
+
+        <Button
+            android:id="@+id/btn_google_login"
+            style="@style/TitleSmall"
+            android:layout_width="@dimen/login_width"
+            android:layout_height="@dimen/login_height"
+            android:layout_marginHorizontal="@dimen/margin_horizontal"
+            android:layout_marginBottom="@dimen/extra_large"
+            android:background="@drawable/btn_login"
+            android:drawableStart="@drawable/ic_google"
+            android:paddingHorizontal="@dimen/margin_horizontal"
+            android:text="@string/google_account_login"
+            android:textColor="@color/black"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </layout>
