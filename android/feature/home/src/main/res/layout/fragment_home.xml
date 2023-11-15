@@ -14,15 +14,15 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <androidx.appcompat.widget.Toolbar
+        <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/tb_home"
+            style="@style/ToolBar"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:title="@string/home"
-            app:titleTextColor="@color/on_surface" />
+            app:title="@string/home" />
 
         <ImageButton
             android:layout_width="wrap_content"
