@@ -1,9 +1,16 @@
+import java.util.Properties
+import java.io.FileInputStream
+
 @Suppress("DSL_SCOPE_VIOLATION") // TODO: Remove once KTIJ-19369 is fixed
 plugins {
     alias(libs.plugins.com.android.application)
     alias(libs.plugins.org.jetbrains.kotlin.android)
     id("catchytape.android.hilt")
 }
+
+val keystorePropertiesFile = rootProject.file("keystore.properties")
+val keystoreProperties = Properties()
+keystoreProperties.load(FileInputStream(keystorePropertiesFile))
 
 android {
     namespace = "com.ohdodok.catchytape"
@@ -17,6 +24,15 @@ android {
         versionName = "1.0.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    signingConfigs {
+        create("debug") {
+            keyAlias = keystoreProperties["debug.keyAlias"] as String
+            keyPassword = keystoreProperties["debug.keyPassword"] as String
+            storeFile = file(keystoreProperties["debug.storeFile"] as String)
+            storePassword = keystoreProperties["debug.storePassword"] as String
+        }
     }
 
     buildTypes {
