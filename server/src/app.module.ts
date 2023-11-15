@@ -2,7 +2,6 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UserModule } from './user/user.module';
-import { MusicModule } from './music/music.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { TypeOrmConfigService } from 'src/config/typeorm.config';
 import { ConfigModule } from '@nestjs/config';
@@ -21,7 +20,6 @@ import { UploadModule } from './upload/upload.module';
     }),
     TypeOrmModule.forRootAsync({ useClass: TypeOrmConfigService }),
     UserModule,
-    MusicModule,
     UploadModule,
   ],
   controllers: [AppController],
