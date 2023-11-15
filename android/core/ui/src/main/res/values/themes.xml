@@ -1,7 +1,8 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
 
     <style name="Base.Theme.CatchyTape" parent="Theme.Material3.DayNight.NoActionBar">
-        <item name="android:colorPrimary">@color/primary</item>
+        <item name="colorPrimary">@color/primary</item>
+        <item name="colorAccent">@color/primary</item>
         <item name="android:statusBarColor">@color/surface</item>
         <item name="android:windowLightStatusBar">true</item>
         <item name="android:windowBackground">@color/surface</item>
@@ -44,5 +45,17 @@
         <item name="android:background">@drawable/btn_background</item>
         <item name="android:layout_height">@dimen/btn_height</item>
         <item name="android:layout_marginHorizontal">@dimen/margin_horizontal</item>
+    </style>
+
+    <style name="EditText" parent="Widget.AppCompat.EditText">
+        <item name="android:textSize">14sp</item>
+        <item name="android:layout_height">@dimen/et_height</item>
+        <item name="android:background">@drawable/et_background</item>
+        <item name="android:paddingHorizontal">@dimen/margin_horizontal</item>
+        <item name="android:layout_marginHorizontal">@dimen/margin_horizontal</item>
+        <item name="android:textColorHint">@color/on_surface_variant</item>
+        <item name="android:textColor">@color/surface_bright</item>
+        <item name="android:textCursorDrawable">@color/black</item>
+        <item name="android:textColorHighlight">@color/key_variant</item>
     </style>
 </resources>

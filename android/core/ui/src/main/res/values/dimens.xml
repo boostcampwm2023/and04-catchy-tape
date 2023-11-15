@@ -13,4 +13,6 @@
 
     <dimen name="btn_height">50dp</dimen>
     <dimen name="btn_radius">10dp</dimen>
+
+    <dimen name="et_height">50dp</dimen>
 </resources>
