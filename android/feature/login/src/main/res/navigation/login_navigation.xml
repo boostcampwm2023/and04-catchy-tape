@@ -11,4 +11,11 @@
         android:label="login"
         tools:layout="@layout/fragment_login"/>
 
+
+    <fragment
+        android:id="@+id/nickname_fragment"
+        android:name="com.ohdodok.catchytape.feature.login.NicknameFragment"
+        android:label="nickname"
+        tools:layout="@layout/fragment_nickname"/>
+
 </navigation>
