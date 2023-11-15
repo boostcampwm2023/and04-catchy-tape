@@ -32,4 +32,10 @@
     <style name="BodySmall">
         <item name="android:textSize">12sp</item>
     </style>
+
+    <style name="ToolBar" parent="Widget.Material3.Toolbar">
+        <item name="titleTextColor">@color/on_surface</item>
+        <item name="navigationIconTint">@color/on_surface</item>
+    </style>
+
 </resources>
