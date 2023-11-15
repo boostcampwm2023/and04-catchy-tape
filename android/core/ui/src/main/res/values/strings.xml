@@ -34,4 +34,6 @@
     <string name="genre">장르</string>
     <string name="description">설명</string>
 
+    <string name="google_account_login">구글계정으로 로그인</string>
+
 </resources>
