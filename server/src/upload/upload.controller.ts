@@ -10,6 +10,7 @@ import {
 import { UploadService } from './upload.service';
 import { HTTP_STATUS_CODE } from 'src/httpStatusCode.enum';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { fileSize } from 'src/constants';
 
 @Controller('upload')
 export class UploadController {
@@ -21,7 +22,7 @@ export class UploadController {
     @UploadedFile(
       new ParseFilePipe({
         validators: [
-          new MaxFileSizeValidator({ maxSize: 1024 * 1024 * 30 }),
+          new MaxFileSizeValidator({ maxSize: fileSize.MUSIC_FILE_LIMIT_SIZE }),
           new FileTypeValidator({ fileType: 'audio/mpeg' }),
         ],
       }),
@@ -38,7 +39,7 @@ export class UploadController {
     @UploadedFile(
       new ParseFilePipe({
         validators: [
-          new MaxFileSizeValidator({ maxSize: 1024 * 1024 * 5 }),
+          new MaxFileSizeValidator({ maxSize: fileSize.IMAGE_FILE_LIMIT_SIZE }),
           new FileTypeValidator({ fileType: 'image/jpeg' }),
         ],
       }),
