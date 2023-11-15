@@ -29,6 +29,7 @@ class AndroidFeaturePlugin : Plugin<Project> {
             dependencies {
                 add("implementation", project(":core:ui"))
                 add("implementation", project(":core:domain"))
+                add("implementation", libs.findLibrary("timber").get())
 
                 add("testImplementation", libs.findLibrary("junit").get())
             }
