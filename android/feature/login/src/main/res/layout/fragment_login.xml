@@ -17,8 +17,8 @@
 
         <ImageView
             android:id="@+id/iv_icon"
-            android:layout_width="@dimen/login_icon_size"
-            android:layout_height="@dimen/login_icon_size"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/login_icon_margin_vertical"
             android:src="@drawable/ic_login_icon"
             app:layout_constraintEnd_toEndOf="parent"
@@ -39,8 +39,8 @@
         <Button
             android:id="@+id/btn_google_login"
             style="@style/TitleSmall"
-            android:layout_width="@dimen/login_width"
-            android:layout_height="@dimen/login_height"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/btn_height"
             android:layout_marginHorizontal="@dimen/margin_horizontal"
             android:layout_marginBottom="@dimen/extra_large"
             android:background="@drawable/btn_login"
