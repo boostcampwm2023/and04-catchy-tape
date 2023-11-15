@@ -31,4 +31,21 @@ export class UploadController {
     const { url } = await this.uploadService.uploadMusic(file);
     return { url };
   }
+
+  @Post('/image')
+  @UseInterceptors(FileInterceptor('file'))
+  async uploadImage(
+    @UploadedFile(
+      new ParseFilePipe({
+        validators: [
+          new MaxFileSizeValidator({ maxSize: 1024 * 1024 * 5 }),
+          new FileTypeValidator({ fileType: 'image/jpeg' }),
+        ],
+      }),
+    )
+    file: Express.Multer.File,
+  ) {
+    const { url } = await this.uploadService.uploadImage(file);
+    return { url };
+  }
 }

@@ -27,4 +27,20 @@ export class UploadService {
       throw new HttpException('SERVER ERROR', HTTP_STATUS_CODE.SERVER_ERROR);
     }
   }
+
+  async uploadImage(file: Express.Multer.File): Promise<{ url: string }> {
+    try {
+      const uploadResult = await this.objectStorage
+        .upload({
+          Bucket: 'catchy-tape-bucket2',
+          Key: `image/${file.originalname}`,
+          Body: Readable.from(file.buffer),
+        })
+        .promise();
+
+      return { url: uploadResult.Location };
+    } catch {
+      throw new HttpException('SERVER ERROR', HTTP_STATUS_CODE.SERVER_ERROR);
+    }
+  }
 }
