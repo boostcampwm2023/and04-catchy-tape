@@ -31,7 +31,13 @@ jobs:
         run: chmod +x gradlew
 
       - name: Run unit tests
-        run: ./gradlew testDebugUnitTest --stacktrace
+        env:
+          DEBUG_KEYSTORE: ${{ secrets.DEBUG_KEYSTORE }}
+          KEYSTORE_PROPERTIES: ${{ secrets.KEYSTORE_PROPERTIES }}
+        run: |
+          echo "$DEBUG_KEYSTORE" | base64 -d > keystore.properties
+          echo "$KEYSTORE_PROPERTIES" > keystore.properties
+          ./gradlew testDebugUnitTest --stacktrace
 
       - name: Publish Test Results
         if: always()
