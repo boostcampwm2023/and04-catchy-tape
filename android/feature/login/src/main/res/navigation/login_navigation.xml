@@ -9,8 +9,12 @@
         android:id="@+id/login_fragment"
         android:name="com.ohdodok.catchytape.feature.login.LoginFragment"
         android:label="login"
-        tools:layout="@layout/fragment_login"/>
+        tools:layout="@layout/fragment_login">
 
+        <action
+            android:id="@+id/action_login_fragment_to_nickname_fragment"
+            app:destination="@id/nickname_fragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/nickname_fragment"

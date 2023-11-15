@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="nickname_title">사용하실 닉네임을\n 입력해주세요 :)</string>
+    <string name="nickname_title">사용하실 닉네임을\n입력해주세요 :)</string>
     <string name="start">시작하기</string>
 </resources>
