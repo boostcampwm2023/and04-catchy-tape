@@ -27,7 +27,7 @@ android {
     }
 
     signingConfigs {
-        create("debug") {
+        getByName("debug") {
             keyAlias = keystoreProperties["debug.keyAlias"] as String
             keyPassword = keystoreProperties["debug.keyPassword"] as String
             storeFile = file(keystoreProperties["debug.storeFile"] as String)
