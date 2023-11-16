@@ -2,6 +2,7 @@ package com.ohdodok.catchytape.feature.upload
 
 import android.os.Bundle
 import android.view.View
+import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.result.contract.ActivityResultContracts.PickVisualMedia
 import androidx.core.net.toFile
@@ -15,7 +16,7 @@ import dagger.hilt.android.AndroidEntryPoint
 class UploadFragment : BaseFragment<FragmentUploadBinding>(R.layout.fragment_upload) {
     private val viewModel: UploadViewModel by viewModels()
 
-    private val pickMedia = registerForActivityResult(PickVisualMedia()) { uri ->
+    private val imagePickerLauncher = registerForActivityResult(PickVisualMedia()) { uri ->
         if (uri == null) return@registerForActivityResult
 
         viewModel.uploadImage(uri.toFile())
@@ -37,7 +38,7 @@ class UploadFragment : BaseFragment<FragmentUploadBinding>(R.layout.fragment_upl
 
     private fun setupSelectThumbnailImage() {
         binding.cvUploadThumbnail.setOnClickListener {
-            filePickerLauncher.launch("audio/*")
+            imagePickerLauncher.launch(PickVisualMediaRequest(PickVisualMedia.ImageOnly))
         }
     }
 }
