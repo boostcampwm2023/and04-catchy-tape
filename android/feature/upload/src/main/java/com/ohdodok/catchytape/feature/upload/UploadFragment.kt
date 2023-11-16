@@ -33,6 +33,7 @@ class UploadFragment : BaseFragment<FragmentUploadBinding>(R.layout.fragment_upl
         super.onViewCreated(view, savedInstanceState)
         binding.viewModel = viewModel
 
+        setupBackStack(binding.tbUploadAppbar)
         setupSelectThumbnailImage()
     }
 
