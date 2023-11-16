@@ -9,7 +9,7 @@ import {
 @Entity({ name: 'user' })
 export class User extends BaseEntity {
   @PrimaryColumn()
-  userId: string;
+  user_id: string;
 
   @Column()
   nickname: string;

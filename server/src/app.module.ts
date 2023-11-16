@@ -5,15 +5,11 @@ import { UserModule } from './user/user.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { TypeOrmConfigService } from 'src/config/typeorm.config';
 import { ConfigModule } from '@nestjs/config';
-import { JwtModule } from '@nestjs/jwt';
 import { UploadModule } from './upload/upload.module';
+import { MusicModule } from './music/music.module';
 
 @Module({
   imports: [
-    JwtModule.register({
-      secret: 'catchy-tape-secret-key',
-      signOptions: { expiresIn: '1h' },
-    }),
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: __dirname + `/../${process.env.NODE_ENV}.env`,
@@ -21,6 +17,7 @@ import { UploadModule } from './upload/upload.module';
     TypeOrmModule.forRootAsync({ useClass: TypeOrmConfigService }),
     UserModule,
     UploadModule,
+    MusicModule,
   ],
   controllers: [AppController],
   providers: [AppService],
