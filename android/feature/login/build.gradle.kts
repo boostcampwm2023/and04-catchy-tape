@@ -15,7 +15,7 @@ android {
 
     defaultConfig {
 
-        buildConfigField("String", "GOOGLE_SERVER_ID", localProperties["google.server.id"] as String)
+        buildConfigField("String", "GOOGLE_CLIENT_ID", localProperties["google.client.id"] as String)
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
     }
