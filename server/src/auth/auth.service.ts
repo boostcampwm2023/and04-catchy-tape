@@ -19,14 +19,14 @@ export class AuthService {
     });
 
     if (user) {
-      const payload = { userId: user['userId'] };
+      const payload = { user_Id: user['user_id'] };
       const accessToken = this.jwtService.sign(payload);
 
       return { accessToken };
     } else {
       throw new HttpException(
         'NOT_EXIST_USER',
-        HTTP_STATUS_CODE['WRONG TOKEN'],
+        HTTP_STATUS_CODE['WRONG_TOKEN'],
       );
     }
   }

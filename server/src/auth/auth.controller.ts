@@ -3,8 +3,6 @@ import {
   Controller,
   Get,
   HttpCode,
-  HttpException,
-  Post,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { HTTP_STATUS_CODE } from 'src/httpStatusCode.enum';

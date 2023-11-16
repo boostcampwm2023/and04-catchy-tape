@@ -33,7 +33,7 @@ export class MusicController {
       if (err instanceof HttpException) {
         throw err;
       }
-      throw new HttpException('WRONG TOKEN', HTTP_STATUS_CODE['WRONG TOKEN']);
+      throw new HttpException('WRONG TOKEN', HTTP_STATUS_CODE['WRONG_TOKEN']);
     }
   }
 }
