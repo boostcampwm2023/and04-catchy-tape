@@ -16,7 +16,7 @@ export class UserService {
   createUser(userCreateDto: UserCreateDto): string {
     const { nickname, email } = userCreateDto;
     const newUser: User = this.userRepository.create({
-      userId: uuid(),
+      user_id: uuid(),
       nickname,
       photo: null,
       user_email: email,
@@ -24,7 +24,7 @@ export class UserService {
     });
 
     this.userRepository.save(newUser);
-    return newUser.userId;
+    return newUser.user_id;
   }
 
   async isDuplicatedUserEmail(userNickname: string): Promise<boolean> {

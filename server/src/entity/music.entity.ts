@@ -31,5 +31,5 @@ export class Music extends BaseEntity {
 
   @OneToOne(() => User)
   @JoinColumn({ name: 'user_id' })
-  userId: string;
+  user_id: string;
 }
