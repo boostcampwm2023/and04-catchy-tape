@@ -23,20 +23,16 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:navigationIcon="@drawable/ic_arrow_back"
-            app:pop_back_stack="@{null}"
             app:title="@string/upload">
 
-            <TextView
-                android:id="@+id/tv_complete"
-                style="@style/TitleLarge"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btn_complete"
+                style="@style/CompleteButton"
                 android:layout_gravity="end|center_vertical"
-                android:paddingEnd="@dimen/margin_horizontal"
-                android:text="@string/complete"
-                android:textColor="@color/on_surface"
-                app:genre_position="@{viewModel.uploadMusicGenrePosition}"
-                app:music_title="@{viewModel.uploadMusicTitle}" />
+                android:layout_marginEnd="@dimen/margin_horizontal"
+                android:background="@android:color/transparent"
+                android:enabled="@{viewModel.isUploadEnable}"
+                android:text="@string/complete" />
 
 
         </com.google.android.material.appbar.MaterialToolbar>
@@ -79,7 +75,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:maxLength="10"
-                android:text="@={viewModel.uploadMusicTitle}" />
+                android:text="@={viewModel.uploadedMusicTitle}" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -99,7 +95,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="none"
-                app:change_selected_position="@{viewModel.onChangePosition}"
+                app:changeSelectedPosition="@{viewModel.onChangePosition}"
                 app:simpleItems="@array/genre_items" />
 
         </com.google.android.material.textfield.TextInputLayout>
