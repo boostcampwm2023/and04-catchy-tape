@@ -5,6 +5,7 @@ import {
   HttpCode,
   HttpException,
   Post,
+  Get,
   UseGuards,
   UsePipes,
   ValidationPipe,
@@ -13,6 +14,7 @@ import { MusicService } from './music.service';
 import { HTTP_STATUS_CODE } from 'src/httpStatusCode.enum';
 import { MusicCreateDto } from 'src/dto/musicCreate.dto';
 import { AuthGuard } from '@nestjs/passport';
+import { Genres } from 'src/constants';
 
 @Controller('musics')
 export class MusicController {
@@ -22,7 +24,10 @@ export class MusicController {
   @UsePipes(ValidationPipe)
   @UseGuards(AuthGuard())
   @HttpCode(HTTP_STATUS_CODE.SUCCESS)
-  async upload(@Body() musicCreateDto: MusicCreateDto, @Req() req) {
+  async upload(
+    @Body() musicCreateDto: MusicCreateDto,
+    @Req() req,
+  ): Promise<{ userId: string }> {
     try {
       const userId = req.user.user_id;
 
