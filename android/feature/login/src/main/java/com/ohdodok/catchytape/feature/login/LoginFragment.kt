@@ -42,20 +42,4 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(R.layout.fragment_login
             googleLoginLauncher.launch(googleSignInClient.signInIntent)
         }
     }
-
-    private fun observeEvent() {
-        repeatOnStarted {
-            viewModel.events.collect { event ->
-                when (event) {
-                    is LoginEvent.NavigateToHome -> {
-
-                    }
-
-                    is LoginEvent.NavigateToNickName -> {
-                        val action = LoginFragmentDirections.actionLoginFragmentToNicknameFragment()
-                    }
-                }
-            }
-        }
-    }
 }
