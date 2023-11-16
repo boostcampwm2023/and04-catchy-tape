@@ -50,9 +50,8 @@ export class AuthService {
       await this.userRepository.save(newUser);
 
       return this.login(email);
-    } else {
-      throw new HttpException('WRONG_TOKEN', HTTP_STATUS_CODE.WRONG_TOKEN);
     }
+    throw new HttpException('WRONG_TOKEN', HTTP_STATUS_CODE.WRONG_TOKEN);
   }
 
   async getGoogleEmail(googleIdToken: string): Promise<string> {
