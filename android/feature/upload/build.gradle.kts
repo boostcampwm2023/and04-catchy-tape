@@ -27,5 +27,5 @@ android {
 }
 
 dependencies {
-
+    implementation(libs.appcompat)
 }
