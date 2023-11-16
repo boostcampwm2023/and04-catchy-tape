@@ -16,24 +16,28 @@
 
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/tb_upload_appbar"
+            style="@style/ToolBar"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:navigationIcon="@drawable/ic_arrow_back"
+            app:pop_back_stack="@{null}"
             app:title="@string/upload">
 
-            <Button
-                style="@style/BodyMedium"
+            <TextView
+                android:id="@+id/tv_complete"
+                style="@style/TitleLarge"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="end|center_vertical"
-                android:background="@android:color/transparent"
-                android:minWidth="0dp"
-                android:minHeight="0dp"
+                android:paddingEnd="@dimen/margin_horizontal"
                 android:text="@string/complete"
-                android:textColor="@color/on_surface" />
+                android:textColor="@color/on_surface"
+                app:genre_position="@{viewModel.uploadMusicGenrePosition}"
+                app:music_title="@{viewModel.uploadMusicTitle}" />
+
 
         </com.google.android.material.appbar.MaterialToolbar>
 
@@ -65,13 +69,17 @@
             android:layout_marginHorizontal="@dimen/margin_horizontal"
             android:layout_marginTop="@dimen/extra_large"
             android:hint="@string/title"
+            app:endIconDrawable="@drawable/ic_cancel"
+            app:endIconMode="clear_text"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/cv_upload_thumbnail">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:maxLength="10"
+                android:text="@={viewModel.uploadMusicTitle}" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -91,26 +99,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="none"
+                app:change_selected_position="@{viewModel.onChangePosition}"
                 app:simpleItems="@array/genre_items" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/til_description"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="@dimen/margin_horizontal"
-            android:layout_marginTop="@dimen/medium"
-            android:hint="@string/description"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/til_genre">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-
-        </com.google.android.material.textfield.TextInputLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
