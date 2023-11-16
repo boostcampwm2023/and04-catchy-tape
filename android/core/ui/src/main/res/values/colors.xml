@@ -3,6 +3,7 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="key">#FFBB2649</color>
+    <color name="key_variant">#FFF5D4DC</color>
     <color name="light_gray">#FFF5F5F5</color>
 
     <color name="primary">#FFBB2649</color>
