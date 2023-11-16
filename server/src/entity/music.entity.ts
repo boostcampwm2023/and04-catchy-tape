@@ -3,11 +3,12 @@ import {
   Entity,
   CreateDateColumn,
   BaseEntity,
-  OneToOne,
   JoinColumn,
   PrimaryGeneratedColumn,
+  ManyToOne,
 } from 'typeorm';
 import { User } from './user.entity';
+import { Genres } from 'src/constants';
 
 @Entity({ name: 'music' })
 export class Music extends BaseEntity {
@@ -26,10 +27,13 @@ export class Music extends BaseEntity {
   @Column()
   musicFile: string;
 
+  @Column()
+  genre: Genres;
+
   @CreateDateColumn()
   created_at: Date;
 
-  @OneToOne(() => User)
+  @ManyToOne(() => User)
   @JoinColumn({ name: 'user_id' })
   user_id: string;
 }
