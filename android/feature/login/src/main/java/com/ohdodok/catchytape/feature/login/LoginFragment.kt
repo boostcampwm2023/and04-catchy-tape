@@ -1,13 +1,14 @@
 package com.ohdodok.catchytape.feature.login
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.viewModels
-import androidx.navigation.fragment.findNavController
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.ohdodok.catchytape.core.ui.BaseFragment
 import com.ohdodok.catchytape.feature.login.databinding.FragmentLoginBinding
 import dagger.hilt.android.AndroidEntryPoint
-
 
 @AndroidEntryPoint
 class LoginFragment : BaseFragment<FragmentLoginBinding>(R.layout.fragment_login) {
@@ -17,9 +18,23 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(R.layout.fragment_login
         super.onViewCreated(view, savedInstanceState)
         binding.viewModel = viewModel
 
-        // TODO : Nickname Fragment Test 를 위한 코드로 추후 변경 해야함
+
+        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestIdToken(BuildConfig.GOOGLE_SERVER_ID)
+            .build()
+
         binding.btnGoogleLogin.setOnClickListener {
-            findNavController().navigate(R.id.action_login_fragment_to_nickname_fragment)
+
+            // Build a GoogleSignInClient with the options specified by gso.
+            val mGoogleSignInClient = GoogleSignIn.getClient(requireContext(), gso);
+
+            val signInIntent = mGoogleSignInClient.signInIntent
+            startActivityForResult(signInIntent, 10000)
         }
     }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+    }
+
 }
