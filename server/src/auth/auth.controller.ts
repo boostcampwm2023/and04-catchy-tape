@@ -1,8 +1,8 @@
 import {
   Body,
   Controller,
-  Get,
   HttpCode,
+  Post,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { HTTP_STATUS_CODE } from 'src/httpStatusCode.enum';
@@ -11,7 +11,7 @@ import { HTTP_STATUS_CODE } from 'src/httpStatusCode.enum';
 export class AuthController {
   constructor(private authService: AuthService) {}
 
-  @Get('login')
+  @Post('login')
   @HttpCode(HTTP_STATUS_CODE.SUCCESS)
   async signup(
     @Body('idToken') googleIdToken: string,
