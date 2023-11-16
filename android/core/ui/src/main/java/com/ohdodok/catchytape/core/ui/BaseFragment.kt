@@ -11,7 +11,6 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.appbar.MaterialToolbar
 
-
 abstract class BaseFragment<VB : ViewDataBinding>(
     @LayoutRes private val layoutId: Int
 ) : Fragment() {

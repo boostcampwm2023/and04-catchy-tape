@@ -16,6 +16,7 @@ class AndroidFeaturePlugin : Plugin<Project> {
             with(pluginManager) {
                 apply("catchytape.android.library")
                 apply("catchytape.android.hilt")
+                apply("androidx.navigation.safeargs.kotlin")
             }
 
             extensions.configure<LibraryExtension> {
