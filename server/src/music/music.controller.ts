@@ -15,6 +15,7 @@ import { HTTP_STATUS_CODE } from 'src/httpStatusCode.enum';
 import { MusicCreateDto } from 'src/dto/musicCreate.dto';
 import { AuthGuard } from '@nestjs/passport';
 import { Genres } from 'src/constants';
+import { Music } from 'src/entity/music.entity';
 
 @Controller('musics')
 export class MusicController {
@@ -44,15 +45,15 @@ export class MusicController {
 
   @Get('recent-uploads')
   @HttpCode(HTTP_STATUS_CODE.SUCCESS)
-  async getRecentMusics() {
+  async getRecentMusics(): Promise<{ musics: Music[] }> {
     const musics = await this.musicService.getRecentMusic();
 
     return { musics };
   }
 
-  @Get('genre')
+  @Get('genres')
   @HttpCode(HTTP_STATUS_CODE.SUCCESS)
-  getGenres() {
+  getGenres(): { genres: string[] } {
     const genreName: string[] = Object.keys(Genres);
 
     return { genres: genreName };

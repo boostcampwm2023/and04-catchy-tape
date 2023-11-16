@@ -13,7 +13,7 @@ export class MusicService {
     @InjectRepository(Music) private musicRepository: Repository<Music>,
   ) {}
 
-  isValidGenre(genre: string) {
+  isValidGenre(genre: string): boolean {
     if (Object.values(Genres).includes(genre as Genres)) {
       return true;
     }
@@ -21,14 +21,14 @@ export class MusicService {
     return false;
   }
 
-  createMusic(musicCreateDto: MusicCreateDto, user_id: string) {
+  createMusic(musicCreateDto: MusicCreateDto, user_id: string): void {
     try {
       const { title, cover, file: musicFile, genre } = musicCreateDto;
 
       if (!this.isValidGenre(genre)) {
         throw new HttpException(
           'NOT_EXIST_GENRE',
-          HTTP_STATUS_CODE.NOT_EXIST_GENRE,
+          HTTP_STATUS_CODE.BAD_REQUEST,
         );
       }
 
@@ -51,7 +51,7 @@ export class MusicService {
     }
   }
 
-  async getRecentMusic() {
+  async getRecentMusic(): Promise<Music[]> {
     try {
       const musics = await this.musicRepository.find({
         order: {
