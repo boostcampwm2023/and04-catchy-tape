@@ -13,7 +13,7 @@ import { UserService } from './user.service';
 import { UserCreateDto } from 'src/dto/userCreate.dto';
 import { HTTP_STATUS_CODE } from 'src/httpStatusCode.enum';
 
-@Controller('user')
+@Controller('users')
 export class UserController {
   constructor(private userService: UserService) {}
 
