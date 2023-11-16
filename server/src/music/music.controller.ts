@@ -36,4 +36,18 @@ export class MusicController {
       throw new HttpException('WRONG TOKEN', HTTP_STATUS_CODE['WRONG TOKEN']);
     }
   }
+
+  @Get('recent-uploads')
+  async getRecentMusics() {
+    const musics = await this.musicService.getRecentMusic();
+
+    return { musics };
+  }
+
+  @Get('genre')
+  getGenres() {
+    const genreName: string[] = Object.keys(Genres);
+
+    return { genres: genreName };
+  }
 }

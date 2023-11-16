@@ -24,6 +24,16 @@ export class MusicService {
       });
 
       this.musicRepository.save(newMusic);
+  async getRecentMusic() {
+    try {
+      const musics = await this.musicRepository.find({
+        order: {
+          created_at: 'DESC',
+        },
+        take: 10,
+      });
+
+      return musics;
     } catch {
       throw new HttpException('SERVER ERROR', HTTP_STATUS_CODE.SERVER_ERROR);
     }
