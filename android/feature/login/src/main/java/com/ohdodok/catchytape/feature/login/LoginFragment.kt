@@ -19,16 +19,16 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(R.layout.fragment_login
     private val viewModel: LoginViewModel by viewModels()
 
     private val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-        .requestEmail()
         .requestIdToken(BuildConfig.GOOGLE_SERVER_ID)
         .build()
 
-    private val googleLoginLauncher: ActivityResultLauncher<Intent> = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result  ->
-        if(result.resultCode == Activity.RESULT_OK){
-            val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
-            viewModel.login(task.result.idToken, task.result.email)
+    private val googleLoginLauncher: ActivityResultLauncher<Intent> =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
+                viewModel.login(task.result.idToken, task.result.email)
+            }
         }
-    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -36,20 +36,21 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(R.layout.fragment_login
         setUpGoogleLoginBtn()
     }
 
-    private fun setUpGoogleLoginBtn(){
+    private fun setUpGoogleLoginBtn() {
         binding.btnGoogleLogin.setOnClickListener {
-            val mGoogleSignInClient = GoogleSignIn.getClient(requireContext(), gso)
-            googleLoginLauncher.launch(mGoogleSignInClient.signInIntent)
+            val googleSignInClient = GoogleSignIn.getClient(requireContext(), gso)
+            googleLoginLauncher.launch(googleSignInClient.signInIntent)
         }
     }
 
-    private fun observeEvent(){
+    private fun observeEvent() {
         repeatOnStarted {
             viewModel.events.collect { event ->
-                when(event){
+                when (event) {
                     is LoginEvent.NavigateToHome -> {
 
                     }
+
                     is LoginEvent.NavigateToNickName -> {
                         val action = LoginFragmentDirections.actionLoginFragmentToNicknameFragment()
                     }
