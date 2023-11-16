@@ -8,6 +8,8 @@ import androidx.annotation.LayoutRes
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
+import com.google.android.material.appbar.MaterialToolbar
 
 
 abstract class BaseFragment<VB : ViewDataBinding>(
@@ -30,5 +32,11 @@ abstract class BaseFragment<VB : ViewDataBinding>(
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    protected fun setupBackStack(toolbar: MaterialToolbar){
+        toolbar.setNavigationOnClickListener {
+            findNavController().popBackStack()
+        }
     }
 }
