@@ -44,17 +44,27 @@
             android:layout_marginTop="@dimen/extra_large"
             app:cardBackgroundColor="@color/on_surface_variant"
             app:cardCornerRadius="20dp"
+            app:cardElevation="0dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tb_upload_appbar">
+            app:layout_constraintTop_toBottomOf="@id/tb_upload_appbar"
+            android:contentDescription="@string/select_thumbnail">
 
-            <ImageButton
-                android:id="@+id/btn_select_thumbnail"
+            <ImageView
+                android:id="@+id/iv_thumbnail_image"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:background="@color/white"
+                android:importantForAccessibility="no" />
+
+            <ImageView
+                android:id="@+id/iv_camera_icon"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
                 android:layout_gravity="center"
-                android:background="@drawable/ic_camera"
-                android:backgroundTint="@color/surface" />
+                android:src="@drawable/ic_camera"
+                android:importantForAccessibility="no"/>
 
         </androidx.cardview.widget.CardView>
 
