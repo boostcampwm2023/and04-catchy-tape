@@ -14,7 +14,7 @@ gms = "20.7.0"
 junit = "4.13.2"
 
 retrofit = "2.9.0"
-okhttp = "4.10.0"
+okhttp = "4.11.0"
 kotlinx-serialization = "1.6.0"
 kotlinx-serialization-converter = "1.0.0"
 
