@@ -25,6 +25,7 @@ export class AuthController {
 
   @Post('signup')
   @UsePipes(ValidationPipe)
+  @HttpCode(HTTP_STATUS_CODE.SUCCESS)
   async signup(@Body() userCreateDto: UserCreateDto) {
     return this.authService.signup(userCreateDto);
   }
