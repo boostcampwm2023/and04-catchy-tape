@@ -6,6 +6,7 @@ import {
   OneToOne,
   JoinColumn,
   PrimaryGeneratedColumn,
+  ManyToOne,
 } from 'typeorm';
 import { User } from './user.entity';
 import { Genres } from 'src/constants';
@@ -33,7 +34,7 @@ export class Music extends BaseEntity {
   @CreateDateColumn()
   created_at: Date;
 
-  @OneToOne(() => User)
+  @ManyToOne(() => User)
   @JoinColumn({ name: 'user_id' })
   user_id: string;
 }
