@@ -12,30 +12,27 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.ohdodok.catchytape.core.ui.BaseFragment
 import com.ohdodok.catchytape.feature.login.databinding.FragmentLoginBinding
 import dagger.hilt.android.AndroidEntryPoint
-import timber.log.Timber
 
 @AndroidEntryPoint
 class LoginFragment : BaseFragment<FragmentLoginBinding>(R.layout.fragment_login) {
+
     private val viewModel: LoginViewModel by viewModels()
 
     private val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+        .requestEmail()
         .requestIdToken(BuildConfig.GOOGLE_SERVER_ID)
         .build()
 
     private val googleLoginLauncher: ActivityResultLauncher<Intent> = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result  ->
         if(result.resultCode == Activity.RESULT_OK){
             val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
-            Timber.d("${task.isSuccessful}")
-            Timber.d("${task.result.idToken}")
-        }else{
-            Timber.d("fail")
+            viewModel.login(task.result.idToken, task.result.email)
         }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.viewModel = viewModel
-
         setUpGoogleLoginBtn()
     }
 
