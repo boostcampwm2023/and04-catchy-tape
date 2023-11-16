@@ -8,6 +8,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { User } from './user.entity';
+import { Genres } from 'src/constants';
 
 @Entity({ name: 'music' })
 export class Music extends BaseEntity {
@@ -25,6 +26,9 @@ export class Music extends BaseEntity {
 
   @Column()
   musicFile: string;
+
+  @Column()
+  genre: Genres;
 
   @CreateDateColumn()
   created_at: Date;
