@@ -5,6 +5,5 @@
 
     <!--    Nickname Fragment-->
     <string name="nickname_title">사용하실 닉네임을\n입력해주세요 :)</string>
-    <string name="nickname">닉네임</string>
     <string name="start">시작하기</string>
 </resources>
