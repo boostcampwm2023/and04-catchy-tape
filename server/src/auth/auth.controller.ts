@@ -3,9 +3,12 @@ import {
   Controller,
   HttpCode,
   Post,
+  UsePipes,
+  ValidationPipe,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { HTTP_STATUS_CODE } from 'src/httpStatusCode.enum';
+import { UserCreateDto } from 'src/dto/userCreate.dto';
 
 @Controller('users')
 export class AuthController {
@@ -13,9 +16,16 @@ export class AuthController {
 
   @Post('login')
   @HttpCode(HTTP_STATUS_CODE.SUCCESS)
-  async signup(
+  async login(
     @Body('idToken') googleIdToken: string,
   ): Promise<{ accessToken: string }> {
-    return await this.authService.login(googleIdToken);
+    const email: string = await this.authService.getGoogleEmail(googleIdToken);
+    return await this.authService.login(email);
+  }
+
+  @Post('signup')
+  @UsePipes(ValidationPipe)
+  async signup(@Body() userCreateDto: UserCreateDto) {
+    return this.authService.signup(userCreateDto);
   }
 }
