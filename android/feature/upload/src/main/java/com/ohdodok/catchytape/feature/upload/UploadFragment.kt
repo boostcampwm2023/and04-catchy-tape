@@ -13,5 +13,6 @@ class UploadFragment : BaseFragment<FragmentUploadBinding>(R.layout.fragment_upl
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.viewModel = viewModel
+        setupBackStack(binding.tbUploadAppbar)
     }
 }
