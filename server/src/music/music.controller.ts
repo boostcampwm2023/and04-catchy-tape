@@ -43,6 +43,7 @@ export class MusicController {
   }
 
   @Get('recent-uploads')
+  @HttpCode(HTTP_STATUS_CODE.SUCCESS)
   async getRecentMusics() {
     const musics = await this.musicService.getRecentMusic();
 
@@ -50,6 +51,7 @@ export class MusicController {
   }
 
   @Get('genre')
+  @HttpCode(HTTP_STATUS_CODE.SUCCESS)
   getGenres() {
     const genreName: string[] = Object.keys(Genres);
 
