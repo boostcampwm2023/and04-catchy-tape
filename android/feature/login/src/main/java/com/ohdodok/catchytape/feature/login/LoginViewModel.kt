@@ -19,19 +19,15 @@ class LoginViewModel @Inject constructor(
     private val _events = MutableSharedFlow<LoginEvent>()
     val events = _events.asSharedFlow()
 
-    fun login(token: String?, email: String?) {
-        if(token == null || email == null) {
-            return
-        }else{
-            loginUseCase(token)
-                .catch {
-                    _events.emit(LoginEvent.NavigateToNickName(token))
-                }
-                .onEach {
-                    _events.emit(LoginEvent.NavigateToHome)
-                }
-                .launchIn(viewModelScope)
-        }
+    fun login(token: String) {
+        loginUseCase(token)
+            .catch {
+                _events.emit(LoginEvent.NavigateToNickName(token))
+            }
+            .onEach {
+                _events.emit(LoginEvent.NavigateToHome)
+            }
+            .launchIn(viewModelScope)
     }
 }
 
