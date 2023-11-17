@@ -9,5 +9,5 @@ class SignUpUseCase @Inject constructor(
 ) {
 
     operator fun invoke(googleToken: String, nickname: String): Flow<Unit> =
-        authRepository.signUpWithGoogle(googleToken, nickname)
+        authRepository.signUpWithGoogle(googleToken = googleToken, nickname = nickname)
 }

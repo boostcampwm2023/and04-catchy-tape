@@ -23,7 +23,7 @@ class NicknameViewModel @Inject constructor(
 
     fun signUp(googleToken: String) {
         // TODO : 중복 검사 및 유효성 검사
-        signUpUseCase(googleToken, nickname.value)
+        signUpUseCase(googleToken = googleToken, nickname = nickname.value)
             .onEach {
                 _events.emit(NicknameEvent.NavigateToHome)
             }.launchIn(viewModelScope)

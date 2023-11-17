@@ -20,12 +20,12 @@ class AuthRepositoryImpl @Inject constructor(
 ) : AuthRepository {
 
     override fun loginWithGoogle(googleToken: String): Flow<String> = flow {
-        userApi.login(LoginRequest(googleToken)).let { response ->
+        userApi.login(LoginRequest(idToken = googleToken)).let { response ->
             if (response.isSuccessful) {
                 response.body()?.let { loginResponse ->
                     emit(loginResponse.accessToken)
                 }
-            } else if(response.code() == 401){
+            } else if (response.code() == 401) {
                 // TODO : 네트워크 에러 로직
                 throw Exception("존재하지 않는 유저입니다.")
             }
@@ -33,10 +33,10 @@ class AuthRepositoryImpl @Inject constructor(
     }
 
     override fun signUpWithGoogle(googleToken: String, nickname: String): Flow<Unit> = flow {
-        userApi.signUp(SignUpRequest(googleToken, nickname)).let { response ->
+        userApi.signUp(SignUpRequest(idToken = googleToken, nickname = nickname)).let { response ->
             if (response.isSuccessful) {
                 response.body()?.let { _ -> emit(Unit) }
-            }else {
+            } else {
                 // TODO : 네트워크 에러 로직
                 throw Exception("회원 가입 실패")
             }
