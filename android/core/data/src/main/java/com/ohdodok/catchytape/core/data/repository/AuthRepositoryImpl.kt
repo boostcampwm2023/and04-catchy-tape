@@ -6,16 +6,16 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import com.ohdodok.catchytape.core.data.api.UserApi
 import com.ohdodok.catchytape.core.data.model.LoginRequest
-import com.ohdodok.catchytape.core.data.repository.UserRepositoryImpl.PreferenceKeys.USER_TOKEN
-import com.ohdodok.catchytape.core.domain.repository.UserRepository
+import com.ohdodok.catchytape.core.data.repository.AuthRepositoryImpl.PreferenceKeys.USER_TOKEN
+import com.ohdodok.catchytape.core.domain.repository.AuthRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
-class UserRepositoryImpl @Inject constructor(
+class AuthRepositoryImpl @Inject constructor(
     private val userApi: UserApi,
     private val preferenceDataStore: DataStore<Preferences>
-) : UserRepository {
+) : AuthRepository {
 
     override suspend fun loginWithGoogle(googleToken: String) {
         userApi.login(LoginRequest(googleToken))
