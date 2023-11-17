@@ -54,7 +54,7 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(R.layout.fragment_login
             viewModel.events.collect { event ->
                 when (event) {
                     is LoginEvent.NavigateToHome -> {
-
+                        activity?.finish()
                     }
                     is LoginEvent.NavigateToNickName -> {
                         findNavController().navigate(LoginFragmentDirections.actionLoginFragmentToNicknameFragment(googleToken = event.googleToken))
