@@ -24,7 +24,8 @@ class AuthRepositoryImpl @Inject constructor(
                 response.body()?.let { loginResponse ->
                     emit(loginResponse.accessToken)
                 }
-            } else {
+            } else if(response.code() == 401){
+                // 존재하지 않는 유저
                 throw Exception("로그인 실패")
             }
         }
