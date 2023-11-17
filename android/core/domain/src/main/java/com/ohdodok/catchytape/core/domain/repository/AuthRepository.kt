@@ -6,7 +6,7 @@ interface AuthRepository {
 
     fun loginWithGoogle(googleToken: String): Flow<String>
 
-    fun signUpWithGoogle(googleToken: String, nickname: String): Flow<Unit>
+    fun signUpWithGoogle(googleToken: String, nickname: String): Flow<String>
 
     suspend fun saveToken(token: String)
 

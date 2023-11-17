@@ -11,7 +11,6 @@ import com.ohdodok.catchytape.core.data.repository.AuthRepositoryImpl.Preference
 import com.ohdodok.catchytape.core.domain.repository.AuthRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 class AuthRepositoryImpl @Inject constructor(
@@ -32,10 +31,12 @@ class AuthRepositoryImpl @Inject constructor(
         }
     }
 
-    override fun signUpWithGoogle(googleToken: String, nickname: String): Flow<Unit> = flow {
+    override fun signUpWithGoogle(googleToken: String, nickname: String): Flow<String> = flow {
         userApi.signUp(SignUpRequest(idToken = googleToken, nickname = nickname)).let { response ->
             if (response.isSuccessful) {
-                response.body()?.let { _ -> emit(Unit) }
+                response.body()?.let { loginResponse ->
+                    emit(loginResponse.accessToken)
+                }
             } else {
                 // TODO : 네트워크 에러 로직
                 throw Exception("회원 가입 실패")
