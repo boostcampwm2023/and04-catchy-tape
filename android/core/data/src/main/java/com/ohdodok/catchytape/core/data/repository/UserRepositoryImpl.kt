@@ -8,6 +8,8 @@ import com.ohdodok.catchytape.core.data.api.UserApi
 import com.ohdodok.catchytape.core.data.model.LoginRequest
 import com.ohdodok.catchytape.core.data.repository.UserRepositoryImpl.PreferenceKeys.USER_TOKEN
 import com.ohdodok.catchytape.core.domain.repository.UserRepository
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 class UserRepositoryImpl @Inject constructor(
@@ -22,6 +24,12 @@ class UserRepositoryImpl @Inject constructor(
     override suspend fun saveToken(token: String) {
         preferenceDataStore.edit { preferences ->
             preferences[USER_TOKEN] = token
+        }
+    }
+
+    override suspend fun getToken(): Flow<String> {
+        return preferenceDataStore.data.map { preference ->
+            preference[USER_TOKEN] ?: ""
         }
     }
 
