@@ -21,6 +21,7 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(R.layout.fragment_login
 
     private val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
         .requestIdToken(BuildConfig.GOOGLE_CLIENT_ID)
+        .requestEmail()
         .build()
 
     private val googleLoginLauncher: ActivityResultLauncher<Intent> =

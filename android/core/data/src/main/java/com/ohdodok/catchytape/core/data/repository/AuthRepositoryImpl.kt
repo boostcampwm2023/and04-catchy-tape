@@ -44,15 +44,7 @@ class AuthRepositoryImpl @Inject constructor(
     }
 
     override suspend fun saveToken(token: String) {
-        preferenceDataStore.edit { preferences ->
-            preferences[USER_TOKEN] = token
-        }
-    }
-
-    override fun getToken(): Flow<String> {
-        return preferenceDataStore.data.map { preference ->
-            preference[USER_TOKEN] ?: ""
-        }
+        preferenceDataStore.edit { preferences -> preferences[USER_TOKEN] = token }
     }
 
     object PreferenceKeys {

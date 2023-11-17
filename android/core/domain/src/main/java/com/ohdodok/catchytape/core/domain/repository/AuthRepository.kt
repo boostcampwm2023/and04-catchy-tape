@@ -10,6 +10,4 @@ interface AuthRepository {
 
     suspend fun saveToken(token: String)
 
-    fun getToken(): Flow<String>
-
 }
