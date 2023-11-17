@@ -6,6 +6,7 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import com.ohdodok.catchytape.core.data.api.UserApi
 import com.ohdodok.catchytape.core.data.model.LoginRequest
+import com.ohdodok.catchytape.core.data.model.SignUpRequest
 import com.ohdodok.catchytape.core.data.repository.AuthRepositoryImpl.PreferenceKeys.USER_TOKEN
 import com.ohdodok.catchytape.core.domain.repository.AuthRepository
 import kotlinx.coroutines.flow.Flow
@@ -29,6 +30,10 @@ class AuthRepositoryImpl @Inject constructor(
                 throw Exception("로그인 실패")
             }
         }
+    }
+
+    override fun signUpWithGoogle(googleToken: String, nickname: String): Flow<Unit> = flow {
+        userApi.signUp(SignUpRequest(googleToken, nickname))
     }
 
     override suspend fun saveToken(token: String) {

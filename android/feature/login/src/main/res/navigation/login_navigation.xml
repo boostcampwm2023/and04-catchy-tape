@@ -20,6 +20,11 @@
         android:id="@+id/nickname_fragment"
         android:name="com.ohdodok.catchytape.feature.login.NicknameFragment"
         android:label="nickname"
-        tools:layout="@layout/fragment_nickname"/>
+        tools:layout="@layout/fragment_nickname">
+
+        <argument
+            android:name="googleToken"
+            app:argType="string" />
+    </fragment>
 
 </navigation>

@@ -37,10 +37,10 @@ class LoginViewModel @Inject constructor(
                 }
                 .catch {
                     _uiState.value = LoginUiState.Failure
-                    _events.emit(LoginEvent.NavigateToNickName)
+                    _events.emit(LoginEvent.NavigateToNickName(token))
                 }
                 .onEach {
-                    _uiState.value = LoginUiState.Success(token = token, email = email)
+                    _uiState.value = LoginUiState.Success
                     _events.emit(LoginEvent.NavigateToHome)
                 }
                 .launchIn(viewModelScope)
@@ -51,11 +51,11 @@ class LoginViewModel @Inject constructor(
 
 sealed class LoginUiState{
     data object Waiting : LoginUiState()
-    data class Success(val token: String, val email: String) : LoginUiState()
+    data object Success : LoginUiState()
     data object Failure : LoginUiState()
 }
 
 sealed interface LoginEvent {
     data object NavigateToHome : LoginEvent
-    data object NavigateToNickName : LoginEvent
+    data class NavigateToNickName(val googleToken: String) : LoginEvent
 }
