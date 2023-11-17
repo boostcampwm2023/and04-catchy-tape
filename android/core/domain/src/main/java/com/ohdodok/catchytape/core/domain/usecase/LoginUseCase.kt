@@ -14,12 +14,10 @@ class LoginUseCase @Inject constructor(
     operator fun invoke(googleToken: String): Flow<Unit> = flow {
         authRepository.loginWithGoogle(googleToken)
             .catch {
-                // 존재하지 않는 유저
-                throw Exception("")
-            }
-            .collect {
+                throw Exception("존재하지 않는 유저입니다.")
+            }.collect {
                 // 존재하는 유저
                 authRepository.saveToken(it)
-        }
+            }
     }
 }

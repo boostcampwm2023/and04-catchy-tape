@@ -23,11 +23,9 @@ class LoginViewModel @Inject constructor(
         loginUseCase(token)
             .catch {
                 _events.emit(LoginEvent.NavigateToNickName(token))
-            }
-            .onEach {
+            }.onEach {
                 _events.emit(LoginEvent.NavigateToHome)
-            }
-            .launchIn(viewModelScope)
+            }.launchIn(viewModelScope)
     }
 }
 

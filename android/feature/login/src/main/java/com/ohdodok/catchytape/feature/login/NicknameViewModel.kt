@@ -22,6 +22,7 @@ class NicknameViewModel @Inject constructor(
     val nickname = MutableStateFlow("")
 
     fun signUp(googleToken: String) {
+        // TODO : 중복 검사 및 유효성 검사
         signUpUseCase(googleToken, nickname.value)
             .onEach {
                 _events.emit(NicknameEvent.NavigateToHome)

@@ -26,8 +26,8 @@ class AuthRepositoryImpl @Inject constructor(
                     emit(loginResponse.accessToken)
                 }
             } else if(response.code() == 401){
-                // 존재하지 않는 유저
-                throw Exception("로그인 실패")
+                // TODO : 네트워크 에러 로직
+                throw Exception("존재하지 않는 유저입니다.")
             }
         }
     }
@@ -35,11 +35,10 @@ class AuthRepositoryImpl @Inject constructor(
     override fun signUpWithGoogle(googleToken: String, nickname: String): Flow<Unit> = flow {
         userApi.signUp(SignUpRequest(googleToken, nickname)).let { response ->
             if (response.isSuccessful) {
-                response.body()?.let { _ ->
-                    emit(Unit)
-                }
+                response.body()?.let { _ -> emit(Unit) }
             }else {
-                throw Exception("회원가입 실패")
+                // TODO : 네트워크 에러 로직
+                throw Exception("회원 가입 실패")
             }
         }
     }
@@ -50,7 +49,7 @@ class AuthRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getToken(): Flow<String> {
+    override fun getToken(): Flow<String> {
         return preferenceDataStore.data.map { preference ->
             preference[USER_TOKEN] ?: ""
         }
