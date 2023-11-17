@@ -13,4 +13,6 @@ interface UserApi {
         @Body loginRequest: LoginRequest
     ): Response<LoginResponse>
 
+    suspend fun saveToken(token: String)
+
 }
