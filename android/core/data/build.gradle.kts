@@ -5,6 +5,7 @@ import java.io.FileInputStream
 plugins {
     id("catchytape.android.library")
     id("catchytape.android.hilt")
+    id("kotlinx-serialization")
 }
 
 val localPropertiesFile = rootProject.file("local.properties")
