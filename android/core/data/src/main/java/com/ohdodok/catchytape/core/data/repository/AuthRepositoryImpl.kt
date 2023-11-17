@@ -33,7 +33,15 @@ class AuthRepositoryImpl @Inject constructor(
     }
 
     override fun signUpWithGoogle(googleToken: String, nickname: String): Flow<Unit> = flow {
-        userApi.signUp(SignUpRequest(googleToken, nickname))
+        userApi.signUp(SignUpRequest(googleToken, nickname)).let { response ->
+            if (response.isSuccessful) {
+                response.body()?.let { _ ->
+                    emit(Unit)
+                }
+            }else {
+                throw Exception("회원가입 실패")
+            }
+        }
     }
 
     override suspend fun saveToken(token: String) {

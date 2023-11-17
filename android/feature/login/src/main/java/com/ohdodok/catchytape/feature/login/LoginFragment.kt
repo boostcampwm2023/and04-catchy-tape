@@ -29,8 +29,6 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(R.layout.fragment_login
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
                 val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
-                Timber.d(task.result.idToken)
-                Timber.d(task.result.email)
                 viewModel.login(task.result.idToken, task.result.email)
             }
         }

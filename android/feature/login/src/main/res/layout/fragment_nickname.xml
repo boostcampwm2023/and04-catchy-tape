@@ -4,7 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-
+        <variable
+            name="viewModel"
+            type="com.ohdodok.catchytape.feature.login.NicknameViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -41,6 +43,7 @@
             android:hint="@string/nickname"
             android:inputType="text"
             app:endIconMode="clear_text"
+            android:text="@={viewModel.nickname}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_nickname_title" />
