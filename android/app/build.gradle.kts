@@ -62,6 +62,7 @@ dependencies {
     implementation(project(":feature:home"))
     implementation(project(":feature:login"))
     implementation(project(":feature:upload"))
+    implementation(project(":core:data"))
 
     implementation(libs.core.ktx)
     implementation(libs.appcompat)
