@@ -7,7 +7,6 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 import com.ohdodok.catchytape.core.data.api.UserApi
 import com.ohdodok.catchytape.core.data.model.LoginRequest
 import com.ohdodok.catchytape.core.data.model.SignUpRequest
-import com.ohdodok.catchytape.core.data.repository.AuthRepositoryImpl.PreferenceKeys.USER_TOKEN
 import com.ohdodok.catchytape.core.domain.repository.AuthRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -17,6 +16,8 @@ class AuthRepositoryImpl @Inject constructor(
     private val userApi: UserApi,
     private val preferenceDataStore: DataStore<Preferences>
 ) : AuthRepository {
+
+    private val tokenKey = stringPreferencesKey("token")
 
     override fun loginWithGoogle(googleToken: String): Flow<String> = flow {
         userApi.login(LoginRequest(idToken = googleToken)).let { response ->
@@ -45,10 +46,7 @@ class AuthRepositoryImpl @Inject constructor(
     }
 
     override suspend fun saveToken(token: String) {
-        preferenceDataStore.edit { preferences -> preferences[USER_TOKEN] = token }
+        preferenceDataStore.edit { preferences -> preferences[tokenKey] = token }
     }
 
-    object PreferenceKeys {
-        val USER_TOKEN = stringPreferencesKey("token")
-    }
 }
