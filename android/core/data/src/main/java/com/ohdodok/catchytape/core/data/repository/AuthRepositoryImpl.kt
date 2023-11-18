@@ -20,30 +20,29 @@ class AuthRepositoryImpl @Inject constructor(
     private val tokenKey = stringPreferencesKey("token")
 
     override fun loginWithGoogle(googleToken: String): Flow<String> = flow {
-        userApi.login(LoginRequest(idToken = googleToken)).let { response ->
-            if (response.isSuccessful) {
-                response.body()?.let { loginResponse ->
-                    emit(loginResponse.accessToken)
-                }
-            } else if (response.code() == 401) {
-                // TODO : 네트워크 에러 로직
-                throw Exception("존재하지 않는 유저입니다.")
+        val response = userApi.login(LoginRequest(idToken = googleToken))
+        if (response.isSuccessful) {
+            response.body()?.let { loginResponse ->
+                emit(loginResponse.accessToken)
             }
+        } else if (response.code() == 401) {
+            // TODO : 네트워크 에러 로직
+            throw Exception("존재하지 않는 유저입니다.")
         }
     }
 
     override fun signUpWithGoogle(googleToken: String, nickname: String): Flow<String> = flow {
-        userApi.signUp(SignUpRequest(idToken = googleToken, nickname = nickname)).let { response ->
-            if (response.isSuccessful) {
-                response.body()?.let { loginResponse ->
-                    emit(loginResponse.accessToken)
-                }
-            } else {
-                // TODO : 네트워크 에러 로직
-                throw Exception("회원 가입 실패")
+        val response = userApi.signUp(SignUpRequest(idToken = googleToken, nickname = nickname))
+        if (response.isSuccessful) {
+            response.body()?.let { loginResponse ->
+                emit(loginResponse.accessToken)
             }
+        } else {
+            // TODO : 네트워크 에러 로직
+            throw Exception("회원 가입 실패")
         }
     }
+
 
     override suspend fun saveToken(token: String) {
         preferenceDataStore.edit { preferences -> preferences[tokenKey] = token }
