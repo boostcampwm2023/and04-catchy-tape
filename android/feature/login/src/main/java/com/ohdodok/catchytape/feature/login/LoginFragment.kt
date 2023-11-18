@@ -1,12 +1,13 @@
 package com.ohdodok.catchytape.feature.login
 
 import android.app.Activity
+import android.content.ComponentName
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
@@ -14,10 +15,13 @@ import com.ohdodok.catchytape.core.ui.BaseFragment
 import com.ohdodok.catchytape.feature.login.databinding.FragmentLoginBinding
 import dagger.hilt.android.AndroidEntryPoint
 
+
 @AndroidEntryPoint
 class LoginFragment : BaseFragment<FragmentLoginBinding>(R.layout.fragment_login) {
 
-    private val viewModel: LoginViewModel by viewModels()
+    private val viewModel: LoginViewModel by activityViewModels()
+
+    private val loginActivity by lazy { activity as LoginActivity }
 
     private val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
         .requestIdToken(BuildConfig.GOOGLE_CLIENT_ID)
@@ -47,22 +51,25 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(R.layout.fragment_login
     }
 
     private fun observeEvents() {
-        repeatOnStarted {
-            viewModel.events.collect { event ->
-                when (event) {
-                    is LoginEvent.NavigateToHome -> {
-                        activity?.finish()
-                    }
+        collectFlow(viewModel.events) { handleUiEvent(it) }
+    }
 
-                    is LoginEvent.NavigateToNickName -> {
-                        findNavController().navigate(
-                            LoginFragmentDirections.actionLoginFragmentToNicknameFragment(
-                                googleToken = event.googleToken
-                            )
-                        )
-                    }
-                }
-            }
+
+    private fun handleUiEvent(event: LoginEvent) = when (event) {
+        is LoginEvent.NavigateToHome -> {
+            val intent = Intent()
+            intent.component = ComponentName("com.ohdodok.catchytape", "com.ohdodok.catchytape.MainActivity")
+            startActivity(intent)
+            loginActivity.finish()
+        }
+
+        is LoginEvent.NavigateToNickName -> {
+            findNavController().navigate(
+                LoginFragmentDirections.actionLoginFragmentToNicknameFragment(
+                    googleToken = event.googleToken
+                )
+            )
         }
     }
+
 }
