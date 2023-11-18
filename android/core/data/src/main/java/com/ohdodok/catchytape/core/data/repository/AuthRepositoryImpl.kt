@@ -26,6 +26,7 @@ class AuthRepositoryImpl @Inject constructor(
         val response = userApi.login(LoginRequest(idToken = googleToken))
         if (response.isSuccessful) {
             response.body()?.let { loginResponse ->
+                saveIdToken(googleToken)
                 emit(loginResponse.accessToken)
             }
         } else if (response.code() == 401) {
