@@ -29,7 +29,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     if (!user) {
       throw new HttpException(
         'Not Exist User',
-        HTTP_STATUS_CODE['WRONG TOKEN'],
+        HTTP_STATUS_CODE['WRONG_TOKEN'],
       );
     }
 

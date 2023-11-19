@@ -12,5 +12,6 @@ dependencies {
     testImplementation(libs.kotest.runner)
     testImplementation (libs.kotest.property)
     testImplementation (libs.kotest.extentions.junitxml)
-    implementation("javax.inject:javax.inject:1")
+    api(libs.coroutines)
+    implementation(libs.inject)
 }

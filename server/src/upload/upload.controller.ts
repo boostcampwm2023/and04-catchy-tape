@@ -28,7 +28,7 @@ export class UploadController {
       }),
     )
     file: Express.Multer.File,
-  ) {
+  ): Promise<{ url: string }> {
     const { url } = await this.uploadService.uploadMusic(file);
     return { url };
   }
@@ -45,7 +45,7 @@ export class UploadController {
       }),
     )
     file: Express.Multer.File,
-  ) {
+  ): Promise<{ url: string }> {
     const { url } = await this.uploadService.uploadImage(file);
     return { url };
   }

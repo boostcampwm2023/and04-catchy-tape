@@ -54,7 +54,7 @@
 |:---:|:---:|:---:|:---:|:---:|
 |<img src="https://github.com/khw3754.png">|<img src="https://github.com/Cutiepazzipozzi.png">|<img src="https://github.com/youlalala.png">|<img src="https://github.com/HamBP.png">|<img src="https://github.com/2taezeat.png">|
 |Backend|Backend|Android|Android|Android|
-|아니요 뚱인데요~|엄마 뱃속으로 다시 들어가고 싶네요|hiphop은 계란이다 🥚|0과 1로 사람을 만들 수 있을까요?|Music is my life~|
+|강아지 귀여웡|엄마 뱃속으로 다시 들어가고 싶네요|hiphop은 계란이다 🥚|0과 1로 사람을 만들 수 있을까요?|Music is my life~|
 
 <div align="center">
     <a href="https://github.com/boostcampwm2023/and04-catchy-tape/wiki/%08Ground-Rule" target="_blank">그라운드 룰</a>

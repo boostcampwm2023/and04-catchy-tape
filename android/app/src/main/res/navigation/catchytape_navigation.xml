@@ -2,9 +2,10 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/login_nav_graph">
+    app:startDestination="@id/home_nav_graph">
 
     <include app:graph="@navigation/home_navigation" />
     <include app:graph="@navigation/login_navigation" />
+    <include app:graph="@navigation/upload_navigation" />
 
 </navigation>

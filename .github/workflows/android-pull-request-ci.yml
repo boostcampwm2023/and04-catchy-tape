@@ -34,9 +34,11 @@ jobs:
         env:
           DEBUG_KEYSTORE: ${{ secrets.DEBUG_KEYSTORE }}
           KEYSTORE_PROPERTIES: ${{ secrets.KEYSTORE_PROPERTIES }}
+          LOCAL_PROPERTIES: ${{ secrets.LOCAL_PROPERTIES }}
         run: |
           echo "$DEBUG_KEYSTORE" | base64 -d > debug.keystore
           echo "$KEYSTORE_PROPERTIES" > keystore.properties
+          echo "$LOCAL_PROPERTIES" > local.properties
           ./gradlew testDebugUnitTest --stacktrace
 
       - name: Publish Test Results
