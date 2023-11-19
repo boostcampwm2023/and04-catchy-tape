@@ -12,6 +12,7 @@ hilt = "2.48"
 gms = "20.7.0"
 
 junit = "4.13.2"
+kotest = "5.8.0"
 
 retrofit = "2.9.0"
 okhttp = "4.11.0"
@@ -35,6 +36,9 @@ hilt-compiler = { group = "com.google.dagger", name = "hilt-compiler", version.r
 
 google-play-services = { group = "com.google.android.gms", name = "play-services-auth", version.ref = "gms" }
 
+kotest-runner = { group = "io.kotest", name = "kotest-runner-junit5", version.ref = "kotest"}
+kotest-property = { group = "io.kotest", name = "kotest-property", version.ref = "kotest"}
+kotest-extentions-junitxml = { group = "io.kotest", name = "kotest-extensions-junitxml", version.ref = "kotest"}
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 
 retrofit = { module = "com.squareup.retrofit2:retrofit", name = "retrofit", version.ref = "retrofit" }

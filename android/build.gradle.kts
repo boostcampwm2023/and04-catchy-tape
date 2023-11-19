@@ -8,4 +8,13 @@ plugins {
     alias(libs.plugins.hilt) apply false
     alias(libs.plugins.kotlinx.serialization) apply false
 }
+
+tasks.register<Test>("test") {
+    useJUnitPlatform()
+    reports {
+        junitXml.required.set(false)
+    }
+    systemProperty("gradle.build.dir", project.buildDir)
+}
+
 true // Needed to make the Suppress annotation work for the plugins block

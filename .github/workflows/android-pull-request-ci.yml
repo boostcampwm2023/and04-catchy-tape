@@ -35,7 +35,7 @@ jobs:
           DEBUG_KEYSTORE: ${{ secrets.DEBUG_KEYSTORE }}
           KEYSTORE_PROPERTIES: ${{ secrets.KEYSTORE_PROPERTIES }}
         run: |
-          echo "$DEBUG_KEYSTORE" | base64 -d > keystore.properties
+          echo "$DEBUG_KEYSTORE" | base64 -d > debug.keystore
           echo "$KEYSTORE_PROPERTIES" > keystore.properties
           ./gradlew testDebugUnitTest --stacktrace
 
