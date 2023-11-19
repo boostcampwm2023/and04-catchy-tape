@@ -24,8 +24,9 @@ class LoginViewModel @Inject constructor(
     private val _events = MutableSharedFlow<LoginEvent>()
     val events = _events.asSharedFlow()
 
-    private val _isAutoLoginFinish = MutableSharedFlow<Boolean>()
-    val isAutoLoginFinish = _isAutoLoginFinish.asSharedFlow()
+    private var _isAutoLoginFinish = false
+    val isAutoLoginFinish get() = _isAutoLoginFinish
+
 
     fun login(token: String, isAutoLogin: Boolean = false) {
         loginUseCase(token)
@@ -46,7 +47,7 @@ class LoginViewModel @Inject constructor(
                 login(idToken, true)
             }
             delay(1000)
-            _isAutoLoginFinish.emit(true)
+            _isAutoLoginFinish = true
         }
     }
 
