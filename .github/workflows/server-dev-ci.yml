@@ -36,9 +36,3 @@ jobs:
 
       - name: Execute Test
         run: npm run test
-
-      - name: Record Result in Pull Request
-        uses: EnricoMi/publish-unit-test-result-action@v1
-        if: always()
-        with:
-          files: "**/build/test-results/test/TEST-*.xml"
