@@ -29,7 +29,7 @@
 | DI | Hilt | 
 | Network | Retrofit, Kotlin Serialization | [역/직렬화 라이브러리 비교](https://github.com/boostcampwm2023/and04-catchy-tape/wiki/%EC%97%AD-%EC%A7%81%EB%A0%AC%ED%99%94-%EB%9D%BC%EC%9D%B4%EB%B8%8C%EB%9F%AC%EB%A6%AC-%EB%B9%84%EA%B5%90)
 | Jetpack | Navigation |
-| CI | Github Actions | [PR에 대한 단위 테스트 자동화](https://algosketch.tistory.com/178) / [APK Release 자동화](https://tral-lalala.tistory.com/127)
+| CI/CD | Github Actions | [PR에 대한 단위 테스트 자동화](https://algosketch.tistory.com/178) / [APK Release 자동화](https://tral-lalala.tistory.com/127)
  <details>
 <summary>그 외 기록</summary>
 
