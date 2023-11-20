@@ -51,25 +51,27 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(R.layout.fragment_login
     }
 
     private fun observeEvents() {
-        collectFlow(viewModel.events) { handleUiEvent(it) }
+        repeatOnStarted {
+            viewModel.events.collect { event ->
+                when (event) {
+                    is LoginEvent.NavigateToHome -> {
+                        val intent = Intent()
+                        intent.component = ComponentName("com.ohdodok.catchytape", "com.ohdodok.catchytape.MainActivity")
+                        startActivity(intent)
+                        loginActivity.finish()
+                    }
+
+                    is LoginEvent.NavigateToNickName -> {
+                        findNavController().navigate(
+                            LoginFragmentDirections.actionLoginFragmentToNicknameFragment(
+                                googleToken = event.googleToken
+                            )
+                        )
+                    }
+                }
+            }
+        }
     }
 
-
-    private fun handleUiEvent(event: LoginEvent) = when (event) {
-        is LoginEvent.NavigateToHome -> {
-            val intent = Intent()
-            intent.component = ComponentName("com.ohdodok.catchytape", "com.ohdodok.catchytape.MainActivity")
-            startActivity(intent)
-            loginActivity.finish()
-        }
-
-        is LoginEvent.NavigateToNickName -> {
-            findNavController().navigate(
-                LoginFragmentDirections.actionLoginFragmentToNicknameFragment(
-                    googleToken = event.googleToken
-                )
-            )
-        }
-    }
 
 }

@@ -15,13 +15,13 @@ class LoginActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
-        viewModel.autoLoginWithIdToken()
+        viewModel.automaticallyLogin()
 
         val content: View = findViewById(android.R.id.content)
         content.viewTreeObserver.addOnPreDrawListener(
             object : ViewTreeObserver.OnPreDrawListener {
                 override fun onPreDraw(): Boolean {
-                    if (viewModel.isAutoLoginFinish) {
+                    if (viewModel.isAutoLoginFinished) {
                         content.viewTreeObserver.removeOnPreDrawListener(this)
                         return true
                     } else {

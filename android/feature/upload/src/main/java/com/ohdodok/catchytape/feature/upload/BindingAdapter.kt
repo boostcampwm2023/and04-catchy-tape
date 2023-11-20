@@ -1,4 +1,4 @@
-package com.ohdodok.catchytape.core.ui.bindingadapter
+package com.ohdodok.catchytape.feature.upload
 
 import android.widget.AutoCompleteTextView
 import androidx.databinding.BindingAdapter

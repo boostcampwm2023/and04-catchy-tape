@@ -15,7 +15,6 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.appbar.MaterialToolbar
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 
 abstract class BaseFragment<VB : ViewDataBinding>(
@@ -52,11 +51,4 @@ abstract class BaseFragment<VB : ViewDataBinding>(
         }
     }
 
-    fun <T> collectFlow(flow: Flow<T>, action: suspend (T) -> Unit) {
-        viewLifecycleOwner.lifecycleScope.launch {
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                flow.collect(action)
-            }
-        }
-    }
 }
