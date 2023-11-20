@@ -39,7 +39,7 @@ jobs:
           echo "$DEBUG_KEYSTORE" | base64 -d > debug.keystore
           echo "$KEYSTORE_PROPERTIES" > keystore.properties
           echo "$LOCAL_PROPERTIES" > local.properties
-          ./gradlew testDebugUnitTest --stacktrace
+          ./gradlew test --stacktrace
 
       - name: Publish Test Results
         if: always()
