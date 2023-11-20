@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<testsuite timestamp="2023-11-20T18:34:11" time="0.097" hostname="taezeatui-MacBookAir.local" errors="0" failures="0" skipped="0" tests="4" name="com.ohdodok.catchytape.core.domain.signup.NicknameValidationUseCaseTest">
-  <testcase name="Given: 비어 있는 닉네임이 주어지고 -- When: 유효성을 검사하면 -- Then: Empty를 반환한다" classname="com.ohdodok.catchytape.core.domain.signup.NicknameValidationUseCaseTest" time="0.001" />
-  <testcase name="Given: 유효한 닉네임이 주어지고 -- When: 유효성을 검사하면 -- Then: Valid를 반환한다" classname="com.ohdodok.catchytape.core.domain.signup.NicknameValidationUseCaseTest" time="0.011" />
-  <testcase name="Given: 짧거나 긴 닉네임이 주어지고 -- When: 유효성을 검사하면 -- Then: Invalid length를 반환한다" classname="com.ohdodok.catchytape.core.domain.signup.NicknameValidationUseCaseTest" time="0.002" />
-  <testcase name="Given: 사용할 수 없는 문자가 포함된 닉네임이 주어지고 -- When: 유효성을 검사하면 -- Then: Invalid length를 반환한다" classname="com.ohdodok.catchytape.core.domain.signup.NicknameValidationUseCaseTest" time="0.001" />
-</testsuite>
