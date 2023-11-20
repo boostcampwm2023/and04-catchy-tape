@@ -10,7 +10,7 @@ class TestConfig : AbstractProjectConfig() {
         JunitXmlReporter(
             includeContainers = false, // don't write out status for all tests
             useTestPathAsName = true, // use the full test path (ie, includes parent test names)
-            outputDir = "test-results/excludeContainers"
+            outputDir = "../build/test-results"
         )
     )
 }
