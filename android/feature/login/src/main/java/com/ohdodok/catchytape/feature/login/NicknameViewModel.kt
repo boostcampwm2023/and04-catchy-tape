@@ -2,7 +2,6 @@ package com.ohdodok.catchytape.feature.login
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.ohdodok.catchytape.core.domain.signup.IsDuplicatedNicknameUseCase
 import com.ohdodok.catchytape.core.domain.signup.NicknameValidationResult
 import com.ohdodok.catchytape.core.domain.signup.NicknameValidationUseCase
 import com.ohdodok.catchytape.core.domain.usecase.SignUpUseCase
@@ -27,7 +26,6 @@ import kotlin.time.Duration.Companion.milliseconds
 class NicknameViewModel @Inject constructor(
     private val signUpUseCase: SignUpUseCase,
     private val nicknameValidationUseCase: NicknameValidationUseCase,
-    private val isDuplicatedNicknameUseCase: IsDuplicatedNicknameUseCase,
 ) : ViewModel() {
 
     private val _events = MutableSharedFlow<NicknameEvent>()
@@ -36,21 +34,12 @@ class NicknameViewModel @Inject constructor(
     val nickname = MutableStateFlow("")
 
     val nicknameValidationState: StateFlow<NicknameValidationResult> =
-        nickname.map { nicknameValidationUseCase(it) }
+        nickname.map { nicknameValidationUseCase(it).single() }
             .stateIn(
                 viewModelScope,
                 SharingStarted.WhileSubscribed(),
                 NicknameValidationResult.EMPTY
             )
-
-    @OptIn(FlowPreview::class)
-    val isDuplicatedNickname =
-        nicknameValidationState.filter { it == NicknameValidationResult.VALID }
-            .debounce(300.milliseconds)
-            .map { _ ->
-                isDuplicatedNicknameUseCase(nickname.value).single()
-            }
-            .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), false)
 
     fun signUp(googleToken: String) {
 

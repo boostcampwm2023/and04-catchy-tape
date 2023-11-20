@@ -8,10 +8,14 @@ tasks.withType<Test>().configureEach {
 }
 
 dependencies {
+    api(libs.coroutines)
+
+    implementation(libs.inject)
+
+    // fixme : kotest 사용이 확정되면 junit 지우기
     testImplementation(libs.junit)
     testImplementation(libs.kotest.runner)
-    testImplementation (libs.kotest.property)
-    testImplementation (libs.kotest.extentions.junitxml)
-    api(libs.coroutines)
-    implementation(libs.inject)
+    testImplementation(libs.kotest.property)
+    testImplementation(libs.kotest.extentions.junitxml)
+    testImplementation(libs.mockk)
 }
