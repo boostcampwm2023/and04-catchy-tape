@@ -51,13 +51,13 @@ class NicknameFragment : BaseFragment<FragmentNicknameBinding>(R.layout.fragment
 
 @BindingAdapter("nicknameValidationState")
 fun TextView.bindNicknameValidationState(state: NicknameValidationResult) {
-    val stateMessageMap = mapOf(
-        NicknameValidationResult.EMPTY to "",
-        NicknameValidationResult.VALID to "사용 가능한 닉네임이에요.",
-        NicknameValidationResult.DUPLICATED to "이미 사용중인 닉네임이에요.",
-        NicknameValidationResult.INVALID_LENGTH to "닉네임은 2~10글자까지 가능해요.",
-        NicknameValidationResult.INVALID_CHARACTER to "한글, 영어, 특수문자(-, _, .)만 입력 가능해요.",
-    )
+    val messageId = when(state) {
+        NicknameValidationResult.EMPTY -> R.string.empty_nickname
+        NicknameValidationResult.VALID -> R.string.valid_nickname
+        NicknameValidationResult.DUPLICATED -> R.string.duplicated_nickname
+        NicknameValidationResult.INVALID_LENGTH -> R.string.invalid_length
+        NicknameValidationResult.INVALID_CHARACTER -> R.string.invalid_character
+    }
 
-    this.text = stateMessageMap[state] ?: ""
+    this.text = resources.getString(messageId)
 }
