@@ -1,6 +1,7 @@
 package com.ohdodok.catchytape.core.domain.signup
 
 import com.ohdodok.catchytape.core.domain.repository.AuthRepository
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.single

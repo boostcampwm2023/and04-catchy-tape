@@ -47,6 +47,19 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_nickname_title" />
 
+        <TextView
+            style="@style/BodySmall"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/margin_horizontal"
+            android:layout_marginTop="@dimen/small"
+            android:textColor="@color/primary"
+            app:nicknameValidationState="@{viewModel.nicknameValidationState}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/et_nickname"
+            tools:text="사용가능한 닉네임입니다." />
+
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btn_start"
             style="@style/Button"
