@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="home">홈</string>
+    <string name="search">검색</string>
+    <string name="playlist">재생목록</string>
+    <string name="my">나</string>
+
+    <string name="more">더보기</string>
+    <string name="song">노래</string>
+    <string name="artist">아티스트</string>
+    <string name="cancel">취소</string>
+    <string name="confirm">확인</string>
+    <string name="complete">완료</string>
+    <string name="save">저장</string>
+
+    <string name="recently_played_song">최근 재생한 노래</string>
+    <string name="recently_added_song">최근 추가된 노래</string>
+
+    <string name="new_playlist">새 재생목록</string>
+    <string name="add_song">노래 추가</string>
+
+    <string name="nickname">닉네임</string>
+    <string name="my_page">마이페이지</string>
+    <string name="my_uploaded_song">내가 업로드한 노래</string>
+    <string name="uploaded_song">업로드한 노래</string>
+    <string name="uploaded_song_list">업로드한 노래 목록</string>
+
+    <string name="upload">업로드</string>
+    <string name="title">제목</string>
+    <string name="genre">장르</string>
+    <string name="description">설명</string>
+    <string name="select_thumbnail">썸네일 이미지 선택</string>
+</resources>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="genre_items">
+        <item>장르를 선택해 주세요.</item>
+        <item>genre1</item>
+        <item>genre2</item>
+        <item>genre3</item>
+        <item>genre4</item>
+        <item>genre5</item>
+    </string-array>
+</resources>

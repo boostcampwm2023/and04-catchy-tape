@@ -1,0 +1,74 @@
+<resources>
+
+    <style name="Base.Theme.CatchyTape" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/primary</item>
+        <item name="colorAccent">@color/primary</item>
+        <item name="android:statusBarColor">@color/surface</item>
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:windowBackground">@color/surface</item>
+        <item name="android:textColor">@color/on_surface</item>
+    </style>
+
+    <style name="Theme.CatchyTape" parent="Base.Theme.CatchyTape" />
+
+    <style name="TitleLarge">
+        <item name="android:textSize">22sp</item>
+    </style>
+
+    <style name="TitleMedium">
+        <item name="android:textSize">16sp</item>
+    </style>
+
+    <style name="TitleSmall">
+        <item name="android:textSize">14sp</item>
+    </style>
+
+    <style name="BodyLarge">
+        <item name="android:textSize">16sp</item>
+    </style>
+
+    <style name="BodyMedium">
+        <item name="android:textSize">14sp</item>
+    </style>
+
+    <style name="BodySmall">
+        <item name="android:textSize">12sp</item>
+    </style>
+
+    <style name="ToolBar" parent="Widget.Material3.Toolbar">
+        <item name="titleTextColor">@color/on_surface</item>
+        <item name="navigationIconTint">@color/on_surface</item>
+    </style>
+
+    <style name="Button" parent="Widget.AppCompat.Button">
+        <item name="android:textSize">14sp</item>
+        <item name="android:background">@drawable/btn_background</item>
+        <item name="android:layout_height">@dimen/btn_height</item>
+        <item name="android:layout_marginHorizontal">@dimen/margin_horizontal</item>
+    </style>
+
+    <style name="EditText" parent="Widget.AppCompat.EditText">
+        <item name="android:textSize">14sp</item>
+        <item name="android:layout_height">@dimen/et_height</item>
+        <item name="android:background">@drawable/et_background</item>
+        <item name="android:paddingHorizontal">@dimen/margin_horizontal</item>
+        <item name="android:layout_marginHorizontal">@dimen/margin_horizontal</item>
+        <item name="android:textColorHint">@color/on_surface_variant</item>
+        <item name="android:textColor">@color/surface_bright</item>
+        <item name="android:textCursorDrawable">@color/black</item>
+        <item name="android:textColorHighlight">@color/key_variant</item>
+    </style>
+
+
+    <style name="CompleteButton" parent="Widget.AppCompat.Button">
+        <item name="android:textSize">22sp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:minWidth">0dp</item>
+        <item name="android:minHeight">0dp</item>
+        <item name="android:paddingHorizontal">0dp</item>
+        <item name="android:textColor">@drawable/btn_complete_selector</item>
+    </style>
+
+
+</resources>
