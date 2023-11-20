@@ -2,8 +2,8 @@ package com.ohdodok.catchytape.feature.login
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.ohdodok.catchytape.core.domain.usecase.GetIdTokenUseCase
 import com.ohdodok.catchytape.core.domain.usecase.LoginUseCase
-import com.ohdodok.catchytape.core.domain.usecase.TokenUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -17,15 +17,15 @@ import javax.inject.Inject
 @HiltViewModel
 class LoginViewModel @Inject constructor(
     private val loginUseCase: LoginUseCase,
-    private val tokenUseCase: TokenUseCase
+    private val tokenUseCase: GetIdTokenUseCase
 
 ) : ViewModel() {
 
     private val _events = MutableSharedFlow<LoginEvent>()
     val events = _events.asSharedFlow()
 
-    private var _isAutoLoginFinish = false
-    val isAutoLoginFinish get() = _isAutoLoginFinish
+    var isAutoLoginFinish: Boolean = false
+        private set
 
 
     fun login(token: String, isAutoLogin: Boolean = false) {
@@ -47,7 +47,7 @@ class LoginViewModel @Inject constructor(
                 login(idToken, true)
             }
             delay(1000)
-            _isAutoLoginFinish = true
+            isAutoLoginFinish = true
         }
     }
 
