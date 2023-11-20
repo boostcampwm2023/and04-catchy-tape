@@ -12,6 +12,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
+import java.lang.RuntimeException
 import javax.inject.Inject
 
 class AuthRepositoryImpl @Inject constructor(
@@ -60,4 +61,13 @@ class AuthRepositoryImpl @Inject constructor(
     override suspend fun getIdToken(): String =
         preferenceDataStore.data.map { preferences -> preferences[idTokenKey] ?: "" }.first()
 
+    override fun isDuplicatedNickname(nickname: String): Flow<Boolean> = flow {
+        val response = userApi.verifyDuplicatedNickname(nickname = nickname)
+
+        when (response.code()) {
+            in 200..299 -> emit(false)
+            409 -> emit(true)
+            else -> throw RuntimeException("네트워크 에러") // fixme : 예외 처리 로직이 정해지면 수정
+        }
+    }
 }
