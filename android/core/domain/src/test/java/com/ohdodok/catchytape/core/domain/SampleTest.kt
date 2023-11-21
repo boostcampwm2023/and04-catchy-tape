@@ -14,7 +14,7 @@ class SampleTest : FunSpec({
     }
 
     test("test sample 3") {
-        3 + 4 shouldBe 10
+        3 + 7 shouldBe 10
     }
 
 })
