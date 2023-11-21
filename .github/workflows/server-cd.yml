@@ -1,0 +1,79 @@
+name: Server CD
+
+on:
+  pull_request:
+    branches: [ "develop", "main" ]
+    paths:
+      - "server/**"
+    types:
+      - closed
+    
+jobs:
+  deploy:
+    runs-on: ubuntu-20.04
+
+    strategy:
+      matrix:
+        node-version: [20.x]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      
+      - name: Set up Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+          cache-dependency-path: '**/package-lock.json'
+  
+      - name: Install depenencies
+        run: |
+            cd server
+            npm install
+
+      - name: Create prod.env file
+        env:
+            DB_HOST_IP: ${{ secrets.SERVER_ENV_DB_HOST_IP }}
+            DB_PORT: ${{ secrets.SERVER_ENV_DB_PORT }}
+            DB_USER_NAME: ${{ secrets.SERVER_ENV_DB_USER_NAME }}
+            DB_PASSWORD: ${{ secrets.SERVER_ENV_DB_PASSWORD }}
+            DB_DATABASE_NAME: ${{ secrets.SERVER_ENV_DB_DATABASE_NAME }}
+            ACCESS_ID: ${{ secrets.SERVER_ENV_ACCESS_ID }}
+            SECRET_ACCESS_KEY: ${{ secrets.SERVER_ENV_SECRET_ACCESS_KEY }}
+            JWT_SECRET_KEY: ${{ secrets.SERVER_ENV_JWT_SECRET_KEY }}
+        run: |
+            cd server
+            touch prod.env
+            echo "DB_HOST_IP=$DB_HOST_IP" >> prod.env
+            echo "DB_PORT=$DB_PORT" >> prod.env
+            echo "DB_USER_NAME=$DB_USER_NAME" >> prod.env
+            echo "DB_PASSWORD=$DB_PASSWORD" >> prod.env
+            echo "DB_DATABASE_NAME=$DB_DATABASE_NAME" >> prod.env
+            echo "ACCESS_ID=$ACCESS_ID" >> prod.env
+            echo "SECRET_ACCESS_KEY=$SECRET_ACCESS_KEY" >> prod.env
+            echo "JWT_SECRET_KEY=$JWT_SECRET_KEY" >> prod.env
+
+      - name: Build Docker image
+        run: docker build --platform linux/amd64 ./server -t ${{ secrets.NCP_REGISTRY }}/catchy-tape:latest
+
+      - name: Login NCP container registry
+        run: docker login ${{ secrets.NCP_REGISTRY }} -u ${{ secrets.NCP_DOCKER_ACCESS_KEY_ID }} -p ${{ secrets.NCP_DOCKER_SECRET_KEY }}
+
+      - name: Push Docker image to registry
+        run: docker push ${{ secrets.NCP_REGISTRY }}/catchy-tape:latest
+
+      - name: SSH into Server
+        uses: appleboy/ssh-action@master
+        with:
+            host: ${{ secrets.SERVER_SSH_HOST }}
+            username: ${{ secrets.SERVER_SSH_USER }}
+            password: ${{ secrets.SERVER_SSH_PASSWORD }}
+            port: ${{ secrets.SERVER_SSH_PORT }}
+            script: |
+                docker login ${{ secrets.NCP_REGISTRY }} -u ${{ secrets.NCP_DOCKER_ACCESS_KEY_ID }} -p ${{ secrets.NCP_DOCKER_SECRET_KEY }}
+                docker pull ${{ secrets.NCP_REGISTRY }}/catchy-tape:latest
+                docker stop catchy-tape-latest
+                docker rm catchy-tape-latest
+                docker run -d -p 3000:3000 --name catchy-tape-latest ${{ secrets.NCP_REGISTRY }}/catchy-tape:latest
+                curl -X POST -H 'Content-type: application/json' --data '{"text":"서버 배포 성공!"}' ${{ secrets.SLACK_WEBHOOK_URL }}
