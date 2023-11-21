@@ -15,7 +15,7 @@
         android:background="@color/surface">
 
         <com.google.android.material.appbar.MaterialToolbar
-            android:id="@+id/tb_upload_appbar"
+            android:id="@+id/tb_upload"
             style="@style/ToolBar"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -42,13 +42,13 @@
             android:layout_width="200dp"
             android:layout_height="200dp"
             android:layout_marginTop="@dimen/extra_large"
+            android:contentDescription="@string/select_thumbnail"
             app:cardBackgroundColor="@color/on_surface_variant"
             app:cardCornerRadius="20dp"
             app:cardElevation="0dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tb_upload_appbar"
-            android:contentDescription="@string/select_thumbnail">
+            app:layout_constraintTop_toBottomOf="@id/tb_upload">
 
             <ImageView
                 android:id="@+id/iv_thumbnail_image"
@@ -63,8 +63,8 @@
                 android:layout_width="48dp"
                 android:layout_height="48dp"
                 android:layout_gravity="center"
-                android:src="@drawable/ic_camera"
-                android:importantForAccessibility="no"/>
+                android:importantForAccessibility="no"
+                android:src="@drawable/ic_camera" />
 
         </androidx.cardview.widget.CardView>
 
@@ -102,11 +102,12 @@
             app:layout_constraintTop_toBottomOf="@id/til_title">
 
             <AutoCompleteTextView
+                android:id="@+id/actv_genre"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="none"
                 app:changeSelectedPosition="@{viewModel.onChangePosition}"
-                app:simpleItems="@array/genre_items" />
+                app:list="@{viewModel.musicGenres}" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
