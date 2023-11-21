@@ -1,15 +1,13 @@
-package com.ohdodok.catchytape.core.domain.signup
+package com.ohdodok.catchytape.core.domain.usecase.signup
 
 import com.ohdodok.catchytape.core.domain.repository.AuthRepository
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.matchers.shouldBe
 import io.mockk.every
 import io.mockk.mockk
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 
 class NicknameValidationUseCaseTest : BehaviorSpec() {

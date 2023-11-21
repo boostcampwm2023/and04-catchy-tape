@@ -6,7 +6,7 @@ import android.widget.TextView
 import androidx.databinding.BindingAdapter
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.navArgs
-import com.ohdodok.catchytape.core.domain.signup.NicknameValidationResult
+import com.ohdodok.catchytape.core.domain.usecase.signup.NicknameValidationResult
 import com.ohdodok.catchytape.core.ui.BaseFragment
 import com.ohdodok.catchytape.feature.login.databinding.FragmentNicknameBinding
 import dagger.hilt.android.AndroidEntryPoint

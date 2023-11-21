@@ -5,7 +5,7 @@
 
     <data>
 
-        <import type="com.ohdodok.catchytape.core.domain.signup.NicknameValidationResult" />
+        <import type="com.ohdodok.catchytape.core.domain.usecase.signup.NicknameValidationResult" />
 
         <variable
             name="viewModel"
