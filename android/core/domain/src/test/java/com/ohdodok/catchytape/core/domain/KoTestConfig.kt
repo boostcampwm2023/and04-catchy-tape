@@ -1,10 +1,10 @@
-package com.ohdodok.catchytape.core.domain.signup
+package com.ohdodok.catchytape.core.domain
 
 import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.extensions.Extension
 import io.kotest.extensions.junitxml.JunitXmlReporter
 
-class TestConfig : AbstractProjectConfig() {
+class KoTestConfig : AbstractProjectConfig() {
 
     override fun extensions(): List<Extension> = listOf(
         JunitXmlReporter(
