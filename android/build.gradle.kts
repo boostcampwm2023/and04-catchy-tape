@@ -11,13 +11,13 @@ plugins {
 }
 
 
-tasks.register<Exec>("domain-unit-test") {
+tasks.register<Exec>("domainUnitTest") {
     commandLine = listOf("gradle", "core:domain:test")
 }
 
 
-tasks.register<Exec>("debug-unit-test") {
-    dependsOn("domain-unit-test")
+tasks.register<Exec>("debugUnitTest") {
+    dependsOn("domainUnitTest")
     commandLine = listOf("gradle", "testDebugUnitTest")
 }
 
