@@ -10,4 +10,16 @@ plugins {
     alias(libs.plugins.navigation.safe.args) apply false
 }
 
+
+tasks.register<Exec>("domain-unit-test") {
+    commandLine = listOf("gradle", "core:domain:test")
+}
+
+
+tasks.register<Exec>("debug-unit-test") {
+    dependsOn("domain-unit-test")
+    commandLine = listOf("gradle", "testDebugUnitTest")
+}
+
+
 true // Needed to make the Suppress annotation work for the plugins block
