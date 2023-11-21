@@ -102,11 +102,12 @@
             app:layout_constraintTop_toBottomOf="@id/til_title">
 
             <AutoCompleteTextView
+                android:id="@+id/actv_genre"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="none"
-                app:changeSelectedPosition="@{viewModel.onChangePosition}"
-                app:simpleItems="@array/genre_items" />
+                app:list="@{viewModel.musicGenres}"
+                app:changeSelectedPosition="@{viewModel.onChangePosition}" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
