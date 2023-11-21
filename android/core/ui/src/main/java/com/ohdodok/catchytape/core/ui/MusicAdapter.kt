@@ -16,7 +16,7 @@ class MusicAdapter(private val orientation: Orientation) :
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (orientation) {
             Orientation.Horizontal -> HorizontalViewHolder.from(parent)
-            else -> VerticalViewHolder.from(parent)
+            Orientation.Vertical -> VerticalViewHolder.from(parent)
         }
     }
 
