@@ -13,3 +13,5 @@ export enum Genres {
   'dance' = 'dance',
   'etc' = 'etc',
 }
+
+export const fileExt = ['jpeg', 'jpg', 'png', 'mp3'];
