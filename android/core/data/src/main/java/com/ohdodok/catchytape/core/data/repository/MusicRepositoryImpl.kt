@@ -9,6 +9,7 @@ import javax.inject.Inject
 class MusicRepositoryImpl @Inject constructor(
     private val musicApi: MusicApi
 ) : MusicRepository {
+
     override fun getGenres(): Flow<List<String>> = flow {
         val response = musicApi.getGenres()
         when (response.code()) {

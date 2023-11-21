@@ -7,6 +7,6 @@ import retrofit2.http.GET
 interface MusicApi {
 
     @GET("musics/genres")
-    suspend fun getGenres() : Response<MusicGenresResponse>
+    suspend fun getGenres(): Response<MusicGenresResponse>
 
 }
