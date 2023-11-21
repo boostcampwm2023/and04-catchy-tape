@@ -1,15 +1,20 @@
 package com.ohdodok.catchytape.core.domain
 
-import io.kotest.core.spec.style.StringSpec
+import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 
-class SampleTest : StringSpec({
-    "Strings" {
-        "length는 문자열의 길이를 반환해야 한다" {
-            "hello".length shouldBe 5
-        }
+class SampleTest : FunSpec({
+
+    test("test sample 1") {
+        1 + 2 shouldBe 3
     }
-    "중첩 하지 않아도 됨" {
-        "hello".length shouldBe 5
+
+    test("test sample 2") {
+        3 + 4 shouldBe 7
     }
+
+    test("test sample 3") {
+        3 + 4 shouldBe 10
+    }
+
 })
