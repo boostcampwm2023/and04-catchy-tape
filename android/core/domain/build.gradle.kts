@@ -7,6 +7,14 @@ tasks.withType<Test>().configureEach {
     useJUnitPlatform()
 }
 
+tasks.getByName<Test>("test") {
+    useJUnitPlatform()
+    reports {
+        junitXml.required.set(false)
+    }
+    systemProperty("gradle.build.dir", project.buildDir)
+}
+
 dependencies {
     api(libs.coroutines)
 

@@ -10,12 +10,16 @@ plugins {
     alias(libs.plugins.navigation.safe.args) apply false
 }
 
-tasks.register<Test>("test") {
-    useJUnitPlatform()
-    reports {
-        junitXml.required.set(false)
-    }
-    systemProperty("gradle.build.dir", project.buildDir)
+
+tasks.register<Exec>("domainUnitTest") {
+    commandLine = listOf("gradle", "core:domain:test")
 }
+
+
+tasks.register<Exec>("debugUnitTest") {
+    dependsOn("domainUnitTest")
+    commandLine = listOf("gradle", "testDebugUnitTest")
+}
+
 
 true // Needed to make the Suppress annotation work for the plugins block
