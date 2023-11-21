@@ -14,4 +14,6 @@
     <color name="on_surface">#FF212121</color>
     <color name="error">#FFB00020</color>
     <color name="outline_variant">#FF424242</color> <!-- todo : 라이트 모드로 수정 -->
+
+    <color name="secondary">#FF0096C7</color>
 </resources>
