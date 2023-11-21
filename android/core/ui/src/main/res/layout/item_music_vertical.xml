@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="music"
+            type="com.ohdodok.catchytape.core.domain.model.Music" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="@dimen/medium">
+
+        <ImageView
+            android:id="@+id/iv_thumbnail"
+            android:layout_width="@dimen/music_vertical_img"
+            android:layout_height="@dimen/music_vertical_img"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:background="@color/on_surface" />
+
+        <TextView
+            android:id="@+id/tv_title"
+            style="@style/BodyMedium"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/medium"
+            android:layout_marginTop="@dimen/small"
+            android:text="@{music.title}"
+            android:textColor="@color/on_surface"
+            app:layout_constraintStart_toEndOf="@+id/iv_thumbnail"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="어떨것같애" />
+
+        <TextView
+            android:id="@+id/tv_artist"
+            style="@style/BodySmall"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/medium"
+            android:text="@{music.artist}"
+            android:textColor="@color/on_surface_variant"
+            app:layout_constraintStart_toEndOf="@+id/iv_thumbnail"
+            app:layout_constraintTop_toBottomOf="@id/tv_title"
+            tools:text="MEENOI" />
+
+        <ImageView
+            android:id="@+id/iv_more"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_more"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
