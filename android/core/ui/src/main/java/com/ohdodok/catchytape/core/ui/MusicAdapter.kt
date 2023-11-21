@@ -10,18 +10,18 @@ import com.ohdodok.catchytape.core.ui.databinding.ItemMusicHorizontalBinding
 import com.ohdodok.catchytape.core.ui.databinding.ItemMusicVerticalBinding
 
 
-class MusicAdapter(private val orientation: Orientation) :
+class MusicAdapter(private val musicItemOrientation: Orientation) :
     ListAdapter<Music, RecyclerView.ViewHolder>(MusicDiffUtil) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        return when (orientation) {
+        return when (musicItemOrientation) {
             Orientation.Horizontal -> HorizontalViewHolder.from(parent)
             Orientation.Vertical -> VerticalViewHolder.from(parent)
         }
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        when (orientation) {
+        when (musicItemOrientation) {
             Orientation.Horizontal -> (holder as HorizontalViewHolder).bind(currentList[position])
             Orientation.Vertical -> (holder as VerticalViewHolder).bind(currentList[position])
         }
