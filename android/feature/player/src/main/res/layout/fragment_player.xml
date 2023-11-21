@@ -72,7 +72,7 @@
             android:minWidth="0dp"
             android:paddingHorizontal="12dp"
             android:paddingVertical="0dp"
-            android:text="저장"
+            android:text="@string/save"
             android:textColor="@color/on_surface"
             app:icon="@drawable/ic_playlist"
             app:iconTint="@color/on_surface"
