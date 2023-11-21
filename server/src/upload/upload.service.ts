@@ -3,6 +3,7 @@ import { HTTP_STATUS_CODE } from 'src/httpStatusCode.enum';
 import { NcloudConfigService } from './../config/ncloud.config';
 import { S3 } from 'aws-sdk';
 import { fileExt } from './../constants';
+import { pathPattern } from './../constants';
 
 @Injectable()
 export class UploadService {
@@ -12,9 +13,11 @@ export class UploadService {
   }
 
   private isValidPath(path: string) {
-    if (path.startsWith('image/user/')) return true;
-    if (path.startsWith('image/cover/')) return true;
-    if (path.startsWith('music/')) return true;
+    for (let i = 0; i < pathPattern.length; i++) {
+      if (pathPattern[i].test(path)) {
+        return true;
+      }
+    }
 
     return false;
   }

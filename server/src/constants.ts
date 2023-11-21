@@ -15,3 +15,9 @@ export enum Genres {
 }
 
 export const fileExt = ['jpeg', 'jpg', 'png', 'mp3'];
+
+export const pathPattern = [
+  /^image\/user\/[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/,
+  /^image\/cover\/\d+$/,
+  /^music\/\d+$/,
+];
