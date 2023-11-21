@@ -5,6 +5,8 @@
 
     <data>
 
+        <import type="com.ohdodok.catchytape.core.domain.signup.NicknameValidationResult" />
+
         <variable
             name="viewModel"
             type="com.ohdodok.catchytape.feature.login.NicknameViewModel" />
@@ -66,6 +68,7 @@
             style="@style/Button"
             android:layout_width="0dp"
             android:layout_marginBottom="@dimen/extra_large"
+            android:enabled="@{viewModel.nicknameValidationState == NicknameValidationResult.VALID}"
             android:text="@string/start"
             android:textColor="@color/white"
             app:layout_constraintBottom_toBottomOf="parent"
