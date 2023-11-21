@@ -12,10 +12,11 @@ export class UploadService {
     this.objectStorage = nCloudConfigService.createObjectStorageOption();
   }
 
-  private isValidPath(path: string) {
+  private isValidPath(path: string, fileName: string) {
     for (let i = 0; i < pathPattern.length; i++) {
       if (pathPattern[i].test(path)) {
-        return true;
+        if (i < 2) return true;
+        if (i == 2 && fileName.length <= 50) return true;
       }
     }
 
@@ -34,7 +35,7 @@ export class UploadService {
     ext: string,
   ): Promise<string> {
     try {
-      if (!this.isValidPath(keyPath) || !this.isValidExt(ext))
+      if (!this.isValidPath(keyPath, fileName) || !this.isValidExt(ext))
         throw new HttpException('BAD REQUEST', HTTP_STATUS_CODE.BAD_REQUEST);
 
       const url = await this.objectStorage.getSignedUrlPromise('putObject', {
