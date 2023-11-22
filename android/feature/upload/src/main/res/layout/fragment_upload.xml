@@ -4,6 +4,8 @@
 
     <data>
 
+        <import type="android.view.View" />
+
         <variable
             name="viewModel"
             type="com.ohdodok.catchytape.feature.upload.UploadViewModel" />
@@ -40,6 +42,8 @@
             android:id="@+id/progress_upload"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:indeterminate="true"
+            android:visibility="@{viewModel.uploadUiState.audioLoading ? View.VISIBLE : View.GONE}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tb_upload" />
@@ -55,7 +59,7 @@
             app:cardElevation="0dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/progress_upload">
+            app:layout_constraintTop_toBottomOf="@id/tb_upload">
 
             <ImageView
                 android:id="@+id/iv_thumbnail_image"
@@ -63,8 +67,8 @@
                 android:layout_height="match_parent"
                 android:layout_gravity="center"
                 android:background="@color/white"
-                imageUrl="@{viewModel.thumbnailUrl}"
-                android:importantForAccessibility="no" />
+                android:importantForAccessibility="no"
+                app:imageUrl="@{viewModel.thumbnailUrl}" />
 
             <ImageView
                 android:id="@+id/iv_camera_icon"
