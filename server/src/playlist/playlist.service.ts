@@ -82,4 +82,18 @@ export class PlaylistService {
 
     return musicCount !== 0;
   }
+
+  async getUserPlaylists(userId: string): Promise<Playlist[]> {
+    const playlists: Playlist[] = await this.playlistRepository.find({
+      select: { playlist_Id: true, playlist_title: true },
+      where: {
+        user: { user_id: userId },
+      },
+      order: {
+        updated_at: 'ASC',
+      },
+    });
+
+    return playlists;
+  }
 }
