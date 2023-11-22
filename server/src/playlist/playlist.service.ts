@@ -106,17 +106,7 @@ export class PlaylistService {
   }
 
   async getUserPlaylists(userId: string): Promise<Playlist[]> {
-    const playlists: Playlist[] = await this.playlistRepository.find({
-      select: { playlist_Id: true, playlist_title: true },
-      where: {
-        user: { user_id: userId },
-      },
-      order: {
-        updated_at: 'DESC',
-      },
-    });
-
-    return playlists;
+    return Playlist.getPlaylistsByUserId(userId);
   }
 
   async getPlaylistMusics(
@@ -129,32 +119,6 @@ export class PlaylistService {
         HTTP_STATUS_CODE.BAD_REQUEST,
       );
     }
-
-    const musics: Music[] = await this.music_playlistRepository
-      .find({
-        relations: {
-          music: { user: true },
-        },
-        where: {
-          playlist: { playlist_Id: playlistId },
-        },
-        select: {
-          music: {
-            musicId: true,
-            title: true,
-            cover: true,
-            musicFile: true,
-            genre: true,
-            user: { user_id: true, nickname: true },
-          },
-          music_playlist_id: false,
-        },
-        order: {
-          music_playlist_id: 'DESC',
-        },
-      })
-      .then((a: Music_Playlist[]) => a.map((b) => b.music));
-
-    return musics;
+    return Music_Playlist.getMusicListByPlaylistId(playlistId);
   }
 }
