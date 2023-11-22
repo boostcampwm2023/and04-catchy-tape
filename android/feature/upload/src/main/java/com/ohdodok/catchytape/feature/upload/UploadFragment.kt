@@ -1,6 +1,8 @@
 package com.ohdodok.catchytape.feature.upload
 
+import android.net.Uri
 import android.os.Bundle
+import android.provider.OpenableColumns
 import android.view.View
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
@@ -23,6 +25,7 @@ class UploadFragment : BaseFragment<FragmentUploadBinding>(R.layout.fragment_upl
     private val filePickerLauncher =
         registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
             if (uri == null) return@registerForActivityResult
+            binding.btnFile.text = getFileName(uri)
             viewModel.uploadAudio(uri)
         }
 
@@ -44,5 +47,15 @@ class UploadFragment : BaseFragment<FragmentUploadBinding>(R.layout.fragment_upl
         binding.cvUploadThumbnail.setOnClickListener {
             imagePickerLauncher.launch(PickVisualMediaRequest(PickVisualMedia.ImageOnly))
         }
+    }
+
+    private fun getFileName(uri: Uri): String? {
+        val contentResolver = requireContext().contentResolver
+        contentResolver.query(uri, null, null, null, null)?.use { cursor ->
+            val nameIndex = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME)
+            cursor.moveToFirst()
+            return cursor.getString(nameIndex)
+        }
+        return null
     }
 }

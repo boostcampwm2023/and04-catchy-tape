@@ -21,8 +21,8 @@ class UploadViewModel @Inject constructor(
     private val getMusicGenresUseCase: GetMusicGenresUseCase
 ) : ViewModel() {
 
-    private var uploadedImage: Uri? = null
-    private var uploadedAudio: Uri? = null
+//    private var uploadedImage: Uri? = null
+//    private var uploadedAudio: Uri? = null
     val uploadedMusicTitle = MutableStateFlow("")
     val uploadedMusicGenre= MutableStateFlow("")
 
@@ -53,4 +53,5 @@ class UploadViewModel @Inject constructor(
         // todo : audio 파일을 업로드 한다.
         val file = audioUri.path?.let { File(it) }
     }
+
 }
