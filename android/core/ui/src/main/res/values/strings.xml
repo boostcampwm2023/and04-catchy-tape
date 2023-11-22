@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="check_network">네트워크 연결을 확인해 주세요.</string>
+
     <string name="home">홈</string>
     <string name="search">검색</string>
     <string name="playlist">재생목록</string>
