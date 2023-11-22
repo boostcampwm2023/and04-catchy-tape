@@ -21,20 +21,15 @@ class UploadViewModel @Inject constructor(
     private val getMusicGenresUseCase: GetMusicGenresUseCase
 ) : ViewModel() {
 
-    private var uploadedImage: String? = null
-
+    private var uploadedImage: Uri? = null
+    private var uploadedAudio: Uri? = null
     val uploadedMusicTitle = MutableStateFlow("")
-
-    private val _uploadedMusicGenrePosition = MutableStateFlow(-1)
-    val uploadedMusicGenrePosition = _uploadedMusicGenrePosition.asStateFlow()
+    val uploadedMusicGenre= MutableStateFlow("")
 
     val isUploadEnable: StateFlow<Boolean> =
-        combine(uploadedMusicTitle, uploadedMusicGenrePosition) { title, genrePosition ->
-            title.isNotBlank() && genrePosition != -1
+        combine(uploadedMusicTitle, uploadedMusicGenre) { title, genrePosition ->
+            title.isNotBlank() && genrePosition.isNotBlank()
         }.stateIn(viewModelScope, SharingStarted.Eagerly, false)
-
-    val onChangePosition: (Int) -> Unit =
-        { position: Int -> _uploadedMusicGenrePosition.value = position }
 
     private val _musicGenres: MutableStateFlow<List<String>> = MutableStateFlow(emptyList())
     val musicGenres = _musicGenres.asStateFlow()
