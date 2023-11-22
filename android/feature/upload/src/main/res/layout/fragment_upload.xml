@@ -35,8 +35,8 @@
                 android:layout_gravity="end|center_vertical"
                 android:layout_marginEnd="@dimen/margin_horizontal"
                 android:background="@android:color/transparent"
-                android:text="@string/complete"
-                app:completeBtnEnable="@{viewModel.uploadUiState}" />
+                android:enabled="@{viewModel.isUploadEnable}"
+                android:text="@string/complete" />
 
         </com.google.android.material.appbar.MaterialToolbar>
 
@@ -48,7 +48,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tb_upload"
-            app:visible="@{viewModel.uploadUiState}" />
+            android:visibility="@{viewModel.isLoading ? view.VISIBLE : view.GONE}" />
 
         <androidx.cardview.widget.CardView
             android:id="@+id/cv_upload_thumbnail"
@@ -70,7 +70,7 @@
                 android:layout_gravity="center"
                 android:background="@color/white"
                 android:importantForAccessibility="no"
-                app:uploadedThumbnail="@{viewModel.uploadUiState}" />
+                app:imgUrl="@{viewModel.imageState.url}" />
 
             <ImageView
                 android:id="@+id/iv_camera_icon"
@@ -79,7 +79,7 @@
                 android:layout_gravity="center"
                 android:importantForAccessibility="no"
                 android:src="@drawable/ic_camera"
-                app:visibility="@{viewModel.uploadUiState.imageState == null ? view.VISIBLE : view.GONE}" />
+                app:visibility="@{viewModel.imageState.url.empty ? view.VISIBLE : view.GONE}" />
 
         </androidx.cardview.widget.CardView>
 
