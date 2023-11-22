@@ -2,44 +2,37 @@ import { HttpException, Injectable } from '@nestjs/common';
 import { HTTP_STATUS_CODE } from 'src/httpStatusCode.enum';
 import { NcloudConfigService } from './../config/ncloud.config';
 import { S3 } from 'aws-sdk';
-import { Readable } from 'stream';
+import { fileSize, keyFlags, keyHandler } from './../constants';
 
 @Injectable()
 export class UploadService {
-  private readonly objectStorage: S3;
-
+  private objectStorage: S3;
   constructor(private readonly nCloudConfigService: NcloudConfigService) {
     this.objectStorage = nCloudConfigService.createObjectStorageOption();
   }
 
-  async uploadMusic(file: Express.Multer.File): Promise<{ url: string }> {
-    try {
-      const uploadResult = await this.objectStorage
-        .upload({
-          Bucket: 'catchy-tape-bucket2',
-          Key: `music/original/${file.originalname}`,
-          Body: Readable.from(file.buffer),
-        })
-        .promise();
+  private isValidFlag(flag: string): boolean {
+    if (keyFlags.includes(flag)) return true;
 
-      return { url: uploadResult.Location };
-    } catch {
-      throw new HttpException('SERVER ERROR', HTTP_STATUS_CODE.SERVER_ERROR);
-    }
+    return false;
   }
 
-  async uploadImage(file: Express.Multer.File): Promise<{ url: string }> {
+  async getSignedURL(flag: string, uuid: string): Promise<string> {
     try {
-      const uploadResult = await this.objectStorage
-        .upload({
-          Bucket: 'catchy-tape-bucket2',
-          Key: `image/${file.originalname}`,
-          Body: Readable.from(file.buffer),
-        })
-        .promise();
+      if (!this.isValidFlag(flag))
+        throw new HttpException('BAD_REQUEST', HTTP_STATUS_CODE.BAD_REQUEST);
 
-      return { url: uploadResult.Location };
-    } catch {
+      const keyPath = keyHandler[flag](uuid);
+
+      return await this.objectStorage.getSignedUrlPromise('putObject', {
+        Bucket: 'catchy-tape-bucket2',
+        Key: `${keyPath}`,
+        Expires: 600,
+        ACL: 'public-read',
+      });
+    } catch (error) {
+      if (error instanceof HttpException) throw error;
+
       throw new HttpException('SERVER ERROR', HTTP_STATUS_CODE.SERVER_ERROR);
     }
   }
