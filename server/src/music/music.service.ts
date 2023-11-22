@@ -38,7 +38,7 @@ export class MusicService {
         musicFile,
         created_at: new Date(),
         genre,
-        user_id,
+        user: { user_id: user_id },
       });
 
       this.musicRepository.save(newMusic);

@@ -7,6 +7,7 @@ import {
   OneToMany,
 } from 'typeorm';
 import { Playlist } from './playlist.entity';
+import { Music } from './music.entity';
 
 @Entity({ name: 'user' })
 export class User extends BaseEntity {
@@ -24,6 +25,9 @@ export class User extends BaseEntity {
 
   @CreateDateColumn()
   created_at: Date;
+
+  @OneToMany(() => Music, (music) => music.user)
+  musics: Music[];
 
   @OneToMany(() => Playlist, (playlist) => playlist.user)
   playlists: Playlist[];

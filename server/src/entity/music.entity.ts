@@ -35,9 +35,9 @@ export class Music extends BaseEntity {
   @CreateDateColumn()
   created_at: Date;
 
-  @ManyToOne(() => User)
+  @ManyToOne(() => User, (user) => user.musics)
   @JoinColumn({ name: 'user_id' })
-  user_id: string;
+  user: User;
 
   @OneToMany(() => Music_Playlist, (music_playlist) => music_playlist.music)
   music_playlist: Music_Playlist[];
