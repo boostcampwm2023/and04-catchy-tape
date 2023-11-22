@@ -68,18 +68,31 @@
 
         </androidx.cardview.widget.CardView>
 
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btn_file"
+            style="@style/EditText"
+            android:layout_width="0dp"
+            android:layout_marginTop="@dimen/extra_large"
+            android:hint="@string/upload_file"
+            android:drawableTint="@color/black"
+            android:drawableEnd="@drawable/ic_upload"
+            android:backgroundTint="@color/light_gray"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/cv_upload_thumbnail" />
+
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/til_title"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="@dimen/margin_horizontal"
-            android:layout_marginTop="@dimen/extra_large"
+            android:layout_marginTop="@dimen/large"
             android:hint="@string/title"
             app:endIconDrawable="@drawable/ic_cancel"
             app:endIconMode="clear_text"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/cv_upload_thumbnail">
+            app:layout_constraintTop_toBottomOf="@id/btn_file">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
@@ -95,7 +108,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="@dimen/margin_horizontal"
-            android:layout_marginTop="@dimen/medium"
+            android:layout_marginTop="@dimen/large"
             android:hint="@string/genre"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

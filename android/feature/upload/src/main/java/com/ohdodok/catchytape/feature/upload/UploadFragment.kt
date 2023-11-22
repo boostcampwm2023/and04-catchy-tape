@@ -5,7 +5,6 @@ import android.view.View
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.result.contract.ActivityResultContracts.PickVisualMedia
-import androidx.core.net.toFile
 import androidx.fragment.app.viewModels
 import com.ohdodok.catchytape.catchytape.upload.R
 import com.ohdodok.catchytape.catchytape.upload.databinding.FragmentUploadBinding
@@ -18,23 +17,27 @@ class UploadFragment : BaseFragment<FragmentUploadBinding>(R.layout.fragment_upl
 
     private val imagePickerLauncher = registerForActivityResult(PickVisualMedia()) { uri ->
         if (uri == null) return@registerForActivityResult
-
-        viewModel.uploadImage(uri.toFile())
+        viewModel.uploadImage(uri)
     }
 
     private val filePickerLauncher =
         registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
             if (uri == null) return@registerForActivityResult
-
-            viewModel.uploadAudio(uri.toFile())
+            viewModel.uploadAudio(uri)
         }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.viewModel = viewModel
-
+        setUpFileBtn()
         setupBackStack(binding.tbUpload)
         setupSelectThumbnailImage()
+    }
+
+    private fun setUpFileBtn() {
+        binding.btnFile.setOnClickListener {
+            filePickerLauncher.launch("audio/*")
+        }
     }
 
     private fun setupSelectThumbnailImage() {

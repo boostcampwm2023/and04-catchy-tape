@@ -1,5 +1,6 @@
 package com.ohdodok.catchytape.feature.upload
 
+import android.net.Uri
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import java.io.File
@@ -48,12 +49,13 @@ class UploadViewModel @Inject constructor(
         }.launchIn(viewModelScope)
     }
 
-    fun uploadImage(imageFile: File) {
+    fun uploadImage(imageUri: Uri) {
         // todo : image 파일을 업로드 한다.
         // todo : 반환 값을 uploadedImage에 저장한다.
     }
 
-    fun uploadAudio(audioFile: File) {
+    fun uploadAudio(audioUri: Uri) {
         // todo : audio 파일을 업로드 한다.
+        val file = audioUri.path?.let { File(it) }
     }
 }
