@@ -61,6 +61,7 @@ export class PlaylistService {
 
     const result: Music_Playlist =
       await this.music_playlistRepository.save(new_music_playlist);
+    this.setUpdatedAtNow(playlistId);
     return result.music_playlist_id;
   }
 
@@ -81,6 +82,14 @@ export class PlaylistService {
     });
 
     return musicCount !== 0;
+  }
+
+  async setUpdatedAtNow(playlistId: number): Promise<void> {
+    const targetPlaylist: Playlist = await this.playlistRepository.findOne({
+      where: { playlist_Id: playlistId },
+    });
+    targetPlaylist.updated_at = new Date();
+    this.playlistRepository.save(targetPlaylist);
   }
 
   async getUserPlaylists(userId: string): Promise<Playlist[]> {
