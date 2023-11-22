@@ -4,7 +4,9 @@ import {
   CreateDateColumn,
   BaseEntity,
   PrimaryColumn,
+  OneToMany,
 } from 'typeorm';
+import { Playlist } from './playlist.entity';
 
 @Entity({ name: 'user' })
 export class User extends BaseEntity {
@@ -22,4 +24,7 @@ export class User extends BaseEntity {
 
   @CreateDateColumn()
   created_at: Date;
+
+  @OneToMany(() => Playlist, (playlist) => playlist.user)
+  playlists: Playlist[];
 }
