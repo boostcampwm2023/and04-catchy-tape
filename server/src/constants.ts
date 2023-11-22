@@ -13,3 +13,5 @@ export enum Genres {
   'dance' = 'dance',
   'etc' = 'etc',
 }
+
+export const RECENT_PLAYLIST_NAME = '최근 재생 목록';

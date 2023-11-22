@@ -1,6 +1,7 @@
 import { HttpException, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
+import { RECENT_PLAYLIST_NAME } from 'src/constants';
 import { UserCreateDto } from 'src/dto/userCreate.dto';
 import { User } from 'src/entity/user.entity';
 import { HTTP_STATUS_CODE } from 'src/httpStatusCode.enum';
@@ -52,7 +53,7 @@ export class AuthService {
       await this.userRepository.save(newUser);
 
       this.playlistService.createPlaylist(newUser.user_id, {
-        title: '최근 재생 목록',
+        title: RECENT_PLAYLIST_NAME,
       });
       return this.login(email);
     }
