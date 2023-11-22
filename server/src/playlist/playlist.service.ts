@@ -112,10 +112,49 @@ export class PlaylistService {
         user: { user_id: userId },
       },
       order: {
-        updated_at: 'ASC',
+        updated_at: 'DESC',
       },
     });
 
     return playlists;
+  }
+
+  async getPlaylistMusics(
+    userId: string,
+    playlistId: number,
+  ): Promise<Music[]> {
+    if (!(await this.isExistPlaylistOnUser(playlistId, userId))) {
+      throw new HttpException(
+        'NOT_EXIST_PLAYLIST_ON_USER',
+        HTTP_STATUS_CODE.BAD_REQUEST,
+      );
+    }
+
+    const musics: Music[] = await this.music_playlistRepository
+      .find({
+        relations: {
+          music: { user: true },
+        },
+        where: {
+          playlist: { playlist_Id: playlistId },
+        },
+        select: {
+          music: {
+            musicId: true,
+            title: true,
+            cover: true,
+            musicFile: true,
+            genre: true,
+            user: { user_id: true, nickname: true },
+          },
+          music_playlist_id: false,
+        },
+        order: {
+          music_playlist_id: 'DESC',
+        },
+      })
+      .then((a: Music_Playlist[]) => a.map((b) => b.music));
+
+    return musics;
   }
 }
