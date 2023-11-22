@@ -1,9 +1,11 @@
 import { HttpException, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
+import { RECENT_PLAYLIST_NAME } from 'src/constants';
 import { UserCreateDto } from 'src/dto/userCreate.dto';
 import { User } from 'src/entity/user.entity';
 import { HTTP_STATUS_CODE } from 'src/httpStatusCode.enum';
+import { PlaylistService } from 'src/playlist/playlist.service';
 import { Repository } from 'typeorm';
 import { v4 as uuid } from 'uuid';
 
@@ -12,6 +14,7 @@ export class AuthService {
   constructor(
     @InjectRepository(User) private userRepository: Repository<User>,
     private jwtService: JwtService,
+    private readonly playlistService: PlaylistService,
   ) {}
 
   async login(email: string): Promise<{ accessToken: string }> {
@@ -49,6 +52,9 @@ export class AuthService {
       });
       await this.userRepository.save(newUser);
 
+      this.playlistService.createPlaylist(newUser.user_id, {
+        title: RECENT_PLAYLIST_NAME,
+      });
       return this.login(email);
     }
     throw new HttpException('WRONG_TOKEN', HTTP_STATUS_CODE.WRONG_TOKEN);
