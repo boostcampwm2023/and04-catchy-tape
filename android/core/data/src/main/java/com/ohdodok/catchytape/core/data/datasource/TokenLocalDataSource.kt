@@ -15,6 +15,12 @@ class TokenLocalDataSource @Inject constructor(
     private val idTokenKey = stringPreferencesKey("idToken")
     private val accessTokenKey = stringPreferencesKey("accessToken")
 
+    suspend fun getAccessToken(): String =
+        dataStore.data.map { preferences -> preferences[accessTokenKey] ?: "" }.first()
+
+    suspend fun getIdToken(): String =
+        dataStore.data.map { preferences -> preferences[idTokenKey] ?: "" }.first()
+
     suspend fun saveAccessToken(token: String) {
         dataStore.edit { preferences -> preferences[accessTokenKey] = token }
     }
@@ -22,7 +28,4 @@ class TokenLocalDataSource @Inject constructor(
     suspend fun saveIdToken(token: String) {
         dataStore.edit { preferences -> preferences[idTokenKey] = token }
     }
-
-    suspend fun getIdToken(): String =
-        dataStore.data.map { preferences -> preferences[idTokenKey] ?: "" }.first()
 }
