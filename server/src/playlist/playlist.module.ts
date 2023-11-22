@@ -8,8 +8,12 @@ import { Music_Playlist } from 'src/entity/music_playlist.entity';
 import { Music } from 'src/entity/music.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Playlist, Music_Playlist, Music]), AuthModule],
+  imports: [
+    TypeOrmModule.forFeature([Playlist, Music_Playlist, Music]),
+    AuthModule,
+  ],
   controllers: [PlaylistController],
   providers: [PlaylistService],
+  exports: [PlaylistService],
 })
 export class PlaylistModule {}
