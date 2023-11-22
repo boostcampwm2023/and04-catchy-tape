@@ -3,6 +3,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
+
+        <variable
+            name="view"
+            type="android.view.View" />
+
         <variable
             name="viewModel"
             type="com.ohdodok.catchytape.feature.upload.UploadViewModel" />
@@ -74,7 +79,7 @@
                 android:layout_gravity="center"
                 android:importantForAccessibility="no"
                 android:src="@drawable/ic_camera"
-                app:visible="@{viewModel.uploadUiState}" />
+                app:visibility="@{viewModel.uploadUiState.imageState == null ? view.VISIBLE : view.GONE}" />
 
         </androidx.cardview.widget.CardView>
 

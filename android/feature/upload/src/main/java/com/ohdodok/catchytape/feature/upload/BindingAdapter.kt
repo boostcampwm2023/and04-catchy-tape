@@ -1,11 +1,9 @@
 package com.ohdodok.catchytape.feature.upload
 
 import android.R
-import android.graphics.drawable.Drawable
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import android.widget.Button
-import android.widget.ImageButton
 import android.widget.ImageView
 import androidx.core.view.isVisible
 import androidx.databinding.BindingAdapter
@@ -20,28 +18,23 @@ fun AutoCompleteTextView.setAdapter(list: List<String>) {
 
 @BindingAdapter("visible")
 fun LinearProgressIndicator.setVisible(uiState: UploadUiState) {
-    isVisible = uiState.audioState is InputState.Loading || uiState.imageState is InputState.Loading
+    isVisible = uiState.audioState is UploadInputState.Loading || uiState.imageState is UploadInputState.Loading
 }
 
 @BindingAdapter("completeBtnEnable")
 fun Button.setCompleteBtnEnable(uiState: UploadUiState) {
     isEnabled =
-        uiState.audioState is InputState.Success
-                && uiState.imageState is InputState.Success
-                && uiState.titleState is InputState.Success
-                && uiState.genreState is InputState.Success
+        uiState.audioState is UploadInputState.Success
+                && uiState.imageState is UploadInputState.Success
+                && uiState.titleState is UploadInputState.Success
+                && uiState.genreState is UploadInputState.Success
 }
 
 @BindingAdapter("uploadedThumbnail")
 fun ImageView.bindUrl(uiState: UploadUiState) {
-    if (uiState.imageState is InputState.Success) {
+    if (uiState.imageState is UploadInputState.Success) {
         Glide.with(this)
             .load(uiState.imageState.value)
             .into(this)
     }
-}
-
-@BindingAdapter("visible")
-fun ImageView.setVisible(uiState: UploadUiState) {
-    isVisible = uiState.imageState is InputState.Empty
 }

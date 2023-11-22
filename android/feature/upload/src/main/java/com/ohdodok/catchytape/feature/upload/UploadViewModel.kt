@@ -45,11 +45,11 @@ class UploadViewModel @Inject constructor(
     private fun observeTitle() {
         musicTitle.onEach {
             if (it.isEmpty()) {
-                _uploadUiState.value = uploadUiState.value.copy(titleState = InputState.Empty)
+                _uploadUiState.value = uploadUiState.value.copy(titleState = null)
                 return@onEach
             } else {
                 _uploadUiState.value =
-                    uploadUiState.value.copy(titleState = InputState.Success(value = it))
+                    uploadUiState.value.copy(titleState = UploadInputState.Success(value = it))
             }
         }.launchIn(viewModelScope)
     }
@@ -57,11 +57,11 @@ class UploadViewModel @Inject constructor(
     private fun observeGenre() {
         musicGenre.onEach {
             if (it.isEmpty()) {
-                _uploadUiState.value = uploadUiState.value.copy(genreState = InputState.Empty)
+                _uploadUiState.value = uploadUiState.value.copy(genreState = null)
                 return@onEach
             } else {
                 _uploadUiState.value =
-                    uploadUiState.value.copy(genreState = InputState.Success(value = it))
+                    uploadUiState.value.copy(genreState = UploadInputState.Success(value = it))
             }
         }.launchIn(viewModelScope)
     }
@@ -69,14 +69,15 @@ class UploadViewModel @Inject constructor(
     fun uploadImage(imageUri: Uri) {
         imageUri.path?.let { path ->
             uploadFileUseCase.getImgUrl(File(path)).onStart {
-                _uploadUiState.value = uploadUiState.value.copy(imageState = InputState.Loading)
+                _uploadUiState.value =
+                    uploadUiState.value.copy(imageState = UploadInputState.Loading)
             }.catch {
                 // TODO : 에러 처리
                 _uploadUiState.value =
-                    uploadUiState.value.copy(imageState = InputState.Error)
+                    uploadUiState.value.copy(imageState = UploadInputState.Error)
             }.onEach { url ->
                 _uploadUiState.value =
-                    uploadUiState.value.copy(imageState = InputState.Success(value = url))
+                    uploadUiState.value.copy(imageState = UploadInputState.Success(value = url))
             }.launchIn(viewModelScope)
         }
     }
@@ -84,31 +85,30 @@ class UploadViewModel @Inject constructor(
     fun uploadAudio(audioUri: Uri) {
         audioUri.path?.let { path ->
             uploadFileUseCase.getAudioUrl(File(path)).onStart {
-                _uploadUiState.value = uploadUiState.value.copy(audioState = InputState.Loading)
+                _uploadUiState.value =
+                    uploadUiState.value.copy(audioState = UploadInputState.Loading)
             }.catch {
                 // TODO : 에러 처리
                 _uploadUiState.value =
-                    uploadUiState.value.copy(audioState = InputState.Error)
+                    uploadUiState.value.copy(audioState = UploadInputState.Error)
             }.onEach {
                 _uploadUiState.value =
-                    uploadUiState.value.copy(audioState = InputState.Success(value = it))
+                    uploadUiState.value.copy(audioState = UploadInputState.Success(value = it))
             }.launchIn(viewModelScope)
         }
     }
 }
 
 data class UploadUiState(
-    val audioState: InputState = InputState.Empty,
-    val imageState: InputState = InputState.Empty,
-    val titleState: InputState = InputState.Empty,
-    val genreState: InputState = InputState.Empty
+    val audioState: UploadInputState? = null,
+    val imageState: UploadInputState? = null,
+    val titleState: UploadInputState? = null,
+    val genreState: UploadInputState? = null
 )
 
-sealed class InputState {
-    data object Empty : InputState()
-
-    data object Loading : InputState()
-    data class Success(val value: String) : InputState()
-    data object Error: InputState()
+sealed class UploadInputState {
+    data object Loading : UploadInputState()
+    data class Success(val value: String) : UploadInputState()
+    data object Error : UploadInputState()
 }
 
