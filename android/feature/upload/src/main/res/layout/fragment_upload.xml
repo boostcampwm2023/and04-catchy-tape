@@ -63,6 +63,7 @@
                 android:layout_height="match_parent"
                 android:layout_gravity="center"
                 android:background="@color/white"
+                imageUrl="@{viewModel.thumbnailUrl}"
                 android:importantForAccessibility="no" />
 
             <ImageView
@@ -105,7 +106,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:maxLength="10"
-                android:text="@={viewModel.uploadedMusicTitle}" />
+                android:text="@={viewModel.musicTitle}" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -126,7 +127,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="none"
-                android:text="@={viewModel.uploadedMusicGenre}"
+                android:text="@={viewModel.musicGenre}"
                 app:list="@{viewModel.musicGenres}" />
 
         </com.google.android.material.textfield.TextInputLayout>
