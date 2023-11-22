@@ -40,6 +40,7 @@ class LoginViewModel @Inject constructor(
         viewModelScope.launch {
             val isLoggedIn = automaticallyLoginUseCase()
             if (isLoggedIn) _events.emit(LoginEvent.NavigateToHome)
+            isAutoLoginFinished = true
         }
     }
 }
