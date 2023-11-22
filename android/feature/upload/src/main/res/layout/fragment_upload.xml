@@ -9,6 +9,7 @@
         <variable
             name="viewModel"
             type="com.ohdodok.catchytape.feature.upload.UploadViewModel" />
+
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -33,8 +34,8 @@
                 android:layout_gravity="end|center_vertical"
                 android:layout_marginEnd="@dimen/margin_horizontal"
                 android:background="@android:color/transparent"
-                android:enabled="@{viewModel.isUploadEnable}"
-                android:text="@string/complete" />
+                android:text="@string/complete"
+                app:completeBtnEnable="@{viewModel.uploadUiState}" />
 
         </com.google.android.material.appbar.MaterialToolbar>
 
@@ -43,10 +44,10 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:indeterminate="true"
-            android:visibility="@{viewModel.uploadUiState.audioLoading ? View.VISIBLE : View.GONE}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tb_upload" />
+            app:layout_constraintTop_toBottomOf="@id/tb_upload"
+            app:visible="@{viewModel.uploadUiState}" />
 
         <androidx.cardview.widget.CardView
             android:id="@+id/cv_upload_thumbnail"
@@ -68,7 +69,7 @@
                 android:layout_gravity="center"
                 android:background="@color/white"
                 android:importantForAccessibility="no"
-                app:imageUrl="@{viewModel.thumbnailUrl}" />
+                app:uploadedThumbnail="@{viewModel.uploadUiState}" />
 
             <ImageView
                 android:id="@+id/iv_camera_icon"

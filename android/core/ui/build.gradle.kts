@@ -38,5 +38,5 @@ dependencies {
     api(libs.navigation.fragment.ktx)
     api(libs.navigation.ui.ktx)
 
-    implementation(libs.glide)
+    api(libs.glide)
 }
