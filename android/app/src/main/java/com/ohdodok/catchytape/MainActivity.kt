@@ -13,29 +13,15 @@ import dagger.hilt.android.AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
     private lateinit var connectivityManager: ConnectivityManager
 
-    private val networkCallback = object : ConnectivityManager.NetworkCallback() {
-        override fun onLost(network: Network) {
-            super.onLost(network)
-            checkNetworkState()
-        }
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         connectivityManager = getSystemService(ConnectivityManager::class.java)
         checkNetworkState()
-    }
 
-    override fun onResume() {
-        super.onResume()
-        connectivityManager.registerDefaultNetworkCallback(networkCallback)
-    }
-
-    override fun onPause() {
-        super.onPause()
-        connectivityManager.unregisterNetworkCallback(networkCallback)
+        val networkStateObserver = NetworkStateObserver(connectivityManager, ::checkNetworkState)
+        lifecycle.addObserver(networkStateObserver)
     }
 
     private fun checkNetworkState() {
