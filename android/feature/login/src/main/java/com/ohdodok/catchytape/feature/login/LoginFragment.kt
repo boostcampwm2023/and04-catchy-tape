@@ -21,8 +21,6 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(R.layout.fragment_login
 
     private val viewModel: LoginViewModel by activityViewModels()
 
-    private val loginActivity by lazy { activity as LoginActivity }
-
     private val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
         .requestIdToken(BuildConfig.GOOGLE_CLIENT_ID)
         .requestEmail()
@@ -58,7 +56,7 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(R.layout.fragment_login
                         val intent = Intent()
                         intent.component = ComponentName("com.ohdodok.catchytape", "com.ohdodok.catchytape.MainActivity")
                         startActivity(intent)
-                        loginActivity.finish()
+                        activity?.finish()
                     }
 
                     is LoginEvent.NavigateToNickName -> {
