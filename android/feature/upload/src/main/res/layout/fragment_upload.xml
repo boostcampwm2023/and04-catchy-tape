@@ -7,6 +7,10 @@
         <import type="android.view.View" />
 
         <variable
+            name="success"
+            type="com.ohdodok.catchytape.feature.upload.InputState.Success" />
+
+        <variable
             name="viewModel"
             type="com.ohdodok.catchytape.feature.upload.UploadViewModel" />
 
@@ -77,7 +81,8 @@
                 android:layout_height="48dp"
                 android:layout_gravity="center"
                 android:importantForAccessibility="no"
-                android:src="@drawable/ic_camera" />
+                android:src="@drawable/ic_camera"
+                app:visible="@{viewModel.uploadUiState}" />
 
         </androidx.cardview.widget.CardView>
 

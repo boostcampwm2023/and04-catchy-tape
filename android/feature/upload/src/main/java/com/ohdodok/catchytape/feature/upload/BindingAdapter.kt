@@ -1,9 +1,11 @@
 package com.ohdodok.catchytape.feature.upload
 
 import android.R
+import android.graphics.drawable.Drawable
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import android.widget.Button
+import android.widget.ImageButton
 import android.widget.ImageView
 import androidx.core.view.isVisible
 import androidx.databinding.BindingAdapter
@@ -37,4 +39,9 @@ fun ImageView.bindUrl(uiState: UploadUiState) {
             .load(uiState.imageState.value)
             .into(this)
     }
+}
+
+@BindingAdapter("visible")
+fun ImageView.setVisible(uiState: UploadUiState) {
+    isVisible = uiState.imageState is InputState.Empty
 }
