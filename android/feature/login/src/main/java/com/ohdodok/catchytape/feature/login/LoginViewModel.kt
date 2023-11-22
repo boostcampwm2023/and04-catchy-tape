@@ -2,10 +2,9 @@ package com.ohdodok.catchytape.feature.login
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.ohdodok.catchytape.core.domain.usecase.GetIdTokenUseCase
+import com.ohdodok.catchytape.core.domain.usecase.AutomaticallyLoginUseCase
 import com.ohdodok.catchytape.core.domain.usecase.LoginUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.catch
@@ -17,8 +16,7 @@ import javax.inject.Inject
 @HiltViewModel
 class LoginViewModel @Inject constructor(
     private val loginUseCase: LoginUseCase,
-    private val tokenUseCase: GetIdTokenUseCase
-
+    private val automaticallyLoginUseCase: AutomaticallyLoginUseCase
 ) : ViewModel() {
 
     private val _events = MutableSharedFlow<LoginEvent>()
@@ -26,7 +24,6 @@ class LoginViewModel @Inject constructor(
 
     var isAutoLoginFinished: Boolean = false
         private set
-
 
     fun login(token: String, isAutoLogin: Boolean = false) {
         loginUseCase(token)
@@ -39,18 +36,12 @@ class LoginViewModel @Inject constructor(
             }.launchIn(viewModelScope)
     }
 
-
     fun automaticallyLogin() {
         viewModelScope.launch {
-            val idToken = tokenUseCase()
-            if (idToken.isNotEmpty()) {
-                login(idToken, true)
-            }
-            delay(1000)
-            isAutoLoginFinished = true
+            val isLoggedIn = automaticallyLoginUseCase()
+            if (isLoggedIn) _events.emit(LoginEvent.NavigateToHome)
         }
     }
-
 }
 
 sealed interface LoginEvent {
