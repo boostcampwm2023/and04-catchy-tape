@@ -31,10 +31,12 @@ class UploadViewModel @Inject constructor(
     val musicTitle = MutableStateFlow("")
     val musicGenre = MutableStateFlow("")
 
-    private val _imageState: MutableStateFlow<UploadedFileState> = MutableStateFlow(UploadedFileState())
+    private val _imageState: MutableStateFlow<UploadedFileState> =
+        MutableStateFlow(UploadedFileState())
     val imageState = _imageState.asStateFlow()
 
-    private val _audioState: MutableStateFlow<UploadedFileState> = MutableStateFlow(UploadedFileState())
+    private val _audioState: MutableStateFlow<UploadedFileState> =
+        MutableStateFlow(UploadedFileState())
     val audioState = _audioState.asStateFlow()
 
     val isLoading: StateFlow<Boolean> = combine(imageState, audioState) { imageState, audioState ->
@@ -46,7 +48,8 @@ class UploadViewModel @Inject constructor(
     )
 
     val isUploadEnable: StateFlow<Boolean> =
-        combine(musicTitle, musicGenre, imageState, audioState
+        combine(
+            musicTitle, musicGenre, imageState, audioState
         ) { title, genre, imageState, audioState ->
             title.isNotBlank()
                     && genre.isNotBlank()
@@ -67,28 +70,24 @@ class UploadViewModel @Inject constructor(
         }.launchIn(viewModelScope)
     }
 
-    fun uploadImage(imageUri: Uri) {
-        imageUri.path?.let { path ->
-            uploadFileUseCase.getImgUrl(File(path)).onStart {
-                _imageState.value = imageState.value.copy(isLoading = true)
-            }.onEach { url ->
-                _imageState.value = imageState.value.copy(url = url)
-            }.onCompletion {
-                _imageState.value = imageState.value.copy(isLoading = false)
-            }.launchIn(viewModelScope)
-        }
+    fun uploadImage(imageFile: File) {
+        uploadFileUseCase.getImgUrl(imageFile).onStart {
+            _imageState.value = imageState.value.copy(isLoading = true)
+        }.onEach { url ->
+            _imageState.value = imageState.value.copy(url = url)
+        }.onCompletion {
+            _imageState.value = imageState.value.copy(isLoading = false)
+        }.launchIn(viewModelScope)
     }
 
-    fun uploadAudio(audioUri: Uri) {
-        audioUri.path?.let { path ->
-            uploadFileUseCase.getAudioUrl(File(path)).onStart {
-                _audioState.value = audioState.value.copy(isLoading = true)
-            }.onEach { url ->
-                _audioState.value = audioState.value.copy(url = url)
-            }.onCompletion {
-                _audioState.value = audioState.value.copy(isLoading = false)
-            }.launchIn(viewModelScope)
-        }
+    fun uploadAudio(audioFile: File) {
+        uploadFileUseCase.getAudioUrl(audioFile).onStart {
+            _audioState.value = audioState.value.copy(isLoading = true)
+        }.onEach { url ->
+            _audioState.value = audioState.value.copy(url = url)
+        }.onCompletion {
+            _audioState.value = audioState.value.copy(isLoading = false)
+        }.launchIn(viewModelScope)
     }
 
     fun uploadMusic() {

@@ -12,6 +12,7 @@ import com.ohdodok.catchytape.catchytape.upload.R
 import com.ohdodok.catchytape.catchytape.upload.databinding.FragmentUploadBinding
 import com.ohdodok.catchytape.core.ui.BaseFragment
 import dagger.hilt.android.AndroidEntryPoint
+import java.io.File
 
 @AndroidEntryPoint
 class UploadFragment : BaseFragment<FragmentUploadBinding>(R.layout.fragment_upload) {
@@ -19,14 +20,14 @@ class UploadFragment : BaseFragment<FragmentUploadBinding>(R.layout.fragment_upl
 
     private val imagePickerLauncher = registerForActivityResult(PickVisualMedia()) { uri ->
         if (uri == null) return@registerForActivityResult
-        viewModel.uploadImage(uri)
+        uri.path?.let { viewModel.uploadImage(File(it)) }
     }
 
     private val filePickerLauncher =
         registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
             if (uri == null) return@registerForActivityResult
             binding.btnFile.text = getFileName(uri)
-            viewModel.uploadAudio(uri)
+            uri.path?.let { viewModel.uploadAudio(File(it)) }
         }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
