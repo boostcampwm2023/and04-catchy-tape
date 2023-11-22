@@ -21,9 +21,9 @@ class MusicAdapter(private val musicItemOrientation: Orientation) :
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        when (musicItemOrientation) {
-            Orientation.Horizontal -> (holder as HorizontalViewHolder).bind(currentList[position])
-            Orientation.Vertical -> (holder as VerticalViewHolder).bind(currentList[position])
+        when (holder) {
+            is HorizontalViewHolder -> holder.bind(currentList[position])
+            is VerticalViewHolder -> holder.bind(currentList[position])
         }
     }
 
