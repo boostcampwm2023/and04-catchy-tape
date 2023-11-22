@@ -2,7 +2,7 @@ import { HttpException, Injectable } from '@nestjs/common';
 import { HTTP_STATUS_CODE } from 'src/httpStatusCode.enum';
 import { NcloudConfigService } from './../config/ncloud.config';
 import { S3 } from 'aws-sdk';
-import { fileSize, keyFlags, keyHandler } from './../constants';
+import { keyFlags, keyHandler } from './../constants';
 
 @Injectable()
 export class UploadService {
@@ -17,12 +17,24 @@ export class UploadService {
     return false;
   }
 
-  async getSignedURL(flag: string, uuid: string): Promise<string> {
-    try {
-      if (!this.isValidFlag(flag))
-        throw new HttpException('BAD_REQUEST', HTTP_STATUS_CODE.BAD_REQUEST);
+  private isValidUUIDPattern(uuid: string): boolean {
+    const uuidPattern =
+      /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$/;
 
-      const keyPath = keyHandler[flag](uuid);
+    if (uuidPattern.test(uuid)) return true;
+
+    return false;
+  }
+
+  async getSignedURL(type: string, uuid: string): Promise<string> {
+    try {
+      if (!this.isValidUUIDPattern(uuid) || !this.isValidFlag(type))
+        throw new HttpException(
+          'INVALID_INPUT_VALUE',
+          HTTP_STATUS_CODE.BAD_REQUEST,
+        );
+
+      const keyPath = keyHandler[type](uuid);
 
       return await this.objectStorage.getSignedUrlPromise('putObject', {
         Bucket: 'catchy-tape-bucket2',
