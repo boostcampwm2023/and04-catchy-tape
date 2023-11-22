@@ -16,6 +16,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
@@ -68,12 +69,11 @@ class UploadViewModel @Inject constructor(
 
     fun uploadImage(imageUri: Uri) {
         imageUri.path?.let { path ->
-            uploadFileUseCase.getImgUrl(File(path)).onEach { url ->
-                _imageState.value = imageState.value.copy(isLoading = false, url = url)
-            }.onStart {
+            uploadFileUseCase.getImgUrl(File(path)).onStart {
                 _imageState.value = imageState.value.copy(isLoading = true)
-            }.catch {
-                // TODO : 에러 처리
+            }.onEach { url ->
+                _imageState.value = imageState.value.copy(url = url)
+            }.onCompletion {
                 _imageState.value = imageState.value.copy(isLoading = false)
             }.launchIn(viewModelScope)
         }
@@ -81,12 +81,11 @@ class UploadViewModel @Inject constructor(
 
     fun uploadAudio(audioUri: Uri) {
         audioUri.path?.let { path ->
-            uploadFileUseCase.getAudioUrl(File(path)).onEach {
-                _audioState.value = audioState.value.copy(isLoading = false, url = it)
-            }.onStart {
+            uploadFileUseCase.getAudioUrl(File(path)).onStart {
                 _audioState.value = audioState.value.copy(isLoading = true)
-            }.catch {
-                // TODO : 에러 처리
+            }.onEach { url ->
+                _audioState.value = audioState.value.copy(url = url)
+            }.onCompletion {
                 _audioState.value = audioState.value.copy(isLoading = false)
             }.launchIn(viewModelScope)
         }
