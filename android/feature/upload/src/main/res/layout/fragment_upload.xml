@@ -34,8 +34,15 @@
                 android:enabled="@{viewModel.isUploadEnable}"
                 android:text="@string/complete" />
 
-
         </com.google.android.material.appbar.MaterialToolbar>
+
+        <com.google.android.material.progressindicator.LinearProgressIndicator
+            android:id="@+id/progress_upload"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tb_upload" />
 
         <androidx.cardview.widget.CardView
             android:id="@+id/cv_upload_thumbnail"
@@ -48,7 +55,7 @@
             app:cardElevation="0dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tb_upload">
+            app:layout_constraintTop_toBottomOf="@id/progress_upload">
 
             <ImageView
                 android:id="@+id/iv_thumbnail_image"
@@ -73,10 +80,10 @@
             style="@style/EditText"
             android:layout_width="0dp"
             android:layout_marginTop="@dimen/extra_large"
-            android:hint="@string/upload_file"
-            android:drawableTint="@color/black"
-            android:drawableEnd="@drawable/ic_upload"
             android:backgroundTint="@color/light_gray"
+            android:drawableEnd="@drawable/ic_upload"
+            android:drawableTint="@color/black"
+            android:hint="@string/upload_file"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/cv_upload_thumbnail" />
@@ -123,7 +130,6 @@
                 app:list="@{viewModel.musicGenres}" />
 
         </com.google.android.material.textfield.TextInputLayout>
-
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
