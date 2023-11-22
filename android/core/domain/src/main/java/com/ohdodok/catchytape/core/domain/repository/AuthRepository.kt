@@ -14,4 +14,6 @@ interface AuthRepository {
 
     suspend fun getIdToken(): String
 
+    fun isDuplicatedNickname(nickname: String): Flow<Boolean>
+
 }

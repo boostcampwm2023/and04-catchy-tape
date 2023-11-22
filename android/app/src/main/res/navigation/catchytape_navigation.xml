@@ -7,5 +7,6 @@
     <include app:graph="@navigation/home_navigation" />
     <include app:graph="@navigation/login_navigation" />
     <include app:graph="@navigation/upload_navigation" />
+    <include app:graph="@navigation/player_navigation" />
 
 </navigation>

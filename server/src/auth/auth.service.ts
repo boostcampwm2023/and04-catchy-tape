@@ -78,4 +78,9 @@ export class AuthService {
       return true;
     }
   }
+
+  async deleteUser(user: User): Promise<{ userId: string }> {
+    await this.userRepository.delete(user.user_id);
+    return { userId: user.user_id };
+  }
 }

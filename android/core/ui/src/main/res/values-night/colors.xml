@@ -8,4 +8,6 @@
     <color name="on_surface">#FFFFFFFF</color>
     <color name="error">#FFF2B8B5</color>
     <color name="outline_variant">#FF424242</color>
+
+    <color name="secondary">#FF48CAE4</color>
 </resources>
