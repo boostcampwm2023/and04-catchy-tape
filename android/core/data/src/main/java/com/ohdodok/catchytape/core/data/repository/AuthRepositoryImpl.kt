@@ -1,20 +1,27 @@
 package com.ohdodok.catchytape.core.data.repository
 
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.stringPreferencesKey
 import com.ohdodok.catchytape.core.data.api.UserApi
-import com.ohdodok.catchytape.core.data.datasource.TokenLocalDataSource
 import com.ohdodok.catchytape.core.data.model.LoginRequest
 import com.ohdodok.catchytape.core.data.model.SignUpRequest
 import com.ohdodok.catchytape.core.data.store.TokenStore
 import com.ohdodok.catchytape.core.domain.repository.AuthRepository
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 class AuthRepositoryImpl @Inject constructor(
     private val userApi: UserApi,
-    private val tokenDataSource: TokenLocalDataSource,
     private val tokenStore: TokenStore,
+    private val dataStore: DataStore<Preferences>
 ) : AuthRepository {
+
+    private val accessTokenKey = stringPreferencesKey("accessToken")
 
     override fun loginWithGoogle(googleToken: String): Flow<String> = flow {
         val response = userApi.login(LoginRequest(idToken = googleToken))
@@ -43,7 +50,7 @@ class AuthRepositoryImpl @Inject constructor(
     }
 
     override suspend fun saveAccessToken(token: String) {
-        tokenDataSource.saveAccessToken(token)
+        dataStore.edit { preferences -> preferences[accessTokenKey] = token }
     }
 
     override fun isDuplicatedNickname(nickname: String): Flow<Boolean> = flow {
@@ -57,9 +64,10 @@ class AuthRepositoryImpl @Inject constructor(
     }
 
     override suspend fun tryLoginAutomatically(): Boolean {
-        val accessToken = tokenDataSource.getAccessToken()
+        val accessToken =
+            dataStore.data.map { preferences -> preferences[accessTokenKey] ?: "" }.first()
 
-        if(accessToken.isBlank()) return false
+        if (accessToken.isBlank()) return false
 
         return userApi.verify("Bearer $accessToken").isSuccessful
     }
