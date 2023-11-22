@@ -14,7 +14,7 @@ import { Music_Playlist } from './music_playlist.entity';
 @Entity({ name: 'playlist' })
 export class Playlist extends BaseEntity {
   @PrimaryGeneratedColumn()
-  playlistId: string;
+  playlist_Id: number;
 
   @Column()
   playlist_title: string;
