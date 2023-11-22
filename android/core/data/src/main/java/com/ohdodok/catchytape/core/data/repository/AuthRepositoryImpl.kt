@@ -59,11 +59,8 @@ class AuthRepositoryImpl @Inject constructor(
     override suspend fun tryLoginAutomatically(): Boolean {
         val accessToken = tokenDataSource.getAccessToken()
 
-        return if(accessToken.isNotBlank()) {
-            tokenStore.updateToken(accessToken)
-            true
-        } else {
-            false
-        }
+        if(accessToken.isBlank()) return false
+
+        return userApi.verify("Bearer $accessToken").isSuccessful
     }
 }
