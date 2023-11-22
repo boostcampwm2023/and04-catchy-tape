@@ -28,7 +28,7 @@ object NetworkModule {
 
         return Interceptor { chain ->
             val newRequest = chain.request().newBuilder()
-                .addHeader("Authorization", tokenStore.token)
+                .addHeader("Authorization", "Bearer ${tokenStore.token}")
                 .build()
 
             chain.proceed(newRequest)
