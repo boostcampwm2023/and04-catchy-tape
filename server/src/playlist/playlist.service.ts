@@ -52,6 +52,11 @@ export class PlaylistService {
       throw new HttpException('NOT_EXIST_MUSIC', HTTP_STATUS_CODE.BAD_REQUEST);
     }
 
+    // 이미 추가된 음악인지 확인
+    if (await this.isAlreadyAdded(playlistId, musicId)) {
+      throw new HttpException('ALREADY_ADDED', HTTP_STATUS_CODE.BAD_REQUEST);
+    }
+
     // 관계테이블에 추가
     const new_music_playlist: Music_Playlist =
       this.music_playlistRepository.create({
@@ -63,6 +68,14 @@ export class PlaylistService {
       await this.music_playlistRepository.save(new_music_playlist);
     this.setUpdatedAtNow(playlistId);
     return result.music_playlist_id;
+  }
+
+  async isAlreadyAdded(playlistId: number, musicId: number): Promise<boolean> {
+    const count: number = await this.music_playlistRepository.countBy({
+      music: { musicId: musicId },
+      playlist: { playlist_Id: playlistId },
+    });
+    return count !== 0;
   }
 
   async isExistPlaylistOnUser(
