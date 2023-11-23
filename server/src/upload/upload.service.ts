@@ -3,6 +3,7 @@ import { HTTP_STATUS_CODE } from 'src/httpStatusCode.enum';
 import { NcloudConfigService } from './../config/ncloud.config';
 import { S3 } from 'aws-sdk';
 import { keyFlags, keyHandler } from './../constants';
+import { Readable } from 'stream';
 
 @Injectable()
 export class UploadService {
@@ -45,6 +46,40 @@ export class UploadService {
     } catch (error) {
       if (error instanceof HttpException) throw error;
 
+      throw new HttpException('SERVER ERROR', HTTP_STATUS_CODE.SERVER_ERROR);
+    }
+  }
+
+  async uploadMusic(file: Express.Multer.File): Promise<{ url: string }> {
+    try {
+      const uploadResult = await this.objectStorage
+        .upload({
+          Bucket: 'catchy-tape-bucket2',
+          Key: `music/example/${file.originalname}`,
+          Body: Readable.from(file.buffer),
+          ACL: 'public-read',
+        })
+        .promise();
+
+      return { url: uploadResult.Location };
+    } catch {
+      throw new HttpException('SERVER ERROR', HTTP_STATUS_CODE.SERVER_ERROR);
+    }
+  }
+
+  async uploadImage(file: Express.Multer.File): Promise<{ url: string }> {
+    try {
+      const uploadResult = await this.objectStorage
+        .upload({
+          Bucket: 'catchy-tape-bucket2',
+          Key: `image/example/${file.originalname}`,
+          Body: Readable.from(file.buffer),
+          ACL: 'public-read',
+        })
+        .promise();
+
+      return { url: uploadResult.Location };
+    } catch {
       throw new HttpException('SERVER ERROR', HTTP_STATUS_CODE.SERVER_ERROR);
     }
   }
