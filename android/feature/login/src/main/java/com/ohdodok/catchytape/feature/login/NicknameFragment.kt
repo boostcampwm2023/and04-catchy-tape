@@ -1,5 +1,7 @@
 package com.ohdodok.catchytape.feature.login
 
+import android.content.ComponentName
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.TextView
@@ -41,6 +43,9 @@ class NicknameFragment : BaseFragment<FragmentNicknameBinding>(R.layout.fragment
             viewModel.events.collect { event ->
                 when (event) {
                     is NicknameEvent.NavigateToHome -> {
+                        val intent = Intent()
+                        intent.component = ComponentName("com.ohdodok.catchytape", "com.ohdodok.catchytape.MainActivity")
+                        startActivity(intent)
                         activity?.finish()
                     }
                 }
