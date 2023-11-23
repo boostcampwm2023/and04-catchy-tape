@@ -45,4 +45,36 @@ export class Music_Playlist extends BaseEntity {
       },
     }).then((a: Music_Playlist[]) => a.map((b) => b.music));
   }
+
+  static async getRecentPlayedMusicByUserId(userId: string): Promise<Music[]> {
+    return await this.find({
+      relations: {
+        music: true,
+      },
+      where: {
+        playlist: {
+          playlist_title: '최근 재생 목록',
+        },
+        music: {
+          user: {
+            user_id: userId,
+          },
+        },
+      },
+      select: {
+        music_playlist_id: false,
+        music: {
+          musicId: true,
+          title: true,
+          musicFile: true,
+          cover: true,
+          genre: true,
+        },
+      },
+      order: {
+        music_playlist_id: 'DESC',
+      },
+      take: 10,
+    }).then((a: Music_Playlist[]) => a.map((b) => b.music));
+  }
 }
