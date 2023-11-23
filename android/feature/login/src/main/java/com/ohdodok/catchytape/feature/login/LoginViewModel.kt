@@ -2,6 +2,8 @@ package com.ohdodok.catchytape.feature.login
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.ohdodok.catchytape.core.domain.model.CtErrorType
+import com.ohdodok.catchytape.core.domain.model.CtException
 import com.ohdodok.catchytape.core.domain.usecase.AutomaticallyLoginUseCase
 import com.ohdodok.catchytape.core.domain.usecase.LoginUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -25,11 +27,14 @@ class LoginViewModel @Inject constructor(
     var isAutoLoginFinished: Boolean = false
         private set
 
-    fun login(token: String, isAutoLogin: Boolean = false) {
+    fun login(token: String) {
         loginUseCase(token)
-            .catch {
-                if (isAutoLogin.not()) {
+            .catch { throwable ->
+                val exception = (throwable as CtException)
+                if (exception.ctError == CtErrorType.WRONG_TOKEN) {
                     _events.emit(LoginEvent.NavigateToNickName(token))
+                } else {
+                    _events.emit(LoginEvent.ShowMessage(exception.ctError))
                 }
             }.onEach {
                 _events.emit(LoginEvent.NavigateToHome)
@@ -48,4 +53,5 @@ class LoginViewModel @Inject constructor(
 sealed interface LoginEvent {
     data object NavigateToHome : LoginEvent
     data class NavigateToNickName(val googleToken: String) : LoginEvent
+    data class ShowMessage(val error: CtErrorType) : LoginEvent
 }

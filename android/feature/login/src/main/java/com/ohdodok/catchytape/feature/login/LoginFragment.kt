@@ -66,6 +66,11 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(R.layout.fragment_login
                             )
                         )
                     }
+
+                    is LoginEvent.ShowMessage -> {
+                        val messageId = fetchCtErrorMessageId(event.error)
+                        showMessage(messageId)
+                    }
                 }
             }
         }

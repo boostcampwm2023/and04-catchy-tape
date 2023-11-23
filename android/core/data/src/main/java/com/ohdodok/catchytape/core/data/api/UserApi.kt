@@ -16,7 +16,7 @@ interface UserApi {
     @POST("users/login")
     suspend fun login(
         @Body loginRequest: LoginRequest
-    ): Response<LoginResponse>
+    ): LoginResponse
 
     @POST("users/signup")
     suspend fun signUp(
