@@ -1,6 +1,5 @@
 package com.ohdodok.catchytape.core.data.repository
 
-import com.ohdodok.catchytape.core.data.api.FileType
 import com.ohdodok.catchytape.core.data.api.UploadApi
 import com.ohdodok.catchytape.core.domain.repository.UrlRepository
 import kotlinx.coroutines.flow.Flow
@@ -25,9 +24,8 @@ class UrlRepositoryImpl @Inject constructor(
         }
     }
 
-    override fun getImageUrl(uuid: String, file: File): Flow<String> = flow {
-        val response =
-            uploadApi.getUrl(uuid = uuid, type = FileType.COVER, file = file.toMultipart())
+    override fun getImageUrl(file: File): Flow<String> = flow {
+        val response = uploadApi.postImage(file.toMultipart("image/png"))
         if (response.isSuccessful) {
             response.body()?.let { urlResponse -> emit(urlResponse.url) }
         } else {
@@ -36,9 +34,8 @@ class UrlRepositoryImpl @Inject constructor(
         }
     }
 
-    override fun getAudioUrl(uuid: String, file: File): Flow<String> = flow {
-        val response =
-            uploadApi.getUrl(uuid = uuid, type = FileType.MUSIC, file = file.toMultipart())
+    override fun getAudioUrl(file: File): Flow<String> = flow {
+        val response = uploadApi.postMusic(file.toMultipart("audio/mpeg"))
         if (response.isSuccessful) {
             response.body()?.let { urlResponse -> emit(urlResponse.url) }
         } else {
@@ -47,8 +44,8 @@ class UrlRepositoryImpl @Inject constructor(
         }
     }
 
-    private fun File.toMultipart(): MultipartBody.Part {
-        val fileBody = this.asRequestBody("multipart/form-data".toMediaTypeOrNull())
+    private fun File.toMultipart(contentType: String): MultipartBody.Part {
+        val fileBody = this.asRequestBody(contentType.toMediaTypeOrNull())
         return MultipartBody.Part.createFormData("file", this.name, fileBody)
     }
 }

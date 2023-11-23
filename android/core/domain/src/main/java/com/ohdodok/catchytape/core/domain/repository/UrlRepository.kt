@@ -7,8 +7,8 @@ interface UrlRepository {
 
     fun getUuid(): Flow<String>
 
-    fun getImageUrl(uuid: String, file: File): Flow<String>
+    fun getImageUrl(file: File): Flow<String>
 
-    fun getAudioUrl(uuid: String, file: File): Flow<String>
+    fun getAudioUrl(file: File): Flow<String>
 
 }

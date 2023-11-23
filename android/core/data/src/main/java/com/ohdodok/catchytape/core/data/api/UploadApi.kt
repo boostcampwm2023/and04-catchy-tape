@@ -1,14 +1,19 @@
 package com.ohdodok.catchytape.core.data.api
 
+import com.ohdodok.catchytape.core.data.model.PreSignedUrlResponse
 import com.ohdodok.catchytape.core.data.model.UrlResponse
 import com.ohdodok.catchytape.core.data.model.UuidResponse
-import kotlinx.serialization.SerialName
 import okhttp3.MultipartBody
 import retrofit2.Response
+import retrofit2.http.FormUrlEncoded
 import retrofit2.http.GET
+import retrofit2.http.Header
 import retrofit2.http.Multipart
+import retrofit2.http.POST
+import retrofit2.http.PUT
 import retrofit2.http.Part
 import retrofit2.http.Query
+import retrofit2.http.Url
 
 interface UploadApi {
 
@@ -17,18 +22,21 @@ interface UploadApi {
     ): Response<UuidResponse>
 
     @GET("upload")
-    @Multipart
-    suspend fun getUrl(
-        @Part file: MultipartBody.Part,
+    suspend fun getPreSignedUrl(
         @Query("uuid") uuid: String,
-        @Query("type") type: FileType,
+        @Query("type") type: String,
+    ): Response<PreSignedUrlResponse>
+
+    @Multipart
+    @POST("upload/music")
+    suspend fun postMusic(
+        @Part part: MultipartBody.Part,
     ): Response<UrlResponse>
 
-}
+    @Multipart
+    @POST("upload/image")
+    suspend fun postImage(
+        @Part part: MultipartBody.Part,
+    ): Response<UrlResponse>
 
-enum class FileType {
-    @SerialName("music")
-    MUSIC,
-    @SerialName("cover")
-    COVER
 }

@@ -1,7 +1,12 @@
 package com.ohdodok.catchytape.feature.upload
 
+import android.content.ContentValues
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
+import android.os.Environment
+import android.provider.DocumentsContract
+import android.provider.MediaStore
 import android.provider.OpenableColumns
 import android.view.View
 import androidx.activity.result.PickVisualMediaRequest
@@ -13,7 +18,9 @@ import com.ohdodok.catchytape.catchytape.upload.R
 import com.ohdodok.catchytape.catchytape.upload.databinding.FragmentUploadBinding
 import com.ohdodok.catchytape.core.ui.BaseFragment
 import dagger.hilt.android.AndroidEntryPoint
+import timber.log.Timber
 import java.io.File
+import java.io.FileOutputStream
 
 @AndroidEntryPoint
 class UploadFragment : BaseFragment<FragmentUploadBinding>(R.layout.fragment_upload) {
@@ -21,14 +28,14 @@ class UploadFragment : BaseFragment<FragmentUploadBinding>(R.layout.fragment_upl
 
     private val imagePickerLauncher = registerForActivityResult(PickVisualMedia()) { uri ->
         if (uri == null) return@registerForActivityResult
-        uri.path?.let { viewModel.uploadImage(File(it)) }
+        uri.toPath()?.let { path -> viewModel.uploadImage(File(path)) }
     }
 
     private val filePickerLauncher =
         registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
             if (uri == null) return@registerForActivityResult
+            uri.toPath()?.let { path -> viewModel.uploadAudio(File(path)) }
             binding.btnFile.text = getFileName(uri)
-            uri.path?.let { viewModel.uploadAudio(File(it)) }
         }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -81,5 +88,17 @@ class UploadFragment : BaseFragment<FragmentUploadBinding>(R.layout.fragment_upl
             return cursor.getString(nameIndex)
         }
         return null
+    }
+
+    private fun Uri.toPath(): String? {
+        val file = getFileName(this)?.let { File(requireContext().filesDir, it) }
+        val inputStream = requireContext().contentResolver.openInputStream(this)
+        val outputStream = FileOutputStream(file)
+        inputStream.use { input ->
+            outputStream.use { output ->
+                input?.copyTo(output)
+            }
+        }
+        return file?.absolutePath
     }
 }
