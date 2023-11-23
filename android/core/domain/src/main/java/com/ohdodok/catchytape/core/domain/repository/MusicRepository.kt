@@ -8,4 +8,7 @@ interface MusicRepository {
     fun getGenres(): Flow<List<String>>
 
     fun getRecentUploadedMusic(): Flow<List<Music>>
+
+    fun postMusic(title: String, imageUrl: String, audioUrl: String, genre: String): Flow<Unit>
+
 }

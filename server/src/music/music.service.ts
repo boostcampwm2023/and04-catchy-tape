@@ -10,7 +10,6 @@ import { ERROR_CODE } from 'src/config/errorCode.enum';
 
 @Injectable()
 export class MusicService {
-  //TODO: custom repository로 변경하기
   constructor(
     @InjectRepository(Music) private musicRepository: Repository<Music>,
   ) {}
@@ -64,17 +63,22 @@ export class MusicService {
 
   async getRecentMusic(): Promise<Music[]> {
     try {
-      const musics = await this.musicRepository.find({
-        order: {
-          created_at: 'DESC',
-        },
-        take: 10,
-      });
-
-      return musics;
+      return Music.getRecentMusic();
     } catch {
       throw new CatchyException(
         'SERVER ERROR',
+        HTTP_STATUS_CODE.SERVER_ERROR,
+        ERROR_CODE.SERVICE_ERROR,
+      );
+    }
+  }
+
+  async getMyUploads(userId: string, count: number): Promise<Music[]> {
+    try {
+      return Music.getMusicListByUserId(userId, count);
+    } catch {
+      throw new CatchyException(
+        'SERVER_ERROR',
         HTTP_STATUS_CODE.SERVER_ERROR,
         ERROR_CODE.SERVICE_ERROR,
       );
