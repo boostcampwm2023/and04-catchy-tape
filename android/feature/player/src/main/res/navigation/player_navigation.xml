@@ -9,6 +9,11 @@
         android:id="@+id/player_fragment"
         android:name="com.ohdodok.catchytape.feature.player.PlayerFragment"
         android:label="player"
-        tools:layout="@layout/fragment_player" />
+        tools:layout="@layout/fragment_player">
+
+        <deepLink app:uri="android-app://com.ohdodok.catchytape/player_fragment" />
+
+
+    </fragment>
 
 </navigation>
