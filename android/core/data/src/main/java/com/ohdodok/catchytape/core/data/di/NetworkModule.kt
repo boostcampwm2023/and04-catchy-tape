@@ -88,12 +88,13 @@ object NetworkModule {
                 val errorString = response.body?.string()
                 val errorResponse = Json.decodeFromString<ErrorResponse>(errorString ?: "")
 
-                when (errorResponse.errorCode) { // TODO : 서버가 정해 지면, statusCode 대신, 변경 예정
-                    400 -> throw CtException(errorResponse.message, CtErrorType.BAD_REQUEST)
-                    401 -> throw CtException(errorResponse.message, CtErrorType.WRONG_TOKEN)
-                    409 -> throw CtException(errorResponse.message, CtErrorType.DUPLICATED_NICKNAME)
-                    500 -> throw CtException(errorResponse.message, CtErrorType.SERVER)
-                    else -> throw CtException(errorResponse.message, CtErrorType.IO)
+                val ctErrorEnums = CtErrorType.values().toList()
+                val ctError = ctErrorEnums.find { it.errorCode == errorResponse.errorCode }
+
+                if (ctError != null) {
+                    throw CtException(errorResponse.message, ctError)
+                } else {
+                    throw CtException(errorResponse.message, CtErrorType.UN_KNOWN)
                 }
             } catch (e: Exception) {
                 when (e) {
