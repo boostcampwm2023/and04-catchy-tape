@@ -20,7 +20,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.viewModel = viewModel
-        binding.rvRecentlyAddedSong.adapter = MusicAdapter(musicItemOrientation = Orientation.Horizontal)
+        binding.rvRecentlyAddedSong.adapter = MusicAdapter(musicItemOrientation = Orientation.HORIZONTAL)
 
         binding.ibUpload.setOnClickListener {
             val request = NavDeepLinkRequest.Builder
