@@ -23,7 +23,10 @@ export class MusicService {
     return false;
   }
 
-  createMusic(musicCreateDto: MusicCreateDto, user_id: string): void {
+  async createMusic(
+    musicCreateDto: MusicCreateDto,
+    user_id: string,
+  ): Promise<number> {
     try {
       const { title, cover, file: musicFile, genre } = musicCreateDto;
 
@@ -44,7 +47,8 @@ export class MusicService {
         user: { user_id: user_id },
       });
 
-      this.musicRepository.save(newMusic);
+      const savedMusic: Music = await this.musicRepository.save(newMusic);
+      return savedMusic.musicId;
     } catch (err) {
       if (err instanceof CatchyException) {
         throw err;

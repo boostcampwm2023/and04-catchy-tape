@@ -27,10 +27,13 @@ export class MusicController {
   async upload(
     @Body() musicCreateDto: MusicCreateDto,
     @Req() req,
-  ): Promise<{ userId: string }> {
+  ): Promise<{ musicId: number }> {
     const userId = req.user.user_id;
-    this.musicService.createMusic(musicCreateDto, userId);
-    return { userId };
+    const savedMusicId: number = await this.musicService.createMusic(
+      musicCreateDto,
+      userId,
+    );
+    return { musicId: savedMusicId };
   }
 
   @Get('recent-uploads')
