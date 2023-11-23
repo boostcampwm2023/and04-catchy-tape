@@ -41,4 +41,31 @@ export class Music extends BaseEntity {
 
   @OneToMany(() => Music_Playlist, (music_playlist) => music_playlist.music)
   music_playlist: Music_Playlist[];
+
+  static async getMusicListByUserId(
+    userId: string,
+    count: number,
+  ): Promise<Music[]> {
+    return await this.find({
+      relations: {
+        user: true,
+      },
+      where: {
+        user: { user_id: userId },
+      },
+      select: {
+        musicId: true,
+        title: true,
+        cover: true,
+        musicFile: true,
+        genre: true,
+        created_at: true,
+        user: { user_id: true, nickname: true },
+      },
+      order: {
+        created_at: 'DESC',
+      },
+      take: count,
+    });
+  }
 }
