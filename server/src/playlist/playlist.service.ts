@@ -22,17 +22,21 @@ export class PlaylistService {
     userId: string,
     playlistCreateDto: PlaylistCreateDto,
   ): Promise<number> {
-    const title: string = playlistCreateDto.title;
-    const newPlaylist: Playlist = this.playlistRepository.create({
-      playlist_title: title,
-      created_at: new Date(),
-      updated_at: new Date(),
-      user: { user_id: userId },
-    });
+    try {
+      const title: string = playlistCreateDto.title;
+      const newPlaylist: Playlist = this.playlistRepository.create({
+        playlist_title: title,
+        created_at: new Date(),
+        updated_at: new Date(),
+        user: { user_id: userId },
+      });
 
-    const result: Playlist = await this.playlistRepository.save(newPlaylist);
-    const playlistId: number = result.playlist_Id;
-    return playlistId;
+      const result: Playlist = await this.playlistRepository.save(newPlaylist);
+      const playlistId: number = result.playlist_Id;
+      return playlistId;
+    } catch {
+      throw new HttpException('SERVER_ERROR', HTTP_STATUS_CODE.SERVER_ERROR);
+    }
   }
 
   async addMusicToPlaylist(
@@ -52,34 +56,101 @@ export class PlaylistService {
       throw new HttpException('NOT_EXIST_MUSIC', HTTP_STATUS_CODE.BAD_REQUEST);
     }
 
+    // 이미 추가된 음악인지 확인
+    if (await this.isAlreadyAdded(playlistId, musicId)) {
+      throw new HttpException('ALREADY_ADDED', HTTP_STATUS_CODE.BAD_REQUEST);
+    }
+
     // 관계테이블에 추가
-    const new_music_playlist: Music_Playlist =
-      this.music_playlistRepository.create({
+    try {
+      const new_music_playlist: Music_Playlist =
+        this.music_playlistRepository.create({
+          music: { musicId: musicId },
+          playlist: { playlist_Id: playlistId },
+        });
+
+      const result: Music_Playlist =
+        await this.music_playlistRepository.save(new_music_playlist);
+      this.setUpdatedAtNow(playlistId);
+      return result.music_playlist_id;
+    } catch {
+      throw new HttpException('SERVER_ERROR', HTTP_STATUS_CODE.SERVER_ERROR);
+    }
+  }
+
+  async isAlreadyAdded(playlistId: number, musicId: number): Promise<boolean> {
+    try {
+      const count: number = await this.music_playlistRepository.countBy({
         music: { musicId: musicId },
         playlist: { playlist_Id: playlistId },
       });
-
-    const result: Music_Playlist =
-      await this.music_playlistRepository.save(new_music_playlist);
-    return result.music_playlist_id;
+      return count !== 0;
+    } catch {
+      throw new HttpException('SERVER_ERROR', HTTP_STATUS_CODE.SERVER_ERROR);
+    }
   }
 
   async isExistPlaylistOnUser(
     playlistId: number,
     userId: string,
   ): Promise<boolean> {
-    const playlistCount: number = await this.playlistRepository.countBy({
-      playlist_Id: playlistId,
-      user: { user_id: userId },
-    });
-    return playlistCount !== 0;
+    try {
+      const playlistCount: number = await this.playlistRepository.countBy({
+        playlist_Id: playlistId,
+        user: { user_id: userId },
+      });
+      return playlistCount !== 0;
+    } catch {
+      throw new HttpException('SERVER_ERROR', HTTP_STATUS_CODE.SERVER_ERROR);
+    }
   }
 
   async isExistMusic(musicId: number): Promise<boolean> {
-    const musicCount: number = await this.MusicRepository.countBy({
-      musicId: musicId,
-    });
+    try {
+      const musicCount: number = await this.MusicRepository.countBy({
+        musicId: musicId,
+      });
 
-    return musicCount !== 0;
+      return musicCount !== 0;
+    } catch {
+      throw new HttpException('SERVER_ERROR', HTTP_STATUS_CODE.SERVER_ERROR);
+    }
+  }
+
+  async setUpdatedAtNow(playlistId: number): Promise<void> {
+    try {
+      const targetPlaylist: Playlist = await this.playlistRepository.findOne({
+        where: { playlist_Id: playlistId },
+      });
+      targetPlaylist.updated_at = new Date();
+      this.playlistRepository.save(targetPlaylist);
+    } catch {
+      throw new HttpException('SERVER_ERROR', HTTP_STATUS_CODE.SERVER_ERROR);
+    }
+  }
+
+  async getUserPlaylists(userId: string): Promise<Playlist[]> {
+    try {
+      return Playlist.getPlaylistsByUserId(userId);
+    } catch {
+      throw new HttpException('SERVER_ERROR', HTTP_STATUS_CODE.SERVER_ERROR);
+    }
+  }
+
+  async getPlaylistMusics(
+    userId: string,
+    playlistId: number,
+  ): Promise<Music[]> {
+    if (!(await this.isExistPlaylistOnUser(playlistId, userId))) {
+      throw new HttpException(
+        'NOT_EXIST_PLAYLIST_ON_USER',
+        HTTP_STATUS_CODE.BAD_REQUEST,
+      );
+    }
+    try {
+      return Music_Playlist.getMusicListByPlaylistId(playlistId);
+    } catch {
+      throw new HttpException('SERVER_ERROR', HTTP_STATUS_CODE.SERVER_ERROR);
+    }
   }
 }
