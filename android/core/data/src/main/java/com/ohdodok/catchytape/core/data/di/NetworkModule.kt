@@ -51,13 +51,11 @@ object NetworkModule {
 
     @Singleton
     @Provides
-    @Throws(RuntimeException::class)
     fun provideErrorInterceptor(): Interceptor {
         return Interceptor { chain ->
             try {
                 val response = chain.proceed(chain.request())
                 if (response.isSuccessful) return@Interceptor response
-
                 val errorString = response.body?.string()
                 val errorResponse = Json.decodeFromString<ErrorResponse>(errorString ?: "")
 
@@ -66,13 +64,13 @@ object NetworkModule {
                     401 -> throw CtException(errorResponse.message, CtErrorType.WRONG_TOKEN)
                     409 -> throw CtException(errorResponse.message, CtErrorType.DUPLICATED_NICKNAME)
                     500 -> throw CtException(errorResponse.message, CtErrorType.SERVER)
-                    else -> response
+                    else -> throw CtException(errorResponse.message, CtErrorType.IO)
                 }
             } catch (e: Exception) {
                 when (e) {
-                    is ConnectException -> throw CtException(e.message ?: "", CtErrorType.CONNECTION)
-                    is SSLHandshakeException -> throw CtException(e.message ?: "", CtErrorType.SSL_HAND_SHAKE)
-                    else -> throw CtException(e.message ?: "", CtErrorType.IO)
+                    is ConnectException -> throw CtException(e.message, CtErrorType.CONNECTION)
+                    is SSLHandshakeException -> throw CtException(e.message, CtErrorType.SSL_HAND_SHAKE)
+                    else -> throw CtException(e.message, CtErrorType.IO)
                 }
             }
         }

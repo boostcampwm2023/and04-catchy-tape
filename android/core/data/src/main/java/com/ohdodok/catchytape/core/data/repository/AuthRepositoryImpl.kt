@@ -12,7 +12,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
-import timber.log.Timber
 import javax.inject.Inject
 
 class AuthRepositoryImpl @Inject constructor(
@@ -25,10 +24,6 @@ class AuthRepositoryImpl @Inject constructor(
 
     override fun loginWithGoogle(googleToken: String): Flow<String> = flow {
         val loginResponse = userApi.login(LoginRequest(idToken = googleToken))
-
-        if (loginResponse.accessToken.isEmpty()) {
-            Timber.d("123")
-        }
         saveIdToken(googleToken)
         emit(loginResponse.accessToken)
     }
