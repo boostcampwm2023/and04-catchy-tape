@@ -8,6 +8,7 @@ import {
   UseGuards,
   UsePipes,
   ValidationPipe,
+  Query,
 } from '@nestjs/common';
 import { MusicService } from './music.service';
 import { HTTP_STATUS_CODE } from 'src/httpStatusCode.enum';
@@ -39,7 +40,7 @@ export class MusicController {
   @Get('recent-uploads')
   @HttpCode(HTTP_STATUS_CODE.SUCCESS)
   async getRecentMusics(): Promise<Music[]> {
-    const musics = await this.musicService.getRecentMusic();
+    const musics = this.musicService.getRecentMusic();
 
     return musics;
   }
@@ -50,5 +51,16 @@ export class MusicController {
     const genreName: string[] = Object.keys(Genres);
 
     return { genres: genreName };
+  }
+
+  @Get('my-uploads')
+  @UseGuards(AuthGuard())
+  @HttpCode(HTTP_STATUS_CODE.SUCCESS)
+  async getMyUploads(
+    @Req() req,
+    @Query('count') count: number,
+  ): Promise<Music[]> {
+    const userId: string = req.user.user_id;
+    return this.musicService.getMyUploads(userId, count);
   }
 }
