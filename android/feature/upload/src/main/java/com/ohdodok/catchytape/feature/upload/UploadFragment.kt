@@ -48,7 +48,7 @@ class UploadFragment : BaseFragment<FragmentUploadBinding>(R.layout.fragment_upl
         repeatOnStarted {
             viewModel.events.collect { event ->
                 when (event) {
-                    is UploadEventState.NavigateToBack -> {
+                    is UploadEvent.NavigateToBack -> {
                         findNavController().popBackStack()
                     }
                 }
