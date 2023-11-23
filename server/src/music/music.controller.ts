@@ -3,12 +3,12 @@ import {
   Controller,
   Req,
   HttpCode,
-  HttpException,
   Post,
   Get,
   UseGuards,
   UsePipes,
   ValidationPipe,
+  Query,
 } from '@nestjs/common';
 import { MusicService } from './music.service';
 import { HTTP_STATUS_CODE } from 'src/httpStatusCode.enum';
@@ -28,27 +28,21 @@ export class MusicController {
   async upload(
     @Body() musicCreateDto: MusicCreateDto,
     @Req() req,
-  ): Promise<{ userId: string }> {
-    try {
-      const userId = req.user.user_id;
-
-      this.musicService.createMusic(musicCreateDto, userId);
-
-      return { userId };
-    } catch (err) {
-      if (err instanceof HttpException) {
-        throw err;
-      }
-      throw new HttpException('WRONG TOKEN', HTTP_STATUS_CODE['WRONG_TOKEN']);
-    }
+  ): Promise<{ musicId: number }> {
+    const userId = req.user.user_id;
+    const savedMusicId: number = await this.musicService.createMusic(
+      musicCreateDto,
+      userId,
+    );
+    return { musicId: savedMusicId };
   }
 
   @Get('recent-uploads')
   @HttpCode(HTTP_STATUS_CODE.SUCCESS)
-  async getRecentMusics(): Promise<{ musics: Music[] }> {
-    const musics = await this.musicService.getRecentMusic();
+  async getRecentMusics(): Promise<Music[]> {
+    const musics = this.musicService.getRecentMusic();
 
-    return { musics };
+    return musics;
   }
 
   @Get('genres')
@@ -57,5 +51,16 @@ export class MusicController {
     const genreName: string[] = Object.keys(Genres);
 
     return { genres: genreName };
+  }
+
+  @Get('my-uploads')
+  @UseGuards(AuthGuard())
+  @HttpCode(HTTP_STATUS_CODE.SUCCESS)
+  async getMyUploads(
+    @Req() req,
+    @Query('count') count: number,
+  ): Promise<Music[]> {
+    const userId: string = req.user.user_id;
+    return this.musicService.getMyUploads(userId, count);
   }
 }

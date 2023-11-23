@@ -1,10 +1,7 @@
 package com.ohdodok.catchytape.core.data.repository
 
-import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.core.edit
-import androidx.datastore.preferences.core.stringPreferencesKey
 import com.ohdodok.catchytape.core.data.api.UserApi
+import com.ohdodok.catchytape.core.data.datasource.TokenLocalDataSource
 import com.ohdodok.catchytape.core.data.model.LoginRequest
 import com.ohdodok.catchytape.core.data.model.SignUpRequest
 import com.ohdodok.catchytape.core.domain.repository.AuthRepository
@@ -14,10 +11,8 @@ import javax.inject.Inject
 
 class AuthRepositoryImpl @Inject constructor(
     private val userApi: UserApi,
-    private val preferenceDataStore: DataStore<Preferences>
+    private val tokenDataSource: TokenLocalDataSource,
 ) : AuthRepository {
-
-    private val tokenKey = stringPreferencesKey("token")
 
     override fun loginWithGoogle(googleToken: String): Flow<String> = flow {
         val response = userApi.login(LoginRequest(idToken = googleToken))
@@ -43,9 +38,25 @@ class AuthRepositoryImpl @Inject constructor(
         }
     }
 
-
-    override suspend fun saveToken(token: String) {
-        preferenceDataStore.edit { preferences -> preferences[tokenKey] = token }
+    override suspend fun saveAccessToken(token: String) {
+        tokenDataSource.saveAccessToken(token)
     }
 
+    override fun isDuplicatedNickname(nickname: String): Flow<Boolean> = flow {
+        val response = userApi.verifyDuplicatedNickname(nickname = nickname)
+
+        when (response.code()) {
+            in 200..299 -> emit(false)
+            409 -> emit(true)
+            else -> throw RuntimeException("네트워크 에러") // fixme : 예외 처리 로직이 정해지면 수정
+        }
+    }
+
+    override suspend fun tryLoginAutomatically(): Boolean {
+        val accessToken = tokenDataSource.getAccessToken()
+
+        if (accessToken.isBlank()) return false
+
+        return userApi.verify("Bearer $accessToken").isSuccessful
+    }
 }

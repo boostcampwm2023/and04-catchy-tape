@@ -33,8 +33,13 @@ android {
 
 dependencies {
 
+    implementation(project(":core:domain"))
+
     api(libs.material)
 
     api(libs.navigation.fragment.ktx)
     api(libs.navigation.ui.ktx)
+
+    api(libs.glide)
+    
 }

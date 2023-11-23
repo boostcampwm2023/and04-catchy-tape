@@ -5,6 +5,10 @@
     <data>
 
         <variable
+            name="view"
+            type="android.view.View" />
+
+        <variable
             name="viewModel"
             type="com.ohdodok.catchytape.feature.upload.UploadViewModel" />
     </data>
@@ -15,7 +19,7 @@
         android:background="@color/surface">
 
         <com.google.android.material.appbar.MaterialToolbar
-            android:id="@+id/tb_upload_appbar"
+            android:id="@+id/tb_upload"
             style="@style/ToolBar"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -34,21 +38,30 @@
                 android:enabled="@{viewModel.isUploadEnable}"
                 android:text="@string/complete" />
 
-
         </com.google.android.material.appbar.MaterialToolbar>
+
+        <com.google.android.material.progressindicator.LinearProgressIndicator
+            android:id="@+id/progress_upload"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:indeterminate="true"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tb_upload"
+            android:visibility="@{viewModel.isLoading ? view.VISIBLE : view.GONE}" />
 
         <androidx.cardview.widget.CardView
             android:id="@+id/cv_upload_thumbnail"
             android:layout_width="200dp"
             android:layout_height="200dp"
             android:layout_marginTop="@dimen/extra_large"
+            android:contentDescription="@string/select_thumbnail"
             app:cardBackgroundColor="@color/on_surface_variant"
             app:cardCornerRadius="20dp"
             app:cardElevation="0dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tb_upload_appbar"
-            android:contentDescription="@string/select_thumbnail">
+            app:layout_constraintTop_toBottomOf="@id/tb_upload">
 
             <ImageView
                 android:id="@+id/iv_thumbnail_image"
@@ -56,36 +69,52 @@
                 android:layout_height="match_parent"
                 android:layout_gravity="center"
                 android:background="@color/white"
-                android:importantForAccessibility="no" />
+                android:importantForAccessibility="no"
+                app:imgUrl="@{viewModel.imageState.url}" />
 
             <ImageView
                 android:id="@+id/iv_camera_icon"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
                 android:layout_gravity="center"
+                android:importantForAccessibility="no"
                 android:src="@drawable/ic_camera"
-                android:importantForAccessibility="no"/>
+                app:visibility="@{viewModel.imageState.url.empty ? view.VISIBLE : view.GONE}" />
 
         </androidx.cardview.widget.CardView>
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btn_file"
+            style="@style/EditText"
+            android:layout_width="0dp"
+            android:layout_marginTop="@dimen/extra_large"
+            android:backgroundTint="@color/light_gray"
+            android:drawableEnd="@drawable/ic_upload"
+            android:drawableTint="@color/black"
+            android:textColor="@color/black"
+            android:hint="@string/upload_file"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/cv_upload_thumbnail" />
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/til_title"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="@dimen/margin_horizontal"
-            android:layout_marginTop="@dimen/extra_large"
+            android:layout_marginTop="@dimen/large"
             android:hint="@string/title"
             app:endIconDrawable="@drawable/ic_cancel"
             app:endIconMode="clear_text"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/cv_upload_thumbnail">
+            app:layout_constraintTop_toBottomOf="@id/btn_file">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:maxLength="10"
-                android:text="@={viewModel.uploadedMusicTitle}" />
+                android:text="@={viewModel.musicTitle}" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -95,21 +124,21 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="@dimen/margin_horizontal"
-            android:layout_marginTop="@dimen/medium"
+            android:layout_marginTop="@dimen/large"
             android:hint="@string/genre"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/til_title">
 
             <AutoCompleteTextView
+                android:id="@+id/actv_genre"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="none"
-                app:changeSelectedPosition="@{viewModel.onChangePosition}"
-                app:simpleItems="@array/genre_items" />
+                android:text="@={viewModel.musicGenre}"
+                app:list="@{viewModel.musicGenres}" />
 
         </com.google.android.material.textfield.TextInputLayout>
-
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

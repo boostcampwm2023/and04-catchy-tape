@@ -50,4 +50,5 @@ abstract class BaseFragment<VB : ViewDataBinding>(
             lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED, block)
         }
     }
+
 }

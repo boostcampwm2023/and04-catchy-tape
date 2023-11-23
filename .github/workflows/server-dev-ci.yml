@@ -1,0 +1,38 @@
+name: Backend Dev CI
+
+on:
+  pull_request:
+    branches: [develop]
+    paths:
+      - "server/**"
+
+defaults:
+  run:
+    working-directory: ./server
+
+jobs:
+  BACKEND-CI:
+    runs-on: ubuntu-20.04
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Use NodeJS
+        uses: actions/setup-node@v2
+        with:
+          node-version: 20.8.1
+
+      - name: Cache node modules
+        id: cache
+        uses: actions/cache@v2
+        with:
+          path: "**/node_modules"
+          key: npm-packages-${{ hashFiles('**/package-lock.json') }}
+
+      - name: Install Dependency
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: npm install
+
+      - name: Execute Test
+        run: npm run test

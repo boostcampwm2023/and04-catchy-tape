@@ -8,6 +8,10 @@ interface AuthRepository {
 
     fun signUpWithGoogle(googleToken: String, nickname: String): Flow<String>
 
-    suspend fun saveToken(token: String)
+    suspend fun saveAccessToken(token: String)
+
+    suspend fun tryLoginAutomatically(): Boolean
+
+    fun isDuplicatedNickname(nickname: String): Flow<Boolean>
 
 }

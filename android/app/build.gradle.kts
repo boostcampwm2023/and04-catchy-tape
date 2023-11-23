@@ -21,7 +21,7 @@ android {
         minSdk = 26
         targetSdk = 33
         versionCode = 1
-        versionName = "1.0.0"
+        versionName = "0.1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -63,6 +63,7 @@ dependencies {
     implementation(project(":feature:home"))
     implementation(project(":feature:login"))
     implementation(project(":feature:upload"))
+    implementation(project(":feature:player"))
     implementation(project(":core:data"))
 
     implementation(libs.core.ktx)

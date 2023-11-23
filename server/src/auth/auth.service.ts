@@ -1,9 +1,13 @@
-import { HttpException, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
+import { CatchyException } from 'src/config/catchyException';
+import { ERROR_CODE } from 'src/config/errorCode.enum';
+import { RECENT_PLAYLIST_NAME } from 'src/constants';
 import { UserCreateDto } from 'src/dto/userCreate.dto';
 import { User } from 'src/entity/user.entity';
 import { HTTP_STATUS_CODE } from 'src/httpStatusCode.enum';
+import { PlaylistService } from 'src/playlist/playlist.service';
 import { Repository } from 'typeorm';
 import { v4 as uuid } from 'uuid';
 
@@ -12,6 +16,7 @@ export class AuthService {
   constructor(
     @InjectRepository(User) private userRepository: Repository<User>,
     private jwtService: JwtService,
+    private readonly playlistService: PlaylistService,
   ) {}
 
   async login(email: string): Promise<{ accessToken: string }> {
@@ -25,9 +30,10 @@ export class AuthService {
 
       return { accessToken };
     } else {
-      throw new HttpException(
+      throw new CatchyException(
         'NOT_EXIST_USER',
         HTTP_STATUS_CODE['WRONG_TOKEN'],
+        ERROR_CODE.NOT_EXIST_USER,
       );
     }
   }
@@ -37,7 +43,11 @@ export class AuthService {
     const email: string = await this.getGoogleEmail(idToken);
 
     if (await this.isExistEmail(email)) {
-      throw new HttpException('EXIST_EMAIL', HTTP_STATUS_CODE.BAD_REQUEST);
+      throw new CatchyException(
+        'ALREADY_EXIST_EMAIL',
+        HTTP_STATUS_CODE.BAD_REQUEST,
+        ERROR_CODE.ALREADY_EXIST_EMAIL,
+      );
     }
     if (email) {
       const newUser: User = this.userRepository.create({
@@ -49,9 +59,16 @@ export class AuthService {
       });
       await this.userRepository.save(newUser);
 
+      this.playlistService.createPlaylist(newUser.user_id, {
+        title: RECENT_PLAYLIST_NAME,
+      });
       return this.login(email);
     }
-    throw new HttpException('WRONG_TOKEN', HTTP_STATUS_CODE.WRONG_TOKEN);
+    throw new CatchyException(
+      'WRONG_TOKEN',
+      HTTP_STATUS_CODE.WRONG_TOKEN,
+      ERROR_CODE.WRONG_TOKEN,
+    );
   }
 
   async getGoogleEmail(googleIdToken: string): Promise<string> {
@@ -62,7 +79,11 @@ export class AuthService {
     }).then((res) => res.json());
 
     if (!userInfo.email) {
-      throw new HttpException('EXPIRED_TOKEN', HTTP_STATUS_CODE.WRONG_TOKEN);
+      throw new CatchyException(
+        'EXPIRED_TOKEN',
+        HTTP_STATUS_CODE.WRONG_TOKEN,
+        ERROR_CODE.EXPIRED_TOKEN,
+      );
     }
     return userInfo.email;
   }
@@ -77,5 +98,10 @@ export class AuthService {
     } else {
       return true;
     }
+  }
+
+  async deleteUser(user: User): Promise<{ userId: string }> {
+    await this.userRepository.delete(user.user_id);
+    return { userId: user.user_id };
   }
 }

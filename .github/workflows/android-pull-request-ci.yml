@@ -36,10 +36,10 @@ jobs:
           KEYSTORE_PROPERTIES: ${{ secrets.KEYSTORE_PROPERTIES }}
           LOCAL_PROPERTIES: ${{ secrets.LOCAL_PROPERTIES }}
         run: |
-          echo "$DEBUG_KEYSTORE" | base64 -d > keystore.properties
+          echo "$DEBUG_KEYSTORE" | base64 -d > debug.keystore
           echo "$KEYSTORE_PROPERTIES" > keystore.properties
           echo "$LOCAL_PROPERTIES" > local.properties
-          ./gradlew testDebugUnitTest --stacktrace
+          ./gradlew debugUnitTest --stacktrace
 
       - name: Publish Test Results
         if: always()

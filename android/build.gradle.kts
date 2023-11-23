@@ -9,4 +9,17 @@ plugins {
     alias(libs.plugins.kotlinx.serialization) apply false
     alias(libs.plugins.navigation.safe.args) apply false
 }
+
+
+tasks.register<Exec>("domainUnitTest") {
+    commandLine = listOf("gradle", "core:domain:test")
+}
+
+
+tasks.register<Exec>("debugUnitTest") {
+    dependsOn("domainUnitTest")
+    commandLine = listOf("gradle", "testDebugUnitTest")
+}
+
+
 true // Needed to make the Suppress annotation work for the plugins block

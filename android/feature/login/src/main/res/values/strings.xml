@@ -6,4 +6,9 @@
     <!--    Nickname Fragment-->
     <string name="nickname_title">사용하실 닉네임을\n입력해주세요 :)</string>
     <string name="start">시작하기</string>
+    <string name="empty_nickname" />
+    <string name="valid_nickname">사용 가능한 닉네임이에요.</string>
+    <string name="duplicated_nickname">이미 사용중인 닉네임이에요.</string>
+    <string name="invalid_character">한글, 영어, 특수문자(-, _, .)만 입력 가능해요.</string>
+    <string name="invalid_length">닉네임은 2~10글자까지 가능해요.</string>
 </resources>

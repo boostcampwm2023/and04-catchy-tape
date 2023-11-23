@@ -14,6 +14,7 @@ export class NcloudConfigService {
         accessKeyId: this.configService.get<string>('ACCESS_ID'),
         secretAccessKey: this.configService.get<string>('SECRET_ACCESS_KEY'),
       },
+      signatureVersion: 'v4',
     });
   }
 }

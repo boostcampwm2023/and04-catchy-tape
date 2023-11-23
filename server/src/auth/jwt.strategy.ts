@@ -1,8 +1,10 @@
-import { HttpException, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Strategy, ExtractJwt } from 'passport-jwt';
+import { CatchyException } from 'src/config/catchyException';
+import { ERROR_CODE } from 'src/config/errorCode.enum';
 import { User } from 'src/entity/user.entity';
 import { HTTP_STATUS_CODE } from 'src/httpStatusCode.enum';
 import { Repository } from 'typeorm';
@@ -20,16 +22,17 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   }
 
   async validate(payload): Promise<User> {
-    const { userId } = payload;
+    const { user_Id } = payload;
 
     const user: User = await this.userRepository.findOne({
-      where: { user_id: userId },
+      where: { user_id: user_Id },
     });
 
-    if (!user) {
-      throw new HttpException(
-        'Not Exist User',
+    if (!user || !user_Id) {
+      throw new CatchyException(
+        'NOT_EXIST_USER',
         HTTP_STATUS_CODE['WRONG_TOKEN'],
+        ERROR_CODE.NOT_EXIST_USER,
       );
     }
 
