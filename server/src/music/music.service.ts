@@ -10,7 +10,6 @@ import { ERROR_CODE } from 'src/config/errorCode.enum';
 
 @Injectable()
 export class MusicService {
-  //TODO: custom repository로 변경하기
   constructor(
     @InjectRepository(Music) private musicRepository: Repository<Music>,
   ) {}
@@ -93,5 +92,9 @@ export class MusicService {
         ERROR_CODE.SERVICE_ERROR,
       );
     }
+  }
+
+  async getMyUploads(userId: string, count: number): Promise<Music[]> {
+    return Music.getMusicListByUserId(userId, count);
   }
 }
