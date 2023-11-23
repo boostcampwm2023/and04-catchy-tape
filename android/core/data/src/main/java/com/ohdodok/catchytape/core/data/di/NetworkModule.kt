@@ -4,7 +4,6 @@ import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFact
 import com.ohdodok.catchytape.core.data.BuildConfig
 import com.ohdodok.catchytape.core.data.datasource.TokenLocalDataSource
 import com.ohdodok.catchytape.core.data.di.qualifier.AuthInterceptor
-import com.ohdodok.catchytape.core.data.store.TokenStore
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
