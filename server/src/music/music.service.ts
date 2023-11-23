@@ -63,28 +63,7 @@ export class MusicService {
 
   async getRecentMusic(): Promise<Music[]> {
     try {
-      return await this.musicRepository.find({
-        relations: {
-          user: true,
-        },
-        select: {
-          musicId: true,
-          title: true,
-          lyrics: true,
-          cover: true,
-          musicFile: true,
-          genre: true,
-          created_at: true,
-          user: {
-            user_id: true,
-            nickname: true,
-          },
-        },
-        order: {
-          created_at: 'DESC',
-        },
-        take: 10,
-      });
+      return Music.getRecentMusic();
     } catch {
       throw new CatchyException(
         'SERVER ERROR',

@@ -46,7 +46,7 @@ export class Music extends BaseEntity {
     userId: string,
     count: number,
   ): Promise<Music[]> {
-    return await this.find({
+    return this.find({
       relations: {
         user: true,
       },
@@ -67,6 +67,31 @@ export class Music extends BaseEntity {
         created_at: 'DESC',
       },
       take: count,
+    });
+  }
+
+  static async getRecentMusic(): Promise<Music[]> {
+    return this.find({
+      relations: {
+        user: true,
+      },
+      select: {
+        musicId: true,
+        title: true,
+        lyrics: true,
+        cover: true,
+        musicFile: true,
+        genre: true,
+        created_at: true,
+        user: {
+          user_id: true,
+          nickname: true,
+        },
+      },
+      order: {
+        created_at: 'DESC',
+      },
+      take: 10,
     });
   }
 }
