@@ -9,4 +9,5 @@ data class MusicResponse (
     val cover: String,
     val musicFile : String,
     val genre: String,
+    val user: NicknameResponse
 )

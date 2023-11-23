@@ -25,17 +25,17 @@ class MusicRepositoryImpl @Inject constructor(
         val response = musicApi.getRecentUploads()
         when (response.code()) {
             // TODO : 네트워크 에러 로직 처리
-            in 200..299 -> emit(response.body()?.musics?.map { it.toDomain() } ?: emptyList())
+            in 200..299 -> emit(response.body()?.map { it.toDomain() } ?: emptyList())
             else -> throw RuntimeException("네트워크 에러")
         }
     }
 }
 
-fun MusicResponse.toDomain() : Music {
+fun MusicResponse.toDomain(): Music {
     return Music(
         id = musicId,
         title = title,
-        artist = "유랄라",
+        artist = user.nickname,
         imageUrl = cover
     )
 }
