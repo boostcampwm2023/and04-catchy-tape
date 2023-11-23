@@ -1,6 +1,5 @@
 package com.ohdodok.catchytape.feature.upload
 
-import android.net.Uri
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import java.io.File
@@ -9,9 +8,11 @@ import androidx.lifecycle.viewModelScope
 import com.ohdodok.catchytape.core.domain.usecase.UploadFileUseCase
 import com.ohdodok.catchytape.core.domain.usecase.GetMusicGenresUseCase
 import com.ohdodok.catchytape.core.domain.usecase.UploadMusicUseCase
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
@@ -27,6 +28,9 @@ class UploadViewModel @Inject constructor(
     private val uploadFileUseCase: UploadFileUseCase,
     private val uploadMusicUseCase: UploadMusicUseCase
 ) : ViewModel() {
+
+    private val _events = MutableSharedFlow<UploadEvent>()
+    val events = _events.asSharedFlow()
 
     val musicTitle = MutableStateFlow("")
     val musicGenre = MutableStateFlow("")
@@ -93,12 +97,12 @@ class UploadViewModel @Inject constructor(
     fun uploadMusic() {
         if (isUploadEnable.value) {
             uploadMusicUseCase(
-                imgUrl = imageState.value.url,
+                imageUrl = imageState.value.url,
                 audioUrl = audioState.value.url,
                 title = musicTitle.value,
                 genre = musicGenre.value
             ).onEach {
-                // TODO : 업로드 성공
+                _events.emit(UploadEvent.NavigateToBack)
             }.catch {
                 // TODO : 업로드 실패
             }.launchIn(viewModelScope)
@@ -110,4 +114,8 @@ data class UploadedFileState(
     val isLoading: Boolean = false,
     val url: String = ""
 )
+
+sealed interface UploadEvent {
+    data object NavigateToBack : UploadEvent
+}
 

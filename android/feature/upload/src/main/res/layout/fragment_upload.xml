@@ -91,6 +91,7 @@
             android:backgroundTint="@color/light_gray"
             android:drawableEnd="@drawable/ic_upload"
             android:drawableTint="@color/black"
+            android:textColor="@color/black"
             android:hint="@string/upload_file"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

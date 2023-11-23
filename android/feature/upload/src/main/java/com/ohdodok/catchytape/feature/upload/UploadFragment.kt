@@ -8,11 +8,13 @@ import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.result.contract.ActivityResultContracts.PickVisualMedia
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import com.ohdodok.catchytape.catchytape.upload.R
 import com.ohdodok.catchytape.catchytape.upload.databinding.FragmentUploadBinding
 import com.ohdodok.catchytape.core.ui.BaseFragment
 import dagger.hilt.android.AndroidEntryPoint
 import java.io.File
+import java.io.FileOutputStream
 
 @AndroidEntryPoint
 class UploadFragment : BaseFragment<FragmentUploadBinding>(R.layout.fragment_upload) {
@@ -20,27 +22,49 @@ class UploadFragment : BaseFragment<FragmentUploadBinding>(R.layout.fragment_upl
 
     private val imagePickerLauncher = registerForActivityResult(PickVisualMedia()) { uri ->
         if (uri == null) return@registerForActivityResult
-        uri.path?.let { viewModel.uploadImage(File(it)) }
+        uri.toPath()?.let { path -> viewModel.uploadImage(File(path)) }
     }
 
     private val filePickerLauncher =
         registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
             if (uri == null) return@registerForActivityResult
+            uri.toPath()?.let { path -> viewModel.uploadAudio(File(path)) }
             binding.btnFile.text = getFileName(uri)
-            uri.path?.let { viewModel.uploadAudio(File(it)) }
         }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.viewModel = viewModel
+
+        observeEvents()
+
         setUpFileBtn()
-        setupBackStack(binding.tbUpload)
+        setUpCompleteBtn()
         setupSelectThumbnailImage()
+        setupBackStack(binding.tbUpload)
+    }
+
+    private fun observeEvents() {
+        repeatOnStarted {
+            viewModel.events.collect { event ->
+                when (event) {
+                    is UploadEvent.NavigateToBack -> {
+                        findNavController().popBackStack()
+                    }
+                }
+            }
+        }
     }
 
     private fun setUpFileBtn() {
         binding.btnFile.setOnClickListener {
             filePickerLauncher.launch("audio/*")
+        }
+    }
+
+    private fun setUpCompleteBtn() {
+        binding.btnComplete.setOnClickListener {
+            viewModel.uploadMusic()
         }
     }
 
@@ -58,5 +82,17 @@ class UploadFragment : BaseFragment<FragmentUploadBinding>(R.layout.fragment_upl
             return cursor.getString(nameIndex)
         }
         return null
+    }
+
+    private fun Uri.toPath(): String? {
+        val file = getFileName(this)?.let { File(requireContext().filesDir, it) }
+        val inputStream = requireContext().contentResolver.openInputStream(this)
+        val outputStream = FileOutputStream(file)
+        inputStream.use { input ->
+            outputStream.use { output ->
+                input?.copyTo(output)
+            }
+        }
+        return file?.absolutePath
     }
 }
