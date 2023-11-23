@@ -12,7 +12,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
-import java.lang.RuntimeException
+import timber.log.Timber
 import javax.inject.Inject
 
 class AuthRepositoryImpl @Inject constructor(
@@ -24,16 +24,13 @@ class AuthRepositoryImpl @Inject constructor(
     private val accessTokenKey = stringPreferencesKey("accessToken")
 
     override fun loginWithGoogle(googleToken: String): Flow<String> = flow {
-        val response = userApi.login(LoginRequest(idToken = googleToken))
-        if (response.isSuccessful) {
-            response.body()?.let { loginResponse ->
-                saveIdToken(googleToken)
-                emit(loginResponse.accessToken)
-            }
-        } else if (response.code() == 401) {
-            // TODO : 네트워크 에러 로직
-            throw Exception("존재하지 않는 유저입니다.")
+        val loginResponse = userApi.login(LoginRequest(idToken = googleToken))
+
+        if (loginResponse.accessToken.isEmpty()) {
+            Timber.d("123")
         }
+        saveIdToken(googleToken)
+        emit(loginResponse.accessToken)
     }
 
     override fun signUpWithGoogle(googleToken: String, nickname: String): Flow<String> = flow {
