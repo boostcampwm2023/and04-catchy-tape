@@ -33,15 +33,15 @@
     <string name="description">설명</string>
     <string name="select_thumbnail">썸네일 이미지 선택</string>
 
-    <string name="error_message_bad_request">error_message_bad_request</string>
-    <string name="error_message_wrong_token">error_message_wrong_token</string>
-    <string name="error_message_duplicated_nickname">"error_message_duplicated_nickname"</string>
-    <string name="error_message_server">"error_message_server"</string>
+
+
     <string name="error_message_connection">"error_message_connection"</string>
     <string name="error_message_ssl_hand_shake">"error_message_ssl_hand_shake"</string>
     <string name="error_message_io">"error_message_io"</string>
-
     <string name="error_message_un_known">"error_message_un_known"</string>
+    <string name="error_message_wrong_token">error_message_wrong_token</string>
+    <string name="error_message_duplicated_nickname">"error_message_duplicated_nickname"</string>
+    <string name="error_message_server">"error_message_server"</string>
     <string name="error_message_not_exist_playlist_on_user">"error_message_not_exist_playlist_on_user"</string>
     <string name="error_message_not_exist_music">"error_message_not_exist_music"</string>
     <string name="error_message_already_added">"error_message_already_added"</string>

@@ -62,7 +62,6 @@ abstract class BaseFragment<VB : ViewDataBinding>(
         return when (ctErrorType) {
             CtErrorType.DUPLICATED_NICKNAME -> R.string.error_message_duplicated_nickname
             CtErrorType.WRONG_TOKEN -> R.string.error_message_wrong_token
-            CtErrorType.BAD_REQUEST -> R.string.error_message_bad_request
             CtErrorType.SERVER -> R.string.error_message_server
             CtErrorType.CONNECTION -> R.string.error_message_connection
             CtErrorType.IO -> R.string.error_message_io
