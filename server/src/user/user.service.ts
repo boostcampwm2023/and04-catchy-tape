@@ -3,12 +3,13 @@ import { HTTP_STATUS_CODE } from 'src/httpStatusCode.enum';
 import { User } from 'src/entity/user.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
+import { PlaylistService } from 'src/playlist/playlist.service';
 
 @Injectable()
 export class UserService {
-  //TODO: custom repository로 변경하기
   constructor(
     @InjectRepository(User) private userRepository: Repository<User>,
+    private playlistService: PlaylistService,
   ) {}
 
   async isDuplicatedUserEmail(userNickname: string): Promise<boolean> {
