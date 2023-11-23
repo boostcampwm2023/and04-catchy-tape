@@ -3,7 +3,6 @@ import {
   Controller,
   Req,
   HttpCode,
-  HttpException,
   Post,
   Get,
   UseGuards,
@@ -29,18 +28,9 @@ export class MusicController {
     @Body() musicCreateDto: MusicCreateDto,
     @Req() req,
   ): Promise<{ userId: string }> {
-    try {
-      const userId = req.user.user_id;
-
-      this.musicService.createMusic(musicCreateDto, userId);
-
-      return { userId };
-    } catch (err) {
-      if (err instanceof HttpException) {
-        throw err;
-      }
-      throw new HttpException('WRONG TOKEN', HTTP_STATUS_CODE['WRONG_TOKEN']);
-    }
+    const userId = req.user.user_id;
+    this.musicService.createMusic(musicCreateDto, userId);
+    return { userId };
   }
 
   @Get('recent-uploads')

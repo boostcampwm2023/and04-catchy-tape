@@ -1,10 +1,12 @@
-import { HttpException, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { HTTP_STATUS_CODE } from 'src/httpStatusCode.enum';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { MusicCreateDto } from 'src/dto/musicCreate.dto';
 import { Music } from 'src/entity/music.entity';
 import { Genres } from 'src/constants';
+import { CatchyException } from 'src/config/catchyException';
+import { ERROR_CODE } from 'src/config/errorCode.enum';
 
 @Injectable()
 export class MusicService {
@@ -26,9 +28,10 @@ export class MusicService {
       const { title, cover, file: musicFile, genre } = musicCreateDto;
 
       if (!this.isValidGenre(genre)) {
-        throw new HttpException(
+        throw new CatchyException(
           'NOT_EXIST_GENRE',
           HTTP_STATUS_CODE.BAD_REQUEST,
+          ERROR_CODE.NOT_EXIST_GENRE,
         );
       }
 
@@ -43,11 +46,15 @@ export class MusicService {
 
       this.musicRepository.save(newMusic);
     } catch (err) {
-      if (err instanceof HttpException) {
+      if (err instanceof CatchyException) {
         throw err;
       }
 
-      throw new HttpException('SERVER ERROR', HTTP_STATUS_CODE.SERVER_ERROR);
+      throw new CatchyException(
+        'SERVER ERROR',
+        HTTP_STATUS_CODE.SERVER_ERROR,
+        ERROR_CODE.SERVICE_ERROR,
+      );
     }
   }
 
@@ -62,7 +69,11 @@ export class MusicService {
 
       return musics;
     } catch {
-      throw new HttpException('SERVER ERROR', HTTP_STATUS_CODE.SERVER_ERROR);
+      throw new CatchyException(
+        'SERVER ERROR',
+        HTTP_STATUS_CODE.SERVER_ERROR,
+        ERROR_CODE.SERVICE_ERROR,
+      );
     }
   }
 }
