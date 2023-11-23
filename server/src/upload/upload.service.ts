@@ -1,9 +1,11 @@
-import { HttpException, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { HTTP_STATUS_CODE } from 'src/httpStatusCode.enum';
 import { NcloudConfigService } from './../config/ncloud.config';
 import { S3 } from 'aws-sdk';
 import { keyFlags, keyHandler } from './../constants';
 import { Readable } from 'stream';
+import { CatchyException } from 'src/config/catchyException';
+import { ERROR_CODE } from 'src/config/errorCode.enum';
 
 @Injectable()
 export class UploadService {
@@ -30,9 +32,10 @@ export class UploadService {
   async getSignedURL(type: string, uuid: string): Promise<string> {
     try {
       if (!this.isValidUUIDPattern(uuid) || !this.isValidFlag(type))
-        throw new HttpException(
+        throw new CatchyException(
           'INVALID_INPUT_VALUE',
           HTTP_STATUS_CODE.BAD_REQUEST,
+          ERROR_CODE.INVALID_INPUT_VALUE,
         );
 
       const keyPath = keyHandler[type](uuid);
@@ -44,9 +47,13 @@ export class UploadService {
         ACL: 'public-read',
       });
     } catch (error) {
-      if (error instanceof HttpException) throw error;
+      if (error instanceof CatchyException) throw error;
 
-      throw new HttpException('SERVER ERROR', HTTP_STATUS_CODE.SERVER_ERROR);
+      throw new CatchyException(
+        'SERVER ERROR',
+        HTTP_STATUS_CODE.SERVER_ERROR,
+        ERROR_CODE.SERVICE_ERROR,
+      );
     }
   }
 
@@ -63,7 +70,11 @@ export class UploadService {
 
       return { url: uploadResult.Location };
     } catch {
-      throw new HttpException('SERVER ERROR', HTTP_STATUS_CODE.SERVER_ERROR);
+      throw new CatchyException(
+        'SERVER ERROR',
+        HTTP_STATUS_CODE.SERVER_ERROR,
+        ERROR_CODE.SERVICE_ERROR,
+      );
     }
   }
 
@@ -80,7 +91,11 @@ export class UploadService {
 
       return { url: uploadResult.Location };
     } catch {
-      throw new HttpException('SERVER ERROR', HTTP_STATUS_CODE.SERVER_ERROR);
+      throw new CatchyException(
+        'SERVER ERROR',
+        HTTP_STATUS_CODE.SERVER_ERROR,
+        ERROR_CODE.SERVICE_ERROR,
+      );
     }
   }
 }

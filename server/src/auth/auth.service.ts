@@ -1,6 +1,8 @@
-import { HttpException, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
+import { CatchyException } from 'src/config/catchyException';
+import { ERROR_CODE } from 'src/config/errorCode.enum';
 import { RECENT_PLAYLIST_NAME } from 'src/constants';
 import { UserCreateDto } from 'src/dto/userCreate.dto';
 import { User } from 'src/entity/user.entity';
@@ -28,9 +30,10 @@ export class AuthService {
 
       return { accessToken };
     } else {
-      throw new HttpException(
+      throw new CatchyException(
         'NOT_EXIST_USER',
         HTTP_STATUS_CODE['WRONG_TOKEN'],
+        ERROR_CODE.NOT_EXIST_USER,
       );
     }
   }
@@ -40,7 +43,11 @@ export class AuthService {
     const email: string = await this.getGoogleEmail(idToken);
 
     if (await this.isExistEmail(email)) {
-      throw new HttpException('EXIST_EMAIL', HTTP_STATUS_CODE.BAD_REQUEST);
+      throw new CatchyException(
+        'ALREADY_EXIST_EMAIL',
+        HTTP_STATUS_CODE.BAD_REQUEST,
+        ERROR_CODE.ALREADY_EXIST_EMAIL,
+      );
     }
     if (email) {
       const newUser: User = this.userRepository.create({
@@ -57,7 +64,11 @@ export class AuthService {
       });
       return this.login(email);
     }
-    throw new HttpException('WRONG_TOKEN', HTTP_STATUS_CODE.WRONG_TOKEN);
+    throw new CatchyException(
+      'WRONG_TOKEN',
+      HTTP_STATUS_CODE.WRONG_TOKEN,
+      ERROR_CODE.WRONG_TOKEN,
+    );
   }
 
   async getGoogleEmail(googleIdToken: string): Promise<string> {
@@ -68,7 +79,11 @@ export class AuthService {
     }).then((res) => res.json());
 
     if (!userInfo.email) {
-      throw new HttpException('EXPIRED_TOKEN', HTTP_STATUS_CODE.WRONG_TOKEN);
+      throw new CatchyException(
+        'EXPIRED_TOKEN',
+        HTTP_STATUS_CODE.WRONG_TOKEN,
+        ERROR_CODE.EXPIRED_TOKEN,
+      );
     }
     return userInfo.email;
   }

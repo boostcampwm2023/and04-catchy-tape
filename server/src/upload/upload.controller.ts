@@ -6,19 +6,18 @@ import {
   Query,
   HttpCode,
   UseGuards,
-  HttpException,
   UseInterceptors,
   UploadedFile,
   ParseFilePipe,
-  MaxFileSizeValidator,
   FileTypeValidator,
 } from '@nestjs/common';
 import { UploadService } from './upload.service';
 import { HTTP_STATUS_CODE } from 'src/httpStatusCode.enum';
 import { AuthGuard } from '@nestjs/passport';
 import { v4 } from 'uuid';
-import { fileSize } from '../constants';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { CatchyException } from 'src/config/catchyException';
+import { ERROR_CODE } from 'src/config/errorCode.enum';
 
 @Controller('upload')
 export class UploadController {
@@ -32,7 +31,11 @@ export class UploadController {
       return { uuid: v4() };
     } catch (err) {
       console.log(err);
-      throw new HttpException('SERVER ERROR', HTTP_STATUS_CODE.SERVER_ERROR);
+      throw new CatchyException(
+        'SERVER ERROR',
+        HTTP_STATUS_CODE.SERVER_ERROR,
+        ERROR_CODE.SERVER_ERROR,
+      );
     }
   }
 
