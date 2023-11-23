@@ -78,13 +78,4 @@ export class PlaylistController {
     const userId: string = req.user.user_id;
     return await this.playlistService.getPlaylistMusics(userId, playlistId);
   }
-
-  @Patch('test')
-  test() {
-    throw new CatchyException(
-      'testtest',
-      HTTP_STATUS_CODE.SERVER_ERROR,
-      ERROR_CODE.BAD_REQUEST,
-    );
-  }
 }
