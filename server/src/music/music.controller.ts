@@ -38,10 +38,10 @@ export class MusicController {
 
   @Get('recent-uploads')
   @HttpCode(HTTP_STATUS_CODE.SUCCESS)
-  async getRecentMusics(): Promise<{ musics: Music[] }> {
+  async getRecentMusics(): Promise<Music[]> {
     const musics = await this.musicService.getRecentMusic();
 
-    return { musics };
+    return musics;
   }
 
   @Get('genres')
