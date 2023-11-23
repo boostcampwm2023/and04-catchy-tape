@@ -22,6 +22,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
         binding.viewModel = viewModel
         binding.rvRecentlyAddedSong.adapter = MusicAdapter(musicItemOrientation = Orientation.Horizontal)
 
+        viewModel.fetchUploadedMusics()
         binding.ibUpload.setOnClickListener {
             val request = NavDeepLinkRequest.Builder
                 .fromUri("android-app://com.ohdodok.catchytape/upload_fragment".toUri())

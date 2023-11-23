@@ -27,9 +27,8 @@ object NetworkModule {
     @Provides
     fun provideAuthInterceptor(tokenDataSource: TokenLocalDataSource): Interceptor {
 
-        val accessToken = runBlocking { tokenDataSource.getAccessToken() }
-
         return Interceptor { chain ->
+            val accessToken = runBlocking { tokenDataSource.getAccessToken() }
             val newRequest = chain.request().newBuilder()
                 .addHeader("Authorization", "Bearer $accessToken")
                 .build()
@@ -53,8 +52,8 @@ object NetworkModule {
         @AuthInterceptor authInterceptor: Interceptor,
     ): OkHttpClient {
         return OkHttpClient.Builder()
-            .addInterceptor(loggingInterceptor)
             .addInterceptor(authInterceptor)
+            .addInterceptor(loggingInterceptor)
             .build()
     }
 
