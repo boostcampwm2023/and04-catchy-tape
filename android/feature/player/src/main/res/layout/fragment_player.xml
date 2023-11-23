@@ -5,6 +5,8 @@
 
     <data>
 
+        <import type="android.view.View" />
+
         <variable
             name="viewModel"
             type="com.ohdodok.catchytape.feature.player.PlayerViewModel" />
@@ -27,9 +29,10 @@
             android:id="@+id/player_view"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
-        
+            android:visibility="gone"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
         <ImageView
             android:id="@+id/iv_thumbnail"
             android:layout_width="0dp"
@@ -131,9 +134,25 @@
             android:layout_marginTop="@dimen/medium"
             android:background="@drawable/ic_play"
             android:backgroundTint="@color/on_surface"
+            android:onClick="@{() -> viewModel.play()}"
+            android:visibility="@{viewModel.uiState.isPlaying ? View.INVISIBLE : View.VISIBLE}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_current_time" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btn_pause"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_marginTop="@dimen/medium"
+            android:background="@drawable/ic_pause"
+            android:backgroundTint="@color/on_surface"
+            android:onClick="@{() -> viewModel.pause()}"
+            android:visibility="@{viewModel.uiState.isPlaying ? View.VISIBLE : View.GONE}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_current_time"
+            tools:visibility="gone" />
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btn_previous"
