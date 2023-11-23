@@ -8,5 +8,6 @@ enum class CtErrorType {
     CONNECTION,
     IO,
     SSL_HAND_SHAKE,
+    UN_KNOWN,
 }
 
