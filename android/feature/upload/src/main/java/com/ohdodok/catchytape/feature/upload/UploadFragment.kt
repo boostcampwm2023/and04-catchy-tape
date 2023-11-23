@@ -8,6 +8,7 @@ import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.result.contract.ActivityResultContracts.PickVisualMedia
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import com.ohdodok.catchytape.catchytape.upload.R
 import com.ohdodok.catchytape.catchytape.upload.databinding.FragmentUploadBinding
 import com.ohdodok.catchytape.core.ui.BaseFragment
@@ -33,14 +34,36 @@ class UploadFragment : BaseFragment<FragmentUploadBinding>(R.layout.fragment_upl
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.viewModel = viewModel
+
+        observeEvents()
+
         setUpFileBtn()
-        setupBackStack(binding.tbUpload)
+        setUpCompleteBtn()
         setupSelectThumbnailImage()
+        setupBackStack(binding.tbUpload)
+    }
+
+    private fun observeEvents() {
+        repeatOnStarted {
+            viewModel.events.collect { event ->
+                when (event) {
+                    is UploadEventState.NavigateToBack -> {
+                        findNavController().popBackStack()
+                    }
+                }
+            }
+        }
     }
 
     private fun setUpFileBtn() {
         binding.btnFile.setOnClickListener {
             filePickerLauncher.launch("audio/*")
+        }
+    }
+
+    private fun setUpCompleteBtn() {
+        binding.btnComplete.setOnClickListener {
+            viewModel.uploadMusic()
         }
     }
 
