@@ -1,6 +1,7 @@
 import { HttpException, Injectable } from '@nestjs/common';
 import { HTTP_STATUS_CODE } from 'src/httpStatusCode.enum';
 import { User } from 'src/entity/user.entity';
+import { Music } from 'src/entity/music.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { PlaylistService } from 'src/playlist/playlist.service';
@@ -25,6 +26,14 @@ export class UserService {
       return false;
     } catch {
       throw new HttpException('SERVER ERROR', HTTP_STATUS_CODE.SERVER_ERROR);
+    }
+  }
+
+  async getRecentPlayedMusicByUserId(userId: string): Promise<Music[]> {
+    try {
+      return await this.playlistService.getRecentMusicsByUserId(userId);
+    } catch (error) {
+      throw error;
     }
   }
 }

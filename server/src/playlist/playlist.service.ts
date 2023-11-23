@@ -153,4 +153,12 @@ export class PlaylistService {
       throw new HttpException('SERVER_ERROR', HTTP_STATUS_CODE.SERVER_ERROR);
     }
   }
+
+  async getRecentMusicsByUserId(userId: string) {
+    try {
+      return Music_Playlist.getRecentPlayedMusicByUserId(userId);
+    } catch {
+      throw new HttpException('SERVER ERROR', HTTP_STATUS_CODE.SERVER_ERROR);
+    }
+  }
 }
