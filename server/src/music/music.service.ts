@@ -95,6 +95,14 @@ export class MusicService {
   }
 
   async getMyUploads(userId: string, count: number): Promise<Music[]> {
-    return Music.getMusicListByUserId(userId, count);
+    try {
+      return Music.getMusicListByUserId(userId, count);
+    } catch {
+      throw new CatchyException(
+        'SERVER_ERROR',
+        HTTP_STATUS_CODE.SERVER_ERROR,
+        ERROR_CODE.SERVICE_ERROR,
+      );
+    }
   }
 }
