@@ -1,12 +1,7 @@
 package com.ohdodok.catchytape.feature.upload
 
-import android.content.ContentValues
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
-import android.os.Environment
-import android.provider.DocumentsContract
-import android.provider.MediaStore
 import android.provider.OpenableColumns
 import android.view.View
 import androidx.activity.result.PickVisualMediaRequest
@@ -18,7 +13,6 @@ import com.ohdodok.catchytape.catchytape.upload.R
 import com.ohdodok.catchytape.catchytape.upload.databinding.FragmentUploadBinding
 import com.ohdodok.catchytape.core.ui.BaseFragment
 import dagger.hilt.android.AndroidEntryPoint
-import timber.log.Timber
 import java.io.File
 import java.io.FileOutputStream
 
