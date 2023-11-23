@@ -29,7 +29,7 @@ class UploadViewModel @Inject constructor(
     private val uploadMusicUseCase: UploadMusicUseCase
 ) : ViewModel() {
 
-    private val _events = MutableSharedFlow<UploadEventState>()
+    private val _events = MutableSharedFlow<UploadEvent>()
     val events = _events.asSharedFlow()
 
     val musicTitle = MutableStateFlow("")
@@ -102,7 +102,7 @@ class UploadViewModel @Inject constructor(
                 title = musicTitle.value,
                 genre = musicGenre.value
             ).onEach {
-                _events.emit(UploadEventState.NavigateToBack)
+                _events.emit(UploadEvent.NavigateToBack)
             }.catch {
                 // TODO : 업로드 실패
             }.launchIn(viewModelScope)
@@ -115,7 +115,7 @@ data class UploadedFileState(
     val url: String = ""
 )
 
-sealed interface UploadEventState {
-    data object NavigateToBack : UploadEventState
+sealed interface UploadEvent {
+    data object NavigateToBack : UploadEvent
 }
 
