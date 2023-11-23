@@ -3,8 +3,8 @@ package com.ohdodok.catchytape.core.domain.usecase
 import com.ohdodok.catchytape.core.domain.repository.AuthRepository
 import javax.inject.Inject
 
-class GetIdTokenUseCase @Inject constructor(
+class AutomaticallyLoginUseCase @Inject constructor(
     private val authRepository: AuthRepository
 ) {
-    suspend operator fun invoke() = authRepository.getIdToken()
+    suspend operator fun invoke(): Boolean = authRepository.tryLoginAutomatically()
 }

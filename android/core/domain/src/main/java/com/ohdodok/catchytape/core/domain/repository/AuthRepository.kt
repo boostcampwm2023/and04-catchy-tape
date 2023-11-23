@@ -10,9 +10,7 @@ interface AuthRepository {
 
     suspend fun saveAccessToken(token: String)
 
-    suspend fun saveIdToken(token: String)
-
-    suspend fun getIdToken(): String
+    suspend fun tryLoginAutomatically(): Boolean
 
     fun isDuplicatedNickname(nickname: String): Flow<Boolean>
 

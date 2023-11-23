@@ -2,6 +2,9 @@ package com.ohdodok.catchytape.core.data.di
 
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import com.ohdodok.catchytape.core.data.BuildConfig
+import com.ohdodok.catchytape.core.data.datasource.TokenLocalDataSource
+import com.ohdodok.catchytape.core.data.di.qualifier.AuthInterceptor
+import com.ohdodok.catchytape.core.data.di.qualifier.ErrorInterceptor
 import com.ohdodok.catchytape.core.data.model.ErrorResponse
 import com.ohdodok.catchytape.core.domain.model.CtErrorType
 import com.ohdodok.catchytape.core.domain.model.CtException
@@ -9,6 +12,7 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.json.Json
 import okhttp3.Interceptor
 import okhttp3.MediaType.Companion.toMediaType
@@ -25,16 +29,41 @@ import javax.net.ssl.SSLHandshakeException
 @InstallIn(SingletonComponent::class)
 object NetworkModule {
 
+    @AuthInterceptor
     @Singleton
     @Provides
-    fun provideOkHttpClient(errorInterceptor: Interceptor): OkHttpClient {
-        val logger = HttpLoggingInterceptor.Logger { message -> Timber.tag("okHttp").d(message) }
-        val httpInterceptor = HttpLoggingInterceptor(logger)
-            .setLevel(HttpLoggingInterceptor.Level.BODY)
+    fun provideAuthInterceptor(tokenDataSource: TokenLocalDataSource): Interceptor {
 
+        val accessToken = runBlocking { tokenDataSource.getAccessToken() }
+
+        return Interceptor { chain ->
+            val newRequest = chain.request().newBuilder()
+                .addHeader("Authorization", "Bearer $accessToken")
+                .build()
+
+            chain.proceed(newRequest)
+        }
+    }
+
+    @Singleton
+    @Provides
+    fun provideLoggingInterceptor(): HttpLoggingInterceptor {
+        val logger = HttpLoggingInterceptor.Logger { message -> Timber.tag("okHttp").d(message) }
+        return HttpLoggingInterceptor(logger)
+            .setLevel(HttpLoggingInterceptor.Level.BODY)
+    }
+
+    @Singleton
+    @Provides
+    fun provideOkHttpClient(
+        loggingInterceptor: HttpLoggingInterceptor,
+        @AuthInterceptor authInterceptor: Interceptor,
+        @ErrorInterceptor errorInterceptor : Interceptor
+    ): OkHttpClient {
         return OkHttpClient.Builder()
+            .addInterceptor(loggingInterceptor)
+            .addInterceptor(authInterceptor)
             .addInterceptor(errorInterceptor)
-            .addInterceptor(httpInterceptor)
             .build()
     }
 
@@ -48,7 +77,7 @@ object NetworkModule {
             .build()
     }
 
-
+    @ErrorInterceptor
     @Singleton
     @Provides
     fun provideErrorInterceptor(): Interceptor {
