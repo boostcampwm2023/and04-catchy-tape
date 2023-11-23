@@ -1,6 +1,8 @@
 package com.ohdodok.catchytape.core.data.repository
 
 import com.ohdodok.catchytape.core.data.api.MusicApi
+import com.ohdodok.catchytape.core.data.model.MusicResponse
+import com.ohdodok.catchytape.core.domain.model.Music
 import com.ohdodok.catchytape.core.domain.repository.MusicRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -18,4 +20,22 @@ class MusicRepositoryImpl @Inject constructor(
             else -> throw RuntimeException("네트워크 에러")
         }
     }
+
+    override fun getRecentUploadedMusic(): Flow<List<Music>> = flow {
+        val response = musicApi.getRecentUploads()
+        when (response.code()) {
+            // TODO : 네트워크 에러 로직 처리
+            in 200..299 -> emit(response.body()?.musics?.map { it.toDomain() } ?: emptyList())
+            else -> throw RuntimeException("네트워크 에러")
+        }
+    }
+}
+
+fun MusicResponse.toDomain() : Music {
+    return Music(
+        id = musicId,
+        title = title,
+        artist = "유랄라",
+        imageUrl = cover
+    )
 }

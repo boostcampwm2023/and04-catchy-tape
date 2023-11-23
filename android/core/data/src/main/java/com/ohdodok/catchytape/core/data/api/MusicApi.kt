@@ -2,6 +2,7 @@ package com.ohdodok.catchytape.core.data.api
 
 import com.ohdodok.catchytape.core.data.model.MusicGenresResponse
 import com.ohdodok.catchytape.core.data.model.MusicRequest
+import com.ohdodok.catchytape.core.data.model.MusicsResponse
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -16,5 +17,8 @@ interface MusicApi {
     suspend fun postMusic(
         @Body music: MusicRequest
     ): Response<Unit>
+
+    @GET("musics/recent-uploads")
+    suspend fun getRecentUploads(): Response<MusicsResponse>
 
 }
