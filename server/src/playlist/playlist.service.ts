@@ -22,17 +22,21 @@ export class PlaylistService {
     userId: string,
     playlistCreateDto: PlaylistCreateDto,
   ): Promise<number> {
-    const title: string = playlistCreateDto.title;
-    const newPlaylist: Playlist = this.playlistRepository.create({
-      playlist_title: title,
-      created_at: new Date(),
-      updated_at: new Date(),
-      user: { user_id: userId },
-    });
+    try {
+      const title: string = playlistCreateDto.title;
+      const newPlaylist: Playlist = this.playlistRepository.create({
+        playlist_title: title,
+        created_at: new Date(),
+        updated_at: new Date(),
+        user: { user_id: userId },
+      });
 
-    const result: Playlist = await this.playlistRepository.save(newPlaylist);
-    const playlistId: number = result.playlist_Id;
-    return playlistId;
+      const result: Playlist = await this.playlistRepository.save(newPlaylist);
+      const playlistId: number = result.playlist_Id;
+      return playlistId;
+    } catch {
+      throw new HttpException('SERVER_ERROR', HTTP_STATUS_CODE.SERVER_ERROR);
+    }
   }
 
   async addMusicToPlaylist(
@@ -58,55 +62,79 @@ export class PlaylistService {
     }
 
     // 관계테이블에 추가
-    const new_music_playlist: Music_Playlist =
-      this.music_playlistRepository.create({
-        music: { musicId: musicId },
-        playlist: { playlist_Id: playlistId },
-      });
+    try {
+      const new_music_playlist: Music_Playlist =
+        this.music_playlistRepository.create({
+          music: { musicId: musicId },
+          playlist: { playlist_Id: playlistId },
+        });
 
-    const result: Music_Playlist =
-      await this.music_playlistRepository.save(new_music_playlist);
-    this.setUpdatedAtNow(playlistId);
-    return result.music_playlist_id;
+      const result: Music_Playlist =
+        await this.music_playlistRepository.save(new_music_playlist);
+      this.setUpdatedAtNow(playlistId);
+      return result.music_playlist_id;
+    } catch {
+      throw new HttpException('SERVER_ERROR', HTTP_STATUS_CODE.SERVER_ERROR);
+    }
   }
 
   async isAlreadyAdded(playlistId: number, musicId: number): Promise<boolean> {
-    const count: number = await this.music_playlistRepository.countBy({
-      music: { musicId: musicId },
-      playlist: { playlist_Id: playlistId },
-    });
-    return count !== 0;
+    try {
+      const count: number = await this.music_playlistRepository.countBy({
+        music: { musicId: musicId },
+        playlist: { playlist_Id: playlistId },
+      });
+      return count !== 0;
+    } catch {
+      throw new HttpException('SERVER_ERROR', HTTP_STATUS_CODE.SERVER_ERROR);
+    }
   }
 
   async isExistPlaylistOnUser(
     playlistId: number,
     userId: string,
   ): Promise<boolean> {
-    const playlistCount: number = await this.playlistRepository.countBy({
-      playlist_Id: playlistId,
-      user: { user_id: userId },
-    });
-    return playlistCount !== 0;
+    try {
+      const playlistCount: number = await this.playlistRepository.countBy({
+        playlist_Id: playlistId,
+        user: { user_id: userId },
+      });
+      return playlistCount !== 0;
+    } catch {
+      throw new HttpException('SERVER_ERROR', HTTP_STATUS_CODE.SERVER_ERROR);
+    }
   }
 
   async isExistMusic(musicId: number): Promise<boolean> {
-    const musicCount: number = await this.MusicRepository.countBy({
-      musicId: musicId,
-    });
+    try {
+      const musicCount: number = await this.MusicRepository.countBy({
+        musicId: musicId,
+      });
 
-    return musicCount !== 0;
+      return musicCount !== 0;
+    } catch {
+      throw new HttpException('SERVER_ERROR', HTTP_STATUS_CODE.SERVER_ERROR);
+    }
   }
 
   async setUpdatedAtNow(playlistId: number): Promise<void> {
-    const targetPlaylist: Playlist = await this.playlistRepository.findOne({
-      where: { playlist_Id: playlistId },
-    });
-    targetPlaylist.updated_at = new Date();
-    this.playlistRepository.save(targetPlaylist);
+    try {
+      const targetPlaylist: Playlist = await this.playlistRepository.findOne({
+        where: { playlist_Id: playlistId },
+      });
+      targetPlaylist.updated_at = new Date();
+      this.playlistRepository.save(targetPlaylist);
+    } catch {
+      throw new HttpException('SERVER_ERROR', HTTP_STATUS_CODE.SERVER_ERROR);
+    }
   }
 
   async getUserPlaylists(userId: string): Promise<Playlist[]> {
-    return Playlist.getPlaylistsByUserId(userId);
+    try {
+      return Playlist.getPlaylistsByUserId(userId);
+    } catch {
+      throw new HttpException('SERVER_ERROR', HTTP_STATUS_CODE.SERVER_ERROR);
+    }
   }
 
   async getPlaylistMusics(
@@ -119,6 +147,10 @@ export class PlaylistService {
         HTTP_STATUS_CODE.BAD_REQUEST,
       );
     }
-    return Music_Playlist.getMusicListByPlaylistId(playlistId);
+    try {
+      return Music_Playlist.getMusicListByPlaylistId(playlistId);
+    } catch {
+      throw new HttpException('SERVER_ERROR', HTTP_STATUS_CODE.SERVER_ERROR);
+    }
   }
 }
