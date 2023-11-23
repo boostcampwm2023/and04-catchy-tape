@@ -30,10 +30,6 @@ export class UserService {
   }
 
   async getRecentPlayedMusicByUserId(userId: string): Promise<Music[]> {
-    try {
-      return await this.playlistService.getRecentMusicsByUserId(userId);
-    } catch (error) {
-      throw error;
-    }
+    return await this.playlistService.getRecentMusicsByUserId(userId);
   }
 }
