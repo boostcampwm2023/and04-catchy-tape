@@ -35,14 +35,10 @@ export class UserController {
   @UseGuards(AuthGuard())
   @HttpCode(HTTP_STATUS_CODE.SUCCESS)
   async getUserRecentPlayedMusics(@Req() req): Promise<Music[]> {
-    try {
-      const userId = req.user.userId;
-      const userMusicData =
-        await this.userService.getRecentPlayedMusicByUserId(userId);
+    const userId = req.user.userId;
+    const userMusicData =
+      await this.userService.getRecentPlayedMusicByUserId(userId);
 
-      return userMusicData;
-    } catch (err) {
-      throw err;
-    }
+    return userMusicData;
   }
 }
