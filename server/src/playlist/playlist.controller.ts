@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Get,
   HttpCode,
   Param,
   Post,
@@ -13,6 +14,8 @@ import { PlaylistService } from './playlist.service';
 import { AuthGuard } from '@nestjs/passport';
 import { HTTP_STATUS_CODE } from 'src/httpStatusCode.enum';
 import { PlaylistCreateDto } from 'src/dto/playlistCreate.dto';
+import { Playlist } from 'src/entity/playlist.entity';
+import { Music } from 'src/entity/music.entity';
 
 @Controller('playlists')
 export class PlaylistController {
@@ -50,5 +53,26 @@ export class PlaylistController {
         musicId,
       );
     return { music_playlist_id: music_playlist_id };
+  }
+
+  @Get()
+  @UseGuards(AuthGuard())
+  @HttpCode(HTTP_STATUS_CODE.SUCCESS)
+  async getUserPlaylists(@Req() req): Promise<Playlist[]> {
+    const userId: string = req.user.user_id;
+    const playlists: Playlist[] =
+      await this.playlistService.getUserPlaylists(userId);
+    return playlists;
+  }
+
+  @Get(':playlistId')
+  @UseGuards(AuthGuard())
+  @HttpCode(HTTP_STATUS_CODE.SUCCESS)
+  async getPlaylistMusics(
+    @Req() req,
+    @Param('playlistId') playlistId: number,
+  ): Promise<Music[]> {
+    const userId: string = req.user.user_id;
+    return await this.playlistService.getPlaylistMusics(userId, playlistId);
   }
 }
