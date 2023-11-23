@@ -30,13 +30,16 @@ class LoginViewModel @Inject constructor(
     fun login(token: String) {
         loginUseCase(token)
             .catch { throwable ->
-                if (throwable is CtException && throwable.ctError == CtErrorType.WRONG_TOKEN) {
-                    _events.emit(LoginEvent.NavigateToNickName(token))
-                } else if (throwable is CtException) {
+                if (throwable is CtException) {
                     _events.emit(LoginEvent.ShowMessage(throwable.ctError))
+                    val ctError = throwable.ctError
+                    if (ctError == CtErrorType.NOT_EXIST_USER || ctError == CtErrorType.WRONG_TOKEN) {
+                        _events.emit(LoginEvent.NavigateToNickName(token))
+                    }
                 } else {
                     _events.emit(LoginEvent.ShowMessage(CtErrorType.UN_KNOWN))
                 }
+
             }.onEach {
                 _events.emit(LoginEvent.NavigateToHome)
             }.launchIn(viewModelScope)
