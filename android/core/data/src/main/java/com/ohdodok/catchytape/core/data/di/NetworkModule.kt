@@ -2,12 +2,14 @@ package com.ohdodok.catchytape.core.data.di
 
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import com.ohdodok.catchytape.core.data.BuildConfig
+import com.ohdodok.catchytape.core.data.datasource.TokenLocalDataSource
 import com.ohdodok.catchytape.core.data.di.qualifier.AuthInterceptor
 import com.ohdodok.catchytape.core.data.store.TokenStore
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.json.Json
 import okhttp3.Interceptor
 import okhttp3.MediaType.Companion.toMediaType
@@ -24,11 +26,13 @@ object NetworkModule {
     @AuthInterceptor
     @Singleton
     @Provides
-    fun provideAuthInterceptor(tokenStore: TokenStore): Interceptor {
+    fun provideAuthInterceptor(tokenDataSource: TokenLocalDataSource): Interceptor {
+
+        val accessToken = runBlocking { tokenDataSource.getAccessToken() }
 
         return Interceptor { chain ->
             val newRequest = chain.request().newBuilder()
-                .addHeader("Authorization", "Bearer ${tokenStore.token}")
+                .addHeader("Authorization", "Bearer $accessToken")
                 .build()
 
             chain.proceed(newRequest)
