@@ -56,6 +56,7 @@ export class Music extends BaseEntity {
       select: {
         musicId: true,
         title: true,
+        lyrics: true,
         cover: true,
         musicFile: true,
         genre: true,
