@@ -93,7 +93,7 @@ class UploadViewModel @Inject constructor(
     fun uploadMusic() {
         if (isUploadEnable.value) {
             uploadMusicUseCase(
-                imgUrl = imageState.value.url,
+                imageUrl = imageState.value.url,
                 audioUrl = audioState.value.url,
                 title = musicTitle.value,
                 genre = musicGenre.value
