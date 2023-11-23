@@ -4,5 +4,5 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class NicknameResponse(
-    val nickname: String
+    val nickname: String,
 )

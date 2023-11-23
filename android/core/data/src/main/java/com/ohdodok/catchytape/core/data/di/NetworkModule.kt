@@ -61,8 +61,9 @@ object NetworkModule {
     @Singleton
     @Provides
     fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit {
+        val jsonConfig = Json { ignoreUnknownKeys = true }
         return Retrofit.Builder()
-            .addConverterFactory(Json.asConverterFactory("application/json".toMediaType()))
+            .addConverterFactory(jsonConfig.asConverterFactory("application/json".toMediaType()))
             .client(okHttpClient)
             .baseUrl(BuildConfig.BASE_URL)
             .build()
