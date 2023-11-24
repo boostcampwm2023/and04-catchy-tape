@@ -12,6 +12,7 @@ import androidx.navigation.fragment.findNavController
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.ohdodok.catchytape.core.ui.BaseFragment
+import com.ohdodok.catchytape.core.ui.toMessageId
 import com.ohdodok.catchytape.feature.login.databinding.FragmentLoginBinding
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -65,6 +66,10 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(R.layout.fragment_login
                                 googleToken = event.googleToken
                             )
                         )
+                    }
+
+                    is LoginEvent.ShowMessage -> {
+                        showMessage(event.error.toMessageId())
                     }
                 }
             }
