@@ -23,7 +23,13 @@ class LoginViewModel @Inject constructor(
     private val automaticallyLoginUseCase: AutomaticallyLoginUseCase
 ) : ViewModel() {
 
-    private val exceptionHandler = CoroutineExceptionHandler { cc, throwable ->
+    private val _events = MutableSharedFlow<LoginEvent>()
+    val events = _events.asSharedFlow()
+
+    var isAutoLoginFinished: Boolean = false
+        private set
+
+    private val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
         viewModelScope.launch {
             if (throwable is CtException) {
                 _events.emit(LoginEvent.ShowMessage(throwable.ctError))
@@ -33,12 +39,6 @@ class LoginViewModel @Inject constructor(
             isAutoLoginFinished = true
         }
     }
-
-    private val _events = MutableSharedFlow<LoginEvent>()
-    val events = _events.asSharedFlow()
-
-    var isAutoLoginFinished: Boolean = false
-        private set
 
     fun login(token: String) {
         loginUseCase(token).onEach {
