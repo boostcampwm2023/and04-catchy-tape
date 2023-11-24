@@ -12,6 +12,7 @@ import androidx.navigation.fragment.findNavController
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.ohdodok.catchytape.core.ui.BaseFragment
+import com.ohdodok.catchytape.core.ui.toMessageId
 import com.ohdodok.catchytape.feature.login.databinding.FragmentLoginBinding
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -68,8 +69,7 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(R.layout.fragment_login
                     }
 
                     is LoginEvent.ShowMessage -> {
-                        val messageId = fetchCtErrorMessageId(event.error)
-                        showMessage(messageId)
+                        showMessage(event.error.toMessageId())
                     }
                 }
             }
