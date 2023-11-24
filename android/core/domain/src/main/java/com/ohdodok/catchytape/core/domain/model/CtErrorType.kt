@@ -1,10 +1,11 @@
 package com.ohdodok.catchytape.core.domain.model
 
 enum class CtErrorType(val errorCode: Int) {
-    CONNECTION(400),
-    IO(401),
-    SSL_HAND_SHAKE(402),
-    UN_KNOWN(403),
+    CONNECTION(40),
+    IO(41),
+    SSL_HAND_SHAKE(42),
+    UN_KNOWN(43),
+    UN_AUTHORIZED(401),
 
     DUPLICATED_NICKNAME(1000),
     NOT_EXIST_PLAYLIST_ON_USER(4001),
@@ -18,6 +19,10 @@ enum class CtErrorType(val errorCode: Int) {
     EXPIRED_TOKEN(4101),
     SERVER(5000),
     SERVICE(5001);
+
+    companion object {
+        val ctErrorEnums = CtErrorType.values().toList()
+    }
 }
 
 
