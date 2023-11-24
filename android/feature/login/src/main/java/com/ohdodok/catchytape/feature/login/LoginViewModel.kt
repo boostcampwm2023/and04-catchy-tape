@@ -7,6 +7,7 @@ import com.ohdodok.catchytape.core.domain.model.CtException
 import com.ohdodok.catchytape.core.domain.usecase.AutomaticallyLoginUseCase
 import com.ohdodok.catchytape.core.domain.usecase.LoginUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.catch
@@ -20,6 +21,17 @@ class LoginViewModel @Inject constructor(
     private val loginUseCase: LoginUseCase,
     private val automaticallyLoginUseCase: AutomaticallyLoginUseCase
 ) : ViewModel() {
+
+    private val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
+        viewModelScope.launch {
+            if (throwable is CtException) {
+                _events.emit(LoginEvent.ShowMessage(throwable.ctError))
+            } else {
+                _events.emit(LoginEvent.ShowMessage(CtErrorType.UN_KNOWN))
+            }
+            isAutoLoginFinished = true
+        }
+    }
 
     private val _events = MutableSharedFlow<LoginEvent>()
     val events = _events.asSharedFlow()
@@ -45,8 +57,9 @@ class LoginViewModel @Inject constructor(
             }.launchIn(viewModelScope)
     }
 
+
     fun automaticallyLogin() {
-        viewModelScope.launch {
+        viewModelScope.launch(exceptionHandler) {
             val isLoggedIn = automaticallyLoginUseCase()
             if (isLoggedIn) _events.emit(LoginEvent.NavigateToHome)
             isAutoLoginFinished = true
