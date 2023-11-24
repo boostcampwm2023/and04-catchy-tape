@@ -33,7 +33,6 @@ class PlayerFragment : BaseFragment<FragmentPlayerBinding>(R.layout.fragment_pla
         val mediaItem = MediaItem.fromUri(url)
 
         player = ExoPlayer.Builder(requireContext()).build()
-        binding.playerView.player = player
 
         player.setMediaItem(mediaItem)
         player.prepare()

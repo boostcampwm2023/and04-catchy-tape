@@ -25,14 +25,6 @@
             app:layout_constraintTop_toTopOf="parent"
             app:navigationIcon="@drawable/ic_arrow_back" />
 
-        <androidx.media3.ui.PlayerView
-            android:id="@+id/player_view"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:visibility="gone"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
         <ImageView
             android:id="@+id/iv_thumbnail"
             android:layout_width="0dp"
