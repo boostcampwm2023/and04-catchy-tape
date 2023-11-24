@@ -90,7 +90,7 @@ object NetworkModule {
                 val errorString = response.body?.string()
                 val errorResponse = Json.decodeFromString<ErrorResponse>(errorString ?: "")
 
-                if (errorResponse.statusCode == 401) { // errorCode 를 줄 수 없는 경우, 미리 처리, (주석 삭제 예정)
+                if (errorResponse.statusCode == 401) {
                     throw CtException(errorResponse.message, CtErrorType.UN_AUTHORIZED)
                 }
 
@@ -104,6 +104,7 @@ object NetworkModule {
                 when (e) {
                     is ConnectException -> throw CtException(e.message, CtErrorType.CONNECTION)
                     is SSLHandshakeException -> throw CtException(e.message, CtErrorType.SSL_HAND_SHAKE)
+                    is CtException -> throw e
                     else -> throw CtException(e.message, CtErrorType.IO)
                 }
             }
