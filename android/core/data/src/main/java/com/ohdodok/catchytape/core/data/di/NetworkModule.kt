@@ -7,6 +7,7 @@ import com.ohdodok.catchytape.core.data.di.qualifier.AuthInterceptor
 import com.ohdodok.catchytape.core.data.di.qualifier.ErrorInterceptor
 import com.ohdodok.catchytape.core.data.model.ErrorResponse
 import com.ohdodok.catchytape.core.domain.model.CtErrorType
+import com.ohdodok.catchytape.core.domain.model.CtErrorType.Companion.ctErrorEnums
 import com.ohdodok.catchytape.core.domain.model.CtException
 import dagger.Module
 import dagger.Provides
@@ -70,8 +71,10 @@ object NetworkModule {
     @Singleton
     @Provides
     fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit {
+        val jsonConfig = Json { ignoreUnknownKeys = true }
+
         return Retrofit.Builder()
-            .addConverterFactory(Json.asConverterFactory("application/json".toMediaType()))
+            .addConverterFactory(jsonConfig.asConverterFactory("application/json".toMediaType()))
             .client(okHttpClient)
             .baseUrl(BuildConfig.BASE_URL)
             .build()
@@ -88,9 +91,11 @@ object NetworkModule {
                 val errorString = response.body?.string()
                 val errorResponse = Json.decodeFromString<ErrorResponse>(errorString ?: "")
 
-                val ctErrorEnums = CtErrorType.values().toList()
-                val ctError = ctErrorEnums.find { it.errorCode == errorResponse.errorCode }
+                if (errorResponse.statusCode == 401) { // errorCode 를 줄 수 없는 경우, 미리 처리, (주석 삭제 예정)
+                    throw CtException(errorResponse.message, CtErrorType.UN_AUTHORIZED)
+                }
 
+                val ctError = ctErrorEnums.find { it.errorCode == errorResponse.errorCode }
                 if (ctError != null) {
                     throw CtException(errorResponse.message, ctError)
                 } else {
