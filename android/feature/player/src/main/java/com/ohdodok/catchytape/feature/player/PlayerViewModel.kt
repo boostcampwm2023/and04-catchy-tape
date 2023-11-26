@@ -14,18 +14,19 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 data class PlayerState(
-    val isPlaying: Boolean = true
+    val isPlaying: Boolean = true,
+    val currentPosition: Int = 0,
+    val duration: Int = 0,
 )
 
 sealed interface PlayerEvent {
-    data object Play : PlayerEvent
-    data object Pause : PlayerEvent
+    data class ShowError(val error: Exception) : PlayerEvent
 }
 
 @HiltViewModel
 class PlayerViewModel @Inject constructor(
 
-) : ViewModel() {
+) : ViewModel(), PlayerEventListener {
 
     private val _uiState = MutableStateFlow(PlayerState())
     val uiState: StateFlow<PlayerState> = _uiState.asStateFlow()
@@ -39,17 +40,13 @@ class PlayerViewModel @Inject constructor(
         }
     }
 
-    fun play() {
-        sendEvent(PlayerEvent.Play)
+    override fun onPlayingChanged(isPlaying: Boolean) {
         _uiState.update {
-            it.copy(isPlaying = true)
+            it.copy(isPlaying = isPlaying)
         }
     }
 
-    fun pause() {
-        sendEvent(PlayerEvent.Pause)
-        _uiState.update {
-            it.copy(isPlaying = false)
-        }
+    override fun onMediaItemChanged(duration: Int) {
+        _uiState.update { it.copy(duration = duration) }
     }
 }
