@@ -10,17 +10,21 @@ import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
 interface RepositoryModule {
 
     @Binds
+    @Singleton
     fun bindAuthRepository(authRepositoryImpl: AuthRepositoryImpl): AuthRepository
 
     @Binds
+    @Singleton
     fun bindMusicRepository(musicRepositoryImpl: MusicRepositoryImpl): MusicRepository
 
     @Binds
+    @Singleton
     fun bindUrlRepository(urlRepositoryImpl: UrlRepositoryImpl): UrlRepository
 }
