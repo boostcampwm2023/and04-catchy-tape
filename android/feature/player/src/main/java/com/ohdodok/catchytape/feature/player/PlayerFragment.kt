@@ -9,6 +9,7 @@ import androidx.media3.exoplayer.ExoPlayer
 import com.ohdodok.catchytape.core.ui.BaseFragment
 import com.ohdodok.catchytape.feature.player.databinding.FragmentPlayerBinding
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.delay
 import timber.log.Timber
 
 @AndroidEntryPoint
@@ -34,6 +35,17 @@ class PlayerFragment : BaseFragment<FragmentPlayerBinding>(R.layout.fragment_pla
         player.addListener(PlayerListener(viewModel))
 
         player.prepare()
+        setupPlayerTimer()
+    }
+
+    private fun setupPlayerTimer() {
+        repeatOnStarted {
+            while (true) {
+                delay(1000L)
+                val positionMs = player.currentPosition.toInt()
+                viewModel.updateCurrentPosition(positionMs / 1000)
+            }
+        }
     }
 
     private fun setMedia(url: String) {
