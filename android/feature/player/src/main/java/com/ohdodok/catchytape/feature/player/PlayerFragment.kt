@@ -57,11 +57,8 @@ class PlayerFragment : BaseFragment<FragmentPlayerBinding>(R.layout.fragment_pla
 
     private fun setupButtons() {
         binding.btnPlay.setOnClickListener {
-            player.play()
-        }
-
-        binding.btnPause.setOnClickListener {
-            player.pause()
+            if (viewModel.uiState.value.isPlaying) player.pause()
+            else player.play()
         }
     }
 
