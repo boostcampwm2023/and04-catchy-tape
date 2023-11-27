@@ -1,4 +1,4 @@
-package com.ohdodok.catchytape.core.domain.usecase
+package com.ohdodok.catchytape.core.domain.usecase.upload
 
 import com.ohdodok.catchytape.core.domain.repository.MusicRepository
 import com.ohdodok.catchytape.core.domain.repository.UuidRepository
@@ -13,15 +13,10 @@ class UploadMusicUseCase @Inject constructor(
 ) {
 
     operator fun invoke(
-        imageUrl: String,
-        audioUrl: String,
-        title: String,
-        genre: String
+        imageUrl: String, audioUrl: String, title: String, genre: String
     ): Flow<Unit> = uuidRepository.getUuid().map { uuid ->
         musicRepository.postMusic(
-            musicId = uuid, title = title, genre = genre,
-            imageUrl = imageUrl,
-            audioUrl = audioUrl
+            musicId = uuid, title = title, genre = genre, imageUrl = imageUrl, audioUrl = audioUrl
         ).first()
     }
 }

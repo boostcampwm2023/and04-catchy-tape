@@ -7,7 +7,7 @@ import javax.inject.Inject
 import androidx.lifecycle.viewModelScope
 import com.ohdodok.catchytape.core.domain.repository.MusicRepository
 import com.ohdodok.catchytape.core.domain.repository.UrlRepository
-import com.ohdodok.catchytape.core.domain.usecase.UploadMusicUseCase
+import com.ohdodok.catchytape.core.domain.usecase.upload.UploadMusicUseCase
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted

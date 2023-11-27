@@ -9,6 +9,7 @@ import javax.inject.Inject
 class UuidRepositoryImpl @Inject constructor(
     private val uploadApi: UploadApi
 ) : UuidRepository {
+
     override fun getUuid(): Flow<String> = flow {
         emit(uploadApi.getUuid().uuid)
     }
