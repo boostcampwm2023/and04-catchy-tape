@@ -18,15 +18,8 @@ class AuthRepositoryImpl @Inject constructor(
     }
 
     override fun signUpWithGoogle(googleToken: String, nickname: String): Flow<String> = flow {
-        val response = userApi.signUp(SignUpRequest(idToken = googleToken, nickname = nickname))
-        if (response.isSuccessful) {
-            response.body()?.let { loginResponse ->
-                emit(loginResponse.accessToken)
-            }
-        } else {
-            // TODO : 네트워크 에러 로직
-            throw Exception("회원 가입 실패")
-        }
+        val loginResponse = userApi.signUp(SignUpRequest(idToken = googleToken, nickname = nickname))
+        emit(loginResponse.accessToken)
     }
 
     override fun isDuplicatedNickname(nickname: String): Flow<Boolean> = flow {
