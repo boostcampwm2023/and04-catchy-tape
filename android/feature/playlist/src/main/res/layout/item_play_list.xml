@@ -17,8 +17,8 @@
 
         <ImageView
             android:id="@+id/iv_thumbnail"
-            android:layout_width="@dimen/playlist_img"
-            android:layout_height="@dimen/playlist_img"
+            android:layout_width="@dimen/play_list_item_img"
+            android:layout_height="@dimen/play_list_item_img"
             app:imgUrl="@{playListItem.thumbnailUrl}"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
