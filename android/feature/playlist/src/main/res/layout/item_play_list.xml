@@ -17,8 +17,8 @@
 
         <ImageView
             android:id="@+id/iv_thumbnail"
-            android:layout_width="@dimen/music_vertical_img"
-            android:layout_height="@dimen/music_vertical_img"
+            android:layout_width="@dimen/playlist_img"
+            android:layout_height="@dimen/playlist_img"
             app:imgUrl="@{playListItem.thumbnailUrl}"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -41,13 +41,13 @@
             tools:text="코딩이 잘되는 노래" />
 
         <TextView
-            android:id="@+id/tv_artist"
+            android:id="@+id/tv_track_size"
             style="@style/BodySmall"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:ellipsize="end"
             android:maxLines="1"
-            android:text="@{playListItem.trackSize}"
+            android:text="@{String.format(@string/track_size, playListItem.trackSize)}"
             android:textColor="@color/on_surface_variant"
             app:layout_constraintEnd_toStartOf="@+id/ib_more"
             app:layout_constraintStart_toEndOf="@+id/iv_thumbnail"
