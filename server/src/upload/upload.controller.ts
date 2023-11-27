@@ -5,6 +5,11 @@ import {
   Query,
   HttpCode,
   UseGuards,
+  Post,
+  UseInterceptors,
+  UploadedFile,
+  ParseFilePipe,
+  FileTypeValidator,
 } from '@nestjs/common';
 import { UploadService } from './upload.service';
 import { HTTP_STATUS_CODE } from 'src/httpStatusCode.enum';
@@ -12,6 +17,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { v4 } from 'uuid';
 import { CatchyException } from 'src/config/catchyException';
 import { ERROR_CODE } from 'src/config/errorCode.enum';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller('upload')
 export class UploadController {
@@ -50,5 +56,39 @@ export class UploadController {
     } catch (error) {
       throw error;
     }
+  }
+
+  @Post('/music')
+  @UseInterceptors(FileInterceptor('file'))
+  async uploadMusic(
+    @UploadedFile(
+      new ParseFilePipe({
+        validators: [
+          // new MaxFileSizeValidator({ maxSize: fileSize.MUSIC_FILE_LIMIT_SIZE }),
+          new FileTypeValidator({ fileType: 'audio/mpeg' }),
+        ],
+      }),
+    )
+    file: Express.Multer.File,
+  ) {
+    const { url } = await this.uploadService.uploadMusic(file);
+    return { url };
+  }
+
+  @Post('/image')
+  @UseInterceptors(FileInterceptor('file'))
+  async uploadImage(
+    @UploadedFile(
+      new ParseFilePipe({
+        validators: [
+          // new MaxFileSizeValidator({ maxSize: fileSize.IMAGE_FILE_LIMIT_SIZE }),
+          new FileTypeValidator({ fileType: 'image/png' }),
+        ],
+      }),
+    )
+    file: Express.Multer.File,
+  ) {
+    const { url } = await this.uploadService.uploadImage(file);
+    return { url };
   }
 }
