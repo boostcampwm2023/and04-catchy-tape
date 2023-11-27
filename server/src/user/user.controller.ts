@@ -5,6 +5,8 @@ import {
   HttpCode,
   Param,
   UseGuards,
+  Patch,
+  Body,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { HTTP_STATUS_CODE } from 'src/httpStatusCode.enum';
@@ -26,7 +28,7 @@ export class UserController {
       throw new CatchyException(
         'DUPLICATED_NICKNAME',
         HTTP_STATUS_CODE.DUPLICATED_NICKNAME,
-        ERROR_CODE.DUPLICATED_NICKNAME
+        ERROR_CODE.DUPLICATED_NICKNAME,
       );
     }
 
@@ -42,5 +44,18 @@ export class UserController {
       await this.userService.getRecentPlayedMusicByUserId(userId);
 
     return userMusicData;
+  }
+
+  @Patch('image')
+  @UseGuards(AuthGuard())
+  @HttpCode(HTTP_STATUS_CODE.SUCCESS)
+  async updateUserImage(
+    @Req() req,
+    @Body('image_url') image_url,
+  ): Promise<{ user_id: string }> {
+    const user_id = req.user.userId;
+    return {
+      user_id: await this.userService.updateUserImage(user_id, image_url),
+    };
   }
 }
