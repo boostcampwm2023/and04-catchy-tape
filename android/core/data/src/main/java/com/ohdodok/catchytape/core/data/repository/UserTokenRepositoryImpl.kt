@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 class UserTokenRepositoryImpl @Inject constructor(
-    private val dataStore: DataStore<Preferences>
+    private val dataStore: DataStore<Preferences>,
 ) : UserTokenRepository {
 
     private val accessTokenKey = stringPreferencesKey("accessToken")
@@ -21,4 +21,5 @@ class UserTokenRepositoryImpl @Inject constructor(
     override suspend fun saveAccessToken(token: String) {
         dataStore.edit { preferences -> preferences[accessTokenKey] = token }
     }
+
 }
