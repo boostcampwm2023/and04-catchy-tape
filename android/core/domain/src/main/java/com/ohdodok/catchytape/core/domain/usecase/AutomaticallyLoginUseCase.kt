@@ -10,10 +10,7 @@ class AutomaticallyLoginUseCase @Inject constructor(
 ) {
     suspend operator fun invoke(): Boolean {
         val accessToken = userTokenRepository.getAccessToken()
-        return if (accessToken.isNotEmpty()) {
-            authRepository.verifyToken(accessToken)
-        } else {
-            false
-        }
+        if (accessToken.isBlank()) return false
+        return authRepository.verifyToken(accessToken)
     }
 }
