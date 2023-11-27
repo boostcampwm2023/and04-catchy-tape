@@ -3,7 +3,7 @@ package com.ohdodok.catchytape.feature.home
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ohdodok.catchytape.core.domain.model.Music
-import com.ohdodok.catchytape.core.domain.usecase.GetRecentUploadedMusic
+import com.ohdodok.catchytape.core.domain.repository.MusicRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -19,14 +19,14 @@ data class HomeUiState(
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val getRecentUploadedMusicUseCase: GetRecentUploadedMusic
+    private val musicRepository: MusicRepository
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(HomeUiState())
     val uiState: StateFlow<HomeUiState> = _uiState.asStateFlow()
 
     fun fetchUploadedMusics() {
-        getRecentUploadedMusicUseCase()
+        musicRepository.getRecentUploadedMusic()
             .onEach { musics ->
                 _uiState.update {
                     it.copy(
