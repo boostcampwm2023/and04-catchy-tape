@@ -12,6 +12,7 @@ import androidx.navigation.fragment.findNavController
 import com.ohdodok.catchytape.catchytape.upload.R
 import com.ohdodok.catchytape.catchytape.upload.databinding.FragmentUploadBinding
 import com.ohdodok.catchytape.core.ui.BaseFragment
+import com.ohdodok.catchytape.core.ui.toMessageId
 import dagger.hilt.android.AndroidEntryPoint
 import java.io.File
 import java.io.FileOutputStream
@@ -50,6 +51,9 @@ class UploadFragment : BaseFragment<FragmentUploadBinding>(R.layout.fragment_upl
                 when (event) {
                     is UploadEvent.NavigateToBack -> {
                         findNavController().popBackStack()
+                    }
+                    is UploadEvent.ShowMessage -> {
+                        showMessage(event.error.toMessageId())
                     }
                 }
             }
