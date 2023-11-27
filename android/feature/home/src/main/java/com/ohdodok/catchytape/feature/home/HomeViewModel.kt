@@ -5,7 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.ohdodok.catchytape.core.domain.model.CtErrorType
 import com.ohdodok.catchytape.core.domain.model.CtException
 import com.ohdodok.catchytape.core.domain.model.Music
-import com.ohdodok.catchytape.core.domain.usecase.GetRecentUploadedMusic
+import com.ohdodok.catchytape.core.domain.repository.MusicRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -26,7 +26,7 @@ data class HomeUiState(
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val getRecentUploadedMusicUseCase: GetRecentUploadedMusic
+    private val musicRepository: MusicRepository
 ) : ViewModel() {
 
     private val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
@@ -48,7 +48,7 @@ class HomeViewModel @Inject constructor(
     val uiState: StateFlow<HomeUiState> = _uiState.asStateFlow()
 
     fun fetchUploadedMusics() {
-        getRecentUploadedMusicUseCase()
+        musicRepository.getRecentUploadedMusic()
             .onEach { musics ->
                 _uiState.update {
                     it.copy(recentlyUploadedMusics = musics)

@@ -4,9 +4,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ohdodok.catchytape.core.domain.model.CtErrorType
 import com.ohdodok.catchytape.core.domain.model.CtException
-import com.ohdodok.catchytape.core.domain.usecase.GetMusicGenresUseCase
-import com.ohdodok.catchytape.core.domain.usecase.UploadFileUseCase
-import com.ohdodok.catchytape.core.domain.usecase.UploadMusicUseCase
+import com.ohdodok.catchytape.core.domain.repository.MusicRepository
+import com.ohdodok.catchytape.core.domain.repository.UrlRepository
+import com.ohdodok.catchytape.core.domain.usecase.upload.UploadMusicUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -28,8 +28,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class UploadViewModel @Inject constructor(
-    private val getMusicGenresUseCase: GetMusicGenresUseCase,
-    private val uploadFileUseCase: UploadFileUseCase,
+    private val musicRepository: MusicRepository,
+    private val urlRepository: UrlRepository,
     private val uploadMusicUseCase: UploadMusicUseCase
 ) : ViewModel() {
 
@@ -85,13 +85,13 @@ class UploadViewModel @Inject constructor(
     }
 
     private fun fetchGenres() {
-        getMusicGenresUseCase().onEach {
+        musicRepository.getGenres().onEach {
             _musicGenres.value = it
         }.launchIn(viewModelScope)
     }
 
     fun uploadImage(imageFile: File) {
-        uploadFileUseCase.getImgUrl(imageFile).onStart {
+        urlRepository.getImageUrl(imageFile).onStart {
             _imageState.value = imageState.value.copy(isLoading = true)
         }.onEach { url ->
             _imageState.value = imageState.value.copy(url = url)
@@ -101,7 +101,7 @@ class UploadViewModel @Inject constructor(
     }
 
     fun uploadAudio(audioFile: File) {
-        uploadFileUseCase.getAudioUrl(audioFile).onStart {
+        urlRepository.getAudioUrl(audioFile).onStart {
             _audioState.value = audioState.value.copy(isLoading = true)
         }.onEach { url ->
             _audioState.value = audioState.value.copy(url = url)

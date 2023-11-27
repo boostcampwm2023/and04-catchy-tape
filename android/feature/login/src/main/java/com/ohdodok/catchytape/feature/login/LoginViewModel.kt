@@ -4,8 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ohdodok.catchytape.core.domain.model.CtErrorType
 import com.ohdodok.catchytape.core.domain.model.CtException
-import com.ohdodok.catchytape.core.domain.usecase.AutomaticallyLoginUseCase
-import com.ohdodok.catchytape.core.domain.usecase.LoginUseCase
+import com.ohdodok.catchytape.core.domain.usecase.login.AutomaticallyLoginUseCase
+import com.ohdodok.catchytape.core.domain.usecase.login.LoginUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.flow.MutableSharedFlow

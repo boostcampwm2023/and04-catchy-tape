@@ -24,19 +24,23 @@ class MusicRepositoryImpl @Inject constructor(
     }
 
     override fun postMusic(
+        musicId: String,
         title: String,
         imageUrl: String,
         audioUrl: String,
         genre: String
     ): Flow<Unit> = flow {
-        musicApi.postMusic(
+        val response = musicApi.postMusic(
             MusicRequest(
+                musicId = musicId,
                 title = title,
                 cover = imageUrl,
                 file = audioUrl,
                 genre = genre
             )
         )
+
+        emit(response)
     }
 }
 

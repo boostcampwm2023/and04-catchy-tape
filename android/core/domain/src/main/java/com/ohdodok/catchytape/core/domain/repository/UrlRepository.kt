@@ -5,8 +5,6 @@ import java.io.File
 
 interface UrlRepository {
 
-    fun getUuid(): Flow<String>
-
     fun getImageUrl(file: File): Flow<String>
 
     fun getAudioUrl(file: File): Flow<String>

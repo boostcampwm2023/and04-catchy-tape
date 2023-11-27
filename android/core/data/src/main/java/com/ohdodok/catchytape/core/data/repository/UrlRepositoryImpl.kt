@@ -14,10 +14,6 @@ class UrlRepositoryImpl @Inject constructor(
     private val uploadApi: UploadApi
 ) : UrlRepository {
 
-    override fun getUuid(): Flow<String> = flow {
-        val uuidResponse = uploadApi.getUuid()
-        emit(uuidResponse.uuid)
-    }
 
     override fun getImageUrl(file: File): Flow<String> = flow {
         val urlResponse = uploadApi.postImage(file.toMultipart("image/png"))

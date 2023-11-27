@@ -1,11 +1,11 @@
 import {
-  Post,
   Controller,
   Get,
   Req,
   Query,
   HttpCode,
   UseGuards,
+  Post,
   UseInterceptors,
   UploadedFile,
   ParseFilePipe,
@@ -15,9 +15,9 @@ import { UploadService } from './upload.service';
 import { HTTP_STATUS_CODE } from 'src/httpStatusCode.enum';
 import { AuthGuard } from '@nestjs/passport';
 import { v4 } from 'uuid';
-import { FileInterceptor } from '@nestjs/platform-express';
 import { CatchyException } from 'src/config/catchyException';
 import { ERROR_CODE } from 'src/config/errorCode.enum';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller('upload')
 export class UploadController {
