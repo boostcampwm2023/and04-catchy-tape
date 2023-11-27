@@ -22,13 +22,13 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   }
 
   async validate(payload): Promise<User> {
-    const { user_Id } = payload;
+    const { user_id } = payload;
 
     const user: User = await this.userRepository.findOne({
-      where: { user_id: user_Id },
+      where: { user_id },
     });
 
-    if (!user || !user_Id) {
+    if (!user || !user_id) {
       throw new CatchyException(
         'NOT_EXIST_USER',
         HTTP_STATUS_CODE['WRONG_TOKEN'],
