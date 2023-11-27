@@ -51,12 +51,9 @@ class HomeViewModel @Inject constructor(
         getRecentUploadedMusicUseCase()
             .onEach { musics ->
                 _uiState.update {
-                    it.copy(
-                        recentlyUploadedMusics = musics
-                    )
+                    it.copy(recentlyUploadedMusics = musics)
                 }
-            }
-            .launchIn(viewModelScopeWithExceptionHandler)
+            }.launchIn(viewModelScopeWithExceptionHandler)
     }
 }
 
