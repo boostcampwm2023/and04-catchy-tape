@@ -114,8 +114,7 @@ export class UploadService {
         .promise();
 
       return { url: uploadResult.Location };
-    } catch (err) {
-      console.log(err);
+    } catch {
       throw new CatchyException(
         'SERVER ERROR',
         HTTP_STATUS_CODE.SERVER_ERROR,

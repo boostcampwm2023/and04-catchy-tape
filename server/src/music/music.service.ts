@@ -1,4 +1,4 @@
-import { Catch, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { HTTP_STATUS_CODE } from 'src/httpStatusCode.enum';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -75,7 +75,7 @@ export class MusicService {
         musicId,
       );
 
-      // fs.rmdirSync(entireMusicPath, { recursive: true });
+      fs.rmdirSync(entireMusicPath, { recursive: true });
 
       return encodedFileURL;
     } catch {
@@ -170,8 +170,6 @@ export class MusicService {
         music_id,
         musicCreateDto.file,
       );
-
-      console.log(encodedFileURL);
 
       const newMusic: Music = this.musicRepository.create({
         music_id,
