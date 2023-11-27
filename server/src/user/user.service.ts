@@ -70,8 +70,16 @@ export class UserService {
   }
 
   async getUserInformation(user_id: string): Promise<User> {
-    return await this.userRepository.findOne({
-      where: { user_id },
-    });
+    try {
+      return await this.userRepository.findOne({
+        where: { user_id },
+      });
+    } catch {
+      throw new CatchyException(
+        'SERVER_ERROR',
+        HTTP_STATUS_CODE.SERVER_ERROR,
+        ERROR_CODE.SERVICE_ERROR,
+      );
+    }
   }
 }
