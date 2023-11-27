@@ -30,7 +30,6 @@ export class UploadController {
     try {
       return { uuid: v4() };
     } catch (err) {
-      console.log(err);
       throw new CatchyException(
         'SERVER ERROR',
         HTTP_STATUS_CODE.SERVER_ERROR,

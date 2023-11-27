@@ -31,10 +31,10 @@ export class Music_Playlist extends BaseEntity {
       },
       select: {
         music: {
-          musicId: true,
+          music_id: true,
           title: true,
           cover: true,
-          musicFile: true,
+          music_file: true,
           genre: true,
           user: { user_id: true, nickname: true },
         },
@@ -64,9 +64,9 @@ export class Music_Playlist extends BaseEntity {
       select: {
         music_playlist_id: false,
         music: {
-          musicId: true,
+          music_id: true,
           title: true,
-          musicFile: true,
+          music_file: true,
           cover: true,
           genre: true,
         },

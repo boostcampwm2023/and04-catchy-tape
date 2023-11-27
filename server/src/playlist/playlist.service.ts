@@ -48,7 +48,7 @@ export class PlaylistService {
   async addMusicToPlaylist(
     userId: string,
     playlistId: number,
-    musicId: number,
+    musicId: string,
   ): Promise<number> {
     // 사용자 플리가 있는지 확인
     if (!(await this.isExistPlaylistOnUser(playlistId, userId))) {
@@ -80,7 +80,7 @@ export class PlaylistService {
     try {
       const new_music_playlist: Music_Playlist =
         this.music_playlistRepository.create({
-          music: { musicId: musicId },
+          music: { music_id: musicId },
           playlist: { playlist_Id: playlistId },
         });
 
@@ -97,10 +97,10 @@ export class PlaylistService {
     }
   }
 
-  async isAlreadyAdded(playlistId: number, musicId: number): Promise<boolean> {
+  async isAlreadyAdded(playlistId: number, musicId: string): Promise<boolean> {
     try {
       const count: number = await this.music_playlistRepository.countBy({
-        music: { musicId: musicId },
+        music: { music_id: musicId },
         playlist: { playlist_Id: playlistId },
       });
       return count !== 0;
@@ -132,10 +132,10 @@ export class PlaylistService {
     }
   }
 
-  async isExistMusic(musicId: number): Promise<boolean> {
+  async isExistMusic(musicId: string): Promise<boolean> {
     try {
       const musicCount: number = await this.MusicRepository.countBy({
-        musicId: musicId,
+        music_id: musicId,
       });
 
       return musicCount !== 0;

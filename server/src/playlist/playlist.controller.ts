@@ -17,8 +17,6 @@ import { HTTP_STATUS_CODE } from 'src/httpStatusCode.enum';
 import { PlaylistCreateDto } from 'src/dto/playlistCreate.dto';
 import { Playlist } from 'src/entity/playlist.entity';
 import { Music } from 'src/entity/music.entity';
-import { CatchyException } from 'src/config/catchyException';
-import { ERROR_CODE } from 'src/config/errorCode.enum';
 
 @Controller('playlists')
 export class PlaylistController {
@@ -46,16 +44,16 @@ export class PlaylistController {
   async addMusicToPlaylist(
     @Req() req,
     @Param('playlistId') playlistId: number,
-    @Body('musicId') musicId: number,
+    @Body('musicId') music_id: string,
   ): Promise<{ music_playlist_id: number }> {
     const userId: string = req.user.user_id;
     const music_playlist_id: number =
       await this.playlistService.addMusicToPlaylist(
         userId,
         playlistId,
-        musicId,
+        music_id,
       );
-    return { music_playlist_id: music_playlist_id };
+    return { music_playlist_id};
   }
 
   @Get()
