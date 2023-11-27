@@ -16,7 +16,7 @@ interface MusicApi {
     @POST("musics")
     suspend fun postMusic(
         @Body music: MusicRequest
-    ): Response<Unit>
+    )
 
     @GET("musics/recent-uploads")
     suspend fun getRecentUploads(): Response<List<MusicResponse>>

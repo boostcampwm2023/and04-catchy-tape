@@ -15,7 +15,7 @@ interface UploadApi {
 
     @GET("upload/uuid")
     suspend fun getUuid(
-    ): Response<UuidResponse>
+    ): UuidResponse
 
     @GET("upload")
     suspend fun getPreSignedUrl(

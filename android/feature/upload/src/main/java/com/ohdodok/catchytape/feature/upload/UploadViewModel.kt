@@ -6,7 +6,7 @@ import java.io.File
 import javax.inject.Inject
 import androidx.lifecycle.viewModelScope
 import com.ohdodok.catchytape.core.domain.repository.MusicRepository
-import com.ohdodok.catchytape.core.domain.usecase.UploadFileUseCase
+import com.ohdodok.catchytape.core.domain.repository.UrlRepository
 import com.ohdodok.catchytape.core.domain.usecase.UploadMusicUseCase
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -25,7 +25,7 @@ import kotlinx.coroutines.flow.stateIn
 @HiltViewModel
 class UploadViewModel @Inject constructor(
     private val musicRepository: MusicRepository,
-    private val uploadFileUseCase: UploadFileUseCase,
+    private val urlRepository: UrlRepository,
     private val uploadMusicUseCase: UploadMusicUseCase
 ) : ViewModel() {
 
@@ -75,7 +75,7 @@ class UploadViewModel @Inject constructor(
     }
 
     fun uploadImage(imageFile: File) {
-        uploadFileUseCase.getImgUrl(imageFile).onStart {
+        urlRepository.getImageUrl(imageFile).onStart {
             _imageState.value = imageState.value.copy(isLoading = true)
         }.onEach { url ->
             _imageState.value = imageState.value.copy(url = url)
@@ -85,7 +85,7 @@ class UploadViewModel @Inject constructor(
     }
 
     fun uploadAudio(audioFile: File) {
-        uploadFileUseCase.getAudioUrl(audioFile).onStart {
+        urlRepository.getAudioUrl(audioFile).onStart {
             _audioState.value = audioState.value.copy(isLoading = true)
         }.onEach { url ->
             _audioState.value = audioState.value.copy(url = url)

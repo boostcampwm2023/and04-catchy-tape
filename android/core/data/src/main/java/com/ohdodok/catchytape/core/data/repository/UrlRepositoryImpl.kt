@@ -14,16 +14,6 @@ class UrlRepositoryImpl @Inject constructor(
     private val uploadApi: UploadApi
 ) : UrlRepository {
 
-    override fun getUuid(): Flow<String> = flow {
-        val response = uploadApi.getUuid()
-        if (response.isSuccessful) {
-            response.body()?.let { uuidResponse -> emit(uuidResponse.uuid) }
-        } else {
-            // TODO : 네트워크 에러 로직
-            throw Exception("uuid 생성 실패")
-        }
-    }
-
     override fun getImageUrl(file: File): Flow<String> = flow {
         val response = uploadApi.postImage(file.toMultipart("image/png"))
         if (response.isSuccessful) {
