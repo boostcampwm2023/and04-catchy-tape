@@ -8,5 +8,7 @@
     <fragment
         android:id="@+id/playlist_fragment"
         android:name="com.ohdodok.catchytape.feature.playlist.PlayListFragment"
+        android:label="PlayListFragment"
         tools:layout="@layout/fragment_play_list" />
+
 </navigation>
