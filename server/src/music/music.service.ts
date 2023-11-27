@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Catch, Injectable } from '@nestjs/common';
 import { HTTP_STATUS_CODE } from 'src/httpStatusCode.enum';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -7,11 +7,18 @@ import { Music } from 'src/entity/music.entity';
 import { Genres } from 'src/constants';
 import { CatchyException } from 'src/config/catchyException';
 import { ERROR_CODE } from 'src/config/errorCode.enum';
+import * as fs from 'fs';
+import * as ffmpeg from 'fluent-ffmpeg';
+import * as ffmpegInstaller from '@ffmpeg-installer/ffmpeg';
+import * as path from 'path';
+import axios from 'axios';
+import { UploadService } from 'src/upload/upload.service';
 
 @Injectable()
 export class MusicService {
   constructor(
     @InjectRepository(Music) private musicRepository: Repository<Music>,
+    private uploadService: UploadService,
   ) {}
 
   isValidGenre(genre: string): boolean {
@@ -22,12 +29,134 @@ export class MusicService {
     return false;
   }
 
+  separateMusicName(musicPath: string) {
+    const parsedPath = new URL(musicPath);
+    const pathNames = parsedPath.pathname.split('/');
+    const musicName = pathNames[pathNames.length - 1];
+
+    return musicName;
+  }
+
+  async encodeMusic(musicId: string, musicPath: string) {
+    try {
+      ffmpeg.setFfmpegPath(ffmpegInstaller.path);
+
+      const outputMusicPath = path.resolve(__dirname, '/musics/output');
+      const entireMusicPath = path.resolve(__dirname, `/musics`);
+      fs.mkdirSync(outputMusicPath, { recursive: true });
+
+      const musicName = this.separateMusicName(musicPath);
+
+      const outputPath = path.resolve(
+        __dirname,
+        `/musics/output/${musicName.replace('.mp3', '')}.m3u8`,
+      );
+      const tempFilePath = path.resolve(__dirname, `/musics/${musicName}`);
+
+      const musicFileResponse = await axios.get(musicPath, {
+        responseType: 'arraybuffer',
+      });
+
+      const musicBuffer = Buffer.from(musicFileResponse.data);
+
+      fs.writeFile(tempFilePath, musicBuffer, (err) => {
+        if (err) throw new Error();
+      });
+
+      await this.executeEncoding(
+        tempFilePath,
+        outputPath,
+        outputMusicPath,
+        musicId,
+      );
+
+      const encodedFileURL = await this.uploadEncodedFiles(
+        outputMusicPath,
+        musicId,
+      );
+
+      // fs.rmdirSync(entireMusicPath, { recursive: true });
+
+      return encodedFileURL;
+    } catch {
+      throw new CatchyException(
+        'MUSIC_ENCODE_ERROR',
+        HTTP_STATUS_CODE.SERVER_ERROR,
+        ERROR_CODE.SERVER_ERROR,
+      );
+    }
+  }
+
+  async executeEncoding(
+    tempFilePath: string,
+    outputPath: string,
+    outputMusicPath: string,
+    musicId: string,
+  ): Promise<string> {
+    return await new Promise((resolve, reject) => {
+      ffmpeg(tempFilePath)
+        .addOption([
+          '-c:a aac',
+          '-b:a 192k',
+          '-hls_time 10',
+          '-hls_list_size 0',
+          '-f hls',
+        ])
+        .output(outputPath)
+        .on('end', async () => {
+          const encodedPath = await this.uploadEncodedFiles(
+            outputMusicPath,
+            musicId,
+          );
+          resolve(encodedPath);
+        })
+        .on('error', (err) => {
+          reject(new Error());
+        })
+        .run();
+    });
+  }
+
+  async uploadEncodedFiles(folderPath: string, musicId: string) {
+    try {
+      let m3u8Path = '';
+
+      const files = await fs.promises.readdir(folderPath);
+
+      for (const file of files) {
+        const sourceFilePath = path.join(folderPath, file);
+
+        const storagePath = await this.uploadService.uploadEncodedFile(
+          sourceFilePath,
+          musicId,
+          file,
+        );
+
+        if (file.includes('.m3u8')) m3u8Path = storagePath.url;
+      }
+
+      return m3u8Path;
+    } catch {
+      throw new CatchyException(
+        'MUSIC_ENCODE_ERROR',
+        HTTP_STATUS_CODE.SERVER_ERROR,
+        ERROR_CODE.SERVER_ERROR,
+      );
+    }
+  }
+
   async createMusic(
     musicCreateDto: MusicCreateDto,
     user_id: string,
   ): Promise<string> {
     try {
-      const { music_id, title, cover, file: music_file, genre } = musicCreateDto;
+      const {
+        music_id,
+        title,
+        cover,
+        file: music_file,
+        genre,
+      } = musicCreateDto;
 
       if (!this.isValidGenre(genre)) {
         throw new CatchyException(
@@ -37,17 +166,25 @@ export class MusicService {
         );
       }
 
+      const encodedFileURL = await this.encodeMusic(
+        music_id,
+        musicCreateDto.file,
+      );
+
+      console.log(encodedFileURL);
+
       const newMusic: Music = this.musicRepository.create({
         music_id,
         title,
         cover,
-        music_file,
+        music_file: encodedFileURL,
         created_at: new Date(),
         genre,
-        user: { user_id: user_id },
+        user: { user_id },
       });
 
       const savedMusic: Music = await this.musicRepository.save(newMusic);
+
       return savedMusic.music_id;
     } catch (err) {
       if (err instanceof CatchyException) {
