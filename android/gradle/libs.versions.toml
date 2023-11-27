@@ -25,6 +25,7 @@ coroutines = "1.3.5"
 
 glide = "4.15.0"
 timber = "5.0.1"
+exoplayer = "1.2.0"
 
 [libraries]
 android-gradlePlugin = { group = "com.android.tools.build", name = "gradle", version.ref = "agp" }
@@ -58,6 +59,13 @@ coroutines = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core"
 
 glide = { group = "com.github.bumptech.glide", name = "glide", version.ref = "glide" }
 timber = { module = "com.jakewharton.timber:timber", version.ref = "timber" }
+
+exoplayer-core = { group = "androidx.media3", name = "media3-exoplayer", version.ref = "exoplayer" }
+exoplayer-ui = { group = "androidx.media3", name = "media3-ui", version.ref = "exoplayer" }
+exoplayer-hls = { group = "androidx.media3", name = "media3-exoplayer-hls", version.ref = "exoplayer" }
+
+[bundles]
+exoplayer = ["exoplayer-core", "exoplayer-ui", "exoplayer-hls"]
 
 [plugins]
 com-android-application = { id = "com.android.application", version.ref = "agp" }
