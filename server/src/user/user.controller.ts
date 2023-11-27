@@ -60,7 +60,7 @@ export class UserController {
     };
   }
 
-  @Get('myinfo')
+  @Get('my-info')
   @UseGuards(AuthGuard())
   @HttpCode(HTTP_STATUS_CODE.SUCCESS)
   async getMyInformation(@Req() req): Promise<User> {
