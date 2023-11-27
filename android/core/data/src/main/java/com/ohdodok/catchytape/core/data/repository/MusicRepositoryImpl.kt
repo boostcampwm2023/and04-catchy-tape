@@ -30,8 +30,9 @@ class MusicRepositoryImpl @Inject constructor(
             else -> throw RuntimeException("네트워크 에러")
         }
     }
-    
+
     override fun postMusic(
+        musicId: String,
         title: String,
         imageUrl: String,
         audioUrl: String,
@@ -39,20 +40,17 @@ class MusicRepositoryImpl @Inject constructor(
     ): Flow<Unit> = flow {
         val response = musicApi.postMusic(
             MusicRequest(
+                musicId = musicId,
                 title = title,
                 cover = imageUrl,
                 file = audioUrl,
                 genre = genre
             )
         )
-        when (response.code()) {
-            // TODO : 네트워크 에러 로직 처리
-            in 200..299 -> emit(response.body() ?: Unit)
-            else -> throw RuntimeException("네트워크 에러")
-        }
+        emit(response)
     }
 }
-    
+
 fun MusicResponse.toDomain(): Music {
     return Music(
         id = musicId,

@@ -9,6 +9,6 @@ interface MusicRepository {
 
     fun getRecentUploadedMusic(): Flow<List<Music>>
 
-    fun postMusic(title: String, imageUrl: String, audioUrl: String, genre: String): Flow<Unit>
+    fun postMusic(musicId: String, title: String, imageUrl: String, audioUrl: String, genre: String): Flow<Unit>
 
 }
