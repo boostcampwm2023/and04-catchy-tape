@@ -68,4 +68,10 @@ export class UserService {
       );
     }
   }
+
+  async getUserInformation(user_id: string): Promise<User> {
+    return await this.userRepository.findOne({
+      where: { user_id },
+    });
+  }
 }

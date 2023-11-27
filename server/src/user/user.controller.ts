@@ -14,6 +14,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { Music } from 'src/entity/music.entity';
 import { CatchyException } from 'src/config/catchyException';
 import { ERROR_CODE } from 'src/config/errorCode.enum';
+import { User } from 'src/entity/user.entity';
 
 @Controller('users')
 export class UserController {
@@ -57,5 +58,13 @@ export class UserController {
     return {
       user_id: await this.userService.updateUserImage(user_id, image_url),
     };
+  }
+
+  @Get('myinfo')
+  @UseGuards(AuthGuard())
+  @HttpCode(HTTP_STATUS_CODE.SUCCESS)
+  async getMyInformation(@Req() req): Promise<User> {
+    const user_id = req.user.userId;
+    return this.userService.getUserInformation(user_id);
   }
 }
