@@ -33,6 +33,9 @@ class UploadViewModel @Inject constructor(
     private val uploadMusicUseCase: UploadMusicUseCase
 ) : ViewModel() {
 
+    private val _events = MutableSharedFlow<UploadEvent>()
+    val events = _events.asSharedFlow()
+
     private val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
         viewModelScope.launch {
             if (throwable is CtException) {
@@ -44,9 +47,6 @@ class UploadViewModel @Inject constructor(
     }
 
     private val viewModelScopeWithExceptionHandler = viewModelScope + exceptionHandler
-
-    private val _events = MutableSharedFlow<UploadEvent>()
-    val events = _events.asSharedFlow()
 
     val musicTitle = MutableStateFlow("")
     val musicGenre = MutableStateFlow("")
@@ -133,4 +133,3 @@ sealed interface UploadEvent {
     data object NavigateToBack : UploadEvent
     data class ShowMessage(val error: CtErrorType) : UploadEvent
 }
-
