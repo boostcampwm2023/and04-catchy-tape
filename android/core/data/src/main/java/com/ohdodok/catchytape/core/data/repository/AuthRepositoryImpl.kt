@@ -1,7 +1,6 @@
 package com.ohdodok.catchytape.core.data.repository
 
 import com.ohdodok.catchytape.core.data.api.UserApi
-import com.ohdodok.catchytape.core.data.datasource.TokenLocalDataSource
 import com.ohdodok.catchytape.core.data.model.LoginRequest
 import com.ohdodok.catchytape.core.data.model.SignUpRequest
 import com.ohdodok.catchytape.core.domain.repository.AuthRepository
@@ -11,7 +10,6 @@ import javax.inject.Inject
 
 class AuthRepositoryImpl @Inject constructor(
     private val userApi: UserApi,
-    private val tokenDataSource: TokenLocalDataSource,
 ) : AuthRepository {
 
     override fun loginWithGoogle(googleToken: String): Flow<String> = flow {
@@ -31,10 +29,6 @@ class AuthRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun saveAccessToken(token: String) {
-        tokenDataSource.saveAccessToken(token)
-    }
-
     override fun isDuplicatedNickname(nickname: String): Flow<Boolean> = flow {
         val response = userApi.verifyDuplicatedNickname(nickname = nickname)
 
@@ -45,11 +39,8 @@ class AuthRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun tryLoginAutomatically(): Boolean {
-        val accessToken = tokenDataSource.getAccessToken()
-
-        if (accessToken.isBlank()) return false
-
-        return userApi.verify("Bearer $accessToken").isSuccessful
+    override suspend fun verifyToken(token: String): Boolean {
+        return userApi.verify("Bearer ${token}").isSuccessful
     }
+
 }
