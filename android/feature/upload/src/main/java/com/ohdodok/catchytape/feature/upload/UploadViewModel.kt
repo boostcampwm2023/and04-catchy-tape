@@ -5,8 +5,8 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import java.io.File
 import javax.inject.Inject
 import androidx.lifecycle.viewModelScope
+import com.ohdodok.catchytape.core.domain.repository.MusicRepository
 import com.ohdodok.catchytape.core.domain.usecase.UploadFileUseCase
-import com.ohdodok.catchytape.core.domain.usecase.GetMusicGenresUseCase
 import com.ohdodok.catchytape.core.domain.usecase.UploadMusicUseCase
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -24,7 +24,7 @@ import kotlinx.coroutines.flow.stateIn
 
 @HiltViewModel
 class UploadViewModel @Inject constructor(
-    private val getMusicGenresUseCase: GetMusicGenresUseCase,
+    private val musicRepository: MusicRepository,
     private val uploadFileUseCase: UploadFileUseCase,
     private val uploadMusicUseCase: UploadMusicUseCase
 ) : ViewModel() {
@@ -69,7 +69,7 @@ class UploadViewModel @Inject constructor(
     }
 
     private fun fetchGenres() {
-        getMusicGenresUseCase().onEach {
+        musicRepository.getGenres().onEach {
             _musicGenres.value = it
         }.launchIn(viewModelScope)
     }
