@@ -5,7 +5,6 @@ import androidx.lifecycle.viewModelScope
 import com.ohdodok.catchytape.core.domain.model.CtErrorType
 import com.ohdodok.catchytape.core.domain.model.CtException
 import com.ohdodok.catchytape.core.domain.repository.MusicRepository
-import com.ohdodok.catchytape.core.domain.repository.UrlRepository
 import com.ohdodok.catchytape.core.domain.usecase.upload.UploadFileUseCase
 import com.ohdodok.catchytape.core.domain.usecase.upload.UploadMusicUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -30,7 +29,6 @@ import javax.inject.Inject
 @HiltViewModel
 class UploadViewModel @Inject constructor(
     private val musicRepository: MusicRepository,
-    private val urlRepository: UrlRepository,
     private val uploadFileUseCase: UploadFileUseCase,
     private val uploadMusicUseCase: UploadMusicUseCase
 ) : ViewModel() {
@@ -93,17 +91,17 @@ class UploadViewModel @Inject constructor(
     }
 
     fun uploadImage(imageFile: File) {
-        uploadFileUseCase.getImageUrl(imageFile).onStart {
+        uploadFileUseCase.uploadImage(imageFile).onStart {
             _imageState.value = imageState.value.copy(isLoading = true)
         }.onEach { url ->
-//            _imageState.value = imageState.value.copy(url = url)
+            _imageState.value = imageState.value.copy(url = url)
         }.onCompletion {
             _imageState.value = imageState.value.copy(isLoading = false)
         }.launchIn(viewModelScopeWithExceptionHandler)
     }
 
     fun uploadAudio(audioFile: File) {
-        urlRepository.getAudioUrl(audioFile).onStart {
+        uploadFileUseCase.uploadAudio(audioFile).onStart {
             _audioState.value = audioState.value.copy(isLoading = true)
         }.onEach { url ->
             _audioState.value = audioState.value.copy(url = url)
