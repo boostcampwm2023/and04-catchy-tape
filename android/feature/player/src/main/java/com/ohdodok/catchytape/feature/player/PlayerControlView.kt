@@ -67,4 +67,10 @@ class PlayerControlView(context: Context, attrs: AttributeSet) : ConstraintLayou
         indicator.progress = progress
         indicator.max = duration
     }
+
+    fun setOnPlayButtonClick(onPlayButtonClick: () -> Unit) {
+        val playButton: ImageButton = findViewById(R.id.ib_play)
+
+        playButton.setOnClickListener { onPlayButtonClick() }
+    }
 }

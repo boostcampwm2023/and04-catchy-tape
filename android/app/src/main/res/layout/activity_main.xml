@@ -32,6 +32,7 @@
             app:progress="65"
             app:thumbnailUrl="https://picsum.photos/200"
             app:title="제목" />
+<!--        app:onPlayButtonClick="@{() -> viewModel.doSomething()}" -->
 
         <com.google.android.material.bottomnavigation.BottomNavigationView
             android:id="@+id/bottom_nav"
