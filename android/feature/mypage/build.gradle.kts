@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-    namespace = "com.ohdodk.catchtape.feature.mypage"
+    namespace = "com.ohdodok.catchytape.feature.mypage"
 
     defaultConfig {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
