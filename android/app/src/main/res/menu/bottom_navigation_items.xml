@@ -14,7 +14,7 @@
 
     <item
         android:id="@id/my_page_nav_graph"
-        android:icon="@drawable/home_tab_selector"
+        android:icon="@drawable/my_page_tab_selector"
         android:title="@string/my" />
 
 </menu>
