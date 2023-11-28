@@ -11,8 +11,6 @@
         android:label="mypage"
         tools:layout="@layout/fragment_my_page">
 
-        <deepLink app:uri="android-app://com.ohdodok.catchytape/my_page_fragment" />
-
     </fragment>
 
 
