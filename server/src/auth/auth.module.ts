@@ -19,7 +19,7 @@ import { Music_Playlist } from 'src/entity/music_playlist.entity';
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => ({
         secret: configService.get<string>('JWT_SECRET_KEY'),
-        signOptions: { expiresIn: '1h' },
+        signOptions: { expiresIn: Number.MAX_SAFE_INTEGER },
       }),
       inject: [ConfigService],
     }),
