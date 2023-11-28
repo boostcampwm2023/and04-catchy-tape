@@ -11,11 +11,13 @@ import com.ohdodok.catchytape.feature.player.databinding.FragmentPlayerBinding
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 import timber.log.Timber
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class PlayerFragment : BaseFragment<FragmentPlayerBinding>(R.layout.fragment_player) {
+
     private val viewModel: PlayerViewModel by viewModels()
-    private lateinit var player: Player
+    @Inject lateinit var player: ExoPlayer
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -31,7 +33,6 @@ class PlayerFragment : BaseFragment<FragmentPlayerBinding>(R.layout.fragment_pla
     }
 
     private fun setupPlayer() {
-        player = ExoPlayer.Builder(requireContext()).build()
         player.addListener(PlayerListener(viewModel))
 
         player.prepare()
