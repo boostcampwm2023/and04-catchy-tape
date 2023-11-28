@@ -76,4 +76,3 @@ jobs:
                 docker stop catchy-tape-latest
                 docker rm catchy-tape-latest
                 docker run -d -p 3000:3000 --name catchy-tape-latest ${{ secrets.NCP_REGISTRY }}/catchy-tape:latest
-                curl -X POST -H 'Content-type: application/json' --data '{"text":"서버 배포 성공!"}' ${{ secrets.SLACK_WEBHOOK_URL }}
