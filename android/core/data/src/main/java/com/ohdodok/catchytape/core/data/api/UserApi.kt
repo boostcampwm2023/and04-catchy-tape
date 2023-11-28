@@ -31,5 +31,5 @@ interface UserApi {
     @GET("users/verify")
     suspend fun verify(
         @Header("Authorization") accessToken: String,
-    ) : Response<Unit>
+    ): Response<Unit>
 }

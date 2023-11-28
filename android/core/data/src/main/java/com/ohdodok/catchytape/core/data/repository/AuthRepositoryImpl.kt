@@ -17,7 +17,6 @@ class AuthRepositoryImpl @Inject constructor(
     override fun loginWithGoogle(googleToken: String): Flow<String> = flow {
         val loginResponse = userApi.login(LoginRequest(idToken = googleToken))
         emit(loginResponse.accessToken)
-        loginResponse.accessToken
     }
 
     override fun signUpWithGoogle(googleToken: String, nickname: String): Flow<String> = flow {
