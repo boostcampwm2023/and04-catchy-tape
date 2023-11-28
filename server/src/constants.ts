@@ -24,3 +24,9 @@ export const keyHandler: {
   music: (uuid) => `music/${uuid}/music.mp3`,
   cover: (uuid) => `image/cover/${uuid}/cover.png`,
 };
+
+export const contentTypeHandler: Record<string, string> = {
+  user: 'image/png',
+  cover: 'image/png',
+  music: 'audio/mpeg',
+};
