@@ -16,6 +16,8 @@ class PlaylistsFragment : BaseFragment<FragmentPlaylistsBinding>(R.layout.fragme
         super.onViewCreated(view, savedInstanceState)
         binding.viewModel = viewModel
         binding.rvPlaylist.adapter = PlaylistAdapter()
+
+        NewPlaylistDialog().show(parentFragmentManager, "")
     }
 
 }
