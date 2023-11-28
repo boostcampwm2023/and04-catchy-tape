@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import javax.inject.Inject
 
-data class PlayListUiState(
+data class PlaylistUiState(
     // TODO: 임시 데이터이고 수정해야함
     val playList: List<Playlist> = listOf(
         Playlist(
@@ -21,10 +21,10 @@ data class PlayListUiState(
 )
 
 @HiltViewModel
-class PlayListViewModel @Inject constructor(
+class PlaylistViewModel @Inject constructor(
 
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow(PlayListUiState())
-    val uiState: StateFlow<PlayListUiState> = _uiState.asStateFlow()
+    private val _uiState = MutableStateFlow(PlaylistUiState())
+    val uiState: StateFlow<PlaylistUiState> = _uiState.asStateFlow()
 }

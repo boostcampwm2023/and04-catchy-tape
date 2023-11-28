@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.ohdodok.catchytape.core.domain.model.Playlist
-import com.ohdodok.catchytape.feature.playlist.databinding.ItemPlayListBinding
+import com.ohdodok.catchytape.feature.playlist.databinding.ItemPlaylistBinding
 
 class PlaylistAdapter :
     ListAdapter<Playlist, PlaylistAdapter.PlaylistViewHolder>(PlaylistItemDiffUtil) {
@@ -19,7 +19,7 @@ class PlaylistAdapter :
         holder.bind(currentList[position])
     }
 
-    class PlaylistViewHolder private constructor(private val binding: ItemPlayListBinding) :
+    class PlaylistViewHolder private constructor(private val binding: ItemPlaylistBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(item: Playlist) {
@@ -28,7 +28,7 @@ class PlaylistAdapter :
 
         companion object {
             fun from(parent: ViewGroup) = PlaylistViewHolder(
-                ItemPlayListBinding.inflate(
+                ItemPlaylistBinding.inflate(
                     LayoutInflater.from(parent.context),
                     parent,
                     false

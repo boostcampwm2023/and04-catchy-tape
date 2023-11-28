@@ -7,7 +7,7 @@
 
         <variable
             name="viewModel"
-            type="com.ohdodok.catchytape.feature.playlist.PlayListViewModel" />
+            type="com.ohdodok.catchytape.feature.playlist.PlaylistViewModel" />
 
     </data>
 
@@ -16,18 +16,19 @@
         android:layout_height="match_parent">
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rv_play_list"
+            android:id="@+id/rv_playlist"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:orientation="vertical"
+            android:layout_marginHorizontal="@dimen/margin_horizontal"
             android:layout_marginTop="@dimen/extra_large"
+            android:orientation="vertical"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:list="@{viewModel.uiState.playList}"
-            tools:listitem="@layout/item_play_list" />
+            tools:listitem="@layout/item_playlist" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

@@ -4,18 +4,18 @@ import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.viewModels
 import com.ohdodok.catchytape.core.ui.BaseFragment
-import com.ohdodok.catchytape.feature.playlist.databinding.FragmentPlayListBinding
+import com.ohdodok.catchytape.feature.playlist.databinding.FragmentPlaylistsBinding
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class PlayListFragment : BaseFragment<FragmentPlayListBinding>(R.layout.fragment_play_list) {
+class PlaylistsFragment : BaseFragment<FragmentPlaylistsBinding>(R.layout.fragment_playlists) {
 
-    private val viewModel: PlayListViewModel by viewModels()
+    private val viewModel: PlaylistViewModel by viewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.viewModel = viewModel
-        binding.rvPlayList.adapter = PlaylistAdapter()
+        binding.rvPlaylist.adapter = PlaylistAdapter()
     }
 
 }
