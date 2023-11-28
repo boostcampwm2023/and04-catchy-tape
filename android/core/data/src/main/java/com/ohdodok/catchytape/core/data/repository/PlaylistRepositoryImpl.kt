@@ -21,7 +21,7 @@ class PlaylistRepositoryImpl @Inject constructor(
 
 
     override suspend fun postPlaylist(title: String) {
-        val a = playlistApi.postPlaylist(PlaylistRequest(title = title))
+        playlistApi.postPlaylist(PlaylistRequest(title = title))
     }
 }
 

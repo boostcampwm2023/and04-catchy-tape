@@ -18,6 +18,7 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.plus
+import timber.log.Timber
 import javax.inject.Inject
 
 data class PlaylistsUiState(
@@ -33,6 +34,7 @@ class PlaylistViewModel @Inject constructor(
     val events = _events.asSharedFlow()
 
     private val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
+        Timber.d("${throwable }")
         viewModelScope.launch {
             if (throwable is CtException) {
                 _events.emit(PlaylistsEvent.ShowMessage(throwable.ctError))
@@ -49,7 +51,7 @@ class PlaylistViewModel @Inject constructor(
 
     init {
         getPlaylists()
-        //createPlaylist()
+        createPlaylist()
     }
 
     fun getPlaylists() {
@@ -60,7 +62,7 @@ class PlaylistViewModel @Inject constructor(
 
     fun createPlaylist() {
         viewModelScopeWithExceptionHandler.launch {
-            playlistRepository.postPlaylist("test3")
+            playlistRepository.postPlaylist("test") // TODO, PlayLists Dialog PR 이 머지 가 안되서, 머지 후 반영 예정
         }
     }
 
