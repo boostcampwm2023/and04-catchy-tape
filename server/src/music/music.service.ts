@@ -86,7 +86,7 @@ export class MusicService {
       fs.rmdirSync(entireMusicPath, { recursive: true });
 
       return encodedFileURL;
-    } catch(err) {
+    } catch (err) {
       console.log(err);
       throw new CatchyException(
         'MUSIC_ENCODE_ERROR',
@@ -231,5 +231,9 @@ export class MusicService {
         ERROR_CODE.SERVICE_ERROR,
       );
     }
+  }
+
+  async getMusicInfo(music_id: string): Promise<Music> {
+    return this.musicRepository.findOne({ where: { music_id } });
   }
 }
