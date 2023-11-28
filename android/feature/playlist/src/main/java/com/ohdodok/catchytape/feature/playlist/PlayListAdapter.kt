@@ -5,28 +5,29 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.ohdodok.catchytape.core.domain.model.PlayListItem
+import com.ohdodok.catchytape.core.domain.model.Playlist
 import com.ohdodok.catchytape.feature.playlist.databinding.ItemPlayListBinding
 
-class PlayListAdapter : ListAdapter<PlayListItem, RecyclerView.ViewHolder>(PlayListItemDiffUtil) {
+class PlaylistAdapter :
+    ListAdapter<Playlist, PlaylistAdapter.PlaylistViewHolder>(PlaylistItemDiffUtil) {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        return PlayListViewHolder.from(parent)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PlaylistViewHolder {
+        return PlaylistViewHolder.from(parent)
     }
 
-    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        (holder as PlayListViewHolder).bind(currentList[position])
+    override fun onBindViewHolder(holder: PlaylistViewHolder, position: Int) {
+        holder.bind(currentList[position])
     }
 
-    class PlayListViewHolder private constructor(private val binding: ItemPlayListBinding) :
+    class PlaylistViewHolder private constructor(private val binding: ItemPlayListBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(item: PlayListItem) {
-            binding.playListItem = item
+        fun bind(item: Playlist) {
+            binding.playlist = item
         }
 
         companion object {
-            fun from(parent: ViewGroup) = PlayListViewHolder(
+            fun from(parent: ViewGroup) = PlaylistViewHolder(
                 ItemPlayListBinding.inflate(
                     LayoutInflater.from(parent.context),
                     parent,
@@ -36,12 +37,12 @@ class PlayListAdapter : ListAdapter<PlayListItem, RecyclerView.ViewHolder>(PlayL
         }
     }
 
-    object PlayListItemDiffUtil : DiffUtil.ItemCallback<PlayListItem>() {
-        override fun areItemsTheSame(oldItem: PlayListItem, newItem: PlayListItem): Boolean {
+    object PlaylistItemDiffUtil : DiffUtil.ItemCallback<Playlist>() {
+        override fun areItemsTheSame(oldItem: Playlist, newItem: Playlist): Boolean {
             return oldItem.id == newItem.id
         }
 
-        override fun areContentsTheSame(oldItem: PlayListItem, newItem: PlayListItem): Boolean {
+        override fun areContentsTheSame(oldItem: Playlist, newItem: Playlist): Boolean {
             return oldItem == newItem
         }
     }

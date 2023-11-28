@@ -15,7 +15,7 @@ class PlayListFragment : BaseFragment<FragmentPlayListBinding>(R.layout.fragment
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.viewModel = viewModel
-        binding.rvPlayList.adapter = PlayListAdapter()
+        binding.rvPlayList.adapter = PlaylistAdapter()
     }
 
 }

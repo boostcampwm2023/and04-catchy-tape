@@ -1,7 +1,7 @@
 package com.ohdodok.catchytape.feature.playlist
 
 import androidx.lifecycle.ViewModel
-import com.ohdodok.catchytape.core.domain.model.PlayListItem
+import com.ohdodok.catchytape.core.domain.model.Playlist
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -10,8 +10,8 @@ import javax.inject.Inject
 
 data class PlayListUiState(
     // TODO: 임시 데이터이고 수정해야함
-    val playList: List<PlayListItem> = listOf(
-        PlayListItem(
+    val playList: List<Playlist> = listOf(
+        Playlist(
             1,
             "최근 재생 목록",
             "~~~~",

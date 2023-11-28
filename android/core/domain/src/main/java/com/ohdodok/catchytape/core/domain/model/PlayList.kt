@@ -1,6 +1,6 @@
 package com.ohdodok.catchytape.core.domain.model
 
-data class PlayListItem(
+data class Playlist(
     val id: Int,
     val title: String,
     val thumbnailUrl: String,

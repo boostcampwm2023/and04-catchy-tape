@@ -6,8 +6,8 @@
     <data>
 
         <variable
-            name="playListItem"
-            type="com.ohdodok.catchytape.core.domain.model.PlayListItem" />
+            name="playlist"
+            type="com.ohdodok.catchytape.core.domain.model.Playlist" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -19,7 +19,7 @@
             android:id="@+id/iv_thumbnail"
             android:layout_width="@dimen/play_list_item_img"
             android:layout_height="@dimen/play_list_item_img"
-            app:imgUrl="@{playListItem.thumbnailUrl}"
+            app:imgUrl="@{playlist.thumbnailUrl}"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:background="@color/on_surface" />
@@ -33,7 +33,7 @@
             android:layout_marginTop="@dimen/small"
             android:ellipsize="end"
             android:maxLines="1"
-            android:text="@{playListItem.title}"
+            android:text="@{playlist.title}"
             android:textColor="@color/on_surface"
             app:layout_constraintEnd_toStartOf="@+id/ib_more"
             app:layout_constraintStart_toEndOf="@+id/iv_thumbnail"
@@ -47,7 +47,7 @@
             android:layout_height="wrap_content"
             android:ellipsize="end"
             android:maxLines="1"
-            android:text="@{String.format(@string/track_size, playListItem.trackSize)}"
+            android:text="@{String.format(@string/track_size, playlist.trackSize)}"
             android:textColor="@color/on_surface_variant"
             app:layout_constraintEnd_toStartOf="@+id/ib_more"
             app:layout_constraintStart_toEndOf="@+id/iv_thumbnail"
