@@ -67,6 +67,7 @@ export class UploadService {
           Bucket: 'catchy-tape-bucket2',
           Key: `music/original/${file.originalname}`,
           Body: Readable.from(file.buffer),
+          ACL: 'public-read',
         })
         .promise();
 
@@ -87,6 +88,7 @@ export class UploadService {
           Bucket: 'catchy-tape-bucket2',
           Key: `image/${file.originalname}`,
           Body: Readable.from(file.buffer),
+          ACL: 'public-read',
         })
         .promise();
 

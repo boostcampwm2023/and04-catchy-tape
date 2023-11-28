@@ -38,7 +38,7 @@ export class MusicService {
   }
 
   getPath(option: string): string {
-    return path.resolve(__dirname, `/musics${option}`);
+    return path.resolve(__dirname, `musics${option}`);
   }
 
   setEncodingPaths(musicPath: string) {
@@ -86,7 +86,8 @@ export class MusicService {
       fs.rmdirSync(entireMusicPath, { recursive: true });
 
       return encodedFileURL;
-    } catch {
+    } catch(err) {
+      console.log(err);
       throw new CatchyException(
         'MUSIC_ENCODE_ERROR',
         HTTP_STATUS_CODE.SERVER_ERROR,
