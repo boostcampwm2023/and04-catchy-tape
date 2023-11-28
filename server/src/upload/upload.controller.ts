@@ -57,7 +57,7 @@ export class UploadController {
       }),
     )
     file: Express.Multer.File,
-    @Body('uuid') uuid: string | null,
+    @Body('uuid') uuid: string,
   ) {
     const { url } = await this.uploadService.uploadMusic(file, uuid);
     return { url };
