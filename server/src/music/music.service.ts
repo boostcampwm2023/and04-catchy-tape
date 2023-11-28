@@ -234,6 +234,25 @@ export class MusicService {
   }
 
   async getMusicInfo(music_id: string): Promise<Music> {
-    return this.musicRepository.findOne({ where: { music_id } });
+    try {
+      const targetMusic: Music = await this.musicRepository.findOne({
+        where: { music_id },
+      });
+      if (!targetMusic) {
+        throw new CatchyException(
+          'NOT_EXIST_MUSIC',
+          HTTP_STATUS_CODE.BAD_REQUEST,
+          ERROR_CODE.NOT_EXIST_MUSIC,
+        );
+      }
+      return targetMusic;
+    } catch (err) {
+      if (err instanceof CatchyException) throw err;
+      throw new CatchyException(
+        'SERVER_ERROR',
+        HTTP_STATUS_CODE.SERVER_ERROR,
+        ERROR_CODE.SERVICE_ERROR,
+      );
+    }
   }
 }
