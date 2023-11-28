@@ -65,7 +65,7 @@ export class MusicController {
   }
 
   @Get('info')
-  @HttpCode(HTTP_STATUS_CODE.SERVER_ERROR)
+  @HttpCode(HTTP_STATUS_CODE.SUCCESS)
   async getMusicInfo(@Query('music_id') music_id: string): Promise<Music> {
     return this.musicService.getMusicInfo(music_id);
   }
