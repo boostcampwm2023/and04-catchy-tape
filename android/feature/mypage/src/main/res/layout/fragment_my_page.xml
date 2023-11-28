@@ -70,7 +70,7 @@
             android:background="@android:color/transparent"
             android:minWidth="0dp"
             android:minHeight="0dp"
-            android:text="@string/upload"
+            android:text="@string/more"
             app:layout_constraintBottom_toBottomOf="@id/tv_my_music"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@id/tv_my_music" />
@@ -86,6 +86,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_my_music"
+            app:list="@{viewModel.uiState.myMusics}"
             tools:itemCount="3"
             tools:listitem="@layout/item_music_vertical" />
 
