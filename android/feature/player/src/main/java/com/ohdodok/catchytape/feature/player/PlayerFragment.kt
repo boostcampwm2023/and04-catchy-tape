@@ -18,9 +18,9 @@ const val millisecondsPerSecond = 1000
 @AndroidEntryPoint
 class PlayerFragment : BaseFragment<FragmentPlayerBinding>(R.layout.fragment_player) {
 
-    private val viewModel: PlayerViewModel by viewModels()
     @Inject
     lateinit var player: ExoPlayer
+    private val viewModel: PlayerViewModel by viewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
