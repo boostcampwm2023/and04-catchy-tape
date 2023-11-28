@@ -166,7 +166,13 @@ export class PlaylistService {
 
   async getUserPlaylists(userId: string): Promise<Playlist[]> {
     try {
-      return Playlist.getPlaylistsByUserId(userId);
+      const playlists: Playlist[] = await Playlist.getPlaylistsByUserId(userId);
+      const promises = playlists.map(async (playlist) => {
+        playlist['music_count'] =
+          await Music_Playlist.getMusicCountByPlaylistId(playlist.playlist_id);
+      });
+      await Promise.all(promises);
+      return playlists;
     } catch {
       throw new CatchyException(
         'SERVER_ERROR',
