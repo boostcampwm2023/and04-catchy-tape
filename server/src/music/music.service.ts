@@ -29,7 +29,7 @@ export class MusicService {
     return false;
   }
 
-  separateMusicName(musicPath: string) {
+  separateMusicName(musicPath: string): string {
     const parsedPath = new URL(musicPath);
     const pathNames = parsedPath.pathname.split('/');
     const musicName = pathNames[pathNames.length - 1];
@@ -37,26 +37,29 @@ export class MusicService {
     return musicName;
   }
 
-  getPath(option: string) {
+  getPath(option: string): string {
     return path.resolve(__dirname, `/musics${option}`);
   }
 
-  async encodeMusic(musicId: string, musicPath: string) {
+  setEncodingPaths(musicPath: string) {
+    const musicName: string = this.separateMusicName(musicPath);
+
+    return {
+      outputMusicPath: this.getPath('/output'),
+      entireMusicPath: this.getPath(''),
+      outputPath: this.getPath(`/output/${musicName.replace('.mp3', '')}.m3u8`),
+      tempFilePath: this.getPath(`/${musicName}`),
+    };
+  }
+
+  async encodeMusic(musicId: string, musicPath: string): Promise<string> {
     try {
       ffmpeg.setFfmpegPath(ffmpegInstaller.path);
 
-      const outputMusicPath = this.getPath('/output');
-      const entireMusicPath = this.getPath('');
+      const { outputMusicPath, entireMusicPath, outputPath, tempFilePath } =
+        this.setEncodingPaths(musicPath);
 
       fs.mkdirSync(outputMusicPath, { recursive: true });
-
-      const musicName = this.separateMusicName(musicPath);
-
-      const outputPath = this.getPath(
-        `/output/${musicName.replace('.mp3', '')}.m3u8`,
-      );
-
-      const tempFilePath = this.getPath(`/${musicName}`);
 
       const musicFileResponse = await axios.get(musicPath, {
         responseType: 'arraybuffer',
@@ -122,7 +125,10 @@ export class MusicService {
     });
   }
 
-  async uploadEncodedFiles(folderPath: string, musicId: string) {
+  async uploadEncodedFiles(
+    folderPath: string,
+    musicId: string,
+  ): Promise<string> {
     try {
       let m3u8Path = '';
 
