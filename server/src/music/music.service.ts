@@ -235,9 +235,8 @@ export class MusicService {
 
   async getMusicInfo(music_id: string): Promise<Music> {
     try {
-      const targetMusic: Music = await this.musicRepository.findOne({
-        where: { music_id },
-      });
+      const targetMusic: Music = await Music.getMusicById(music_id);
+
       if (!targetMusic) {
         throw new CatchyException(
           'NOT_EXIST_MUSIC',
