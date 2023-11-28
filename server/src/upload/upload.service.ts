@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { HTTP_STATUS_CODE } from 'src/httpStatusCode.enum';
 import { NcloudConfigService } from './../config/ncloud.config';
 import { S3 } from 'aws-sdk';
-import { keyFlags, keyHandler } from './../constants';
+import { contentTypeHandler, keyFlags, keyHandler } from './../constants';
 import { CatchyException } from 'src/config/catchyException';
 import { ERROR_CODE } from 'src/config/errorCode.enum';
 import * as fs from 'fs';
@@ -40,12 +40,14 @@ export class UploadService {
         );
 
       const keyPath = keyHandler[type](uuid);
+      const contentType = contentTypeHandler.type;
 
       return await this.objectStorage.getSignedUrlPromise('putObject', {
         Bucket: 'catchy-tape-bucket2',
         Key: `${keyPath}`,
         Expires: 600,
         ACL: 'public-read',
+        'Content-Type': contentType,
       });
     } catch (error) {
       if (error instanceof CatchyException) throw error;
