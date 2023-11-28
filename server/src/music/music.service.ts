@@ -179,13 +179,13 @@ export class MusicService {
 
       const encodedFileURL = await this.encodeMusic(
         music_id,
-        musicCreateDto.file,
+        music_file.split('?')[0],
       );
 
       const newMusic: Music = this.musicRepository.create({
         music_id,
         title,
-        cover,
+        cover: cover.split('?')[0],
         music_file: encodedFileURL,
         created_at: new Date(),
         genre,
