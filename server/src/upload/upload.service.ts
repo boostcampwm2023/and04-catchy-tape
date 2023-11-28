@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { HTTP_STATUS_CODE } from 'src/httpStatusCode.enum';
 import { NcloudConfigService } from './../config/ncloud.config';
 import { S3 } from 'aws-sdk';
-import { contentTypeHandler, keyFlags, keyHandler } from './../constants';
+import { contentTypeHandler, keyFlags } from './../constants';
 import { CatchyException } from 'src/config/catchyException';
 import { ERROR_CODE } from 'src/config/errorCode.enum';
 import * as fs from 'fs';
@@ -15,7 +15,7 @@ export class UploadService {
     this.objectStorage = nCloudConfigService.createObjectStorageOption();
   }
 
-  private isValidFlag(flag: string): boolean {
+  private isValidType(flag: string): boolean {
     if (keyFlags.includes(flag)) return true;
 
     return false;
@@ -30,43 +30,25 @@ export class UploadService {
     return false;
   }
 
-  async getSignedURL(type: string, uuid: string): Promise<string> {
+  async uploadMusic(
+    file: Express.Multer.File,
+    musicId: string,
+  ): Promise<{ url: string }> {
     try {
-      if (!this.isValidUUIDPattern(uuid) || !this.isValidFlag(type))
+      if (!this.isValidUUIDPattern(musicId)) {
         throw new CatchyException(
           'INVALID_INPUT_VALUE',
           HTTP_STATUS_CODE.BAD_REQUEST,
           ERROR_CODE.INVALID_INPUT_VALUE,
         );
+      }
 
-      const keyPath = keyHandler[type](uuid);
-      const contentType = contentTypeHandler.type;
-
-      return await this.objectStorage.getSignedUrlPromise('putObject', {
-        Bucket: 'catchy-tape-bucket2',
-        Key: `${keyPath}`,
-        Expires: 600,
-        ACL: 'public-read',
-        'Content-Type': contentType,
-      });
-    } catch (error) {
-      if (error instanceof CatchyException) throw error;
-
-      throw new CatchyException(
-        'SERVER ERROR',
-        HTTP_STATUS_CODE.SERVER_ERROR,
-        ERROR_CODE.SERVICE_ERROR,
-      );
-    }
-  }
-
-  async uploadMusic(file: Express.Multer.File): Promise<{ url: string }> {
-    try {
       const uploadResult = await this.objectStorage
         .upload({
           Bucket: 'catchy-tape-bucket2',
-          Key: `music/original/${file.originalname}`,
+          Key: `music/${musicId}/${file.originalname}`,
           Body: Readable.from(file.buffer),
+          ContentType: contentTypeHandler.music,
           ACL: 'public-read',
         })
         .promise();
@@ -81,19 +63,38 @@ export class UploadService {
     }
   }
 
-  async uploadImage(file: Express.Multer.File): Promise<{ url: string }> {
+  async uploadImage(
+    file: Express.Multer.File,
+    id: string | null,
+    type: string,
+  ): Promise<{ url: string }> {
     try {
+      if (id && (!this.isValidUUIDPattern(id) || !this.isValidType(type))) {
+        throw new CatchyException(
+          'INVALID_INPUT_VALUE',
+          HTTP_STATUS_CODE.BAD_REQUEST,
+          ERROR_CODE.INVALID_INPUT_VALUE,
+        );
+      }
+
+      const keyPath =
+        type === 'user'
+          ? `image/user/${id}/${file.originalname}`
+          : `image/cover/${id}/${file.originalname}`;
+
       const uploadResult = await this.objectStorage
         .upload({
           Bucket: 'catchy-tape-bucket2',
-          Key: `image/${file.originalname}`,
+          Key: keyPath,
           Body: Readable.from(file.buffer),
+          ContentType: contentTypeHandler.image,
           ACL: 'public-read',
         })
         .promise();
 
       return { url: uploadResult.Location };
-    } catch {
+    } catch (err) {
+      console.log(err);
       throw new CatchyException(
         'SERVER ERROR',
         HTTP_STATUS_CODE.SERVER_ERROR,
