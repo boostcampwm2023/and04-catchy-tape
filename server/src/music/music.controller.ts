@@ -63,4 +63,10 @@ export class MusicController {
     const userId: string = req.user.user_id;
     return this.musicService.getMyUploads(userId, count);
   }
+
+  @Get('info')
+  @HttpCode(HTTP_STATUS_CODE.SERVER_ERROR)
+  async getMusicInfo(@Query('music_id') music_id: string): Promise<Music> {
+    return this.musicService.getMusicInfo(music_id);
+  }
 }

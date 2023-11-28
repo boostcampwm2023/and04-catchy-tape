@@ -86,7 +86,7 @@ export class MusicService {
       fs.rmdirSync(entireMusicPath, { recursive: true });
 
       return encodedFileURL;
-    } catch(err) {
+    } catch (err) {
       console.log(err);
       throw new CatchyException(
         'MUSIC_ENCODE_ERROR',
@@ -225,6 +225,29 @@ export class MusicService {
     try {
       return Music.getMusicListByUserId(userId, count);
     } catch {
+      throw new CatchyException(
+        'SERVER_ERROR',
+        HTTP_STATUS_CODE.SERVER_ERROR,
+        ERROR_CODE.SERVICE_ERROR,
+      );
+    }
+  }
+
+  async getMusicInfo(music_id: string): Promise<Music> {
+    try {
+      const targetMusic: Music = await this.musicRepository.findOne({
+        where: { music_id },
+      });
+      if (!targetMusic) {
+        throw new CatchyException(
+          'NOT_EXIST_MUSIC',
+          HTTP_STATUS_CODE.BAD_REQUEST,
+          ERROR_CODE.NOT_EXIST_MUSIC,
+        );
+      }
+      return targetMusic;
+    } catch (err) {
+      if (err instanceof CatchyException) throw err;
       throw new CatchyException(
         'SERVER_ERROR',
         HTTP_STATUS_CODE.SERVER_ERROR,
