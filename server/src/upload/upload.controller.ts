@@ -58,7 +58,7 @@ export class UploadController {
     )
     file: Express.Multer.File,
     @Body('uuid') uuid: string,
-  ) {
+  ): Promise<{ url: string }> {
     const { url } = await this.uploadService.uploadMusic(file, uuid);
     return { url };
   }
@@ -81,11 +81,25 @@ export class UploadController {
     file: Express.Multer.File,
     @Body('type') type: string,
     @Body('uuid') uuid: string | null,
-  ) {
-    const userId = req.user.user_id;
-    const id = type === 'user' ? userId : uuid;
+  ): Promise<{ url: string }> {
+    try {
+      const userId = req.user.user_id;
+      const id = type === 'user' ? userId : uuid;
 
-    const { url } = await this.uploadService.uploadImage(file, id, type);
-    return { url };
+      if (!id) {
+        throw new Error();
+      }
+
+      const { url } = await this.uploadService.uploadImage(file, id, type);
+      return { url };
+    } catch (err) {
+      if (err instanceof CatchyException) throw err;
+
+      throw new CatchyException(
+        'NOT_EXIST_MUSIC_ID',
+        HTTP_STATUS_CODE.BAD_REQUEST,
+        ERROR_CODE.NOT_EXIST_MUSIC_ID,
+      );
+    }
   }
 }

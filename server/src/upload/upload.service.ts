@@ -37,9 +37,9 @@ export class UploadService {
     try {
       if (!this.isValidUUIDPattern(musicId)) {
         throw new CatchyException(
-          'INVALID_INPUT_VALUE',
+          'INVALID_INPUT_UUID_VALUE',
           HTTP_STATUS_CODE.BAD_REQUEST,
-          ERROR_CODE.INVALID_INPUT_VALUE,
+          ERROR_CODE.INVALID_INPUT_UUID_VALUE,
         );
       }
 
@@ -65,15 +65,23 @@ export class UploadService {
 
   async uploadImage(
     file: Express.Multer.File,
-    id: string | null,
+    id: string,
     type: string,
   ): Promise<{ url: string }> {
     try {
-      if (id && (!this.isValidUUIDPattern(id) || !this.isValidType(type))) {
+      if (!this.isValidUUIDPattern(id)) {
         throw new CatchyException(
-          'INVALID_INPUT_VALUE',
+          'INVALID_INPUT_UUID_VALUE',
           HTTP_STATUS_CODE.BAD_REQUEST,
-          ERROR_CODE.INVALID_INPUT_VALUE,
+          ERROR_CODE.INVALID_INPUT_UUID_VALUE,
+        );
+      }
+
+      if (!this.isValidType(type)) {
+        throw new CatchyException(
+          'INVALID_INPUT_TYPE_VALUE',
+          HTTP_STATUS_CODE.BAD_REQUEST,
+          ERROR_CODE.INVALID_INPUT_TYPE_VALUE,
         );
       }
 
@@ -93,8 +101,7 @@ export class UploadService {
         .promise();
 
       return { url: uploadResult.Location };
-    } catch (err) {
-      console.log(err);
+    } catch {
       throw new CatchyException(
         'SERVER ERROR',
         HTTP_STATUS_CODE.SERVER_ERROR,
