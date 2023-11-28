@@ -15,7 +15,7 @@ class PlayerListener(
 
             events.contains(Player.EVENT_TIMELINE_CHANGED) -> {
                 val durationMs = player.duration.toInt()
-                listener.onMediaItemChanged(durationMs / 1000)
+                listener.onMediaItemChanged(durationMs / millisecondsPerSecond)
             }
         }
     }

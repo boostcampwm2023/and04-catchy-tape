@@ -15,7 +15,7 @@ import javax.inject.Inject
 
 data class PlayerState(
     val isPlaying: Boolean = true,
-    val currentPosition: Int = 0,
+    val currentPositionSecond: Int = 0,
     val duration: Int = 0,
 )
 
@@ -40,9 +40,9 @@ class PlayerViewModel @Inject constructor(
         }
     }
 
-    fun updateCurrentPosition(position: Int) {
+    fun updateCurrentPosition(positionSecond: Int) {
         _uiState.update {
-            it.copy(currentPosition = position)
+            it.copy(currentPositionSecond = positionSecond)
         }
     }
 
