@@ -37,21 +37,26 @@ export class MusicService {
     return musicName;
   }
 
+  getPath(option: string) {
+    return path.resolve(__dirname, `/musics${option}`);
+  }
+
   async encodeMusic(musicId: string, musicPath: string) {
     try {
       ffmpeg.setFfmpegPath(ffmpegInstaller.path);
 
-      const outputMusicPath = path.resolve(__dirname, '/musics/output');
-      const entireMusicPath = path.resolve(__dirname, `/musics`);
+      const outputMusicPath = this.getPath('/output');
+      const entireMusicPath = this.getPath('');
+
       fs.mkdirSync(outputMusicPath, { recursive: true });
 
       const musicName = this.separateMusicName(musicPath);
 
-      const outputPath = path.resolve(
-        __dirname,
-        `/musics/output/${musicName.replace('.mp3', '')}.m3u8`,
+      const outputPath = this.getPath(
+        `/output/${musicName.replace('.mp3', '')}.m3u8`,
       );
-      const tempFilePath = path.resolve(__dirname, `/musics/${musicName}`);
+
+      const tempFilePath = this.getPath(`/${musicName}`);
 
       const musicFileResponse = await axios.get(musicPath, {
         responseType: 'arraybuffer',
@@ -110,7 +115,7 @@ export class MusicService {
           );
           resolve(encodedPath);
         })
-        .on('error', (err) => {
+        .on('error', () => {
           reject(new Error());
         })
         .run();
