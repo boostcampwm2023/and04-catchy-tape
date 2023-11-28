@@ -3,6 +3,7 @@ package com.ohdodok.catchytape.core.data.repository
 import com.ohdodok.catchytape.core.data.api.MusicApi
 import com.ohdodok.catchytape.core.data.model.MusicRequest
 import com.ohdodok.catchytape.core.data.model.MusicResponse
+import com.ohdodok.catchytape.core.data.model.toDomains
 import com.ohdodok.catchytape.core.domain.model.Music
 import com.ohdodok.catchytape.core.domain.repository.MusicRepository
 import kotlinx.coroutines.flow.Flow
@@ -20,7 +21,7 @@ class MusicRepositoryImpl @Inject constructor(
 
     override fun getRecentUploadedMusic(): Flow<List<Music>> = flow {
         val musicResponses = musicApi.getRecentUploads()
-        emit(musicResponses.map { it.toDomain() })
+        emit(musicResponses.toDomains())
     }
 
     override fun postMusic(
@@ -42,14 +43,9 @@ class MusicRepositoryImpl @Inject constructor(
 
         emit(response)
     }
-}
 
-fun MusicResponse.toDomain(): Music {
-    return Music(
-        id = musicId,
-        title = title,
-        artist = user.nickname,
-        imageUrl = cover
-    )
+    override fun getMyMusics(): Flow<List<Music>> = flow {
+        val myMusics = musicApi.getMyUploads()
+        emit(myMusics.toDomains())
+    }
 }
-
