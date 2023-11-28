@@ -34,7 +34,7 @@ export class PlaylistService {
       });
 
       const result: Playlist = await this.playlistRepository.save(newPlaylist);
-      const playlistId: number = result.playlist_Id;
+      const playlistId: number = result.playlist_id;
       return playlistId;
     } catch {
       throw new CatchyException(
@@ -81,7 +81,7 @@ export class PlaylistService {
       const new_music_playlist: Music_Playlist =
         this.music_playlistRepository.create({
           music: { music_id: musicId },
-          playlist: { playlist_Id: playlistId },
+          playlist: { playlist_id: playlistId },
         });
 
       const result: Music_Playlist =
@@ -101,7 +101,7 @@ export class PlaylistService {
     try {
       const count: number = await this.music_playlistRepository.countBy({
         music: { music_id: musicId },
-        playlist: { playlist_Id: playlistId },
+        playlist: { playlist_id: playlistId },
       });
       return count !== 0;
     } catch {
@@ -119,7 +119,7 @@ export class PlaylistService {
   ): Promise<boolean> {
     try {
       const playlistCount: number = await this.playlistRepository.countBy({
-        playlist_Id: playlistId,
+        playlist_id: playlistId,
         user: { user_id: userId },
       });
       return playlistCount !== 0;
@@ -151,7 +151,7 @@ export class PlaylistService {
   async setUpdatedAtNow(playlistId: number): Promise<void> {
     try {
       const targetPlaylist: Playlist = await this.playlistRepository.findOne({
-        where: { playlist_Id: playlistId },
+        where: { playlist_id: playlistId },
       });
       targetPlaylist.updated_at = new Date();
       this.playlistRepository.save(targetPlaylist);

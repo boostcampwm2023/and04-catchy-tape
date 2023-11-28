@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="PlayerBarView">
+        <attr name="thumbnailUrl" format="string" />
+        <attr name="title" format="string" />
+        <attr name="artist" format="string" />
+        <attr name="isPlaying" format="boolean" />
+        <attr name="progress" format="integer" />
+        <attr name="duration" format="integer" />
+    </declare-styleable>
+</resources>

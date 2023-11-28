@@ -95,4 +95,12 @@ export class Music extends BaseEntity {
       take: 10,
     });
   }
+
+  static async getMusicById(music_id: string): Promise<Music> {
+    return this.findOne({
+      relations: { user: true },
+      select: { user: { user_id: true, nickname: true } },
+      where: { music_id },
+    });
+  }
 }
