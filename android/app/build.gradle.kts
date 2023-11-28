@@ -65,6 +65,7 @@ dependencies {
     implementation(project(":feature:upload"))
     implementation(project(":feature:player"))
     implementation(project(":feature:playlist"))
+    implementation(project(":feature:mypage"))
     implementation(project(":core:data"))
 
     implementation(libs.core.ktx)

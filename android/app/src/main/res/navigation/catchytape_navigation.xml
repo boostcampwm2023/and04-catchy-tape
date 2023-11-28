@@ -9,5 +9,6 @@
     <include app:graph="@navigation/upload_navigation" />
     <include app:graph="@navigation/player_navigation" />
     <include app:graph="@navigation/playlist_navigation" />
+    <include app:graph="@navigation/my_page_navigation" />
 
 </navigation>
