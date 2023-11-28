@@ -5,16 +5,24 @@ import android.net.NetworkCapabilities.NET_CAPABILITY_VALIDATED
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.setupWithNavController
+import com.ohdodok.catchytape.databinding.ActivityMainBinding
 import dagger.hilt.android.AndroidEntryPoint
 import com.ohdodok.catchytape.core.ui.R.string as uiString
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
+
+    private lateinit var binding: ActivityMainBinding
     private lateinit var connectivityManager: ConnectivityManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
+        setupBottomNav()
 
         connectivityManager = getSystemService(ConnectivityManager::class.java)
         checkNetworkState()
@@ -31,5 +39,10 @@ class MainActivity : AppCompatActivity() {
         if (!isNetworkAvailable) {
             Toast.makeText(this, getString(uiString.check_network), Toast.LENGTH_LONG).show()
         }
+    }
+
+    private fun setupBottomNav() {
+        val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
+        binding.bottomNav.setupWithNavController(navHostFragment.navController)
     }
 }

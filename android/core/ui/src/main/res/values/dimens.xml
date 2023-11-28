@@ -10,6 +10,7 @@
 
     <dimen name="music_horizontal_img">120dp</dimen>
     <dimen name="music_vertical_img">56dp</dimen>
+    <dimen name="play_list_item_img">56dp</dimen>
     <dimen name="login_icon_margin_vertical">168dp</dimen>
 
     <dimen name="btn_height">50dp</dimen>
