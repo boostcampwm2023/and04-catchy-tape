@@ -81,4 +81,15 @@ export class Music_Playlist extends BaseEntity {
   static async getMusicCountByPlaylistId(playlist_id: number): Promise<number> {
     return this.count({ where: { playlist: { playlist_id } } });
   }
+
+  static async getThumbnailByPlaylistId(
+    playlist_id: number,
+  ): Promise<Music_Playlist> {
+    return this.findOne({
+      relations: { music: true },
+      select: { music: { cover: true } },
+      where: { playlist: { playlist_id } },
+      order: { music_playlist_id: 'DESC' },
+    });
+  }
 }
