@@ -1,6 +1,7 @@
 package com.ohdodok.catchytape.core.data.di
 
 import com.ohdodok.catchytape.core.data.api.MusicApi
+import com.ohdodok.catchytape.core.data.api.StorageApi
 import com.ohdodok.catchytape.core.data.api.UploadApi
 import com.ohdodok.catchytape.core.data.api.UserApi
 import dagger.Module
@@ -27,4 +28,7 @@ object ApiModule {
     @Singleton
     fun provideUploadApi(retrofit: Retrofit): UploadApi = retrofit.create()
 
+    @Provides
+    @Singleton
+    fun provideStorageApi(retrofit: Retrofit): StorageApi = retrofit.create()
 }

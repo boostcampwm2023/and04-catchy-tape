@@ -9,4 +9,10 @@ interface UrlRepository {
 
     fun getAudioUrl(file: File): Flow<String>
 
+    fun getImagePreSignedUrl(uuid: String): Flow<String>
+
+    fun getAudioPreSignedUrl(uuid: String): Flow<String>
+
+    fun uploadFile(preSignedUrl: String, file: File): Flow<Unit>
+
 }

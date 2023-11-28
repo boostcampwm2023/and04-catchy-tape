@@ -30,6 +30,10 @@ import javax.net.ssl.SSLHandshakeException
 @InstallIn(SingletonComponent::class)
 object NetworkModule {
 
+    private fun isBaseUrl(url: String): Boolean {
+        return url.contains(BuildConfig.BASE_URL)
+    }
+
     @AuthInterceptor
     @Singleton
     @Provides
@@ -37,10 +41,13 @@ object NetworkModule {
 
         return Interceptor { chain ->
             val accessToken = runBlocking { tokenDataSource.getAccessToken() }
-            val newRequest = chain.request().newBuilder()
-                .addHeader("Authorization", "Bearer $accessToken")
-                .build()
-
+            val newRequest = if (isBaseUrl(chain.request().url.toString())) {
+                chain.request().newBuilder()
+                    .addHeader("Authorization", "Bearer $accessToken")
+                    .build()
+            } else {
+                chain.request().newBuilder().build()
+            }
             chain.proceed(newRequest)
         }
     }
@@ -58,7 +65,7 @@ object NetworkModule {
     fun provideOkHttpClient(
         loggingInterceptor: HttpLoggingInterceptor,
         @AuthInterceptor authInterceptor: Interceptor,
-        @ErrorInterceptor errorInterceptor : Interceptor
+        @ErrorInterceptor errorInterceptor: Interceptor
     ): OkHttpClient {
         return OkHttpClient.Builder()
             .addInterceptor(authInterceptor)
@@ -103,7 +110,11 @@ object NetworkModule {
             } catch (e: Exception) {
                 when (e) {
                     is ConnectException -> throw CtException(e.message, CtErrorType.CONNECTION)
-                    is SSLHandshakeException -> throw CtException(e.message, CtErrorType.SSL_HAND_SHAKE)
+                    is SSLHandshakeException -> throw CtException(
+                        e.message,
+                        CtErrorType.SSL_HAND_SHAKE
+                    )
+
                     is CtException -> throw e
                     else -> throw CtException(e.message, CtErrorType.IO)
                 }
