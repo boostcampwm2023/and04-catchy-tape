@@ -28,7 +28,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:list="@{viewModel.uiState.playList}"
+            app:list="@{viewModel.uiState.playlists}"
             tools:listitem="@layout/item_playlist" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
