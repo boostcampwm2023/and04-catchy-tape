@@ -77,4 +77,8 @@ export class Music_Playlist extends BaseEntity {
       take: 10,
     }).then((a: Music_Playlist[]) => a.map((b) => b.music));
   }
+
+  static async getMusicCountByPlaylistId(playlist_id: number): Promise<number> {
+    return this.count({ where: { playlist: { playlist_id } } });
+  }
 }
