@@ -21,7 +21,7 @@ interface UserApi {
     @POST("users/signup")
     suspend fun signUp(
         @Body signUpRequest: SignUpRequest
-    ): Response<LoginResponse>
+    ): LoginResponse
 
     @GET("users/duplicate/{nickname}")
     suspend fun verifyDuplicatedNickname(

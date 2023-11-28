@@ -3,8 +3,8 @@ package com.ohdodok.catchytape.feature.login
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ohdodok.catchytape.core.domain.usecase.signup.NicknameValidationResult
-import com.ohdodok.catchytape.core.domain.usecase.signup.ValidateNicknameUseCase
 import com.ohdodok.catchytape.core.domain.usecase.signup.SignUpUseCase
+import com.ohdodok.catchytape.core.domain.usecase.signup.ValidateNicknameUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow

@@ -36,7 +36,6 @@ class LoginViewModel @Inject constructor(
             } else {
                 _events.emit(LoginEvent.ShowMessage(CtErrorType.UN_KNOWN))
             }
-            isAutoLoginFinished = true
         }
     }
 
@@ -58,6 +57,7 @@ class LoginViewModel @Inject constructor(
         viewModelScope.launch(exceptionHandler) {
             val isLoggedIn = automaticallyLoginUseCase()
             if (isLoggedIn) _events.emit(LoginEvent.NavigateToHome)
+        }.invokeOnCompletion {
             isAutoLoginFinished = true
         }
     }

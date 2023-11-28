@@ -14,24 +14,15 @@ class UrlRepositoryImpl @Inject constructor(
     private val uploadApi: UploadApi
 ) : UrlRepository {
 
+
     override fun getImageUrl(file: File): Flow<String> = flow {
-        val response = uploadApi.postImage(file.toMultipart("image/png"))
-        if (response.isSuccessful) {
-            response.body()?.let { urlResponse -> emit(urlResponse.url) }
-        } else {
-            // TODO : 네트워크 에러 로직
-            throw Exception("이미지 업로드 실패")
-        }
+        val urlResponse = uploadApi.postImage(file.toMultipart("image/png"))
+        emit(urlResponse.url)
     }
 
     override fun getAudioUrl(file: File): Flow<String> = flow {
-        val response = uploadApi.postMusic(file.toMultipart("audio/mpeg"))
-        if (response.isSuccessful) {
-            response.body()?.let { urlResponse -> emit(urlResponse.url) }
-        } else {
-            // TODO : 네트워크 에러 로직
-            throw Exception("음악 업로드 실패")
-        }
+        val urlResponse = uploadApi.postMusic(file.toMultipart("audio/mpeg"))
+        emit(urlResponse.url)
     }
 
     private fun File.toMultipart(contentType: String): MultipartBody.Part {
