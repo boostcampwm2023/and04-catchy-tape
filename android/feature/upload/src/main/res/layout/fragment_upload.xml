@@ -69,8 +69,7 @@
                 android:layout_height="match_parent"
                 android:layout_gravity="center"
                 android:background="@color/white"
-                android:importantForAccessibility="no"
-                app:imgUrl="@{viewModel.imageState.url}" />
+                android:importantForAccessibility="no" />
 
             <ImageView
                 android:id="@+id/iv_camera_icon"

@@ -24,6 +24,7 @@ class UploadFragment : BaseFragment<FragmentUploadBinding>(R.layout.fragment_upl
     private val imagePickerLauncher = registerForActivityResult(PickVisualMedia()) { uri ->
         if (uri == null) return@registerForActivityResult
         uri.toPath()?.let { path -> viewModel.uploadImage(File(path)) }
+        binding.ivThumbnailImage.setImageURI(uri)
     }
 
     private val filePickerLauncher =

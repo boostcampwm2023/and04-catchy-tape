@@ -6,6 +6,7 @@ import com.ohdodok.catchytape.core.domain.repository.UrlRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
 import java.io.File
 import javax.inject.Inject
 
