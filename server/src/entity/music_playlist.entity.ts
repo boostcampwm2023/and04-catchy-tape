@@ -27,7 +27,7 @@ export class Music_Playlist extends BaseEntity {
         music: { user: true },
       },
       where: {
-        playlist: { playlist_Id: playlistId },
+        playlist: { playlist_id: playlistId },
       },
       select: {
         music: {

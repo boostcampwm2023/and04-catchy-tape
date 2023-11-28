@@ -15,18 +15,9 @@ export enum Genres {
 }
 
 export const RECENT_PLAYLIST_NAME = '최근 재생 목록';
-export const keyFlags = ['user', 'music', 'cover'];
-
-export const keyHandler: {
-  [key: string]: (uuid: string) => string;
-} = {
-  user: (uuid) => `image/user/${uuid}/user.png`,
-  music: (uuid) => `music/${uuid}/music.mp3`,
-  cover: (uuid) => `image/cover/${uuid}/cover.png`,
-};
+export const keyFlags = ['user', 'cover'];
 
 export const contentTypeHandler: Record<string, string> = {
-  user: 'image/png',
-  cover: 'image/png',
+  image: 'image/png',
   music: 'audio/mpeg',
 };

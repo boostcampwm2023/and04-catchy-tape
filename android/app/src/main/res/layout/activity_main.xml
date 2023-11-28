@@ -14,13 +14,14 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             app:defaultNavHost="true"
-            app:layout_constraintBottom_toTopOf="@id/bottom_nav"
+            app:layout_constraintBottom_toTopOf="@id/pcv_controller"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:navGraph="@navigation/catchytape_navigation" />
 
         <com.ohdodok.catchytape.feature.player.PlayerControlView
+            android:id="@+id/pcv_controller"
             android:layout_width="0dp"
             android:layout_height="65dp"
             app:artist="아티스트"

@@ -14,7 +14,7 @@ import { Music_Playlist } from './music_playlist.entity';
 @Entity({ name: 'playlist' })
 export class Playlist extends BaseEntity {
   @PrimaryGeneratedColumn()
-  playlist_Id: number;
+  playlist_id: number;
 
   @Column()
   playlist_title: string;
@@ -34,7 +34,7 @@ export class Playlist extends BaseEntity {
 
   static async getPlaylistsByUserId(userId: string): Promise<Playlist[]> {
     return this.find({
-      select: { playlist_Id: true, playlist_title: true },
+      select: { playlist_id: true, playlist_title: true },
       where: {
         user: { user_id: userId },
       },
