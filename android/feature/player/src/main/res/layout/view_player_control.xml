@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="65dp"
+    android:background="@color/surface_bright">
+
+    <ImageView
+        android:id="@+id/iv_thumbnail"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="@dimen/margin_horizontal"
+        android:scaleType="centerCrop"
+        app:layout_constraintBottom_toTopOf="@id/lpi_player_progress"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:background="@color/on_surface_variant" />
+
+    <TextView
+        android:id="@+id/tv_title"
+        style="@style/BodyMedium"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/medium"
+        android:ellipsize="end"
+        android:maxLines="1"
+        app:layout_constraintBottom_toTopOf="@id/tv_artist"
+        app:layout_constraintEnd_toStartOf="@id/ib_play"
+        app:layout_constraintStart_toEndOf="@id/iv_thumbnail"
+        app:layout_constraintTop_toTopOf="@id/iv_thumbnail"
+        app:layout_constraintVertical_chainStyle="packed"
+        tools:text="josee!" />
+
+    <TextView
+        android:id="@+id/tv_artist"
+        style="@style/BodySmall"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:textColor="@color/on_surface_variant"
+        app:layout_constraintBottom_toBottomOf="@id/iv_thumbnail"
+        app:layout_constraintStart_toStartOf="@id/tv_title"
+        app:layout_constraintTop_toBottomOf="@id/tv_title"
+        tools:text="데이먼스 이어" />
+
+    <ImageButton
+        android:id="@+id/ib_play"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginEnd="6dp"
+        android:background="@android:color/transparent"
+        android:contentDescription="@string/play"
+        android:src="@drawable/ic_play"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.google.android.material.progressindicator.LinearProgressIndicator
+        android:id="@+id/lpi_player_progress"
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        app:indicatorColor="@color/key"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:trackColor="@color/white"
+        app:trackThickness="1dp"
+        tools:progress="65" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
