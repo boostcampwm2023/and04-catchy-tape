@@ -8,7 +8,7 @@
     <fragment
         android:id="@+id/playlist_fragment"
         android:name="com.ohdodok.catchytape.feature.playlist.PlaylistsFragment"
-        android:label="PlaylistsFragment"
+        android:label="playlists"
         tools:layout="@layout/fragment_playlists">
         <action
             android:id="@+id/action_playlist_fragment_to_newPlaylistDialog"
@@ -19,7 +19,7 @@
     <dialog
         android:id="@+id/newPlaylistDialog"
         android:name="com.ohdodok.catchytape.feature.playlist.NewPlaylistDialog"
-        android:label="NewPlaylistDialog"
+        android:label="new_playlist"
         tools:layout="@layout/dialog_new_playlist" />
 
 </navigation>
