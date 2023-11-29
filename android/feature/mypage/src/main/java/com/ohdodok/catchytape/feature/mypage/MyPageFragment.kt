@@ -47,4 +47,9 @@ class MyPageFragment : BaseFragment<FragmentMyPageBinding>(R.layout.fragment_my_
     private fun setupRecyclerView() {
         binding.rvMusics.adapter = MusicAdapter(Orientation.VERTICAL)
     }
+
+    override fun onStart() {
+        super.onStart()
+        viewModel.fetchMyMusics()
+    }
 }
