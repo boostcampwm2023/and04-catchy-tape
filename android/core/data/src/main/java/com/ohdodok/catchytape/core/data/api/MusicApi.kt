@@ -20,4 +20,6 @@ interface MusicApi {
     @GET("musics/recent-uploads")
     suspend fun getRecentUploads(): List<MusicResponse>
 
+    @GET("musics/my-uploads")
+    suspend fun getMyUploads(): List<MusicResponse>
 }
