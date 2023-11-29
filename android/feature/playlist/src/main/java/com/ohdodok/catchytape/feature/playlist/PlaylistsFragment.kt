@@ -2,6 +2,7 @@ package com.ohdodok.catchytape.feature.playlist
 
 import android.os.Bundle
 import android.view.View
+import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.viewModels
 import com.ohdodok.catchytape.core.ui.BaseFragment
 import com.ohdodok.catchytape.core.ui.toMessageId
@@ -9,17 +10,21 @@ import com.ohdodok.catchytape.feature.playlist.databinding.FragmentPlaylistsBind
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class PlaylistsFragment : BaseFragment<FragmentPlaylistsBinding>(R.layout.fragment_playlists) {
+class PlaylistsFragment : BaseFragment<FragmentPlaylistsBinding>(R.layout.fragment_playlists), NewPlaylistDialog.NewPlaylistDialogListener {
 
-    private val viewModel: PlaylistViewModel by viewModels()
+    val viewModel: PlaylistViewModel by viewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.viewModel = viewModel
         binding.rvPlaylist.adapter = PlaylistAdapter()
-        viewModel.getPlaylists()
+        viewModel.fetchPlaylists()
 
         observeEvents()
+        binding.fabNewPlaylist.setOnClickListener {
+            NewPlaylistDialog().show(childFragmentManager, NewPlaylistDialog.TAG)
+        }
+
     }
 
 
@@ -33,5 +38,9 @@ class PlaylistsFragment : BaseFragment<FragmentPlaylistsBinding>(R.layout.fragme
                 }
             }
         }
+    }
+
+    override fun onPositiveButtonClicked(dialog: DialogFragment, title: String) {
+        viewModel.createPlaylist(title)
     }
 }

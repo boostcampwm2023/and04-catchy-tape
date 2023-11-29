@@ -5,11 +5,17 @@ import android.app.Dialog
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import android.view.View
 import android.widget.Button
 import androidx.fragment.app.DialogFragment
+import com.google.android.material.textfield.TextInputEditText
 
-class NewPlaylistDialog(private val onPositiveButtonClicked: View.OnClickListener) : DialogFragment() {
+class NewPlaylistDialog : DialogFragment() {
+
+    interface NewPlaylistDialogListener {
+        fun onPositiveButtonClicked(dialog: DialogFragment, title: String)
+    }
+
+
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return activity?.let { activity ->
             val builder = AlertDialog.Builder(activity)
@@ -18,9 +24,11 @@ class NewPlaylistDialog(private val onPositiveButtonClicked: View.OnClickListene
 
             val positiveButton: Button = view.findViewById(R.id.btn_save)
             val negativeButton: Button = view.findViewById(R.id.btn_cancel)
+            val playlistTitleEditText: TextInputEditText = view.findViewById(R.id.et_playlist_title)
 
+            val newPlaylistDialogListener = parentFragment as? NewPlaylistDialogListener
             positiveButton.setOnClickListener {
-                onPositiveButtonClicked.onClick(it)
+                newPlaylistDialogListener?.onPositiveButtonClicked(this, playlistTitleEditText.text.toString())
                 dialog?.cancel()
             }
 
@@ -33,4 +41,9 @@ class NewPlaylistDialog(private val onPositiveButtonClicked: View.OnClickListene
             }
         } ?: throw IllegalStateException("Activity cannot be null")
     }
+
+    companion object {
+        const val TAG = "NewPlaylistDialog"
+    }
+
 }
