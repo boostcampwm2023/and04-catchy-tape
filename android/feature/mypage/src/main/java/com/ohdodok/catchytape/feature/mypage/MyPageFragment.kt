@@ -3,6 +3,7 @@ package com.ohdodok.catchytape.feature.mypage
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import com.ohdodok.catchytape.core.ui.BaseFragment
 import com.ohdodok.catchytape.core.ui.toMessageId
 import com.ohdodok.catchytape.feature.mypage.databinding.FragmentMyPageBinding
@@ -18,6 +19,7 @@ class MyPageFragment : BaseFragment<FragmentMyPageBinding>(R.layout.fragment_my_
         binding.viewModel = viewModel
 
         observeEvents()
+        setupButtons()
     }
 
     private fun observeEvents() {
@@ -29,6 +31,13 @@ class MyPageFragment : BaseFragment<FragmentMyPageBinding>(R.layout.fragment_my_
                     }
                 }
             }
+        }
+    }
+
+    private fun setupButtons() {
+        binding.btnMore.setOnClickListener {
+            val action = MyPageFragmentDirections.actionMyPageFragmentToMyMusicsFragment()
+            findNavController().navigate(action)
         }
     }
 }
