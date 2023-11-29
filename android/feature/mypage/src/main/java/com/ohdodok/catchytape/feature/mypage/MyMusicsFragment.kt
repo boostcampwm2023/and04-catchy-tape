@@ -20,7 +20,7 @@ class MyMusicsFragment : BaseFragment<FragmentMyMusicsBinding>(R.layout.fragment
 
         setupRecyclerView()
         observeEvents()
-        setupBackStack(binding.mtMyMusics)
+        setupBackStack(binding.tbMyMusics)
     }
 
     private fun setupRecyclerView() {
