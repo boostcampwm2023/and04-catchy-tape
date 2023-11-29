@@ -8,14 +8,15 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.ohdodok.catchytape.databinding.ActivityMainBinding
-import com.ohdodok.catchytape.feature.player.PlayerController
+import com.ohdodok.catchytape.feature.player.navigateToPlayer
 import dagger.hilt.android.AndroidEntryPoint
 import com.ohdodok.catchytape.core.ui.R.string as uiString
 
 @AndroidEntryPoint
-class MainActivity : AppCompatActivity(), PlayerController {
+class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var connectivityManager: ConnectivityManager
@@ -45,24 +46,30 @@ class MainActivity : AppCompatActivity(), PlayerController {
     }
 
     private fun setupBottomNav() {
-        val navHostFragment =
-            supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
+        val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
         binding.bottomNav.setupWithNavController(navHostFragment.navController)
+
+        navHostFragment.findNavController().addOnDestinationChangedListener { _, destination, _ ->
+            when (destination.id) {
+                com.ohdodok.catchytape.feature.player.R.id.player_fragment -> {
+                    binding.bottomNav.visibility = View.GONE
+                    binding.pcvController.visibility = View.GONE
+                }
+
+                else -> {
+                    binding.bottomNav.visibility = View.VISIBLE
+                    binding.pcvController.visibility = View.VISIBLE
+                }
+            }
+        }
         setUpPC()
-    }
-
-    override fun hidePc() {
-        binding.pcvController.visibility = View.GONE
-    }
-
-    override fun showPc() {
-        binding.pcvController.visibility = View.VISIBLE
     }
 
     private fun setUpPC() {
         binding.pcvController.setOnClickListener {
-            findNavController(R.id.nav_host_fragment)
-                .navigate(com.ohdodok.catchytape.feature.player.R.id.player_nav_graph)
+            binding.navHostFragment.findNavController().navigateToPlayer()
         }
     }
+
 }
+

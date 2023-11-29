@@ -6,6 +6,7 @@ import android.widget.SeekBar
 import androidx.fragment.app.viewModels
 import androidx.media3.common.MediaItem
 import androidx.media3.exoplayer.ExoPlayer
+import androidx.navigation.NavController
 import com.ohdodok.catchytape.core.ui.BaseFragment
 import com.ohdodok.catchytape.feature.player.databinding.FragmentPlayerBinding
 import dagger.hilt.android.AndroidEntryPoint
@@ -94,4 +95,8 @@ class PlayerFragment : BaseFragment<FragmentPlayerBinding>(R.layout.fragment_pla
             }
         }
     }
+}
+
+fun NavController.navigateToPlayer() {
+    this.navigate(R.id.player_nav_graph)
 }
