@@ -27,7 +27,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         setupBottomNav()
-        setUpPC()
+        setUpPlayerController()
 
         connectivityManager = getSystemService(ConnectivityManager::class.java)
         checkNetworkState()
@@ -55,18 +55,18 @@ class MainActivity : AppCompatActivity() {
             when (destination.id) {
                 com.ohdodok.catchytape.feature.player.R.id.player_fragment -> {
                     hideBottomNav()
-                    hidePC()
+                    hidePlayerController()
                 }
 
                 else -> {
                     showBottomNav()
-                    showPC()
+                    showPlayerController()
                 }
             }
         }
     }
 
-    private fun setUpPC() {
+    private fun setUpPlayerController() {
         binding.pcvController.setOnClickListener {
             binding.navHostFragment.findNavController().navigateToPlayer()
         }
@@ -80,11 +80,11 @@ class MainActivity : AppCompatActivity() {
         binding.bottomNav.visibility = View.VISIBLE
     }
 
-    private fun hidePC() {
+    private fun hidePlayerController() {
         binding.pcvController.visibility = View.GONE
     }
 
-    private fun showPC() {
+    private fun showPlayerController() {
         binding.pcvController.visibility = View.VISIBLE
     }
 }
