@@ -19,7 +19,8 @@ import { Music } from 'src/entity/music.entity';
 
 @Controller('musics')
 export class MusicController {
-  constructor(private musicService: MusicService) {}
+  private objectStorage: AWS.S3;
+  constructor(private readonly musicService: MusicService) {}
 
   @Post()
   @UsePipes(ValidationPipe)
@@ -68,5 +69,16 @@ export class MusicController {
   @HttpCode(HTTP_STATUS_CODE.SUCCESS)
   async getMusicInfo(@Query('music_id') music_id: string): Promise<Music> {
     return this.musicService.getMusicInfo(music_id);
+  }
+
+  @Get('ts')
+  @HttpCode(HTTP_STATUS_CODE.SUCCESS)
+  async getEncodedChunkFiles(
+    @Query('music_id') music_id: string,
+    @Query('fileName') fileName: string,
+  ): Promise<{ file: AWS.S3.Body }> {
+    return {
+      file: await this.musicService.getEncodedChunkFiles(music_id, fileName),
+    };
   }
 }
