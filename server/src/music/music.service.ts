@@ -93,7 +93,10 @@ export class MusicService {
 
       return encodedFileURL;
     } catch (err) {
-      console.log(err);
+      if (err instanceof CatchyException) {
+        throw err;
+      }
+
       throw new CatchyException(
         'MUSIC_ENCODE_ERROR',
         HTTP_STATUS_CODE.SERVER_ERROR,
@@ -156,9 +159,9 @@ export class MusicService {
       return m3u8Path;
     } catch {
       throw new CatchyException(
-        'MUSIC_ENCODE_ERROR',
+        'ENCODED_MUSIC_UPLOAD_ERROR',
         HTTP_STATUS_CODE.SERVER_ERROR,
-        ERROR_CODE.SERVER_ERROR,
+        ERROR_CODE.ENCODED_MUSIC_UPLOAD_ERROR,
       );
     }
   }
