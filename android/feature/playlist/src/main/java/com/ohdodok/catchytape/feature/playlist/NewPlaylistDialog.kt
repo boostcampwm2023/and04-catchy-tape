@@ -15,7 +15,6 @@ class NewPlaylistDialog : DialogFragment() {
         fun onPositiveButtonClicked(dialog: DialogFragment, title: String)
     }
 
-
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return activity?.let { activity ->
             val builder = AlertDialog.Builder(activity)
@@ -40,10 +39,6 @@ class NewPlaylistDialog : DialogFragment() {
                 window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
             }
         } ?: throw IllegalStateException("Activity cannot be null")
-    }
-
-    companion object {
-        const val TAG = "NewPlaylistDialog"
     }
 
 }

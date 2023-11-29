@@ -33,20 +33,17 @@ class PlaylistViewModel @Inject constructor(
     val events = _events.asSharedFlow()
 
     private val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
-        viewModelScope.launch {
-            if (throwable is CtException) {
-                _events.emit(PlaylistsEvent.ShowMessage(throwable.ctError))
-            } else {
-                _events.emit(PlaylistsEvent.ShowMessage(CtErrorType.UN_KNOWN))
-            }
-        }
+        val errorType =
+            if (throwable is CtException) throwable.ctError
+            else CtErrorType.UN_KNOWN
+
+        viewModelScope.launch { _events.emit(PlaylistsEvent.ShowMessage(errorType)) }
     }
 
     private val viewModelScopeWithExceptionHandler = viewModelScope + exceptionHandler
 
     private val _uiState = MutableStateFlow(PlaylistsUiState())
     val uiState: StateFlow<PlaylistsUiState> = _uiState.asStateFlow()
-
 
 
     fun fetchPlaylists() {
@@ -60,7 +57,6 @@ class PlaylistViewModel @Inject constructor(
             playlistRepository.postPlaylist(playlistTitle)
         }
     }
-
 }
 
 
