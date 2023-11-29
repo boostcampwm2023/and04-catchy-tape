@@ -21,42 +21,50 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.plus
 import javax.inject.Inject
 
-data class MyPageUiState(
+data class MyMusicsUiState(
     val myMusics: List<Music> = emptyList()
 )
 
+sealed interface MyMusicsEvent {
+    data class ShowMessage(
+        val error: CtErrorType
+    ) : MyMusicsEvent
+}
+
 @HiltViewModel
-class MyPageViewModel @Inject constructor(
+class MyMusicsViewModel @Inject constructor(
     private val musicRepository: MusicRepository,
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow(MyPageUiState())
-    val uiState: StateFlow<MyPageUiState> = _uiState.asStateFlow()
+    private val _uiState = MutableStateFlow(MyMusicsUiState())
+    val uiState: StateFlow<MyMusicsUiState> = _uiState.asStateFlow()
 
-    private val _events = MutableSharedFlow<MyPageEvent>()
-    val events: SharedFlow<MyPageEvent> = _events.asSharedFlow()
+    private val _events = MutableSharedFlow<MyMusicsEvent>()
+    val events: SharedFlow<MyMusicsEvent> = _events.asSharedFlow()
 
     private val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
-        val errorType =
-            if (throwable is CtException) throwable.ctError
-            else CtErrorType.UN_KNOWN
+        viewModelScope.launch {
+            val errorType =
+                if (throwable is CtException) throwable.ctError
+                else CtErrorType.UN_KNOWN
 
-        viewModelScope.launch { _events.emit(MyPageEvent.ShowMessage(errorType)) }
+            _events.emit(MyMusicsEvent.ShowMessage(errorType))
+        }
     }
 
     private val viewModelScopeWithExceptionHandler = viewModelScope + exceptionHandler
 
-    fun fetchMyMusics(count: Int) {
+    init {
+        fetchMyMusics()
+    }
+
+    private fun fetchMyMusics() {
         musicRepository.getMyMusics()
             .onEach { musics ->
                 _uiState.update {
-                    it.copy(myMusics = musics.take(count))
+                    it.copy(myMusics = musics)
                 }
             }
             .launchIn(viewModelScopeWithExceptionHandler)
     }
-}
-
-sealed interface MyPageEvent {
-    data class ShowMessage(val error: CtErrorType) : MyPageEvent
 }

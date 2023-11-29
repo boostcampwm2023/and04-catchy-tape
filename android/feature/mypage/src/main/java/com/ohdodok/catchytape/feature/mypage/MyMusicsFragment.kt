@@ -3,53 +3,39 @@ package com.ohdodok.catchytape.feature.mypage
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.viewModels
-import androidx.navigation.fragment.findNavController
 import com.ohdodok.catchytape.core.ui.BaseFragment
 import com.ohdodok.catchytape.core.ui.MusicAdapter
 import com.ohdodok.catchytape.core.ui.Orientation
 import com.ohdodok.catchytape.core.ui.toMessageId
-import com.ohdodok.catchytape.feature.mypage.databinding.FragmentMyPageBinding
+import com.ohdodok.catchytape.feature.mypage.databinding.FragmentMyMusicsBinding
 import dagger.hilt.android.AndroidEntryPoint
 
-
 @AndroidEntryPoint
-class MyPageFragment : BaseFragment<FragmentMyPageBinding>(R.layout.fragment_my_page) {
-    private val viewModel: MyPageViewModel by viewModels()
+class MyMusicsFragment : BaseFragment<FragmentMyMusicsBinding>(R.layout.fragment_my_musics) {
+    private val viewModel: MyMusicsViewModel by viewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.viewModel = viewModel
 
-        observeEvents()
-        setupButtons()
         setupRecyclerView()
+        observeEvents()
+        setupBackStack(binding.tbMyMusics)
+    }
+
+    private fun setupRecyclerView() {
+        binding.rvMyMusics.adapter = MusicAdapter(Orientation.VERTICAL)
     }
 
     private fun observeEvents() {
         repeatOnStarted {
             viewModel.events.collect { event ->
                 when (event) {
-                    is MyPageEvent.ShowMessage -> {
+                    is MyMusicsEvent.ShowMessage -> {
                         showMessage(event.error.toMessageId())
                     }
                 }
             }
         }
-    }
-
-    private fun setupButtons() {
-        binding.btnMore.setOnClickListener {
-            val action = MyPageFragmentDirections.actionMyPageFragmentToMyMusicsFragment()
-            findNavController().navigate(action)
-        }
-    }
-
-    private fun setupRecyclerView() {
-        binding.rvMusics.adapter = MusicAdapter(Orientation.VERTICAL)
-    }
-
-    override fun onStart() {
-        super.onStart()
-        viewModel.fetchMyMusics(count = 3)
     }
 }

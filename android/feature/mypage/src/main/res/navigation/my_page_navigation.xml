@@ -8,10 +8,18 @@
     <fragment
         android:id="@+id/my_page_fragment"
         android:name="com.ohdodok.catchytape.feature.mypage.MyPageFragment"
-        android:label="mypage"
+        android:label="my page"
         tools:layout="@layout/fragment_my_page">
 
+        <action
+            android:id="@+id/action_my_page_fragment_to_my_musics_fragment"
+            app:destination="@id/my_musics_fragment" />
     </fragment>
 
+    <fragment
+        android:id="@+id/my_musics_fragment"
+        android:name="com.ohdodok.catchytape.feature.mypage.MyMusicsFragment"
+        android:label="my musics"
+        tools:layout="@layout/fragment_my_musics" />
 
 </navigation>
