@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.viewModels
-import androidx.navigation.fragment.findNavController
 import com.ohdodok.catchytape.core.ui.BaseFragment
 import com.ohdodok.catchytape.core.ui.toMessageId
 import com.ohdodok.catchytape.feature.playlist.databinding.FragmentPlaylistsBinding
@@ -24,7 +23,7 @@ class PlaylistsFragment : BaseFragment<FragmentPlaylistsBinding>(R.layout.fragme
 
         observeEvents()
         binding.fabNewPlaylist.setOnClickListener {
-            findNavController().navigate(R.id.action_playlist_fragment_to_newPlaylistDialog)
+            NewPlaylistDialog().show(childFragmentManager, NewPlaylistDialog.TAG)
         }
 
     }
