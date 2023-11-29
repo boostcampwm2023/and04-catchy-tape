@@ -44,11 +44,11 @@ class MyMusicsViewModel @Inject constructor(
 
     private val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
         viewModelScope.launch {
-            if (throwable is CtException) {
-                _events.emit(MyMusicsEvent.ShowMessage(throwable.ctError))
-            } else {
-                _events.emit(MyMusicsEvent.ShowMessage(CtErrorType.UN_KNOWN))
-            }
+            val errorType =
+                if (throwable is CtException) throwable.ctError
+                else CtErrorType.UN_KNOWN
+
+            _events.emit(MyMusicsEvent.ShowMessage(errorType))
         }
     }
 

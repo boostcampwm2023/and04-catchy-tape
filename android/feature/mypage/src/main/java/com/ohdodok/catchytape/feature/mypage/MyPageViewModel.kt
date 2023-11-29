@@ -38,11 +38,11 @@ class MyPageViewModel @Inject constructor(
 
     private val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
         viewModelScope.launch {
-            if (throwable is CtException) {
-                _events.emit(MyPageEvent.ShowMessage(throwable.ctError))
-            } else {
-                _events.emit(MyPageEvent.ShowMessage(CtErrorType.UN_KNOWN))
-            }
+            val errorType =
+                if (throwable is CtException) throwable.ctError
+                else CtErrorType.UN_KNOWN
+
+            _events.emit(MyPageEvent.ShowMessage(errorType))
         }
     }
 
