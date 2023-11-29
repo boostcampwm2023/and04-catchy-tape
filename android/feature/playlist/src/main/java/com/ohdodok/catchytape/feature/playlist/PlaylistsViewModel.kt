@@ -34,7 +34,7 @@ class PlaylistViewModel @Inject constructor(
     val events = _events.asSharedFlow()
 
     private val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
-        Timber.d("${throwable }")
+        Timber.d("${throwable}")
         viewModelScope.launch {
             if (throwable is CtException) {
                 _events.emit(PlaylistsEvent.ShowMessage(throwable.ctError))
@@ -50,7 +50,6 @@ class PlaylistViewModel @Inject constructor(
     val uiState: StateFlow<PlaylistsUiState> = _uiState.asStateFlow()
 
     init {
-        getPlaylists()
         createPlaylist()
     }
 
