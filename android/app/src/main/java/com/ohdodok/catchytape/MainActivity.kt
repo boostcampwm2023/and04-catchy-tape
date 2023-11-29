@@ -3,16 +3,18 @@ package com.ohdodok.catchytape
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities.NET_CAPABILITY_VALIDATED
 import android.os.Bundle
+import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.ohdodok.catchytape.databinding.ActivityMainBinding
+import com.ohdodok.catchytape.feature.player.PlayerController
 import dagger.hilt.android.AndroidEntryPoint
 import com.ohdodok.catchytape.core.ui.R.string as uiString
 
 @AndroidEntryPoint
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), PlayerController {
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var connectivityManager: ConnectivityManager
@@ -45,4 +47,13 @@ class MainActivity : AppCompatActivity() {
         val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
         binding.bottomNav.setupWithNavController(navHostFragment.navController)
     }
+
+    override fun hidePc() {
+        binding.pcvController.visibility = View.GONE
+    }
+
+    override fun showPc() {
+        binding.pcvController.visibility = View.VISIBLE
+    }
+
 }
