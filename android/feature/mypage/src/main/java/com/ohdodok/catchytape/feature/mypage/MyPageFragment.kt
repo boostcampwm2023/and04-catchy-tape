@@ -18,6 +18,7 @@ class MyPageFragment : BaseFragment<FragmentMyPageBinding>(R.layout.fragment_my_
         binding.viewModel = viewModel
 
         observeEvents()
+        viewModel.fetchMyMusics()
     }
 
     private fun observeEvents() {

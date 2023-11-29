@@ -5,32 +5,44 @@ import android.app.Dialog
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import android.view.View
-import android.widget.Button
 import androidx.fragment.app.DialogFragment
+import com.ohdodok.catchytape.feature.playlist.databinding.DialogNewPlaylistBinding
 
-class NewPlaylistDialog(private val onPositiveButtonClicked: View.OnClickListener) : DialogFragment() {
+class NewPlaylistDialog : DialogFragment() {
+
+    interface NewPlaylistDialogListener {
+        fun onPositiveButtonClicked(dialog: DialogFragment, title: String)
+    }
+
+    private var _binding: DialogNewPlaylistBinding? = null
+    private val binding get() = _binding!!
+
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return activity?.let { activity ->
-            val builder = AlertDialog.Builder(activity)
-            val inflater = requireActivity().layoutInflater
-            val view = inflater.inflate(R.layout.dialog_new_playlist, null)
+            _binding = DialogNewPlaylistBinding.inflate(layoutInflater)
 
-            val positiveButton: Button = view.findViewById(R.id.btn_save)
-            val negativeButton: Button = view.findViewById(R.id.btn_cancel)
-
-            positiveButton.setOnClickListener {
-                onPositiveButtonClicked.onClick(it)
+            val newPlaylistDialogListener = parentFragment as? NewPlaylistDialogListener
+            binding.btnSave.setOnClickListener {
+                newPlaylistDialogListener?.onPositiveButtonClicked(this, binding.etPlaylistTitle.text.toString())
                 dialog?.cancel()
             }
 
-            negativeButton.setOnClickListener {
+            binding.btnCancel.setOnClickListener {
                 dialog?.cancel()
             }
 
-            builder.setView(view).create().apply {
+            AlertDialog.Builder(activity).setView(binding.root).create().apply {
                 window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
             }
         } ?: throw IllegalStateException("Activity cannot be null")
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
+    companion object {
+        const val TAG = "NewPlaylistDialog"
     }
 }

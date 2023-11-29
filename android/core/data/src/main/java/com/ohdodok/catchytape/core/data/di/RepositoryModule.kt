@@ -2,11 +2,13 @@ package com.ohdodok.catchytape.core.data.di
 
 import com.ohdodok.catchytape.core.data.repository.AuthRepositoryImpl
 import com.ohdodok.catchytape.core.data.repository.MusicRepositoryImpl
+import com.ohdodok.catchytape.core.data.repository.PlaylistRepositoryImpl
 import com.ohdodok.catchytape.core.data.repository.UrlRepositoryImpl
 import com.ohdodok.catchytape.core.data.repository.UserTokenRepositoryImpl
 import com.ohdodok.catchytape.core.data.repository.UuidRepositoryImpl
 import com.ohdodok.catchytape.core.domain.repository.AuthRepository
 import com.ohdodok.catchytape.core.domain.repository.MusicRepository
+import com.ohdodok.catchytape.core.domain.repository.PlaylistRepository
 import com.ohdodok.catchytape.core.domain.repository.UrlRepository
 import com.ohdodok.catchytape.core.domain.repository.UserTokenRepository
 import com.ohdodok.catchytape.core.domain.repository.UuidRepository
@@ -40,4 +42,7 @@ interface RepositoryModule {
     @Singleton
     fun bindUuidRepository(uuidRepositoryImpl: UuidRepositoryImpl): UuidRepository
 
+    @Binds
+    @Singleton
+    fun bindPlaylistRepository(playlistRepositoryImpl: PlaylistRepositoryImpl): PlaylistRepository
 }

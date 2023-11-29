@@ -2,7 +2,6 @@ package com.ohdodok.catchytape.core.data.repository
 
 import com.ohdodok.catchytape.core.data.api.MusicApi
 import com.ohdodok.catchytape.core.data.model.MusicRequest
-import com.ohdodok.catchytape.core.data.model.MusicResponse
 import com.ohdodok.catchytape.core.data.model.toDomains
 import com.ohdodok.catchytape.core.domain.model.Music
 import com.ohdodok.catchytape.core.domain.repository.MusicRepository
