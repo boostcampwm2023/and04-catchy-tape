@@ -33,9 +33,11 @@
         app:layout_constraintTop_toBottomOf="@id/tv_dialog_title">
 
         <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/et_playlist_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:maxLength="1" />
+            android:maxLength="20"
+            android:maxLines="1" />
 
     </com.google.android.material.textfield.TextInputLayout>
 
