@@ -15,6 +15,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onCompletion
@@ -67,21 +68,26 @@ class UploadViewModel @Inject constructor(
         initialValue = false
     )
 
-    val isUploadEnable: StateFlow<Boolean> =
-        combine(
-            musicTitle, musicGenre, imageState, audioState
-        ) { title, genre, imageState, audioState ->
-            title.isNotBlank()
-                    && genre.isNotBlank()
-                    && imageState.url.isNotBlank()
-                    && audioState.url.isNotBlank()
-        }.stateIn(viewModelScopeWithExceptionHandler, SharingStarted.Eagerly, false)
+    private val _isUploadEnable: MutableStateFlow<Boolean> = MutableStateFlow(false)
+    val isUploadEnable = _isUploadEnable.asStateFlow()
 
     private val _musicGenres: MutableStateFlow<List<String>> = MutableStateFlow(emptyList())
     val musicGenres = _musicGenres.asStateFlow()
 
     init {
         fetchGenres()
+        observeInput()
+    }
+
+    private fun observeInput() {
+        combine(musicTitle, musicGenre, imageState, audioState) { title, genre, imageState, audioState ->
+            title.isNotBlank()
+                    && genre.isNotBlank()
+                    && imageState.url.isNotBlank()
+                    && audioState.url.isNotBlank()
+        }.onEach { isEnable ->
+            _isUploadEnable.value = isEnable
+        }.launchIn(viewModelScope)
     }
 
     private fun fetchGenres() {
@@ -117,8 +123,12 @@ class UploadViewModel @Inject constructor(
                 audioUrl = audioState.value.url,
                 title = musicTitle.value,
                 genre = musicGenre.value
-            ).onEach {
+            ).onStart {
+                _isUploadEnable.value = false
+            }.onEach {
                 _events.emit(UploadEvent.NavigateToBack)
+            }.catch {
+                _isUploadEnable.value = true
             }.launchIn(viewModelScopeWithExceptionHandler)
         }
     }
