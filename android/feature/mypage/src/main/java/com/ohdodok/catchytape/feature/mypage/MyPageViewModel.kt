@@ -54,11 +54,9 @@ class MyPageViewModel @Inject constructor(
 
     private fun fetchMyMusics() {
         musicRepository.getMyMusics()
-            .onEach { response ->
+            .onEach { musics ->
                 _uiState.update {
-                    it.copy(
-                        myMusics = response.take(3)
-                    )
+                    it.copy(myMusics = musics.take(3))
                 }
             }
             .launchIn(viewModelScopeWithExceptionHandler)
