@@ -48,11 +48,8 @@ class MyPageViewModel @Inject constructor(
 
     private val viewModelScopeWithExceptionHandler = viewModelScope + exceptionHandler
 
-    init {
-        fetchMyMusics()
-    }
 
-    private fun fetchMyMusics() {
+    fun fetchMyMusics() {
         musicRepository.getMyMusics()
             .onEach { musics ->
                 _uiState.update {
@@ -64,7 +61,5 @@ class MyPageViewModel @Inject constructor(
 }
 
 sealed interface MyPageEvent {
-    data class ShowMessage(
-        val error: CtErrorType
-    ) : MyPageEvent
+    data class ShowMessage(val error: CtErrorType) : MyPageEvent
 }
