@@ -9,6 +9,17 @@
         android:id="@+id/playlist_fragment"
         android:name="com.ohdodok.catchytape.feature.playlist.PlaylistsFragment"
         android:label="PlaylistsFragment"
-        tools:layout="@layout/fragment_playlists" />
+        tools:layout="@layout/fragment_playlists">
+        <action
+            android:id="@+id/action_playlist_fragment_to_newPlaylistDialog"
+            app:destination="@id/newPlaylistDialog" />
+    </fragment>
+
+
+    <dialog
+        android:id="@+id/newPlaylistDialog"
+        android:name="com.ohdodok.catchytape.feature.playlist.NewPlaylistDialog"
+        android:label="NewPlaylistDialog"
+        tools:layout="@layout/dialog_new_playlist" />
 
 </navigation>
