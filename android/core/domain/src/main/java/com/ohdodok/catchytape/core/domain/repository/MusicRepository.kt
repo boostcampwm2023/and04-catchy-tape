@@ -11,4 +11,6 @@ interface MusicRepository {
 
     fun postMusic(musicId: String, title: String, imageUrl: String, audioUrl: String, genre: String): Flow<Unit>
 
+    fun getMyMusics(): Flow<List<Music>>
+
 }
