@@ -28,7 +28,7 @@
             android:id="@+id/rv_my_musics"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:clipToPadding="true"
+            android:clipToPadding="false"
             android:paddingHorizontal="@dimen/margin_horizontal"
             android:paddingTop="@dimen/large"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"

@@ -62,7 +62,7 @@ class MyMusicsViewModel @Inject constructor(
         musicRepository.getMyMusics()
             .onEach { musics ->
                 _uiState.update {
-                    it.copy(myMusics = musics.take(3))
+                    it.copy(myMusics = musics)
                 }
             }
             .launchIn(viewModelScopeWithExceptionHandler)

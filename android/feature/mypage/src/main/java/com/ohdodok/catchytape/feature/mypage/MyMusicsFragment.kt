@@ -6,6 +6,7 @@ import androidx.fragment.app.viewModels
 import com.ohdodok.catchytape.core.ui.BaseFragment
 import com.ohdodok.catchytape.core.ui.MusicAdapter
 import com.ohdodok.catchytape.core.ui.Orientation
+import com.ohdodok.catchytape.core.ui.toMessageId
 import com.ohdodok.catchytape.feature.mypage.databinding.FragmentMyMusicsBinding
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -18,9 +19,23 @@ class MyMusicsFragment : BaseFragment<FragmentMyMusicsBinding>(R.layout.fragment
         binding.viewModel = viewModel
 
         setupRecyclerView()
+        observeEvents()
+        setupBackStack(binding.mtMyMusics)
     }
 
     private fun setupRecyclerView() {
         binding.rvMyMusics.adapter = MusicAdapter(Orientation.VERTICAL)
+    }
+
+    private fun observeEvents() {
+        repeatOnStarted {
+            viewModel.events.collect { event ->
+                when (event) {
+                    is MyMusicsEvent.ShowMessage -> {
+                        showMessage(event.error.toMessageId())
+                    }
+                }
+            }
+        }
     }
 }
