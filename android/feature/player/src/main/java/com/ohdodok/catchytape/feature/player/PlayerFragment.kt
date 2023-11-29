@@ -2,20 +2,25 @@ package com.ohdodok.catchytape.feature.player
 
 import android.os.Bundle
 import android.view.View
+import android.widget.SeekBar
 import androidx.fragment.app.viewModels
 import androidx.media3.common.MediaItem
-import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
 import com.ohdodok.catchytape.core.ui.BaseFragment
 import com.ohdodok.catchytape.feature.player.databinding.FragmentPlayerBinding
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 import timber.log.Timber
+import javax.inject.Inject
+
+const val millisecondsPerSecond = 1000
 
 @AndroidEntryPoint
 class PlayerFragment : BaseFragment<FragmentPlayerBinding>(R.layout.fragment_player) {
+
+    @Inject
+    lateinit var player: ExoPlayer
     private val viewModel: PlayerViewModel by viewModels()
-    private lateinit var player: Player
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -24,16 +29,16 @@ class PlayerFragment : BaseFragment<FragmentPlayerBinding>(R.layout.fragment_pla
         setupBackStack(binding.tbPlayer)
 
         setupPlayer()
+        setUpSeekBar()
         // todo : 실제 데이터로 변경
         setMedia("https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8")
         setupButtons()
         collectEvents()
+
     }
 
     private fun setupPlayer() {
-        player = ExoPlayer.Builder(requireContext()).build()
         player.addListener(PlayerListener(viewModel))
-
         player.prepare()
         setupPlayerTimer()
     }
@@ -42,10 +47,28 @@ class PlayerFragment : BaseFragment<FragmentPlayerBinding>(R.layout.fragment_pla
         repeatOnStarted {
             while (true) {
                 delay(1000L)
-                val positionMs = player.currentPosition.toInt()
-                viewModel.updateCurrentPosition(positionMs / 1000)
+                if (player.isPlaying) {
+                    val positionMs = player.currentPosition.toInt()
+                    viewModel.updateCurrentPosition(positionMs / millisecondsPerSecond)
+                }
             }
         }
+    }
+
+    private fun setUpSeekBar() {
+        binding.sbMusicProgress.setOnSeekBarChangeListener(object :
+            SeekBar.OnSeekBarChangeListener {
+            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+                if (fromUser) {
+                    player.seekTo(progress.toLong() * millisecondsPerSecond)
+                    viewModel.updateCurrentPosition(progress)
+                }
+            }
+
+            override fun onStartTrackingTouch(p0: SeekBar?) {}
+
+            override fun onStopTrackingTouch(p0: SeekBar?) {}
+        })
     }
 
     private fun setMedia(url: String) {
