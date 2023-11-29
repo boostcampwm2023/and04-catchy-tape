@@ -13,13 +13,19 @@ import * as ffmpegInstaller from '@ffmpeg-installer/ffmpeg';
 import * as path from 'path';
 import axios from 'axios';
 import { UploadService } from 'src/upload/upload.service';
+import { NcloudConfigService } from 'src/config/ncloud.config';
+import { AWSError } from 'aws-sdk';
 
 @Injectable()
 export class MusicService {
+  private objectStorage: AWS.S3;
   constructor(
     @InjectRepository(Music) private musicRepository: Repository<Music>,
     private uploadService: UploadService,
-  ) {}
+    private readonly ncloudConfigService: NcloudConfigService,
+  ) {
+    this.objectStorage = ncloudConfigService.createObjectStorageOption();
+  }
 
   isValidGenre(genre: string): boolean {
     if (Object.values(Genres).includes(genre as Genres)) {
@@ -247,6 +253,40 @@ export class MusicService {
       return targetMusic;
     } catch (err) {
       if (err instanceof CatchyException) throw err;
+      throw new CatchyException(
+        'SERVER_ERROR',
+        HTTP_STATUS_CODE.SERVER_ERROR,
+        ERROR_CODE.SERVICE_ERROR,
+      );
+    }
+  }
+
+  async getEncodedChunkFiles(
+    musicId: string,
+    fileName: string,
+  ): Promise<AWS.S3.Body> {
+    try {
+      const filePath = `music/${musicId}/${fileName}`;
+
+      const result = await this.objectStorage
+        .getObject({
+          Bucket: 'catchy-tape-bucket2',
+          Key: filePath,
+        })
+        .promise();
+
+      return result.Body;
+    } catch (err) {
+      const awsError = err as AWSError;
+
+      if (awsError && awsError.code === 'NoSuchKey') {
+        throw new CatchyException(
+          'NOT_EXIST_TS_IN_BUCKET',
+          HTTP_STATUS_CODE.NOT_FOUND,
+          ERROR_CODE.NOT_EXIST_TS_IN_BUCKET,
+        );
+      }
+
       throw new CatchyException(
         'SERVER_ERROR',
         HTTP_STATUS_CODE.SERVER_ERROR,
