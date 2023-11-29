@@ -184,15 +184,12 @@ export class MusicService {
         );
       }
 
-      const encodedFileURL = await this.encodeMusic(
-        music_id,
-        music_file.split('?')[0],
-      );
+      const encodedFileURL = await this.encodeMusic(music_id, music_file);
 
       const newMusic: Music = this.musicRepository.create({
         music_id,
         title,
-        cover: cover.split('?')[0],
+        cover,
         music_file: encodedFileURL,
         created_at: new Date(),
         genre,
