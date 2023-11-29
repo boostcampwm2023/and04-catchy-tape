@@ -4,6 +4,8 @@ import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.viewModels
 import com.ohdodok.catchytape.core.ui.BaseFragment
+import com.ohdodok.catchytape.core.ui.MusicAdapter
+import com.ohdodok.catchytape.core.ui.Orientation
 import com.ohdodok.catchytape.feature.mypage.databinding.FragmentMyMusicsBinding
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -14,5 +16,11 @@ class MyMusicsFragment : BaseFragment<FragmentMyMusicsBinding>(R.layout.fragment
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.viewModel = viewModel
+
+        setupRecyclerView()
+    }
+
+    private fun setupRecyclerView() {
+        binding.rvMyMusics.adapter = MusicAdapter(Orientation.VERTICAL)
     }
 }
