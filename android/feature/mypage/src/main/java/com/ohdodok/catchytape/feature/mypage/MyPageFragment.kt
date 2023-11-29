@@ -50,6 +50,6 @@ class MyPageFragment : BaseFragment<FragmentMyPageBinding>(R.layout.fragment_my_
 
     override fun onStart() {
         super.onStart()
-        viewModel.fetchMyMusics()
+        viewModel.fetchMyMusics(count = 3)
     }
 }

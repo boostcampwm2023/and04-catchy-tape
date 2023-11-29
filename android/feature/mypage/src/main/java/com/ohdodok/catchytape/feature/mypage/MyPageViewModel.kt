@@ -46,11 +46,11 @@ class MyPageViewModel @Inject constructor(
 
     private val viewModelScopeWithExceptionHandler = viewModelScope + exceptionHandler
 
-    fun fetchMyMusics() {
+    fun fetchMyMusics(count: Int) {
         musicRepository.getMyMusics()
             .onEach { musics ->
                 _uiState.update {
-                    it.copy(myMusics = musics.take(3))
+                    it.copy(myMusics = musics.take(count))
                 }
             }
             .launchIn(viewModelScopeWithExceptionHandler)
