@@ -27,6 +27,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         setupBottomNav()
+        setUpPC()
 
         connectivityManager = getSystemService(ConnectivityManager::class.java)
         checkNetworkState()
@@ -46,23 +47,23 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupBottomNav() {
-        val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
+        val navHostFragment =
+            supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
         binding.bottomNav.setupWithNavController(navHostFragment.navController)
 
         navHostFragment.findNavController().addOnDestinationChangedListener { _, destination, _ ->
             when (destination.id) {
                 com.ohdodok.catchytape.feature.player.R.id.player_fragment -> {
-                    binding.bottomNav.visibility = View.GONE
-                    binding.pcvController.visibility = View.GONE
+                    hideBottomNav()
+                    hidePC()
                 }
 
                 else -> {
-                    binding.bottomNav.visibility = View.VISIBLE
-                    binding.pcvController.visibility = View.VISIBLE
+                    showBottomNav()
+                    showPC()
                 }
             }
         }
-        setUpPC()
     }
 
     private fun setUpPC() {
@@ -71,5 +72,19 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-}
+    private fun hideBottomNav() {
+        binding.bottomNav.visibility = View.GONE
+    }
 
+    private fun showBottomNav() {
+        binding.bottomNav.visibility = View.VISIBLE
+    }
+
+    private fun hidePC() {
+        binding.pcvController.visibility = View.GONE
+    }
+
+    private fun showPC() {
+        binding.pcvController.visibility = View.VISIBLE
+    }
+}
