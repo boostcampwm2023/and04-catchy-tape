@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.ohdodok.catchytape.databinding.ActivityMainBinding
@@ -44,8 +45,10 @@ class MainActivity : AppCompatActivity(), PlayerController {
     }
 
     private fun setupBottomNav() {
-        val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
+        val navHostFragment =
+            supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
         binding.bottomNav.setupWithNavController(navHostFragment.navController)
+        setUpPC()
     }
 
     override fun hidePc() {
@@ -56,4 +59,10 @@ class MainActivity : AppCompatActivity(), PlayerController {
         binding.pcvController.visibility = View.VISIBLE
     }
 
+    private fun setUpPC() {
+        binding.pcvController.setOnClickListener {
+            findNavController(R.id.nav_host_fragment)
+                .navigate(com.ohdodok.catchytape.feature.player.R.id.player_nav_graph)
+        }
+    }
 }
