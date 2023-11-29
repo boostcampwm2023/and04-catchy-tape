@@ -58,7 +58,5 @@ class MyPageViewModel @Inject constructor(
 }
 
 sealed interface MyPageEvent {
-    data class ShowMessage(
-        val error: CtErrorType
-    ) : MyPageEvent
+    data class ShowMessage(val error: CtErrorType) : MyPageEvent
 }
