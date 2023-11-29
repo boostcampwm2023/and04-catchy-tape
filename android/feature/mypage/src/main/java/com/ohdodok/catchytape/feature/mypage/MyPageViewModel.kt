@@ -37,13 +37,11 @@ class MyPageViewModel @Inject constructor(
     val events: SharedFlow<MyPageEvent> = _events.asSharedFlow()
 
     private val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
-        viewModelScope.launch {
-            val errorType =
-                if (throwable is CtException) throwable.ctError
-                else CtErrorType.UN_KNOWN
+        val errorType =
+            if (throwable is CtException) throwable.ctError
+            else CtErrorType.UN_KNOWN
 
-            _events.emit(MyPageEvent.ShowMessage(errorType))
-        }
+        viewModelScope.launch { _events.emit(MyPageEvent.ShowMessage(errorType)) }
     }
 
     private val viewModelScopeWithExceptionHandler = viewModelScope + exceptionHandler
