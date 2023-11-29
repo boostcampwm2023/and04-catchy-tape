@@ -166,7 +166,20 @@ export class PlaylistService {
 
   async getUserPlaylists(userId: string): Promise<Playlist[]> {
     try {
-      return Playlist.getPlaylistsByUserId(userId);
+      const playlists: Playlist[] = await Playlist.getPlaylistsByUserId(userId);
+      const countPromises = playlists.map(async (playlist) => {
+        playlist['music_count'] =
+          await Music_Playlist.getMusicCountByPlaylistId(playlist.playlist_id);
+      });
+      const thumbnailPromises = playlists.map(async (playlist) => {
+        const target = await Music_Playlist.getThumbnailByPlaylistId(
+          playlist.playlist_id,
+        );
+        playlist['thumbnail'] = !target ? null : target.music.cover;
+      });
+      await Promise.all(countPromises);
+      await Promise.all(thumbnailPromises);
+      return playlists;
     } catch {
       throw new CatchyException(
         'SERVER_ERROR',
