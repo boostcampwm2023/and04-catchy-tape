@@ -1,4 +1,4 @@
-package com.ohdodok.catchytape.feature.player.media_control
+package com.ohdodok.catchytape.feature.player.mediacontrol
 
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.session.MediaSession

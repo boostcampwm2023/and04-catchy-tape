@@ -13,7 +13,7 @@ import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import com.ohdodok.catchytape.core.ui.BaseFragment
 import com.ohdodok.catchytape.feature.player.databinding.FragmentPlayerBinding
-import com.ohdodok.catchytape.feature.player.media_control.PlaybackService
+import com.ohdodok.catchytape.feature.player.mediacontrol.PlaybackService
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 import javax.inject.Inject
