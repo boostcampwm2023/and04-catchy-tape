@@ -53,14 +53,12 @@ class PlayerControlView(context: Context, attrs: AttributeSet) : ConstraintLayou
         val binding = ViewPlayerControlBinding.inflate(LayoutInflater.from(context), this, true)
 
         val thumbnailView = binding.ivThumbnail
-        val titleView = binding.tvTitle
-        val artistView = binding.tvArtist
         playButton = binding.ibPlay
         progressIndicator = binding.lpiPlayerProgress
 
         thumbnailView.bindImg(thumbnailUrl)
-        titleView.text = title
-        artistView.text = artist
+        binding.tvTitle.text = title
+        binding.tvArtist.text = artist
     }
 
 
