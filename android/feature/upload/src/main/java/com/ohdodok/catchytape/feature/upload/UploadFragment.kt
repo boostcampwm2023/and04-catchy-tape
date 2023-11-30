@@ -7,8 +7,10 @@ import android.view.View
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.result.contract.ActivityResultContracts.PickVisualMedia
+import androidx.databinding.BindingAdapter
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import com.google.android.material.textfield.TextInputLayout
 import com.ohdodok.catchytape.catchytape.upload.R
 import com.ohdodok.catchytape.catchytape.upload.databinding.FragmentUploadBinding
 import com.ohdodok.catchytape.core.ui.BaseFragment
@@ -99,4 +101,10 @@ class UploadFragment : BaseFragment<FragmentUploadBinding>(R.layout.fragment_upl
         }
         return file?.absolutePath
     }
+}
+
+@BindingAdapter("musicTitleIsValid")
+fun TextInputLayout.bindMusicTitleValidation(state: Boolean) {
+    if(state) { this.error = null }
+    else this.error = resources.getString(R.string.invalid_music_title)
 }
