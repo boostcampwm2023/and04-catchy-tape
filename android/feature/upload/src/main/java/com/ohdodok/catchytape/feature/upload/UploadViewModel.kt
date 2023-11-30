@@ -60,8 +60,11 @@ class UploadViewModel @Inject constructor(
         MutableStateFlow(UploadedFileState())
     val audioState = _audioState.asStateFlow()
 
-    val isLoading: StateFlow<Boolean> = combine(imageState, audioState) { imageState, audioState ->
-        imageState.isLoading || audioState.isLoading
+    private val _isUploading: MutableStateFlow<Boolean> = MutableStateFlow(false)
+    val isUploading = _isUploading.asStateFlow()
+
+    val isLoading: StateFlow<Boolean> = combine(imageState, audioState, isUploading) { imageState, audioState, isUploading ->
+        imageState.isLoading || audioState.isLoading || isUploading
     }.stateIn(
         scope = viewModelScopeWithExceptionHandler,
         started = SharingStarted.Eagerly,
@@ -125,10 +128,12 @@ class UploadViewModel @Inject constructor(
                 genre = musicGenre.value
             ).onStart {
                 _isUploadEnable.value = false
+                _isUploading.value = true
             }.onEach {
                 _events.emit(UploadEvent.NavigateToBack)
-            }.catch {
+            }.onCompletion {
                 _isUploadEnable.value = true
+                _isUploading.value = false
             }.launchIn(viewModelScopeWithExceptionHandler)
         }
     }
@@ -138,6 +143,7 @@ data class UploadedFileState(
     val isLoading: Boolean = false,
     val url: String = ""
 )
+
 
 sealed interface UploadEvent {
     data object NavigateToBack : UploadEvent
