@@ -3,7 +3,7 @@ package com.ohdodok.catchytape.feature.player
 import android.os.Bundle
 import android.view.View
 import android.widget.SeekBar
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
 import androidx.media3.common.MediaItem
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.navigation.NavController
@@ -22,7 +22,7 @@ class PlayerFragment : BaseFragment<FragmentPlayerBinding>(R.layout.fragment_pla
 
     @Inject
     lateinit var player: ExoPlayer
-    private val viewModel: PlayerViewModel by viewModels()
+    private val viewModel: PlayerViewModel by activityViewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -34,7 +34,6 @@ class PlayerFragment : BaseFragment<FragmentPlayerBinding>(R.layout.fragment_pla
         setMedia("https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8")
         setupButtons()
         collectEvents()
-
     }
 
     private fun setupPlayer() {

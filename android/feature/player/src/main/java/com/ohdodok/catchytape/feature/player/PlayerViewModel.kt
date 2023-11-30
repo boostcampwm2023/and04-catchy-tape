@@ -14,7 +14,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 data class PlayerState(
-    val isPlaying: Boolean = true,
+    val isPlaying: Boolean = false,
     val currentPositionSecond: Int = 0,
     val duration: Int = 0,
 )
