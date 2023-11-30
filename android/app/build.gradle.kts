@@ -77,4 +77,6 @@ dependencies {
     implementation(libs.timber)
 
     testImplementation(libs.junit)
+
+    implementation(libs.bundles.exoplayer)
 }
