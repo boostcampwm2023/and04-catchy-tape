@@ -34,7 +34,7 @@
                 android:layout_gravity="end|center_vertical"
                 android:layout_marginEnd="@dimen/margin_horizontal"
                 android:background="@android:color/transparent"
-                android:enabled="@{viewModel.isUploadEnable}"
+                android:enabled="@{viewModel.uiState.uploadEnable}"
                 android:text="@string/complete" />
 
         </com.google.android.material.appbar.MaterialToolbar>
@@ -44,10 +44,10 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:indeterminate="true"
+            android:visibility="@{viewModel.uiState.loading ? view.VISIBLE : view.GONE}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tb_upload"
-            android:visibility="@{viewModel.isLoading ? view.VISIBLE : view.GONE}" />
+            app:layout_constraintTop_toBottomOf="@id/tb_upload" />
 
         <androidx.cardview.widget.CardView
             android:id="@+id/cv_upload_thumbnail"
@@ -69,7 +69,7 @@
                 android:layout_gravity="center"
                 android:background="@color/surface_bright"
                 android:importantForAccessibility="no"
-                app:imgUrl="@{viewModel.imageState.url}" />
+                app:imgUrl="@{viewModel.uiState.imageState.url}" />
 
             <ImageView
                 android:id="@+id/iv_camera_icon"
@@ -78,7 +78,7 @@
                 android:layout_gravity="center"
                 android:importantForAccessibility="no"
                 android:src="@drawable/ic_camera"
-                app:visibility="@{viewModel.imageState.url.empty ? view.VISIBLE : view.GONE}" />
+                app:visibility="@{viewModel.uiState.imageState.url.empty ? view.VISIBLE : view.GONE}" />
 
         </androidx.cardview.widget.CardView>
 
@@ -89,8 +89,8 @@
             android:layout_marginTop="@dimen/extra_large"
             android:drawableEnd="@drawable/ic_upload"
             android:drawableTint="@color/on_surface"
-            android:textColor="@color/on_surface"
             android:hint="@string/upload_file"
+            android:textColor="@color/on_surface"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/cv_upload_thumbnail" />
@@ -112,7 +112,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:maxLength="10"
-                android:text="@={viewModel.musicTitle}" />
+                android:onTextChanged="@{(text, start, before, count) -> viewModel.updateMusicTitle(text)}" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -133,8 +133,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="none"
-                android:text="@={viewModel.musicGenre}"
-                app:list="@{viewModel.musicGenres}" />
+                android:onTextChanged="@{(text, start, before, count) -> viewModel.updateMusicGenre(text)}"
+                app:list="@{viewModel.uiState.musicGenres}" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
