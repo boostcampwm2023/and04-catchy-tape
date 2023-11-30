@@ -65,6 +65,9 @@ export class MusicService {
       const { outputMusicPath, entireMusicPath, outputPath, tempFilePath } =
         this.setEncodingPaths(musicPath);
 
+      console.log(tempFilePath);
+      console.log(musicPath);
+
       fs.mkdirSync(outputMusicPath, { recursive: true });
 
       const musicFileResponse = await axios.get(musicPath, {
@@ -77,14 +80,9 @@ export class MusicService {
         if (err) throw new Error();
       });
 
-      await this.executeEncoding(
+      const encodedFileURL = await this.executeEncoding(
         tempFilePath,
         outputPath,
-        outputMusicPath,
-        musicId,
-      );
-
-      const encodedFileURL = await this.uploadEncodedFiles(
         outputMusicPath,
         musicId,
       );
@@ -113,6 +111,7 @@ export class MusicService {
     musicId: string,
   ): Promise<string> {
     let m3u8FileName;
+    let m3u8Path: string;
     const watcher = fs.watch(outputMusicPath, (eventType, fileName) => {
       if (fileName.match(/.m3u8$/)) {
         m3u8FileName = fileName;
@@ -124,7 +123,7 @@ export class MusicService {
         );
       }
     });
-    return await new Promise((resolve, reject) => {
+    return await new Promise<string>((resolve, reject) => {
       ffmpeg(tempFilePath)
         .addOption([
           '-map 0:a',
@@ -136,13 +135,13 @@ export class MusicService {
         ])
         .output(outputPath)
         .on('end', async () => {
-          resolve('');
           watcher.close();
-          this.uploadEncodedFile(
+          m3u8Path = await this.uploadEncodedFile(
             outputMusicPath + `/${m3u8FileName}`,
             musicId,
             m3u8FileName,
           );
+          resolve(m3u8Path);
         })
         .on('error', () => {
           reject(new Error());
