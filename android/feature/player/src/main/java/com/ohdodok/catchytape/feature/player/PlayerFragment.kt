@@ -31,12 +31,16 @@ class PlayerFragment : BaseFragment<FragmentPlayerBinding>(R.layout.fragment_pla
         super.onViewCreated(view, savedInstanceState)
         binding.viewModel = viewModel
 
-        connectToMediaSession()
         setUpSeekBar()
         // todo : 실제 데이터로 변경
         setMedia("https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8")
         setupButtons()
         collectEvents()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        connectToMediaSession()
     }
 
     private fun connectToMediaSession() {
