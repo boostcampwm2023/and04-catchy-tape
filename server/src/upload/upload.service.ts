@@ -121,7 +121,7 @@ export class UploadService {
       const uploadResult = await this.objectStorage
         .upload({
           Bucket: 'catchy-tape-bucket2',
-          Key: `music/${musicId}/${fileName}}`,
+          Key: `music/${musicId}/${fileName}`,
           Body: fs.createReadStream(filePath),
           ACL: 'public-read',
         })
