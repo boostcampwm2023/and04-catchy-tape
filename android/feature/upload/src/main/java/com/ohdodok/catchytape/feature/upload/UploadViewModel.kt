@@ -118,20 +118,20 @@ class UploadViewModel @Inject constructor(
     }
 
     fun uploadMusic() {
-        if (uiState.value.isUploadEnable) {
-            uploadMusicUseCase(
-                imageUrl = uiState.value.imageState.url,
-                audioUrl = uiState.value.audioState.url,
-                title = uiState.value.musicTitle,
-                genre = uiState.value.musicGenre
-            ).onStart {
-                _uiState.update { it.copy(encoding = true) }
-            }.onEach {
-                _events.emit(UploadEvent.NavigateToBack)
-            }.onCompletion {
-                _uiState.update { it.copy(encoding = false) }
-            }.launchIn(viewModelScopeWithExceptionHandler)
-        }
+        if (!uiState.value.isUploadEnable) return
+
+        uploadMusicUseCase(
+            imageUrl = uiState.value.imageState.url,
+            audioUrl = uiState.value.audioState.url,
+            title = uiState.value.musicTitle,
+            genre = uiState.value.musicGenre
+        ).onStart {
+            _uiState.update { it.copy(encoding = true) }
+        }.onEach {
+            _events.emit(UploadEvent.NavigateToBack)
+        }.onCompletion {
+            _uiState.update { it.copy(encoding = false) }
+        }.launchIn(viewModelScopeWithExceptionHandler)
     }
 }
 
