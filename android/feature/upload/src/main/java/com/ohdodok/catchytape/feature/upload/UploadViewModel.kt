@@ -15,7 +15,6 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onCompletion
@@ -58,12 +57,12 @@ class UploadViewModel @Inject constructor(
     private val _audioState: MutableStateFlow<UploadedFileState> = MutableStateFlow(UploadedFileState())
     val audioState = _audioState.asStateFlow()
 
-    private val _isUploading: MutableStateFlow<Boolean> = MutableStateFlow(false)
-    val isUploading = _isUploading.asStateFlow()
+    private val _encoding: MutableStateFlow<Boolean> = MutableStateFlow(false)
+    val encoding = _encoding.asStateFlow()
 
     val isLoading: StateFlow<Boolean> =
-        combine(imageState, audioState, isUploading) { imageState, audioState, isUploading ->
-            imageState.isLoading || audioState.isLoading || isUploading
+        combine(imageState, audioState, encoding) { imageState, audioState, encoding ->
+            imageState.isLoading || audioState.isLoading || encoding
         }.stateIn(
             scope = viewModelScopeWithExceptionHandler,
             started = SharingStarted.Eagerly,
@@ -75,12 +74,12 @@ class UploadViewModel @Inject constructor(
         musicGenre,
         imageState,
         audioState,
-        isUploading) { title, genre, imageState, audioState, isUploading ->
+        encoding) { title, genre, imageState, audioState, encoding ->
         title.isNotBlank()
                 && genre.isNotBlank()
                 && imageState.url.isNotBlank()
                 && audioState.url.isNotBlank()
-                && !isUploading
+                && !encoding
     }.stateIn(
         scope = viewModelScopeWithExceptionHandler,
         started = SharingStarted.Eagerly,
@@ -128,11 +127,11 @@ class UploadViewModel @Inject constructor(
                 title = musicTitle.value,
                 genre = musicGenre.value
             ).onStart {
-                _isUploading.value = true
+                _encoding.value = true
             }.onEach {
                 _events.emit(UploadEvent.NavigateToBack)
             }.onCompletion {
-                _isUploading.value = false
+                _encoding.value = false
             }.launchIn(viewModelScopeWithExceptionHandler)
         }
     }
