@@ -27,16 +27,11 @@ class PlayerFragment : BaseFragment<FragmentPlayerBinding>(R.layout.fragment_pla
     lateinit var player: ExoPlayer
     private val viewModel: PlayerViewModel by activityViewModels()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        val sessionToken = SessionToken(requireContext(), ComponentName(requireContext(), PlaybackService::class.java))
-        MediaController.Builder(requireContext(), sessionToken).buildAsync()
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.viewModel = viewModel
 
+        connectToMediaSession()
         setUpSeekBar()
         // todo : 실제 데이터로 변경
         setMedia("https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8")
@@ -44,9 +39,10 @@ class PlayerFragment : BaseFragment<FragmentPlayerBinding>(R.layout.fragment_pla
         collectEvents()
     }
 
-
-
-
+    private fun connectToMediaSession() {
+        val sessionToken = SessionToken(requireContext(), ComponentName(requireContext(), PlaybackService::class.java))
+        MediaController.Builder(requireContext(), sessionToken).buildAsync()
+    }
 
     private fun setUpSeekBar() {
         binding.sbMusicProgress.setOnSeekBarChangeListener(object :
