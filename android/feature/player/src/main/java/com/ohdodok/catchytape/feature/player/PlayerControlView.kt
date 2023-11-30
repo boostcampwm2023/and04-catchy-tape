@@ -1,6 +1,7 @@
 package com.ohdodok.catchytape.feature.player
 
 import android.content.Context
+import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.widget.ImageButton
 import android.widget.ImageView
@@ -8,7 +9,7 @@ import android.widget.TextView
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.google.android.material.progressindicator.LinearProgressIndicator
-import com.ohdodok.catchytape.core.ui.R.*
+import com.ohdodok.catchytape.core.ui.R.drawable
 import com.ohdodok.catchytape.core.ui.bindImg
 import kotlin.properties.Delegates
 
@@ -19,12 +20,16 @@ class PlayerControlView(context: Context, attrs: AttributeSet) : ConstraintLayou
     private lateinit var artist: String
     private var isPlaying: Boolean by Delegates.notNull()
     private var progress: Int by Delegates.notNull()
-    private var duration: Int by Delegates.notNull()
+    var duration: Int by Delegates.notNull()
+        private set
+    private lateinit var playButton: ImageButton
+    private lateinit var progressIndicator: LinearProgressIndicator
 
     init {
         initAttrs(attrs)
         initView()
     }
+
 
     private fun initAttrs(attrs: AttributeSet) {
         context.theme.obtainStyledAttributes(
@@ -51,26 +56,39 @@ class PlayerControlView(context: Context, attrs: AttributeSet) : ConstraintLayou
         val thumbnailView: ImageView = findViewById(R.id.iv_thumbnail)
         val titleView: TextView = findViewById(R.id.tv_title)
         val artistView: TextView = findViewById(R.id.tv_artist)
-        val playButton: ImageButton = findViewById(R.id.ib_play)
-        val indicator: LinearProgressIndicator = findViewById(R.id.lpi_player_progress)
+
+        playButton = findViewById(R.id.ib_play)
+        progressIndicator = findViewById(R.id.lpi_player_progress)
 
         thumbnailView.bindImg(thumbnailUrl)
-
         titleView.text = title
         artistView.text = artist
-
-        val buttonDrawable =
-            if (isPlaying) AppCompatResources.getDrawable(context, drawable.ic_pause)
-            else AppCompatResources.getDrawable(context, drawable.ic_play)
-        playButton.setImageDrawable(buttonDrawable)
-
-        indicator.progress = progress
-        indicator.max = duration
     }
 
     fun setOnPlayButtonClick(onPlayButtonClick: () -> Unit) {
-        val playButton: ImageButton = findViewById(R.id.ib_play)
-
         playButton.setOnClickListener { onPlayButtonClick() }
     }
+
+    private fun getPlayBtnDrawable(): Drawable? {
+        return if (isPlaying) AppCompatResources.getDrawable(context, drawable.ic_pause)
+        else AppCompatResources.getDrawable(context, drawable.ic_play)
+    }
+
+    fun changePlayBtnDrawable(playerIsPlaying: Boolean) {
+        isPlaying = playerIsPlaying
+        playButton.setImageDrawable(getPlayBtnDrawable())
+    }
+
+
+    fun changeIndicatorDuration(playerDuration: Int) {
+        duration = playerDuration
+        progressIndicator.max = duration
+    }
+
+
+    fun changeIndicatorProgress(playerProgress: Int) {
+        progress = playerProgress
+        progressIndicator.progress = progress
+    }
+
 }
