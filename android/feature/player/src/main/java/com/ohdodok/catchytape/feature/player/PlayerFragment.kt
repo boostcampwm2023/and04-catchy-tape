@@ -11,7 +11,6 @@ import androidx.navigation.fragment.findNavController
 import com.ohdodok.catchytape.core.ui.BaseFragment
 import com.ohdodok.catchytape.feature.player.databinding.FragmentPlayerBinding
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.delay
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -28,7 +27,6 @@ class PlayerFragment : BaseFragment<FragmentPlayerBinding>(R.layout.fragment_pla
         super.onViewCreated(view, savedInstanceState)
         binding.viewModel = viewModel
 
-        setupPlayer()
         setUpSeekBar()
         // todo : 실제 데이터로 변경
         setMedia("https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8")
@@ -36,23 +34,9 @@ class PlayerFragment : BaseFragment<FragmentPlayerBinding>(R.layout.fragment_pla
         collectEvents()
     }
 
-    private fun setupPlayer() {
-        player.addListener(PlayerListener(viewModel))
-        player.prepare()
-        setupPlayerTimer()
-    }
 
-    private fun setupPlayerTimer() {
-        repeatOnStarted {
-            while (true) {
-                delay(1000L)
-                if (player.isPlaying) {
-                    val positionMs = player.currentPosition.toInt()
-                    viewModel.updateCurrentPosition(positionMs / millisecondsPerSecond)
-                }
-            }
-        }
-    }
+
+
 
     private fun setUpSeekBar() {
         binding.sbMusicProgress.setOnSeekBarChangeListener(object :
