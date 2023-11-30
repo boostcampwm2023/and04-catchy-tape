@@ -27,19 +27,19 @@
             app:layout_constraintTop_toTopOf="parent"
             app:navGraph="@navigation/catchytape_navigation" />
 
-            <com.ohdodok.catchytape.feature.player.PlayerControlView
+        <com.ohdodok.catchytape.feature.player.PlayerControlView
             android:id="@+id/pcv_controller"
             android:layout_width="0dp"
             android:layout_height="65dp"
-            app:artist="아티스트"
-            app:duration="100"
-            app:isPlaying="false"
+            app:artist="@string/artist"
+            app:duration="@{viewModel.uiState.duration}"
+            app:isPlaying="@{viewModel.uiState.isPlaying}"
             app:layout_constraintBottom_toTopOf="@id/bottom_nav"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:progress="65"
+            app:progress="@{viewModel.uiState.currentPositionSecond}"
             app:thumbnailUrl="https://picsum.photos/200"
-            app:title="제목" />
+            app:title="@string/title" />
 
 
         <com.google.android.material.bottomnavigation.BottomNavigationView

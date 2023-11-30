@@ -41,6 +41,7 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         binding.viewModel = playViewModel
+        binding.lifecycleOwner = this
 
         setupBottomNav()
         setUpPlayerController()
@@ -52,7 +53,6 @@ class MainActivity : AppCompatActivity() {
 
         setupPlayer()
         setupPlayButton()
-        observePlayerState()
     }
 
     private fun checkNetworkState() {
@@ -128,20 +128,6 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun observePlayerState() {
-        lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                playViewModel.uiState.collect { playerState ->
-                    if (binding.pcvController.duration != playerState.duration) {
-                        binding.pcvController.changeIndicatorDuration(playerState.duration)
-                    }
-
-                    binding.pcvController.changePlayBtnDrawable(playerState.isPlaying)
-                    binding.pcvController.changeIndicatorProgress(playViewModel.uiState.value.currentPositionSecond)
-                }
-            }
-        }
-    }
 
     private fun setupPlayButton() {
         binding.pcvController.setOnPlayButtonClick {
