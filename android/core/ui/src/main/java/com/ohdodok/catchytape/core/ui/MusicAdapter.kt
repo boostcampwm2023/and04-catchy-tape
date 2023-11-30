@@ -10,8 +10,10 @@ import com.ohdodok.catchytape.core.ui.databinding.ItemMusicHorizontalBinding
 import com.ohdodok.catchytape.core.ui.databinding.ItemMusicVerticalBinding
 
 
-class MusicAdapter(private val musicItemOrientation: Orientation) :
-    ListAdapter<Music, RecyclerView.ViewHolder>(MusicDiffUtil) {
+class MusicAdapter(
+    private val musicItemOrientation: Orientation,
+    private val listener: Listener = Listener {  }, // todo : 클릭 이벤트 구현이 완료되면 디폴트 값을 지워주세요.
+) : ListAdapter<Music, RecyclerView.ViewHolder>(MusicDiffUtil) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (musicItemOrientation) {
@@ -62,6 +64,10 @@ class MusicAdapter(private val musicItemOrientation: Orientation) :
                 )
             )
         }
+    }
+
+    fun interface Listener {
+        fun onClick(music: Music)
     }
 }
 
