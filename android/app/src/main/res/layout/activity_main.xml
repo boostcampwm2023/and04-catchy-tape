@@ -33,7 +33,7 @@
             android:layout_height="65dp"
             app:artist="@string/artist"
             app:duration="@{viewModel.uiState.duration}"
-            app:isPlaying="@{viewModel.uiState.isPlaying}"
+            app:playing="@{viewModel.uiState.isPlaying}"
             app:layout_constraintBottom_toTopOf="@id/bottom_nav"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

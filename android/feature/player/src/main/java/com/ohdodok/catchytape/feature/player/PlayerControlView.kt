@@ -4,25 +4,37 @@ import android.content.Context
 import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.view.LayoutInflater
-import android.widget.ImageButton
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.constraintlayout.widget.ConstraintLayout
-import com.google.android.material.progressindicator.LinearProgressIndicator
 import com.ohdodok.catchytape.core.ui.R.drawable
 import com.ohdodok.catchytape.core.ui.bindImg
 import com.ohdodok.catchytape.feature.player.databinding.ViewPlayerControlBinding
-import kotlin.properties.Delegates
 
 class PlayerControlView(context: Context, attrs: AttributeSet) : ConstraintLayout(context, attrs) {
 
+    private val binding: ViewPlayerControlBinding =
+        ViewPlayerControlBinding.inflate(LayoutInflater.from(context), this, true)
     private lateinit var thumbnailUrl: String
     private lateinit var title: String
     private lateinit var artist: String
-    private var _isPlaying: Boolean by Delegates.notNull()
-    private var _progress: Int by Delegates.notNull()
-    private var _duration: Int by Delegates.notNull()
-    private lateinit var playButton: ImageButton
-    private lateinit var progressIndicator: LinearProgressIndicator
+
+    var isPlaying: Boolean = false
+        set(value) {
+            field = value
+            binding.ibPlay.setImageDrawable(getPlayBtnDrawable())
+        }
+
+    var progress: Int = 0
+        set(value) {
+            field = value
+            binding.lpiPlayerProgress.progress = value
+        }
+
+    var duration: Int = 0
+        set(value) {
+            field = value
+            binding.lpiPlayerProgress.max = value
+        }
 
     init {
         initAttrs(attrs)
@@ -38,11 +50,11 @@ class PlayerControlView(context: Context, attrs: AttributeSet) : ConstraintLayou
         ).apply {
             try {
                 thumbnailUrl = getString(R.styleable.PlayerBarView_thumbnailUrl) ?: ""
-                title = getString(R.styleable.PlayerBarView_title) ?: "" // 썸네일
+                title = getString(R.styleable.PlayerBarView_title) ?: ""
                 artist = getString(R.styleable.PlayerBarView_artist) ?: ""
-                _isPlaying = getBoolean(R.styleable.PlayerBarView_isPlaying, false)
-                _progress = getInt(R.styleable.PlayerBarView_progress, 0)
-                _duration = getInt(R.styleable.PlayerBarView_duration, 0)
+                isPlaying = getBoolean(R.styleable.PlayerBarView_isPlaying, false)
+                progress = getInt(R.styleable.PlayerBarView_progress, 0)
+                duration = getInt(R.styleable.PlayerBarView_duration, 0)
             } finally {
                 recycle()
             }
@@ -50,9 +62,6 @@ class PlayerControlView(context: Context, attrs: AttributeSet) : ConstraintLayou
     }
 
     private fun initView() {
-        val binding = ViewPlayerControlBinding.inflate(LayoutInflater.from(context), this, true)
-        playButton = binding.ibPlay
-        progressIndicator = binding.lpiPlayerProgress
         binding.ivThumbnail.bindImg(thumbnailUrl)
         binding.tvTitle.text = title
         binding.tvArtist.text = artist
@@ -60,26 +69,12 @@ class PlayerControlView(context: Context, attrs: AttributeSet) : ConstraintLayou
 
 
     fun setOnPlayButtonClick(onPlayButtonClick: () -> Unit) {
-        playButton.setOnClickListener { onPlayButtonClick() }
+        binding.ibPlay.setOnClickListener { onPlayButtonClick() }
     }
 
     private fun getPlayBtnDrawable(): Drawable? {
-        return if (_isPlaying) AppCompatResources.getDrawable(context, drawable.ic_pause)
+        return if (isPlaying) AppCompatResources.getDrawable(context, drawable.ic_pause)
         else AppCompatResources.getDrawable(context, drawable.ic_play)
     }
 
-    fun setIsPlaying(isPlaying: Boolean) {
-        _isPlaying = isPlaying
-        playButton.setImageDrawable(getPlayBtnDrawable())
-    }
-
-    fun setProgress(progress: Int) {
-        progressIndicator.progress = progress
-        _progress = progress
-    }
-
-    fun setDuration(duration: Int) {
-        progressIndicator.max = duration
-        _duration = duration
-    }
 }
