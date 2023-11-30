@@ -51,12 +51,9 @@ class PlayerControlView(context: Context, attrs: AttributeSet) : ConstraintLayou
 
     private fun initView() {
         val binding = ViewPlayerControlBinding.inflate(LayoutInflater.from(context), this, true)
-
-        val thumbnailView = binding.ivThumbnail
         playButton = binding.ibPlay
         progressIndicator = binding.lpiPlayerProgress
-
-        thumbnailView.bindImg(thumbnailUrl)
+        binding.ivThumbnail.bindImg(thumbnailUrl)
         binding.tvTitle.text = title
         binding.tvArtist.text = artist
     }
@@ -70,7 +67,6 @@ class PlayerControlView(context: Context, attrs: AttributeSet) : ConstraintLayou
         return if (_isPlaying) AppCompatResources.getDrawable(context, drawable.ic_pause)
         else AppCompatResources.getDrawable(context, drawable.ic_play)
     }
-
 
     fun setIsPlaying(isPlaying: Boolean) {
         _isPlaying = isPlaying
@@ -86,6 +82,4 @@ class PlayerControlView(context: Context, attrs: AttributeSet) : ConstraintLayou
         progressIndicator.max = duration
         _duration = duration
     }
-
-
 }
