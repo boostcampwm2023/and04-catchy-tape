@@ -1,30 +1,46 @@
 package com.ohdodok.catchytape.feature.player
 
 import android.content.Context
+import android.graphics.drawable.Drawable
 import android.util.AttributeSet
-import android.widget.ImageButton
-import android.widget.ImageView
-import android.widget.TextView
+import android.view.LayoutInflater
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.constraintlayout.widget.ConstraintLayout
-import com.google.android.material.progressindicator.LinearProgressIndicator
-import com.ohdodok.catchytape.core.ui.R.*
+import com.ohdodok.catchytape.core.ui.R.drawable
 import com.ohdodok.catchytape.core.ui.bindImg
-import kotlin.properties.Delegates
+import com.ohdodok.catchytape.feature.player.databinding.ViewPlayerControlBinding
 
 class PlayerControlView(context: Context, attrs: AttributeSet) : ConstraintLayout(context, attrs) {
 
+    private val binding: ViewPlayerControlBinding =
+        ViewPlayerControlBinding.inflate(LayoutInflater.from(context), this, true)
     private lateinit var thumbnailUrl: String
     private lateinit var title: String
     private lateinit var artist: String
-    private var isPlaying: Boolean by Delegates.notNull()
-    private var progress: Int by Delegates.notNull()
-    private var duration: Int by Delegates.notNull()
+
+    var isPlaying: Boolean = false
+        set(value) {
+            field = value
+            binding.ibPlay.setImageDrawable(getPlayBtnDrawable())
+        }
+
+    var progress: Int = 0
+        set(value) {
+            field = value
+            binding.lpiPlayerProgress.progress = value
+        }
+
+    var duration: Int = 0
+        set(value) {
+            field = value
+            binding.lpiPlayerProgress.max = value
+        }
 
     init {
         initAttrs(attrs)
         initView()
     }
+
 
     private fun initAttrs(attrs: AttributeSet) {
         context.theme.obtainStyledAttributes(
@@ -34,7 +50,7 @@ class PlayerControlView(context: Context, attrs: AttributeSet) : ConstraintLayou
         ).apply {
             try {
                 thumbnailUrl = getString(R.styleable.PlayerBarView_thumbnailUrl) ?: ""
-                title = getString(R.styleable.PlayerBarView_title) ?: "" // 썸네일
+                title = getString(R.styleable.PlayerBarView_title) ?: ""
                 artist = getString(R.styleable.PlayerBarView_artist) ?: ""
                 isPlaying = getBoolean(R.styleable.PlayerBarView_isPlaying, false)
                 progress = getInt(R.styleable.PlayerBarView_progress, 0)
@@ -46,31 +62,19 @@ class PlayerControlView(context: Context, attrs: AttributeSet) : ConstraintLayou
     }
 
     private fun initView() {
-        inflate(context, R.layout.view_player_control, this)
-
-        val thumbnailView: ImageView = findViewById(R.id.iv_thumbnail)
-        val titleView: TextView = findViewById(R.id.tv_title)
-        val artistView: TextView = findViewById(R.id.tv_artist)
-        val playButton: ImageButton = findViewById(R.id.ib_play)
-        val indicator: LinearProgressIndicator = findViewById(R.id.lpi_player_progress)
-
-        thumbnailView.bindImg(thumbnailUrl)
-
-        titleView.text = title
-        artistView.text = artist
-
-        val buttonDrawable =
-            if (isPlaying) AppCompatResources.getDrawable(context, drawable.ic_pause)
-            else AppCompatResources.getDrawable(context, drawable.ic_play)
-        playButton.setImageDrawable(buttonDrawable)
-
-        indicator.progress = progress
-        indicator.max = duration
+        binding.ivThumbnail.bindImg(thumbnailUrl)
+        binding.tvTitle.text = title
+        binding.tvArtist.text = artist
     }
+
 
     fun setOnPlayButtonClick(onPlayButtonClick: () -> Unit) {
-        val playButton: ImageButton = findViewById(R.id.ib_play)
-
-        playButton.setOnClickListener { onPlayButtonClick() }
+        binding.ibPlay.setOnClickListener { onPlayButtonClick() }
     }
+
+    private fun getPlayBtnDrawable(): Drawable? {
+        return if (isPlaying) AppCompatResources.getDrawable(context, drawable.ic_pause)
+        else AppCompatResources.getDrawable(context, drawable.ic_play)
+    }
+
 }
