@@ -52,7 +52,7 @@ class MainActivity : AppCompatActivity() {
 
         setupPlayer()
         setupPlayButton()
-        setupIndicator()
+        observePlayerState()
     }
 
     private fun checkNetworkState() {
@@ -128,7 +128,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun setupIndicator() {
+    private fun observePlayerState() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 playViewModel.uiState.collect { playerState ->
