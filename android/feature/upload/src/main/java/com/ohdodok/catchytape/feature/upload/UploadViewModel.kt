@@ -52,45 +52,46 @@ class UploadViewModel @Inject constructor(
     val musicTitle = MutableStateFlow("")
     val musicGenre = MutableStateFlow("")
 
-    private val _imageState: MutableStateFlow<UploadedFileState> =
-        MutableStateFlow(UploadedFileState())
+    private val _imageState: MutableStateFlow<UploadedFileState> = MutableStateFlow(UploadedFileState())
     val imageState = _imageState.asStateFlow()
 
-    private val _audioState: MutableStateFlow<UploadedFileState> =
-        MutableStateFlow(UploadedFileState())
+    private val _audioState: MutableStateFlow<UploadedFileState> = MutableStateFlow(UploadedFileState())
     val audioState = _audioState.asStateFlow()
 
     private val _isUploading: MutableStateFlow<Boolean> = MutableStateFlow(false)
     val isUploading = _isUploading.asStateFlow()
 
-    val isLoading: StateFlow<Boolean> = combine(imageState, audioState, isUploading) { imageState, audioState, isUploading ->
-        imageState.isLoading || audioState.isLoading || isUploading
+    val isLoading: StateFlow<Boolean> =
+        combine(imageState, audioState, isUploading) { imageState, audioState, isUploading ->
+            imageState.isLoading || audioState.isLoading || isUploading
+        }.stateIn(
+            scope = viewModelScopeWithExceptionHandler,
+            started = SharingStarted.Eagerly,
+            initialValue = false
+        )
+
+    val isUploadEnable: StateFlow<Boolean> = combine(
+        musicTitle,
+        musicGenre,
+        imageState,
+        audioState,
+        isUploading) { title, genre, imageState, audioState, isUploading ->
+        title.isNotBlank()
+                && genre.isNotBlank()
+                && imageState.url.isNotBlank()
+                && audioState.url.isNotBlank()
+                && !isUploading
     }.stateIn(
         scope = viewModelScopeWithExceptionHandler,
         started = SharingStarted.Eagerly,
         initialValue = false
     )
 
-    private val _isUploadEnable: MutableStateFlow<Boolean> = MutableStateFlow(false)
-    val isUploadEnable = _isUploadEnable.asStateFlow()
-
     private val _musicGenres: MutableStateFlow<List<String>> = MutableStateFlow(emptyList())
     val musicGenres = _musicGenres.asStateFlow()
 
     init {
         fetchGenres()
-        observeInput()
-    }
-
-    private fun observeInput() {
-        combine(musicTitle, musicGenre, imageState, audioState) { title, genre, imageState, audioState ->
-            title.isNotBlank()
-                    && genre.isNotBlank()
-                    && imageState.url.isNotBlank()
-                    && audioState.url.isNotBlank()
-        }.onEach { isEnable ->
-            _isUploadEnable.value = isEnable
-        }.launchIn(viewModelScope)
     }
 
     private fun fetchGenres() {
@@ -127,12 +128,10 @@ class UploadViewModel @Inject constructor(
                 title = musicTitle.value,
                 genre = musicGenre.value
             ).onStart {
-                _isUploadEnable.value = false
                 _isUploading.value = true
             }.onEach {
                 _events.emit(UploadEvent.NavigateToBack)
             }.onCompletion {
-                _isUploadEnable.value = true
                 _isUploading.value = false
             }.launchIn(viewModelScopeWithExceptionHandler)
         }
