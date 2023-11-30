@@ -91,7 +91,6 @@ export class MusicService {
       if (err instanceof CatchyException) {
         throw err;
       }
-      console.log(err);
 
       throw new CatchyException(
         'MUSIC_ENCODE_ERROR',
@@ -213,7 +212,6 @@ export class MusicService {
         throw err;
       }
 
-      console.log(err);
       throw new CatchyException(
         'SERVER ERROR',
         HTTP_STATUS_CODE.SERVER_ERROR,
