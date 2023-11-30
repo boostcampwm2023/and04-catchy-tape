@@ -91,7 +91,6 @@ export class MusicService {
       if (err instanceof CatchyException) {
         throw err;
       }
-      console.log(err);
 
       throw new CatchyException(
         'MUSIC_ENCODE_ERROR',
@@ -152,41 +151,22 @@ export class MusicService {
     musicId: string,
     fileName: string,
   ): Promise<string> {
-    const { url } = await this.uploadService.uploadEncodedFile(
-      file,
-      musicId,
-      fileName,
-    );
-    return url;
-  }
-
-  async uploadEncodedFiles(
-    folderPath: string,
-    musicId: string,
-  ): Promise<string> {
     try {
-      let m3u8Path = '';
-
-      const files = await fs.promises.readdir(folderPath);
-
-      for (const file of files) {
-        const sourceFilePath = path.join(folderPath, file);
-
-        const storagePath = await this.uploadService.uploadEncodedFile(
-          sourceFilePath,
-          musicId,
-          file,
-        );
-
-        if (file.includes('.m3u8')) m3u8Path = storagePath.url;
+      const { url } = await this.uploadService.uploadEncodedFile(
+        file,
+        musicId,
+        fileName,
+      );
+      return url;
+    } catch (err) {
+      if (err instanceof CatchyException) {
+        throw err;
       }
 
-      return m3u8Path;
-    } catch {
       throw new CatchyException(
-        'ENCODED_MUSIC_UPLOAD_ERROR',
+        'SERVICE_ERROR',
         HTTP_STATUS_CODE.SERVER_ERROR,
-        ERROR_CODE.ENCODED_MUSIC_UPLOAD_ERROR,
+        ERROR_CODE.SERVICE_ERROR,
       );
     }
   }
@@ -232,7 +212,6 @@ export class MusicService {
         throw err;
       }
 
-      console.log(err);
       throw new CatchyException(
         'SERVER ERROR',
         HTTP_STATUS_CODE.SERVER_ERROR,

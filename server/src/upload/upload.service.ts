@@ -128,11 +128,12 @@ export class UploadService {
         .promise();
 
       return { url: uploadResult.Location };
-    } catch {
+    } catch(err) {
+      console.log(err);
       throw new CatchyException(
-        'SERVER ERROR',
+        'NCP_UPLOAD_ERROR',
         HTTP_STATUS_CODE.SERVER_ERROR,
-        ERROR_CODE.SERVICE_ERROR,
+        ERROR_CODE.ENCODED_MUSIC_UPLOAD_ERROR,
       );
     }
   }
