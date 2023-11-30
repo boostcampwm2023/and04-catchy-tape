@@ -1,15 +1,19 @@
 package com.ohdodok.catchytape.feature.player
 
+import android.content.ComponentName
 import android.os.Bundle
 import android.view.View
 import android.widget.SeekBar
 import androidx.fragment.app.activityViewModels
 import androidx.media3.common.MediaItem
 import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.session.MediaController
+import androidx.media3.session.SessionToken
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import com.ohdodok.catchytape.core.ui.BaseFragment
 import com.ohdodok.catchytape.feature.player.databinding.FragmentPlayerBinding
+import com.ohdodok.catchytape.feature.player.media_control.PlaybackService
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 import javax.inject.Inject
@@ -22,6 +26,12 @@ class PlayerFragment : BaseFragment<FragmentPlayerBinding>(R.layout.fragment_pla
     @Inject
     lateinit var player: ExoPlayer
     private val viewModel: PlayerViewModel by activityViewModels()
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        val sessionToken = SessionToken(requireContext(), ComponentName(requireContext(), PlaybackService::class.java))
+        MediaController.Builder(requireContext(), sessionToken).buildAsync()
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
