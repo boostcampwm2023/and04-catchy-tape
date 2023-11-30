@@ -1,0 +1,26 @@
+package com.ohdodok.catchytape.core.domain.usecase.player
+
+import com.ohdodok.catchytape.core.domain.model.CurrentPlaylist
+import com.ohdodok.catchytape.core.domain.model.Music
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.launch
+import javax.inject.Inject
+
+class CurrentPlaylistUseCase @Inject constructor() {
+    private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
+    val currentPlaylist = Channel<CurrentPlaylist>()
+
+    fun playMusics(startMusic: Music, musics: List<Music>) {
+        val newPlaylist = CurrentPlaylist(
+            startMusic = startMusic,
+            musics = musics,
+        )
+
+        scope.launch {
+            currentPlaylist.send(newPlaylist)
+        }
+    }
+}
