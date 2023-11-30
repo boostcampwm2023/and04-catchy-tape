@@ -5,35 +5,54 @@ import android.net.NetworkCapabilities.NET_CAPABILITY_VALIDATED
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
+import androidx.media3.exoplayer.ExoPlayer
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.ohdodok.catchytape.databinding.ActivityMainBinding
+import com.ohdodok.catchytape.feature.player.PlayerListener
+import com.ohdodok.catchytape.feature.player.PlayerViewModel
+import com.ohdodok.catchytape.feature.player.millisecondsPerSecond
 import com.ohdodok.catchytape.feature.player.navigateToPlayer
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import javax.inject.Inject
 import com.ohdodok.catchytape.core.ui.R.string as uiString
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
+    @Inject
+    lateinit var player: ExoPlayer
     private lateinit var binding: ActivityMainBinding
     private lateinit var connectivityManager: ConnectivityManager
+    private val playViewModel: PlayerViewModel by viewModels()
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        binding.viewModel = playViewModel
 
         setupBottomNav()
         setUpPlayerController()
-
         connectivityManager = getSystemService(ConnectivityManager::class.java)
         checkNetworkState()
 
         val networkStateObserver = NetworkStateObserver(connectivityManager, ::checkNetworkState)
         lifecycle.addObserver(networkStateObserver)
+
+        setupPlayer()
+        setupPlayButton()
+        setupIndicator()
     }
 
     private fun checkNetworkState() {
@@ -86,5 +105,48 @@ class MainActivity : AppCompatActivity() {
 
     private fun showPlayerController() {
         binding.pcvController.visibility = View.VISIBLE
+    }
+
+
+    private fun setupPlayer() {
+        player.addListener(PlayerListener(playViewModel))
+        player.prepare()
+        setupPlayerTimer()
+    }
+
+    private fun setupPlayerTimer() {
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                while (true) {
+                    delay(1000L)
+                    if (player.isPlaying) {
+                        val positionMs = player.currentPosition.toInt()
+                        playViewModel.updateCurrentPosition(positionMs / millisecondsPerSecond)
+                    }
+                }
+            }
+        }
+    }
+
+    private fun setupIndicator() {
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                playViewModel.uiState.collect { playerState ->
+                    if (binding.pcvController.duration != playerState.duration) {
+                        binding.pcvController.changeIndicatorDuration(playerState.duration)
+                    }
+
+                    binding.pcvController.changePlayBtnDrawable(playerState.isPlaying)
+                    binding.pcvController.changeIndicatorProgress(playViewModel.uiState.value.currentPositionSecond)
+                }
+            }
+        }
+    }
+
+    private fun setupPlayButton() {
+        binding.pcvController.setOnPlayButtonClick {
+            if (playViewModel.uiState.value.isPlaying) player.pause()
+            else player.play()
+        }
     }
 }
