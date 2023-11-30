@@ -39,7 +39,6 @@ class MainActivity : AppCompatActivity() {
     private lateinit var connectivityManager: ConnectivityManager
     private val playViewModel: PlayerViewModel by viewModels()
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -93,7 +92,6 @@ class MainActivity : AppCompatActivity() {
 
                 else -> {
                     showBottomNav()
-                    showPlayerController()
                 }
             }
         }
@@ -117,11 +115,6 @@ class MainActivity : AppCompatActivity() {
         binding.pcvController.visibility = View.GONE
     }
 
-    private fun showPlayerController() {
-        binding.pcvController.visibility = View.VISIBLE
-    }
-
-
     private fun setupPlayer() {
         player.addListener(PlayerListener(playViewModel))
         player.prepare()
@@ -141,7 +134,6 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
-
 
     private fun setupPlayButton() {
         binding.pcvController.setOnPlayButtonClick {
