@@ -27,7 +27,7 @@ export class MusicService {
     this.objectStorage = ncloudConfigService.createObjectStorageOption();
   }
 
-  isValidGenre(genre: string): boolean {
+  private isValidGenre(genre: string): boolean {
     if (Object.values(Genres).includes(genre as Genres)) {
       return true;
     }
@@ -35,7 +35,7 @@ export class MusicService {
     return false;
   }
 
-  separateMusicName(musicPath: string): string {
+  private separateMusicName(musicPath: string): string {
     const parsedPath = new URL(musicPath);
     const pathNames = parsedPath.pathname.split('/');
     const musicName = pathNames[pathNames.length - 1];
@@ -43,11 +43,11 @@ export class MusicService {
     return musicName;
   }
 
-  getPath(option: string): string {
+  private getPath(option: string): string {
     return path.resolve(__dirname, `musics${option}`);
   }
 
-  setEncodingPaths(musicPath: string) {
+  private setEncodingPaths(musicPath: string) {
     const musicName: string = this.separateMusicName(musicPath);
 
     return {
@@ -77,14 +77,9 @@ export class MusicService {
         if (err) throw new Error();
       });
 
-      await this.executeEncoding(
+      const encodedFileURL = await this.executeEncoding(
         tempFilePath,
         outputPath,
-        outputMusicPath,
-        musicId,
-      );
-
-      const encodedFileURL = await this.uploadEncodedFiles(
         outputMusicPath,
         musicId,
       );
@@ -113,6 +108,7 @@ export class MusicService {
     musicId: string,
   ): Promise<string> {
     let m3u8FileName;
+    let m3u8Path: string;
     const watcher = fs.watch(outputMusicPath, (eventType, fileName) => {
       if (fileName.match(/.m3u8$/)) {
         m3u8FileName = fileName;
@@ -124,7 +120,7 @@ export class MusicService {
         );
       }
     });
-    return await new Promise((resolve, reject) => {
+    return await new Promise<string>((resolve, reject) => {
       ffmpeg(tempFilePath)
         .addOption([
           '-map 0:a',
@@ -136,13 +132,13 @@ export class MusicService {
         ])
         .output(outputPath)
         .on('end', async () => {
-          resolve('');
           watcher.close();
-          this.uploadEncodedFile(
+          m3u8Path = await this.uploadEncodedFile(
             outputMusicPath + `/${m3u8FileName}`,
             musicId,
             m3u8FileName,
           );
+          resolve(m3u8Path);
         })
         .on('error', () => {
           reject(new Error());

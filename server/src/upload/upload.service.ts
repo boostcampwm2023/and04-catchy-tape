@@ -46,7 +46,7 @@ export class UploadService {
       const uploadResult = await this.objectStorage
         .upload({
           Bucket: 'catchy-tape-bucket2',
-          Key: `music/${musicId}/${file.originalname}`,
+          Key: `music/${musicId}/music.mp3`,
           Body: Readable.from(file.buffer),
           ContentType: contentTypeHandler.music,
           ACL: 'public-read',
@@ -85,10 +85,12 @@ export class UploadService {
         );
       }
 
+      const encodedFileName = encodeURIComponent(file.originalname);
+
       const keyPath =
         type === 'user'
-          ? `image/user/${id}/${file.originalname}`
-          : `image/cover/${id}/${file.originalname}`;
+          ? `image/user/${id}/image.png`
+          : `image/cover/${id}/image.png`;
 
       const uploadResult = await this.objectStorage
         .upload({
@@ -119,7 +121,7 @@ export class UploadService {
       const uploadResult = await this.objectStorage
         .upload({
           Bucket: 'catchy-tape-bucket2',
-          Key: `music/${musicId}/${fileName}`,
+          Key: `music/${musicId}/${fileName}}`,
           Body: fs.createReadStream(filePath),
           ACL: 'public-read',
         })
