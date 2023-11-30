@@ -34,10 +34,6 @@ class PlayerFragment : BaseFragment<FragmentPlayerBinding>(R.layout.fragment_pla
         collectEvents()
     }
 
-
-
-
-
     private fun setUpSeekBar() {
         binding.sbMusicProgress.setOnSeekBarChangeListener(object :
             SeekBar.OnSeekBarChangeListener {

@@ -1,5 +1,6 @@
 package com.ohdodok.catchytape
 
+import android.content.ComponentName
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities.NET_CAPABILITY_VALIDATED
 import android.os.Bundle
@@ -11,6 +12,8 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.session.MediaController
+import androidx.media3.session.SessionToken
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
@@ -18,6 +21,7 @@ import androidx.navigation.ui.setupWithNavController
 import com.ohdodok.catchytape.databinding.ActivityMainBinding
 import com.ohdodok.catchytape.feature.player.PlayerListener
 import com.ohdodok.catchytape.feature.player.PlayerViewModel
+import com.ohdodok.catchytape.mediacontrol.PlaybackService
 import com.ohdodok.catchytape.feature.player.millisecondsPerSecond
 import com.ohdodok.catchytape.feature.player.navigateToPlayer
 import dagger.hilt.android.AndroidEntryPoint
@@ -53,6 +57,16 @@ class MainActivity : AppCompatActivity() {
 
         setupPlayer()
         setupPlayButton()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        connectToMediaSession()
+    }
+
+    private fun connectToMediaSession() {
+        val sessionToken = SessionToken(this, ComponentName(this, PlaybackService::class.java))
+        MediaController.Builder(this, sessionToken).buildAsync()
     }
 
     private fun checkNetworkState() {
