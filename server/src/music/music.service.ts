@@ -96,6 +96,7 @@ export class MusicService {
       if (err instanceof CatchyException) {
         throw err;
       }
+      console.log(err);
 
       throw new CatchyException(
         'MUSIC_ENCODE_ERROR',
@@ -111,28 +112,56 @@ export class MusicService {
     outputMusicPath: string,
     musicId: string,
   ): Promise<string> {
+    let m3u8FileName;
+    const watcher = fs.watch(outputMusicPath, (eventType, fileName) => {
+      if (fileName.match(/.m3u8$/)) {
+        m3u8FileName = fileName;
+      } else if (!fileName.match(/\.tmp$/)) {
+        this.uploadEncodedFile(
+          outputMusicPath + `/${fileName}`,
+          musicId,
+          fileName,
+        );
+      }
+    });
     return await new Promise((resolve, reject) => {
       ffmpeg(tempFilePath)
         .addOption([
+          '-map 0:a',
           '-c:a aac',
           '-b:a 192k',
-          '-hls_time 10',
+          '-hls_time 30',
           '-hls_list_size 0',
           '-f hls',
         ])
         .output(outputPath)
         .on('end', async () => {
-          const encodedPath = await this.uploadEncodedFiles(
-            outputMusicPath,
+          resolve('');
+          watcher.close();
+          this.uploadEncodedFile(
+            outputMusicPath + `/${m3u8FileName}`,
             musicId,
+            m3u8FileName,
           );
-          resolve(encodedPath);
         })
         .on('error', () => {
           reject(new Error());
         })
         .run();
     });
+  }
+
+  async uploadEncodedFile(
+    file: string,
+    musicId: string,
+    fileName: string,
+  ): Promise<string> {
+    const { url } = await this.uploadService.uploadEncodedFile(
+      file,
+      musicId,
+      fileName,
+    );
+    return url;
   }
 
   async uploadEncodedFiles(
