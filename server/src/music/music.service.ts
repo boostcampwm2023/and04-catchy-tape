@@ -27,7 +27,7 @@ export class MusicService {
     this.objectStorage = ncloudConfigService.createObjectStorageOption();
   }
 
-  isValidGenre(genre: string): boolean {
+  private isValidGenre(genre: string): boolean {
     if (Object.values(Genres).includes(genre as Genres)) {
       return true;
     }
@@ -35,7 +35,7 @@ export class MusicService {
     return false;
   }
 
-  separateMusicName(musicPath: string): string {
+  private separateMusicName(musicPath: string): string {
     const parsedPath = new URL(musicPath);
     const pathNames = parsedPath.pathname.split('/');
     const musicName = pathNames[pathNames.length - 1];
@@ -43,11 +43,11 @@ export class MusicService {
     return musicName;
   }
 
-  getPath(option: string): string {
+  private getPath(option: string): string {
     return path.resolve(__dirname, `musics${option}`);
   }
 
-  setEncodingPaths(musicPath: string) {
+  private setEncodingPaths(musicPath: string) {
     const musicName: string = this.separateMusicName(musicPath);
 
     return {
