@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.core.net.toUri
 import androidx.fragment.app.viewModels
+import androidx.navigation.NavController
 import androidx.navigation.NavDeepLinkRequest
 import androidx.navigation.fragment.findNavController
 import com.ohdodok.catchytape.core.ui.BaseFragment
@@ -22,7 +23,10 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
         super.onViewCreated(view, savedInstanceState)
         binding.viewModel = viewModel
 
-        binding.rvRecentlyAddedSong.adapter = MusicAdapter(musicItemOrientation = Orientation.HORIZONTAL)
+        binding.rvRecentlyAddedSong.adapter = MusicAdapter(
+            musicItemOrientation = Orientation.HORIZONTAL,
+            listener = viewModel,
+        )
         observeEvents()
         viewModel.fetchUploadedMusics()
         setupButtons()
@@ -35,6 +39,10 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
                     is HomeEvent.ShowMessage -> {
                         showMessage(event.error.toMessageId())
                     }
+
+                    is HomeEvent.NavigateToPlayerScreen -> {
+                        findNavController().navigateToPlayerScreen()
+                    }
                 }
             }
         }
@@ -42,17 +50,22 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
 
     private fun setupButtons() {
         binding.ibUpload.setOnClickListener {
-            val request = NavDeepLinkRequest.Builder
-                .fromUri("android-app://com.ohdodok.catchytape/upload_fragment".toUri())
-                .build()
+            val request =
+                NavDeepLinkRequest.Builder.fromUri("android-app://com.ohdodok.catchytape/upload_fragment".toUri())
+                    .build()
             findNavController().navigate(request)
         }
 
         binding.ivRecentlyPlayedSong.setOnClickListener {
-            val request = NavDeepLinkRequest.Builder
-                .fromUri("android-app://com.ohdodok.catchytape/player_fragment".toUri())
-                .build()
-            findNavController().navigate(request)
+            findNavController().navigateToPlayerScreen()
         }
     }
+}
+
+private fun NavController.navigateToPlayerScreen() {
+    val request =
+        NavDeepLinkRequest.Builder.fromUri("android-app://com.ohdodok.catchytape/player_fragment".toUri())
+            .build()
+
+    this.navigate(request)
 }
