@@ -1,19 +1,15 @@
 package com.ohdodok.catchytape.feature.player
 
-import android.content.ComponentName
 import android.os.Bundle
 import android.view.View
 import android.widget.SeekBar
 import androidx.fragment.app.activityViewModels
 import androidx.media3.common.MediaItem
 import androidx.media3.exoplayer.ExoPlayer
-import androidx.media3.session.MediaController
-import androidx.media3.session.SessionToken
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import com.ohdodok.catchytape.core.ui.BaseFragment
 import com.ohdodok.catchytape.feature.player.databinding.FragmentPlayerBinding
-import com.ohdodok.catchytape.feature.player.mediacontrol.PlaybackService
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 import javax.inject.Inject
@@ -36,16 +32,6 @@ class PlayerFragment : BaseFragment<FragmentPlayerBinding>(R.layout.fragment_pla
         setMedia("https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8")
         setupButtons()
         collectEvents()
-    }
-
-    override fun onStart() {
-        super.onStart()
-        connectToMediaSession()
-    }
-
-    private fun connectToMediaSession() {
-        val sessionToken = SessionToken(requireContext(), ComponentName(requireContext(), PlaybackService::class.java))
-        MediaController.Builder(requireContext(), sessionToken).buildAsync()
     }
 
     private fun setUpSeekBar() {

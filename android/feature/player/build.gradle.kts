@@ -26,6 +26,5 @@ android {
 }
 
 dependencies {
-    implementation(libs.bundles.exoplayer)
-    implementation(libs.media3.session)
+    api(libs.bundles.exoplayer)
 }
