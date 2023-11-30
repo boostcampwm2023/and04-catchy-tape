@@ -65,9 +65,6 @@ export class MusicService {
       const { outputMusicPath, entireMusicPath, outputPath, tempFilePath } =
         this.setEncodingPaths(musicPath);
 
-      console.log(tempFilePath);
-      console.log(musicPath);
-
       fs.mkdirSync(outputMusicPath, { recursive: true });
 
       const musicFileResponse = await axios.get(musicPath, {
