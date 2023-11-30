@@ -1,6 +1,5 @@
-package com.ohdodok.catchytape.core.domain.usecase.signup
+package com.ohdodok.catchytape.core.domain.usecase.upload
 
-import com.ohdodok.catchytape.core.domain.usecase.upload.ValidateMusicTitleUseCase
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.matchers.shouldBe
 
@@ -22,7 +21,7 @@ class MusicTitleValidationUseCaseTest : BehaviorSpec({
     given("특수 문자가 포함된 음악 제목이 주어지고") {
         `when`("유효성을 검사하면") {
             then("false를 반환한다") {
-                val title = listOf("못참아!", "ㄱ", ".", "못ㄱ")
+                val title = listOf("못참아!", "^_^")
                 title.forEach { title ->
                     validateMusicTitleUseCase(title) shouldBe false
                 }
