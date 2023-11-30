@@ -6,12 +6,14 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class CurrentPlaylistUseCase @Inject constructor() {
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
-    val currentPlaylist = Channel<CurrentPlaylist>()
+    private val _currentPlaylist = Channel<CurrentPlaylist>()
+    val currentPlaylist: ReceiveChannel<CurrentPlaylist> = _currentPlaylist
 
     fun playMusics(startMusic: Music, musics: List<Music>) {
         val newPlaylist = CurrentPlaylist(
@@ -20,7 +22,7 @@ class CurrentPlaylistUseCase @Inject constructor() {
         )
 
         scope.launch {
-            currentPlaylist.send(newPlaylist)
+            _currentPlaylist.send(newPlaylist)
         }
     }
 }
