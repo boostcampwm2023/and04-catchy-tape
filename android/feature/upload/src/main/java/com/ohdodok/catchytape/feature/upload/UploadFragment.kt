@@ -54,6 +54,7 @@ class UploadFragment : BaseFragment<FragmentUploadBinding>(R.layout.fragment_upl
                     is UploadEvent.NavigateToBack -> {
                         findNavController().popBackStack()
                     }
+
                     is UploadEvent.ShowMessage -> {
                         showMessage(event.error.toMessageId())
                     }
@@ -104,7 +105,7 @@ class UploadFragment : BaseFragment<FragmentUploadBinding>(R.layout.fragment_upl
 }
 
 @BindingAdapter("musicTitleIsValid")
-fun TextInputLayout.bindMusicTitleValidation(state: Boolean) {
-    if(state) { this.error = null }
-    else this.error = resources.getString(R.string.invalid_music_title)
+fun TextInputLayout.bindMusicTitleValidation(state: MusicTitleState) {
+    error = if (state.isValid || state.title.isEmpty()) null
+    else resources.getString(R.string.invalid_music_title)
 }

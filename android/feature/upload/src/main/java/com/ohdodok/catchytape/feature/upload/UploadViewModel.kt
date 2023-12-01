@@ -26,19 +26,18 @@ import java.io.File
 import javax.inject.Inject
 
 data class UploadUiState(
-    val musicTitle: String = "",
+    val musicTitleState: MusicTitleState = MusicTitleState(),
     val musicGenre: String = "",
     val imageState: UploadedFileState = UploadedFileState(),
     val audioState: UploadedFileState = UploadedFileState(),
     val encoding: Boolean = false,
     val musicGenres: List<String> = emptyList(),
-    val musicTitleIsValid: Boolean = true
 ) {
     val isLoading: Boolean
         get() = imageState.isLoading || audioState.isLoading || encoding
 
     val isUploadEnable: Boolean
-        get() = musicTitle.isNotBlank()
+        get() = musicTitleState.title.isNotBlank() && musicTitleState.isValid
                 && musicGenre.isNotBlank()
                 && imageState.url.isNotBlank()
                 && audioState.url.isNotBlank()
@@ -48,6 +47,11 @@ data class UploadUiState(
 data class UploadedFileState(
     val isLoading: Boolean = false,
     val url: String = ""
+)
+
+data class MusicTitleState(
+    val title: String = "",
+    val isValid: Boolean = true
 )
 
 sealed interface UploadEvent {
@@ -93,9 +97,13 @@ class UploadViewModel @Inject constructor(
     }
 
     fun updateMusicTitle(title: CharSequence) {
-        _uiState.update { it.copy(
-            musicTitle = title.toString(),
-            musicTitleIsValid = validateMusicTitleUseCase(title.toString()))
+        _uiState.update {
+            it.copy(
+                musicTitleState = it.musicTitleState.copy(
+                    title = title.toString(),
+                    isValid = validateMusicTitleUseCase(title.toString())
+                )
+            )
         }
     }
 
@@ -129,7 +137,7 @@ class UploadViewModel @Inject constructor(
         uploadMusicUseCase(
             imageUrl = uiState.value.imageState.url,
             audioUrl = uiState.value.audioState.url,
-            title = uiState.value.musicTitle,
+            title = uiState.value.musicTitleState.title,
             genre = uiState.value.musicGenre
         ).onStart {
             _uiState.update { it.copy(encoding = true) }
