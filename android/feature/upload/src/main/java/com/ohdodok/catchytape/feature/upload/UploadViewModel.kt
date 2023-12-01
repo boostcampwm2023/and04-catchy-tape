@@ -1,113 +1,47 @@
 package com.ohdodok.catchytape.feature.upload
 
 import androidx.lifecycle.ViewModel
-import dagger.hilt.android.lifecycle.HiltViewModel
-import java.io.File
-import javax.inject.Inject
 import androidx.lifecycle.viewModelScope
-import com.ohdodok.catchytape.core.domain.usecase.UploadFileUseCase
-import com.ohdodok.catchytape.core.domain.usecase.GetMusicGenresUseCase
-import com.ohdodok.catchytape.core.domain.usecase.UploadMusicUseCase
+import com.ohdodok.catchytape.core.domain.model.CtErrorType
+import com.ohdodok.catchytape.core.domain.model.CtException
+import com.ohdodok.catchytape.core.domain.repository.MusicRepository
+import com.ohdodok.catchytape.core.domain.usecase.upload.UploadFileUseCase
+import com.ohdodok.catchytape.core.domain.usecase.upload.UploadMusicUseCase
+import com.ohdodok.catchytape.core.domain.usecase.upload.ValidateMusicTitleUseCase
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onStart
-import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.plus
+import java.io.File
+import javax.inject.Inject
 
-@HiltViewModel
-class UploadViewModel @Inject constructor(
-    private val getMusicGenresUseCase: GetMusicGenresUseCase,
-    private val uploadFileUseCase: UploadFileUseCase,
-    private val uploadMusicUseCase: UploadMusicUseCase
-) : ViewModel() {
+data class UploadUiState(
+    val musicTitleState: MusicTitleState = MusicTitleState(),
+    val musicGenre: String = "",
+    val imageState: UploadedFileState = UploadedFileState(),
+    val audioState: UploadedFileState = UploadedFileState(),
+    val encoding: Boolean = false,
+    val musicGenres: List<String> = emptyList(),
+) {
+    val isLoading: Boolean
+        get() = imageState.isLoading || audioState.isLoading || encoding
 
-    private val _events = MutableSharedFlow<UploadEvent>()
-    val events = _events.asSharedFlow()
-
-    val musicTitle = MutableStateFlow("")
-    val musicGenre = MutableStateFlow("")
-
-    private val _imageState: MutableStateFlow<UploadedFileState> =
-        MutableStateFlow(UploadedFileState())
-    val imageState = _imageState.asStateFlow()
-
-    private val _audioState: MutableStateFlow<UploadedFileState> =
-        MutableStateFlow(UploadedFileState())
-    val audioState = _audioState.asStateFlow()
-
-    val isLoading: StateFlow<Boolean> = combine(imageState, audioState) { imageState, audioState ->
-        imageState.isLoading || audioState.isLoading
-    }.stateIn(
-        scope = viewModelScope,
-        started = SharingStarted.Eagerly,
-        initialValue = false
-    )
-
-    val isUploadEnable: StateFlow<Boolean> =
-        combine(
-            musicTitle, musicGenre, imageState, audioState
-        ) { title, genre, imageState, audioState ->
-            title.isNotBlank()
-                    && genre.isNotBlank()
-                    && imageState.url.isNotBlank()
-                    && audioState.url.isNotBlank()
-        }.stateIn(viewModelScope, SharingStarted.Eagerly, false)
-
-    private val _musicGenres: MutableStateFlow<List<String>> = MutableStateFlow(emptyList())
-    val musicGenres = _musicGenres.asStateFlow()
-
-    init {
-        fetchGenres()
-    }
-
-    private fun fetchGenres() {
-        getMusicGenresUseCase().onEach {
-            _musicGenres.value = it
-        }.launchIn(viewModelScope)
-    }
-
-    fun uploadImage(imageFile: File) {
-        uploadFileUseCase.getImgUrl(imageFile).onStart {
-            _imageState.value = imageState.value.copy(isLoading = true)
-        }.onEach { url ->
-            _imageState.value = imageState.value.copy(url = url)
-        }.onCompletion {
-            _imageState.value = imageState.value.copy(isLoading = false)
-        }.launchIn(viewModelScope)
-    }
-
-    fun uploadAudio(audioFile: File) {
-        uploadFileUseCase.getAudioUrl(audioFile).onStart {
-            _audioState.value = audioState.value.copy(isLoading = true)
-        }.onEach { url ->
-            _audioState.value = audioState.value.copy(url = url)
-        }.onCompletion {
-            _audioState.value = audioState.value.copy(isLoading = false)
-        }.launchIn(viewModelScope)
-    }
-
-    fun uploadMusic() {
-        if (isUploadEnable.value) {
-            uploadMusicUseCase(
-                imageUrl = imageState.value.url,
-                audioUrl = audioState.value.url,
-                title = musicTitle.value,
-                genre = musicGenre.value
-            ).onEach {
-                _events.emit(UploadEvent.NavigateToBack)
-            }.catch {
-                // TODO : 업로드 실패
-            }.launchIn(viewModelScope)
-        }
-    }
+    val isUploadEnable: Boolean
+        get() = musicTitleState.title.isNotBlank() && musicTitleState.isValid
+                && musicGenre.isNotBlank()
+                && imageState.url.isNotBlank()
+                && audioState.url.isNotBlank()
+                && !encoding
 }
 
 data class UploadedFileState(
@@ -115,7 +49,103 @@ data class UploadedFileState(
     val url: String = ""
 )
 
+data class MusicTitleState(
+    val title: String = "",
+    val isValid: Boolean = true
+)
+
 sealed interface UploadEvent {
     data object NavigateToBack : UploadEvent
+    data class ShowMessage(val error: CtErrorType) : UploadEvent
+}
+
+
+@HiltViewModel
+class UploadViewModel @Inject constructor(
+    private val musicRepository: MusicRepository,
+    private val uploadFileUseCase: UploadFileUseCase,
+    private val uploadMusicUseCase: UploadMusicUseCase,
+    private val validateMusicTitleUseCase: ValidateMusicTitleUseCase
+) : ViewModel() {
+
+    private val _events = MutableSharedFlow<UploadEvent>()
+    val events = _events.asSharedFlow()
+
+    private val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
+        viewModelScope.launch {
+            if (throwable is CtException) {
+                _events.emit(UploadEvent.ShowMessage(throwable.ctError))
+            } else {
+                _events.emit(UploadEvent.ShowMessage(CtErrorType.UN_KNOWN))
+            }
+        }
+    }
+
+    private val viewModelScopeWithExceptionHandler = viewModelScope + exceptionHandler
+
+    private val _uiState: MutableStateFlow<UploadUiState> = MutableStateFlow(UploadUiState())
+    val uiState: StateFlow<UploadUiState> = _uiState.asStateFlow()
+
+    init {
+        fetchGenres()
+    }
+
+    private fun fetchGenres() {
+        musicRepository.getGenres().onEach { genres ->
+            _uiState.update { it.copy(musicGenres = genres) }
+        }.launchIn(viewModelScope)
+    }
+
+    fun updateMusicTitle(title: CharSequence) {
+        _uiState.update {
+            it.copy(
+                musicTitleState = it.musicTitleState.copy(
+                    title = title.toString(),
+                    isValid = validateMusicTitleUseCase(title.toString())
+                )
+            )
+        }
+    }
+
+    fun updateMusicGenre(genre: CharSequence) {
+        _uiState.update { it.copy(musicGenre = genre.toString()) }
+    }
+
+    fun uploadImage(imageFile: File) {
+        uploadFileUseCase.uploadMusicCover(imageFile).onStart {
+            _uiState.update { it.copy(imageState = it.imageState.copy(isLoading = true)) }
+        }.onEach { url ->
+            _uiState.update { it.copy(imageState = it.imageState.copy(url = url)) }
+        }.onCompletion {
+            _uiState.update { it.copy(imageState = it.imageState.copy(isLoading = false)) }
+        }.launchIn(viewModelScopeWithExceptionHandler)
+    }
+
+    fun uploadAudio(audioFile: File) {
+        uploadFileUseCase.uploadAudio(audioFile).onStart {
+            _uiState.update { it.copy(audioState = it.audioState.copy(isLoading = true)) }
+        }.onEach { url ->
+            _uiState.update { it.copy(audioState = it.audioState.copy(url = url)) }
+        }.onCompletion {
+            _uiState.update { it.copy(audioState = it.audioState.copy(isLoading = false)) }
+        }.launchIn(viewModelScopeWithExceptionHandler)
+    }
+
+    fun uploadMusic() {
+        if (!uiState.value.isUploadEnable) return
+
+        uploadMusicUseCase(
+            imageUrl = uiState.value.imageState.url,
+            audioUrl = uiState.value.audioState.url,
+            title = uiState.value.musicTitleState.title,
+            genre = uiState.value.musicGenre
+        ).onStart {
+            _uiState.update { it.copy(encoding = true) }
+        }.onEach {
+            _events.emit(UploadEvent.NavigateToBack)
+        }.onCompletion {
+            _uiState.update { it.copy(encoding = false) }
+        }.launchIn(viewModelScopeWithExceptionHandler)
+    }
 }
 

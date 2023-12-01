@@ -16,12 +16,12 @@ interface UserApi {
     @POST("users/login")
     suspend fun login(
         @Body loginRequest: LoginRequest
-    ): Response<LoginResponse>
+    ): LoginResponse
 
     @POST("users/signup")
     suspend fun signUp(
         @Body signUpRequest: SignUpRequest
-    ): Response<LoginResponse>
+    ): LoginResponse
 
     @GET("users/duplicate/{nickname}")
     suspend fun verifyDuplicatedNickname(

@@ -1,5 +1,5 @@
-import java.util.Properties
 import java.io.FileInputStream
+import java.util.Properties
 
 @Suppress("DSL_SCOPE_VIOLATION") // TODO: Remove once KTIJ-19369 is fixed
 plugins {
@@ -14,14 +14,14 @@ keystoreProperties.load(FileInputStream(keystorePropertiesFile))
 
 android {
     namespace = "com.ohdodok.catchytape"
-    compileSdk = 33
+    compileSdk = 34
 
     defaultConfig {
         applicationId = "com.ohdodok.catchytape"
         minSdk = 26
         targetSdk = 33
-        versionCode = 1
-        versionName = "0.1.0"
+        versionCode = 2
+        versionName = "0.2.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -64,6 +64,8 @@ dependencies {
     implementation(project(":feature:login"))
     implementation(project(":feature:upload"))
     implementation(project(":feature:player"))
+    implementation(project(":feature:playlist"))
+    implementation(project(":feature:mypage"))
     implementation(project(":core:data"))
 
     implementation(libs.core.ktx)
@@ -75,4 +77,6 @@ dependencies {
     implementation(libs.timber)
 
     testImplementation(libs.junit)
+
+    implementation(libs.media3.session)
 }

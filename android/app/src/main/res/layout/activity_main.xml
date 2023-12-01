@@ -3,6 +3,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <data>
+
+        <variable
+            name="viewModel"
+            type="com.ohdodok.catchytape.feature.player.PlayerViewModel" />
+    </data>
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -14,11 +21,26 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             app:defaultNavHost="true"
-            app:layout_constraintBottom_toTopOf="@id/bottom_nav"
+            app:layout_constraintBottom_toTopOf="@id/pcv_controller"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:navGraph="@navigation/catchytape_navigation" />
+
+        <com.ohdodok.catchytape.feature.player.PlayerControlView
+            android:id="@+id/pcv_controller"
+            android:layout_width="0dp"
+            android:layout_height="65dp"
+            app:artist="@string/artist"
+            app:duration="@{viewModel.uiState.duration}"
+            app:playing="@{viewModel.uiState.isPlaying}"
+            app:layout_constraintBottom_toTopOf="@id/bottom_nav"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:progress="@{viewModel.uiState.currentPositionSecond}"
+            app:thumbnailUrl="https://picsum.photos/200"
+            app:title="@string/title" />
+
 
         <com.google.android.material.bottomnavigation.BottomNavigationView
             android:id="@+id/bottom_nav"

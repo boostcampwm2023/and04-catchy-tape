@@ -16,7 +16,8 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:paddingBottom="32dp">
 
             <com.google.android.material.appbar.MaterialToolbar
                 android:id="@+id/tb_home"
@@ -62,6 +63,19 @@
                 app:layout_constraintTop_toBottomOf="@id/tv_recently_played_song"
                 tools:background="@color/on_surface" />
 
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_recently_added_song"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/small"
+                android:orientation="horizontal"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                app:layout_constraintEnd_toEndOf="@id/tv_recently_added_song"
+                app:layout_constraintStart_toStartOf="@id/tv_recently_added_song"
+                app:layout_constraintTop_toBottomOf="@id/tv_recently_added_song"
+                app:list="@{viewModel.uiState.recentlyUploadedMusics}"
+                tools:listitem="@layout/item_music_horizontal" />
+
             <TextView
                 android:id="@+id/tv_recently_added_song"
                 style="@style/TitleMedium"
@@ -74,20 +88,6 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/iv_recently_played_song" />
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rv_recently_added_song"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/small"
-                android:layout_marginBottom="@dimen/medium"
-                android:orientation="horizontal"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="@id/tv_recently_added_song"
-                app:layout_constraintStart_toStartOf="@id/tv_recently_added_song"
-                app:layout_constraintTop_toBottomOf="@id/tv_recently_added_song"
-                app:submitList="@{viewModel.uiState.recentlyUploadedMusics}"
-                tools:listitem="@layout/item_music_horizontal" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -7,6 +7,7 @@ import {
   PrimaryGeneratedColumn,
   ManyToOne,
   OneToMany,
+  PrimaryColumn,
 } from 'typeorm';
 import { User } from './user.entity';
 import { Genres } from 'src/constants';
@@ -14,8 +15,8 @@ import { Music_Playlist } from './music_playlist.entity';
 
 @Entity({ name: 'music' })
 export class Music extends BaseEntity {
-  @PrimaryGeneratedColumn()
-  musicId: number;
+  @PrimaryColumn()
+  music_id: string;
 
   @Column()
   title: string;
@@ -27,7 +28,7 @@ export class Music extends BaseEntity {
   cover: string;
 
   @Column()
-  musicFile: string;
+  music_file: string;
 
   @Column()
   genre: Genres;
@@ -54,11 +55,11 @@ export class Music extends BaseEntity {
         user: { user_id: userId },
       },
       select: {
-        musicId: true,
+        music_id: true,
         title: true,
         lyrics: true,
         cover: true,
-        musicFile: true,
+        music_file: true,
         genre: true,
         created_at: true,
         user: { user_id: true, nickname: true },
@@ -76,11 +77,11 @@ export class Music extends BaseEntity {
         user: true,
       },
       select: {
-        musicId: true,
+        music_id: true,
         title: true,
         lyrics: true,
         cover: true,
-        musicFile: true,
+        music_file: true,
         genre: true,
         created_at: true,
         user: {
@@ -92,6 +93,14 @@ export class Music extends BaseEntity {
         created_at: 'DESC',
       },
       take: 10,
+    });
+  }
+
+  static async getMusicById(music_id: string): Promise<Music> {
+    return this.findOne({
+      relations: { user: true },
+      select: { user: { user_id: true, nickname: true } },
+      where: { music_id },
     });
   }
 }

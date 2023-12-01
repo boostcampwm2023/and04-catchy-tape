@@ -6,4 +6,15 @@
         android:icon="@drawable/home_tab_selector"
         android:title="@string/home" />
 
+    <item
+        android:id="@id/playlist_nav_graph"
+        android:icon="@drawable/playlist_tab_selector"
+        android:title="@string/playlist" />
+
+
+    <item
+        android:id="@id/my_page_nav_graph"
+        android:icon="@drawable/my_page_tab_selector"
+        android:title="@string/my" />
+
 </menu>

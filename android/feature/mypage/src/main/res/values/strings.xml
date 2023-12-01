@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="share_music">노래를 공유해 보세요.</string>
+    <string name="my_musics">내가 업로드한 노래</string>
+</resources>

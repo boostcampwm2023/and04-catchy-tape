@@ -27,14 +27,14 @@ export class Music_Playlist extends BaseEntity {
         music: { user: true },
       },
       where: {
-        playlist: { playlist_Id: playlistId },
+        playlist: { playlist_id: playlistId },
       },
       select: {
         music: {
-          musicId: true,
+          music_id: true,
           title: true,
           cover: true,
-          musicFile: true,
+          music_file: true,
           genre: true,
           user: { user_id: true, nickname: true },
         },
@@ -64,9 +64,9 @@ export class Music_Playlist extends BaseEntity {
       select: {
         music_playlist_id: false,
         music: {
-          musicId: true,
+          music_id: true,
           title: true,
-          musicFile: true,
+          music_file: true,
           cover: true,
           genre: true,
         },
@@ -76,5 +76,20 @@ export class Music_Playlist extends BaseEntity {
       },
       take: 10,
     }).then((a: Music_Playlist[]) => a.map((b) => b.music));
+  }
+
+  static async getMusicCountByPlaylistId(playlist_id: number): Promise<number> {
+    return this.count({ where: { playlist: { playlist_id } } });
+  }
+
+  static async getThumbnailByPlaylistId(
+    playlist_id: number,
+  ): Promise<Music_Playlist> {
+    return this.findOne({
+      relations: { music: true },
+      select: { music: { cover: true } },
+      where: { playlist: { playlist_id } },
+      order: { music_playlist_id: 'DESC' },
+    });
   }
 }

@@ -19,7 +19,7 @@ internal class AndroidLibraryPlugin : Plugin<Project> {
         }
 
         extensions.configure<LibraryExtension> {
-            compileSdk = 33
+            compileSdk = 34
             defaultConfig.minSdk = 26
             compileOptions {
                 sourceCompatibility = JavaVersion.VERSION_17

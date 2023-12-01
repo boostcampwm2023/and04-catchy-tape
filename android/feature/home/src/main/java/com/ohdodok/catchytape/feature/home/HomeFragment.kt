@@ -9,6 +9,7 @@ import androidx.navigation.fragment.findNavController
 import com.ohdodok.catchytape.core.ui.BaseFragment
 import com.ohdodok.catchytape.core.ui.MusicAdapter
 import com.ohdodok.catchytape.core.ui.Orientation
+import com.ohdodok.catchytape.core.ui.toMessageId
 import com.ohdodok.catchytape.feature.home.databinding.FragmentHomeBinding
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -20,9 +21,10 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.viewModel = viewModel
-        binding.rvRecentlyAddedSong.adapter = MusicAdapter(musicItemOrientation = Orientation.Horizontal)
-
+        binding.rvRecentlyAddedSong.adapter = MusicAdapter(musicItemOrientation = Orientation.HORIZONTAL)
+        observeEvents()
         viewModel.fetchUploadedMusics()
+
         binding.ibUpload.setOnClickListener {
             val request = NavDeepLinkRequest.Builder
                 .fromUri("android-app://com.ohdodok.catchytape/upload_fragment".toUri())
@@ -34,8 +36,19 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
             val request = NavDeepLinkRequest.Builder
                 .fromUri("android-app://com.ohdodok.catchytape/player_fragment".toUri())
                 .build()
-
             findNavController().navigate(request)
+        }
+    }
+
+    private fun observeEvents() {
+        repeatOnStarted {
+            viewModel.events.collect { event ->
+                when (event) {
+                    is HomeEvent.ShowMessage -> {
+                        showMessage(event.error.toMessageId())
+                    }
+                }
+            }
         }
     }
 }

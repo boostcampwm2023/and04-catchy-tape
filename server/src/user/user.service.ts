@@ -27,11 +27,59 @@ export class UserService {
 
       return false;
     } catch {
-      throw new CatchyException('SERVER ERROR', HTTP_STATUS_CODE.SERVER_ERROR, ERROR_CODE.SERVICE_ERROR);
+      throw new CatchyException(
+        'SERVER ERROR',
+        HTTP_STATUS_CODE.SERVER_ERROR,
+        ERROR_CODE.SERVICE_ERROR,
+      );
     }
   }
 
   async getRecentPlayedMusicByUserId(userId: string): Promise<Music[]> {
     return await this.playlistService.getRecentMusicsByUserId(userId);
+  }
+
+  async updateUserImage(user_id: string, image_url: string): Promise<string> {
+    try {
+      const targetUser: User = await this.userRepository.findOne({
+        where: { user_id },
+      });
+
+      if (!targetUser) {
+        throw new CatchyException(
+          'NOT_EXIST_USER',
+          HTTP_STATUS_CODE.BAD_REQUEST,
+          ERROR_CODE.NOT_EXIST_USER,
+        );
+      }
+
+      targetUser.photo = image_url;
+      const savedUser: User = await this.userRepository.save(targetUser);
+      return savedUser.user_id;
+    } catch (err) {
+      if (err instanceof CatchyException) {
+        throw err;
+      }
+
+      throw new CatchyException(
+        'SERVER_ERROR',
+        HTTP_STATUS_CODE.SERVER_ERROR,
+        ERROR_CODE.SERVICE_ERROR,
+      );
+    }
+  }
+
+  async getUserInformation(user_id: string): Promise<User> {
+    try {
+      return await this.userRepository.findOne({
+        where: { user_id },
+      });
+    } catch {
+      throw new CatchyException(
+        'SERVER_ERROR',
+        HTTP_STATUS_CODE.SERVER_ERROR,
+        ERROR_CODE.SERVICE_ERROR,
+      );
+    }
   }
 }

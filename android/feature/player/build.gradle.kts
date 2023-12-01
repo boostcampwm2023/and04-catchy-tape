@@ -26,5 +26,5 @@ android {
 }
 
 dependencies {
-
+    api(libs.bundles.exoplayer)
 }

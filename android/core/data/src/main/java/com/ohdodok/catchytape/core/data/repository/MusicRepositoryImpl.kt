@@ -1,9 +1,9 @@
 package com.ohdodok.catchytape.core.data.repository
 
 import com.ohdodok.catchytape.core.data.api.MusicApi
-import com.ohdodok.catchytape.core.data.model.MusicResponse
-import com.ohdodok.catchytape.core.domain.model.Music
 import com.ohdodok.catchytape.core.data.model.MusicRequest
+import com.ohdodok.catchytape.core.data.model.toDomains
+import com.ohdodok.catchytape.core.domain.model.Music
 import com.ohdodok.catchytape.core.domain.repository.MusicRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -14,24 +14,17 @@ class MusicRepositoryImpl @Inject constructor(
 ) : MusicRepository {
 
     override fun getGenres(): Flow<List<String>> = flow {
-        val response = musicApi.getGenres()
-        when (response.code()) {
-            // TODO : 네트워크 에러 로직 처리
-            in 200..299 -> emit(response.body()?.genres ?: emptyList())
-            else -> throw RuntimeException("네트워크 에러")
-        }
+        val musicGenresResponse = musicApi.getGenres()
+        emit(musicGenresResponse.genres)
     }
 
     override fun getRecentUploadedMusic(): Flow<List<Music>> = flow {
-        val response = musicApi.getRecentUploads()
-        when (response.code()) {
-            // TODO : 네트워크 에러 로직 처리
-            in 200..299 -> emit(response.body()?.map { it.toDomain() } ?: emptyList())
-            else -> throw RuntimeException("네트워크 에러")
-        }
+        val musicResponses = musicApi.getRecentUploads()
+        emit(musicResponses.toDomains())
     }
-    
+
     override fun postMusic(
+        musicId: String,
         title: String,
         imageUrl: String,
         audioUrl: String,
@@ -39,26 +32,19 @@ class MusicRepositoryImpl @Inject constructor(
     ): Flow<Unit> = flow {
         val response = musicApi.postMusic(
             MusicRequest(
+                musicId = musicId,
                 title = title,
                 cover = imageUrl,
                 file = audioUrl,
                 genre = genre
             )
         )
-        when (response.code()) {
-            // TODO : 네트워크 에러 로직 처리
-            in 200..299 -> emit(response.body() ?: Unit)
-            else -> throw RuntimeException("네트워크 에러")
-        }
+
+        emit(response)
+    }
+
+    override fun getMyMusics(): Flow<List<Music>> = flow {
+        val myMusics = musicApi.getMyUploads()
+        emit(myMusics.toDomains())
     }
 }
-    
-fun MusicResponse.toDomain(): Music {
-    return Music(
-        id = musicId,
-        title = title,
-        artist = user.nickname,
-        imageUrl = cover
-    )
-}
-

@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="viewModel"
+            type="com.ohdodok.catchytape.feature.mypage.MyPageViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/tb_my_page"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/appbar_height"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:title="@string/my_page">
+
+        </com.google.android.material.appbar.MaterialToolbar>
+
+        <TextView
+            android:id="@+id/tv_upload"
+            style="@style/BodyLarge"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/margin_horizontal"
+            android:text="@string/share_music"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tb_my_page" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btn_upload"
+            style="@style/BodyLarge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/margin_horizontal"
+            android:background="@android:color/transparent"
+            android:minWidth="0dp"
+            android:minHeight="0dp"
+            android:text="@string/upload"
+            android:textColor="@color/primary"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/tv_upload" />
+
+        <TextView
+            android:id="@+id/tv_my_music"
+            style="@style/BodyLarge"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/margin_horizontal"
+            android:layout_marginTop="@dimen/extra_large"
+            android:text="@string/my_musics"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_upload" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btn_more"
+            style="@style/BodySmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/margin_horizontal"
+            android:background="@android:color/transparent"
+            android:minWidth="0dp"
+            android:minHeight="0dp"
+            android:text="@string/more"
+            app:layout_constraintBottom_toBottomOf="@id/tv_my_music"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/tv_my_music" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_musics"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginTop="@dimen/large"
+            android:paddingHorizontal="@dimen/margin_horizontal"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_my_music"
+            app:list="@{viewModel.uiState.myMusics}"
+            tools:itemCount="3"
+            tools:listitem="@layout/item_music_vertical" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

@@ -19,7 +19,8 @@ import { Music } from 'src/entity/music.entity';
 
 @Controller('musics')
 export class MusicController {
-  constructor(private musicService: MusicService) {}
+  private objectStorage: AWS.S3;
+  constructor(private readonly musicService: MusicService) {}
 
   @Post()
   @UsePipes(ValidationPipe)
@@ -28,13 +29,13 @@ export class MusicController {
   async upload(
     @Body() musicCreateDto: MusicCreateDto,
     @Req() req,
-  ): Promise<{ musicId: number }> {
+  ): Promise<{ music_id: string }> {
     const userId = req.user.user_id;
-    const savedMusicId: number = await this.musicService.createMusic(
+    const savedMusicId: string = await this.musicService.createMusic(
       musicCreateDto,
       userId,
     );
-    return { musicId: savedMusicId };
+    return { music_id: savedMusicId };
   }
 
   @Get('recent-uploads')
@@ -62,5 +63,22 @@ export class MusicController {
   ): Promise<Music[]> {
     const userId: string = req.user.user_id;
     return this.musicService.getMyUploads(userId, count);
+  }
+
+  @Get('info')
+  @HttpCode(HTTP_STATUS_CODE.SUCCESS)
+  async getMusicInfo(@Query('music_id') music_id: string): Promise<Music> {
+    return this.musicService.getMusicInfo(music_id);
+  }
+
+  @Get('ts')
+  @HttpCode(HTTP_STATUS_CODE.SUCCESS)
+  async getEncodedChunkFiles(
+    @Query('music_id') music_id: string,
+    @Query('fileName') fileName: string,
+  ): Promise<{ file: AWS.S3.Body }> {
+    return {
+      file: await this.musicService.getEncodedChunkFiles(music_id, fileName),
+    };
   }
 }

@@ -34,7 +34,7 @@ export class PlaylistService {
       });
 
       const result: Playlist = await this.playlistRepository.save(newPlaylist);
-      const playlistId: number = result.playlist_Id;
+      const playlistId: number = result.playlist_id;
       return playlistId;
     } catch {
       throw new CatchyException(
@@ -48,7 +48,7 @@ export class PlaylistService {
   async addMusicToPlaylist(
     userId: string,
     playlistId: number,
-    musicId: number,
+    musicId: string,
   ): Promise<number> {
     // 사용자 플리가 있는지 확인
     if (!(await this.isExistPlaylistOnUser(playlistId, userId))) {
@@ -80,8 +80,8 @@ export class PlaylistService {
     try {
       const new_music_playlist: Music_Playlist =
         this.music_playlistRepository.create({
-          music: { musicId: musicId },
-          playlist: { playlist_Id: playlistId },
+          music: { music_id: musicId },
+          playlist: { playlist_id: playlistId },
         });
 
       const result: Music_Playlist =
@@ -97,11 +97,11 @@ export class PlaylistService {
     }
   }
 
-  async isAlreadyAdded(playlistId: number, musicId: number): Promise<boolean> {
+  async isAlreadyAdded(playlistId: number, musicId: string): Promise<boolean> {
     try {
       const count: number = await this.music_playlistRepository.countBy({
-        music: { musicId: musicId },
-        playlist: { playlist_Id: playlistId },
+        music: { music_id: musicId },
+        playlist: { playlist_id: playlistId },
       });
       return count !== 0;
     } catch {
@@ -119,7 +119,7 @@ export class PlaylistService {
   ): Promise<boolean> {
     try {
       const playlistCount: number = await this.playlistRepository.countBy({
-        playlist_Id: playlistId,
+        playlist_id: playlistId,
         user: { user_id: userId },
       });
       return playlistCount !== 0;
@@ -132,10 +132,10 @@ export class PlaylistService {
     }
   }
 
-  async isExistMusic(musicId: number): Promise<boolean> {
+  async isExistMusic(musicId: string): Promise<boolean> {
     try {
       const musicCount: number = await this.MusicRepository.countBy({
-        musicId: musicId,
+        music_id: musicId,
       });
 
       return musicCount !== 0;
@@ -151,7 +151,7 @@ export class PlaylistService {
   async setUpdatedAtNow(playlistId: number): Promise<void> {
     try {
       const targetPlaylist: Playlist = await this.playlistRepository.findOne({
-        where: { playlist_Id: playlistId },
+        where: { playlist_id: playlistId },
       });
       targetPlaylist.updated_at = new Date();
       this.playlistRepository.save(targetPlaylist);
@@ -166,7 +166,20 @@ export class PlaylistService {
 
   async getUserPlaylists(userId: string): Promise<Playlist[]> {
     try {
-      return Playlist.getPlaylistsByUserId(userId);
+      const playlists: Playlist[] = await Playlist.getPlaylistsByUserId(userId);
+      const countPromises = playlists.map(async (playlist) => {
+        playlist['music_count'] =
+          await Music_Playlist.getMusicCountByPlaylistId(playlist.playlist_id);
+      });
+      const thumbnailPromises = playlists.map(async (playlist) => {
+        const target = await Music_Playlist.getThumbnailByPlaylistId(
+          playlist.playlist_id,
+        );
+        playlist['thumbnail'] = !target ? null : target.music.cover;
+      });
+      await Promise.all(countPromises);
+      await Promise.all(thumbnailPromises);
+      return playlists;
     } catch {
       throw new CatchyException(
         'SERVER_ERROR',
