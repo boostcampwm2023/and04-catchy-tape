@@ -51,10 +51,10 @@ class PlayerViewModel @Inject constructor(
     private val viewModelScopeWithExceptionHandler = viewModelScope + exceptionHandler
 
     init {
-        getRecentPlaylist()
+        fetchRecentPlaylist()
     }
 
-    private fun getRecentPlaylist() {
+    private fun fetchRecentPlaylist() {
         playlistRepository.getRecentPlaylist().onEach { recentPlaylist ->
             _uiState.update { it.copy(playlist = recentPlaylist) }
         }.launchIn(viewModelScopeWithExceptionHandler)
