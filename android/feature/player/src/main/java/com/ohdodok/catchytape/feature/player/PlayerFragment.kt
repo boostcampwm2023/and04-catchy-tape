@@ -9,9 +9,9 @@ import androidx.media3.exoplayer.ExoPlayer
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import com.ohdodok.catchytape.core.ui.BaseFragment
+import com.ohdodok.catchytape.core.ui.toMessageId
 import com.ohdodok.catchytape.feature.player.databinding.FragmentPlayerBinding
 import dagger.hilt.android.AndroidEntryPoint
-import timber.log.Timber
 import javax.inject.Inject
 
 const val millisecondsPerSecond = 1000
@@ -72,7 +72,7 @@ class PlayerFragment : BaseFragment<FragmentPlayerBinding>(R.layout.fragment_pla
         repeatOnStarted {
             viewModel.events.collect { event ->
                 when (event) {
-                    is PlayerEvent.ShowError -> Timber.d(event.error.message ?: "")
+                    is PlayerEvent.ShowError -> showMessage(event.error.toMessageId())
                 }
             }
         }
