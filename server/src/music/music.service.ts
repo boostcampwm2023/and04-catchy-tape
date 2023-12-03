@@ -35,6 +35,16 @@ export class MusicService {
     return false;
   }
 
+  private validateGenre(genre: string): void {
+    if (!this.isValidGenre(genre)) {
+      throw new CatchyException(
+        'NOT_EXIST_GENRE',
+        HTTP_STATUS_CODE.BAD_REQUEST,
+        ERROR_CODE.NOT_EXIST_GENRE,
+      );
+    }
+  }
+
   private separateMusicName(musicPath: string): string {
     const parsedPath = new URL(musicPath);
     const pathNames = parsedPath.pathname.split('/');
@@ -56,6 +66,52 @@ export class MusicService {
       outputPath: this.getPath(`/output/${musicName.replace('.mp3', '')}.m3u8`),
       tempFilePath: this.getPath(`/${musicName}`),
     };
+  }
+
+  private async executeEncoding(
+    tempFilePath: string,
+    outputPath: string,
+    outputMusicPath: string,
+    musicId: string,
+  ): Promise<string> {
+    let m3u8FileName;
+    let m3u8Path: string;
+    const watcher = fs.watch(outputMusicPath, (eventType, fileName) => {
+      if (fileName.match(/.m3u8$/)) {
+        m3u8FileName = fileName;
+      } else if (!fileName.match(/\.tmp$/)) {
+        this.uploadEncodedFile(
+          outputMusicPath + `/${fileName}`,
+          musicId,
+          fileName,
+        );
+      }
+    });
+    return await new Promise<string>((resolve, reject) => {
+      ffmpeg(tempFilePath)
+        .addOption([
+          '-map 0:a',
+          '-c:a aac',
+          '-b:a 192k',
+          '-hls_time 30',
+          '-hls_list_size 0',
+          '-f hls',
+        ])
+        .output(outputPath)
+        .on('end', async () => {
+          watcher.close();
+          m3u8Path = await this.uploadEncodedFile(
+            outputMusicPath + `/${m3u8FileName}`,
+            musicId,
+            m3u8FileName,
+          );
+          resolve(m3u8Path);
+        })
+        .on('error', async (err) => {
+          reject(new Error());
+        })
+        .run();
+    });
   }
 
   async encodeMusic(musicId: string, musicPath: string): Promise<string> {
@@ -100,53 +156,7 @@ export class MusicService {
     }
   }
 
-  async executeEncoding(
-    tempFilePath: string,
-    outputPath: string,
-    outputMusicPath: string,
-    musicId: string,
-  ): Promise<string> {
-    let m3u8FileName;
-    let m3u8Path: string;
-    const watcher = fs.watch(outputMusicPath, (eventType, fileName) => {
-      if (fileName.match(/.m3u8$/)) {
-        m3u8FileName = fileName;
-      } else if (!fileName.match(/\.tmp$/)) {
-        this.uploadEncodedFile(
-          outputMusicPath + `/${fileName}`,
-          musicId,
-          fileName,
-        );
-      }
-    });
-    return await new Promise<string>((resolve, reject) => {
-      ffmpeg(tempFilePath)
-        .addOption([
-          '-map 0:a',
-          '-c:a aac',
-          '-b:a 192k',
-          '-hls_time 30',
-          '-hls_list_size 0',
-          '-f hls',
-        ])
-        .output(outputPath)
-        .on('end', async () => {
-          watcher.close();
-          m3u8Path = await this.uploadEncodedFile(
-            outputMusicPath + `/${m3u8FileName}`,
-            musicId,
-            m3u8FileName,
-          );
-          resolve(m3u8Path);
-        })
-        .on('error', () => {
-          reject(new Error());
-        })
-        .run();
-    });
-  }
-
-  async uploadEncodedFile(
+  private async uploadEncodedFile(
     file: string,
     musicId: string,
     fileName: string,
@@ -171,6 +181,24 @@ export class MusicService {
     }
   }
 
+  createMusicEntity(
+    musicCreateDTO: MusicCreateDto,
+    user_id: string,
+    encodedMusicUrl: string,
+  ): Music {
+    const { music_id, title, cover, file: music_file, genre } = musicCreateDTO;
+
+    return this.musicRepository.create({
+      music_id,
+      title,
+      cover,
+      music_file: encodedMusicUrl,
+      created_at: new Date(),
+      genre,
+      user: { user_id },
+    });
+  }
+
   async createMusic(
     musicCreateDto: MusicCreateDto,
     user_id: string,
@@ -184,25 +212,15 @@ export class MusicService {
         genre,
       } = musicCreateDto;
 
-      if (!this.isValidGenre(genre)) {
-        throw new CatchyException(
-          'NOT_EXIST_GENRE',
-          HTTP_STATUS_CODE.BAD_REQUEST,
-          ERROR_CODE.NOT_EXIST_GENRE,
-        );
-      }
+      this.validateGenre(genre);
 
       const encodedFileURL = await this.encodeMusic(music_id, music_file);
 
-      const newMusic: Music = this.musicRepository.create({
-        music_id,
-        title,
-        cover,
-        music_file: encodedFileURL,
-        created_at: new Date(),
-        genre,
-        user: { user_id },
-      });
+      const newMusic: Music = this.createMusicEntity(
+        musicCreateDto,
+        user_id,
+        encodedFileURL,
+      );
 
       const savedMusic: Music = await this.musicRepository.save(newMusic);
 
