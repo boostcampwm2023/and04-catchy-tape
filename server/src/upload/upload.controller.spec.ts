@@ -3,8 +3,13 @@ import { UploadController } from './upload.controller';
 import { UploadService } from './upload.service';
 import { NcloudConfigService } from 'src/config/ncloud.config';
 import { ConfigService } from '@nestjs/config';
+import * as fs from 'fs';
+import { Readable } from 'stream';
+import * as request from 'supertest';
+import { INestApplication } from '@nestjs/common';
 
 describe('UploadController', () => {
+  let app: INestApplication;
   let controller: UploadController;
   let service: UploadService;
   let cloudService: NcloudConfigService;
@@ -17,13 +22,18 @@ describe('UploadController', () => {
       providers: [UploadService, NcloudConfigService, ConfigService],
     }).compile();
 
-    controller = module.get<UploadController>(UploadController);
-    service = module.get<UploadService>(UploadService);
-    cloudService = module.get<NcloudConfigService>(NcloudConfigService);
     configService = module.get<ConfigService>(ConfigService);
+    cloudService = module.get<NcloudConfigService>(NcloudConfigService);
+    service = module.get<UploadService>(UploadService);
+    controller = module.get<UploadController>(UploadController);
+
+    app = module.createNestApplication();
+    await app.init();
   });
 
-  it('should be defined', () => {
-    expect(controller).toBeDefined();
+  describe('Upload 컨트롤러 환경 확인', () => {
+    it('Upload 컨트롤러 should be defined', () => {
+      expect(controller).toBeDefined();
+    });
   });
 });
