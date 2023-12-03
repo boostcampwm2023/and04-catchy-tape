@@ -81,6 +81,8 @@ describe('UploadController', () => {
       const result = await musicService.createMusic(musicInfo, user_id);
 
       expect(result).toBe(musicInfo.music_id);
+      expect(mockRepository.create).toHaveBeenCalledTimes(1);
+      expect(mockRepository.save).toHaveBeenCalledTimes(1);
     });
 
     it('잘못된 장르로 요청을 보내면 CatchyException이 발생한다.', async () => {
