@@ -9,6 +9,24 @@
         android:id="@+id/playlist_fragment"
         android:name="com.ohdodok.catchytape.feature.playlist.PlaylistsFragment"
         android:label="PlaylistsFragment"
-        tools:layout="@layout/fragment_playlists" />
+        tools:layout="@layout/fragment_playlists">
+
+        <action
+            android:id="@+id/action_playlistsFragment_to_playlistDetailFragment"
+            app:destination="@id/playlist_detail_fragment" />
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/playlist_detail_fragment"
+        android:name="com.ohdodok.catchytape.feature.playlist.PlaylistDetailFragment"
+        android:label="PlaylistDetailFragment"
+        tools:layout="@layout/fragment_playlist_detail">
+
+        <argument
+            android:name="playlistId"
+            app:argType="integer" />
+
+    </fragment>
 
 </navigation>

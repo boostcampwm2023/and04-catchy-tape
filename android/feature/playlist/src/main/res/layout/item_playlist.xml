@@ -7,12 +7,13 @@
 
         <variable
             name="playlist"
-            type="com.ohdodok.catchytape.core.domain.model.Playlist" />
+            type="com.ohdodok.catchytape.feature.playlist.model.PlaylistUiModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:onClick="@{() -> playlist.onClick.invoke()}"
         android:paddingBottom="@dimen/medium">
 
         <ImageView
