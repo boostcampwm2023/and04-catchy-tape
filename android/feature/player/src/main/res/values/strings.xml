@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="minutes_and_seconds_format">%d:%02d</string>
-    <string name="play">재생하기</string>
 </resources>
