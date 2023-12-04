@@ -223,4 +223,20 @@ export class PlaylistService {
       );
     }
   }
+
+  async getRecentPlaylist(user_id: string): Promise<Playlist> {
+    try {
+      return await this.playlistRepository.findOne({
+        where: {
+          user: { user_id },
+        },
+      });
+    } catch {
+      throw new CatchyException(
+        'QUERY_ERROR',
+        HTTP_STATUS_CODE.SERVER_ERROR,
+        ERROR_CODE.QUERY_ERROR,
+      );
+    }
+  }
 }
