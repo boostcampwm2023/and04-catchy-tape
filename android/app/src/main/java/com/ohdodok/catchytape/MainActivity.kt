@@ -59,7 +59,7 @@ class MainActivity : AppCompatActivity() {
         setMedias()
         setupPlayer()
         setupPlayButton()
-        setupBeforeButton()
+        setupPreviousButton()
         setupNextButton()
     }
 
@@ -154,7 +154,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun setupBeforeButton() {
+    private fun setupPreviousButton() {
         binding.pcvController.setOnPreviousButtonClick {
             player.seekToPreviousMediaItem()
             player.play()
