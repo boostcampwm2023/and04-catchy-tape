@@ -11,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.media3.common.MediaItem
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.session.MediaController
 import androidx.media3.session.SessionToken
@@ -21,9 +22,9 @@ import androidx.navigation.ui.setupWithNavController
 import com.ohdodok.catchytape.databinding.ActivityMainBinding
 import com.ohdodok.catchytape.feature.player.PlayerListener
 import com.ohdodok.catchytape.feature.player.PlayerViewModel
-import com.ohdodok.catchytape.mediacontrol.PlaybackService
 import com.ohdodok.catchytape.feature.player.millisecondsPerSecond
 import com.ohdodok.catchytape.feature.player.navigateToPlayer
+import com.ohdodok.catchytape.mediacontrol.PlaybackService
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -55,8 +56,11 @@ class MainActivity : AppCompatActivity() {
         val networkStateObserver = NetworkStateObserver(connectivityManager, ::checkNetworkState)
         lifecycle.addObserver(networkStateObserver)
 
+        setMedias()
         setupPlayer()
         setupPlayButton()
+        setupBeforeButton()
+        setupNextButton()
     }
 
     override fun onStart() {
@@ -148,5 +152,31 @@ class MainActivity : AppCompatActivity() {
             if (playViewModel.uiState.value.isPlaying) player.pause()
             else player.play()
         }
+    }
+
+    private fun setupBeforeButton() {
+        binding.pcvController.setOnPreviousButtonClick {
+            player.seekToPreviousMediaItem()
+            player.play()
+        }
+    }
+
+    private fun setupNextButton() {
+        binding.pcvController.setOnNextButtonClick {
+            player.seekToNextMediaItem()
+            player.play()
+        }
+    }
+
+    private fun setMedias() {
+        val dummys = listOf(
+            "https://catchy-tape-bucket2.kr.object.ncloudstorage.com/music/379c98d8-df30-4df1-90a8-e9d45d80789a/music.m3u8",
+            "https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8",
+            "https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8"
+        ) // TODO : dummys 삭제 필요
+
+        val mediaItems = dummys.map { MediaItem.fromUri(it) }
+        player.setMediaItems(mediaItems)
+        player.play()
     }
 }

@@ -74,4 +74,11 @@ class PlayerControlView(context: Context, attrs: AttributeSet) : ConstraintLayou
         else AppCompatResources.getDrawable(context, drawable.ic_play)
     }
 
+    fun setOnPreviousButtonClick(onPreviousButtonClick: () -> Unit) {
+        binding.ibPrevious.setOnClickListener { onPreviousButtonClick() }
+    }
+
+    fun setOnNextButtonClick(onNextButtonClick: () -> Unit) {
+        binding.ibNext.setOnClickListener { onNextButtonClick() }
+    }
 }
