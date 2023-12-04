@@ -65,18 +65,12 @@ describe('UploadController', () => {
 
       const user_id: string = 'user_id';
 
-      jest.spyOn(musicService, 'encodeMusic').mockReturnValue(
-        new Promise((resolve) => {
-          resolve('encodedURL');
-        }),
-      );
+      jest.spyOn(musicService, 'encodeMusic').mockResolvedValue('encodedURL');
 
       const newMusic: Music = newMusicData;
 
       jest.spyOn(mockRepository, 'create').mockReturnValue(newMusic);
-      jest
-        .spyOn(mockRepository, 'save')
-        .mockReturnValue(new Promise((resolve) => resolve(newMusic)));
+      jest.spyOn(mockRepository, 'save').mockResolvedValue(newMusic);
 
       const result = await musicService.createMusic(musicInfo, user_id);
 
