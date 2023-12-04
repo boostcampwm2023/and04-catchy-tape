@@ -34,5 +34,27 @@ jobs:
         if: steps.cache.outputs.cache-hit != 'true'
         run: npm install
 
+      - name: Create dev.env file
+        env:
+          DB_HOST_IP: ${{ secrets.SERVER_DEV_DB_HOST_IP }}
+          DB_PORT: ${{ secrets.SERVER_DEV_DB_PORT }}
+          DB_USER_NAME: ${{ secrets.SERVER_DEV_DB_USER_NAME }}
+          DB_PASSWORD: ${{ secrets.SERVER_DEV_DB_PASSWORD }}
+          DB_DATABASE_NAME: ${{ secrets.SERVER_DEV_DB_DATABASE_NAME }}
+          ACCESS_ID: ${{ secrets.SERVER_ENV_ACCESS_ID }}
+          SECRET_ACCESS_KEY: ${{ secrets.SERVER_ENV_SECRET_ACCESS_KEY }}
+          JWT_SECRET_KEY: ${{ secrets.SERVER_ENV_JWT_SECRET_KEY }}
+        run: |
+          cd server
+          touch dev.env
+          echo "DB_HOST_IP=$DB_HOST_IP" >> prod.env
+          echo "DB_PORT=$DB_PORT" >> prod.env
+          echo "DB_USER_NAME=$DB_USER_NAME" >> prod.env
+          echo "DB_PASSWORD=$DB_PASSWORD" >> prod.env
+          echo "DB_DATABASE_NAME=$DB_DATABASE_NAME" >> prod.env
+          echo "ACCESS_ID=$ACCESS_ID" >> prod.env
+          echo "SECRET_ACCESS_KEY=$SECRET_ACCESS_KEY" >> prod.env
+          echo "JWT_SECRET_KEY=$JWT_SECRET_KEY" >> prod.env
+
       - name: Execute Test
         run: npm run test
