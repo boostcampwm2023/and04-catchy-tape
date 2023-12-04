@@ -3,7 +3,7 @@
     <style name="Base.Theme.CatchyTape" parent="Theme.Material3.DayNight.NoActionBar">
         <item name="colorPrimary">@color/primary</item>
         <item name="colorAccent">@color/primary</item>
-        <item name="android:statusBarColor">@color/white</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:windowLightStatusBar">true</item>
         <item name="android:windowBackground">@color/white</item>
         <item name="android:textColor">@color/on_surface</item>
@@ -36,6 +36,7 @@
     </style>
 
     <style name="ToolBar" parent="Widget.Material3.Toolbar">
+        <item name="android:layout_marginTop">@dimen/status_bar_height</item>
         <item name="titleTextColor">@color/on_surface</item>
         <item name="navigationIconTint">@color/on_surface</item>
     </style>
@@ -59,7 +60,6 @@
         <item name="android:textColorHighlight">@color/key_variant</item>
     </style>
 
-
     <style name="CompleteButton" parent="Widget.AppCompat.Button">
         <item name="android:textSize">22sp</item>
         <item name="android:layout_height">wrap_content</item>
@@ -69,6 +69,5 @@
         <item name="android:paddingHorizontal">0dp</item>
         <item name="android:textColor">@drawable/btn_complete_selector</item>
     </style>
-
 
 </resources>
