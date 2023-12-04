@@ -22,8 +22,9 @@ class PlaylistsFragment : BaseFragment<FragmentPlaylistsBinding>(R.layout.fragme
         viewModel.fetchPlaylists()
 
         observeEvents()
+        val newPlaylistDialog = NewPlaylistDialog()
         binding.fabNewPlaylist.setOnClickListener {
-            NewPlaylistDialog().show(childFragmentManager, NewPlaylistDialog.TAG)
+            newPlaylistDialog.show(childFragmentManager, NewPlaylistDialog.TAG)
         }
 
     }

@@ -29,7 +29,9 @@ class PlayerFragment : BaseFragment<FragmentPlayerBinding>(R.layout.fragment_pla
 
         setUpSeekBar()
         // todo : 실제 데이터로 변경
-        setMedia("https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8")
+        //setMedia("https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8")
+        setMedias()
+
         setupButtons()
         collectEvents()
     }
@@ -57,6 +59,13 @@ class PlayerFragment : BaseFragment<FragmentPlayerBinding>(R.layout.fragment_pla
         player.play()
     }
 
+    private fun setMedias() {
+        val mediaItems = viewModel.dummyUris.map { MediaItem.fromUri(it) }
+        player.setMediaItems(mediaItems)
+        player.play()
+    }
+
+
     private fun setupButtons() {
         binding.btnPlay.setOnClickListener {
             if (viewModel.uiState.value.isPlaying) player.pause()
@@ -65,6 +74,16 @@ class PlayerFragment : BaseFragment<FragmentPlayerBinding>(R.layout.fragment_pla
 
         binding.ibDown.setOnClickListener {
             findNavController().popBackStack()
+        }
+
+        binding.btnNext.setOnClickListener {
+            player.seekToNextMediaItem()
+            player.play()
+        }
+
+        binding.btnPrevious.setOnClickListener {
+            player.seekToPreviousMediaItem()
+            player.play()
         }
     }
 
