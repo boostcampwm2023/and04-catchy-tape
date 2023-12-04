@@ -53,7 +53,7 @@ export class PlaylistController {
         playlistId,
         music_id,
       );
-    return { music_playlist_id};
+    return { music_playlist_id };
   }
 
   @Get()
@@ -75,5 +75,27 @@ export class PlaylistController {
   ): Promise<Music[]> {
     const userId: string = req.user.user_id;
     return await this.playlistService.getPlaylistMusics(userId, playlistId);
+  }
+
+  @Patch('recently-played')
+  @UseGuards(AuthGuard())
+  @HttpCode(HTTP_STATUS_CODE.SUCCESS)
+  async updateRecentPlay(
+    @Req() req,
+    @Body('musicId') music_id: string,
+  ): Promise<number> {
+    const user_id: string = req.user.user_id;
+    const recentPlaylist: Playlist =
+      await this.playlistService.getRecentPlaylist(user_id);
+    const recentPlaylistId: number = recentPlaylist.playlist_id;
+    if (await this.playlistService.isAlreadyAdded(recentPlaylistId, music_id)) {
+      return this.playlistService.updateRecentMusic(music_id, recentPlaylistId);
+    } else {
+      return this.playlistService.addMusicToPlaylist(
+        user_id,
+        recentPlaylistId,
+        music_id,
+      );
+    }
   }
 }

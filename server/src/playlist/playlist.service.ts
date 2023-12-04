@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CatchyException } from 'src/config/catchyException';
 import { ERROR_CODE } from 'src/config/errorCode.enum';
+import { RECENT_PLAYLIST_NAME } from 'src/constants';
 import { PlaylistCreateDto } from 'src/dto/playlistCreate.dto';
 import { Music } from 'src/entity/music.entity';
 import { Music_Playlist } from 'src/entity/music_playlist.entity';
@@ -229,6 +230,7 @@ export class PlaylistService {
       return await this.playlistRepository.findOne({
         where: {
           user: { user_id },
+          playlist_title: RECENT_PLAYLIST_NAME,
         },
       });
     } catch {
@@ -238,5 +240,20 @@ export class PlaylistService {
         ERROR_CODE.QUERY_ERROR,
       );
     }
+  }
+
+  async updateRecentMusic(
+    music_id: string,
+    playlist_id: number,
+  ): Promise<number> {
+    const music_playlist: Music_Playlist =
+      await this.music_playlistRepository.findOne({
+        where: { music: { music_id }, playlist: { playlist_id } },
+      });
+
+    music_playlist.updated_at = new Date();
+    const savedData: Music_Playlist =
+      await this.music_playlistRepository.save(music_playlist);
+    return savedData.music_playlist_id;
   }
 }
