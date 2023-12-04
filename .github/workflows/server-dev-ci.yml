@@ -45,16 +45,15 @@ jobs:
           SECRET_ACCESS_KEY: ${{ secrets.SERVER_ENV_SECRET_ACCESS_KEY }}
           JWT_SECRET_KEY: ${{ secrets.SERVER_ENV_JWT_SECRET_KEY }}
         run: |
-          cd server
-          touch dev.env
-          echo "DB_HOST_IP=$DB_HOST_IP" >> prod.env
-          echo "DB_PORT=$DB_PORT" >> prod.env
-          echo "DB_USER_NAME=$DB_USER_NAME" >> prod.env
-          echo "DB_PASSWORD=$DB_PASSWORD" >> prod.env
-          echo "DB_DATABASE_NAME=$DB_DATABASE_NAME" >> prod.env
-          echo "ACCESS_ID=$ACCESS_ID" >> prod.env
-          echo "SECRET_ACCESS_KEY=$SECRET_ACCESS_KEY" >> prod.env
-          echo "JWT_SECRET_KEY=$JWT_SECRET_KEY" >> prod.env
+          touch ./dev.env
+          echo "DB_HOST_IP=$DB_HOST_IP" >> dev.env
+          echo "DB_PORT=$DB_PORT" >> dev.env
+          echo "DB_USER_NAME=$DB_USER_NAME" >> dev.env
+          echo "DB_PASSWORD=$DB_PASSWORD" >> dev.env
+          echo "DB_DATABASE_NAME=$DB_DATABASE_NAME" >> dev.env
+          echo "ACCESS_ID=$ACCESS_ID" >> dev.env
+          echo "SECRET_ACCESS_KEY=$SECRET_ACCESS_KEY" >> dev.env
+          echo "JWT_SECRET_KEY=$JWT_SECRET_KEY" >> dev.env
 
       - name: Execute Test
         run: npm run test
