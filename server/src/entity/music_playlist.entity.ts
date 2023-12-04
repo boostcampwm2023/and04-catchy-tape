@@ -8,6 +8,7 @@ import {
 } from 'typeorm';
 import { Music } from './music.entity';
 import { Playlist } from './playlist.entity';
+import { RECENT_PLAYLIST_NAME } from 'src/constants';
 
 @Entity({ name: 'music_playlist' })
 export class Music_Playlist extends BaseEntity {
@@ -45,7 +46,7 @@ export class Music_Playlist extends BaseEntity {
         music_playlist_id: false,
       },
       order: {
-        music_playlist_id: 'DESC',
+        updated_at: 'DESC',
       },
     }).then((a: Music_Playlist[]) => a.map((b) => b.music));
   }
@@ -57,7 +58,7 @@ export class Music_Playlist extends BaseEntity {
       },
       where: {
         playlist: {
-          playlist_title: '최근 재생 목록',
+          playlist_title: RECENT_PLAYLIST_NAME,
         },
         music: {
           user: {
@@ -76,7 +77,7 @@ export class Music_Playlist extends BaseEntity {
         },
       },
       order: {
-        music_playlist_id: 'DESC',
+        updated_at: 'DESC',
       },
       take: 10,
     }).then((a: Music_Playlist[]) => a.map((b) => b.music));
@@ -93,7 +94,7 @@ export class Music_Playlist extends BaseEntity {
       relations: { music: true },
       select: { music: { cover: true } },
       where: { playlist: { playlist_id } },
-      order: { music_playlist_id: 'DESC' },
+      order: { updated_at: 'DESC' },
     });
   }
 }
