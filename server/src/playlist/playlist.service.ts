@@ -82,6 +82,7 @@ export class PlaylistService {
         this.music_playlistRepository.create({
           music: { music_id: musicId },
           playlist: { playlist_id: playlistId },
+          updated_at: new Date(),
         });
 
       const result: Music_Playlist =
