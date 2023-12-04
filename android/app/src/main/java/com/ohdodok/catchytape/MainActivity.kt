@@ -24,7 +24,7 @@ import com.ohdodok.catchytape.feature.player.PlayerListener
 import com.ohdodok.catchytape.feature.player.PlayerViewModel
 import com.ohdodok.catchytape.feature.player.millisecondsPerSecond
 import com.ohdodok.catchytape.feature.player.navigateToPlayer
-import com.ohdodok.catchytape.mediacontrol.PlaybackService
+import com.ohdodok.catchytape.mediasession.PlaybackService
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
