@@ -1,5 +1,6 @@
 import {
   BaseEntity,
+  Column,
   Entity,
   JoinColumn,
   ManyToOne,
@@ -20,6 +21,9 @@ export class Music_Playlist extends BaseEntity {
   @ManyToOne(() => Playlist, (playlist) => playlist.music_playlist)
   @JoinColumn({ name: 'playlist_id' })
   playlist: Playlist;
+
+  @Column()
+  updated_at: Date;
 
   static async getMusicListByPlaylistId(playlistId: number): Promise<Music[]> {
     return this.find({
