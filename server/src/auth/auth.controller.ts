@@ -48,8 +48,8 @@ export class AuthController {
   @UseGuards(AuthGuard())
   @HttpCode(HTTP_STATUS_CODE.SUCCESS)
   verifyToken(@Req() req): { userId: string } {
-    this.logger.log('log: 테스트 로그');
     const user: User = req.user;
+    this.logger.log(`GET /users/verify - ${user.nickname}: verified`);
     return { userId: user.user_id };
   }
 
