@@ -7,7 +7,6 @@ import { TypeOrmConfigService } from 'src/config/typeorm.config';
 import { ConfigModule } from '@nestjs/config';
 import { UploadModule } from './upload/upload.module';
 import { MusicModule } from './music/music.module';
-import { PlaylistController } from './playlist/playlist.controller';
 import { PlaylistModule } from './playlist/playlist.module';
 
 @Module({

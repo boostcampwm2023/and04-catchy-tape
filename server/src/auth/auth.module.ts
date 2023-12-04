@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Logger, Module } from '@nestjs/common';
 import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
@@ -25,7 +25,7 @@ import { Music_Playlist } from 'src/entity/music_playlist.entity';
     }),
     TypeOrmModule.forFeature([User, Playlist, Music, Music_Playlist]),
   ],
-  providers: [JwtStrategy, AuthService, PlaylistService],
+  providers: [JwtStrategy, AuthService, PlaylistService, Logger],
   exports: [JwtStrategy, PassportModule],
   controllers: [AuthController],
 })
