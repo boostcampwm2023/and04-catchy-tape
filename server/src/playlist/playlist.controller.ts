@@ -83,19 +83,26 @@ export class PlaylistController {
   async updateRecentPlay(
     @Req() req,
     @Body('musicId') music_id: string,
-  ): Promise<number> {
+  ): Promise<{ music_playlist_id: number }> {
     const user_id: string = req.user.user_id;
     const recentPlaylist: Playlist =
       await this.playlistService.getRecentPlaylist(user_id);
     const recentPlaylistId: number = recentPlaylist.playlist_id;
     if (await this.playlistService.isAlreadyAdded(recentPlaylistId, music_id)) {
-      return this.playlistService.updateRecentMusic(music_id, recentPlaylistId);
+      return {
+        music_playlist_id: await this.playlistService.updateRecentMusic(
+          music_id,
+          recentPlaylistId,
+        ),
+      };
     } else {
-      return this.playlistService.addMusicToPlaylist(
-        user_id,
-        recentPlaylistId,
-        music_id,
-      );
+      return {
+        music_playlist_id: await this.playlistService.addMusicToPlaylist(
+          user_id,
+          recentPlaylistId,
+          music_id,
+        ),
+      };
     }
   }
 }
