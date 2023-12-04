@@ -246,14 +246,22 @@ export class PlaylistService {
     music_id: string,
     playlist_id: number,
   ): Promise<number> {
-    const music_playlist: Music_Playlist =
-      await this.music_playlistRepository.findOne({
-        where: { music: { music_id }, playlist: { playlist_id } },
-      });
+    try {
+      const music_playlist: Music_Playlist =
+        await this.music_playlistRepository.findOne({
+          where: { music: { music_id }, playlist: { playlist_id } },
+        });
 
-    music_playlist.updated_at = new Date();
-    const savedData: Music_Playlist =
-      await this.music_playlistRepository.save(music_playlist);
-    return savedData.music_playlist_id;
+      music_playlist.updated_at = new Date();
+      const savedData: Music_Playlist =
+        await this.music_playlistRepository.save(music_playlist);
+      return savedData.music_playlist_id;
+    } catch {
+      throw new CatchyException(
+        'SERVICE_ERROR',
+        HTTP_STATUS_CODE.SERVER_ERROR,
+        ERROR_CODE.SERVICE_ERROR,
+      );
+    }
   }
 }
