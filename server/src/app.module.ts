@@ -7,11 +7,23 @@ import { TypeOrmConfigService } from 'src/config/typeorm.config';
 import { ConfigModule } from '@nestjs/config';
 import { UploadModule } from './upload/upload.module';
 import { MusicModule } from './music/music.module';
-import { PlaylistController } from './playlist/playlist.controller';
 import { PlaylistModule } from './playlist/playlist.module';
+import { utilities, WinstonModule } from 'nest-winston';
+import * as winston from 'winston';
 
 @Module({
   imports: [
+    WinstonModule.forRoot({
+      transports: [
+        new winston.transports.Console({
+          level: process.env.NODE_ENV === 'prod' ? 'info' : 'silly',
+          format: winston.format.combine(
+            winston.format.timestamp(),
+            utilities.format.nestLike('CatchyTape', { prettyPrint: true }),
+          ),
+        }),
+      ],
+    }),
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: __dirname + `/../${process.env.NODE_ENV}.env`,
