@@ -3,12 +3,15 @@ package com.ohdodok.catchytape.feature.search
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.viewModels
+import com.ohdodok.catchytape.core.domain.model.Music
 import com.ohdodok.catchytape.core.ui.BaseFragment
 import com.ohdodok.catchytape.core.ui.MusicAdapter
 import com.ohdodok.catchytape.core.ui.Orientation
+import com.ohdodok.catchytape.core.ui.bindItems
 import com.ohdodok.catchytape.core.ui.toMessageId
 import com.ohdodok.catchytape.feature.search.databinding.FragmentSearchBinding
 import dagger.hilt.android.AndroidEntryPoint
+
 
 @AndroidEntryPoint
 class SearchFragment : BaseFragment<FragmentSearchBinding>(R.layout.fragment_search) {
@@ -20,6 +23,7 @@ class SearchFragment : BaseFragment<FragmentSearchBinding>(R.layout.fragment_sea
         binding.viewModel = viewModel
 
         observeEvents()
+        setupMoreButton()
         setupRecyclerView()
     }
 
@@ -36,6 +40,13 @@ class SearchFragment : BaseFragment<FragmentSearchBinding>(R.layout.fragment_sea
                     }
                 }
             }
+        }
+    }
+
+    private fun setupMoreButton() {
+        binding.btnMore.setOnClickListener {
+            binding.btnMore.visibility = View.INVISIBLE
+            binding.rvSearch.bindItems<Music, MusicAdapter.HorizontalViewHolder>(viewModel.searchedMusics.value.totalMusics)
         }
     }
 }
