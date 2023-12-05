@@ -64,7 +64,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/btn_more"
-            app:list="@{viewModel.uiState.searchedMusics}"
+            app:list="@{viewModel.searchedMusics.maxThreeMusics}"
             tools:itemCount="3"
             tools:listitem="@layout/item_music_vertical" />
 
