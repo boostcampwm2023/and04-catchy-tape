@@ -20,7 +20,6 @@
             android:background="@drawable/search_bar_background"
             android:backgroundTint="@color/surface_bright"
             android:hint="@string/input_keyword"
-            android:text="@{viewModel.uiState.keyword}"
             android:onTextChanged="@{(text, s, b, c) -> viewModel.updateKeyword(text.toString())}"
             android:paddingHorizontal="@dimen/margin_horizontal"
             app:layout_constraintEnd_toEndOf="parent"
