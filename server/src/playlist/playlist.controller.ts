@@ -77,7 +77,7 @@ export class PlaylistController {
     return await this.playlistService.getPlaylistMusics(userId, playlistId);
   }
 
-  @Patch('recently-played')
+  @Patch('recent-played')
   @UseGuards(AuthGuard())
   @HttpCode(HTTP_STATUS_CODE.SUCCESS)
   async updateRecentPlay(
