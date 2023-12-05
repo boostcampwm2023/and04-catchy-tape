@@ -12,7 +12,7 @@ data class MusicResponse (
     val cover: String,
     @SerialName("music_file")
     val musicFile : String,
-    val genre: String,
+    val genre: String = "",
     val user: NicknameResponse
 ) {
     fun toDomain(): Music {
