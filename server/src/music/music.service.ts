@@ -95,7 +95,7 @@ export class MusicService {
       throw new CatchyException(
         'MUSIC_ENCODE_ERROR',
         HTTP_STATUS_CODE.SERVER_ERROR,
-        ERROR_CODE.SERVER_ERROR,
+        ERROR_CODE.MUSIC_ENCODE_ERROR,
       );
     }
   }
