@@ -20,7 +20,7 @@ import { Music } from 'src/entity/music.entity';
 
 @Controller('musics')
 export class MusicController {
-  private readonly logger = new Logger('MusicController');
+  private readonly logger = new Logger('Music');
   private objectStorage: AWS.S3;
   constructor(
     private readonly musicService: MusicService,

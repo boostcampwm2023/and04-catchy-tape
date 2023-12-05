@@ -19,7 +19,7 @@ import { User } from 'src/entity/user.entity';
 
 @Controller('users')
 export class AuthController {
-  private readonly logger = new Logger('AuthController');
+  private readonly logger = new Logger('Auth');
   constructor(
     private authService: AuthService,
   ) {}
