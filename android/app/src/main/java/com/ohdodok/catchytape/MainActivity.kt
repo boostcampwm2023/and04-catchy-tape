@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.media3.common.MediaItem
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
@@ -21,6 +22,7 @@ import com.ohdodok.catchytape.feature.player.PlayerViewModel
 import com.ohdodok.catchytape.feature.player.millisecondsPerSecond
 import com.ohdodok.catchytape.feature.player.navigateToPlayer
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.channels.consumeEach
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -53,6 +55,7 @@ class MainActivity : AppCompatActivity() {
 
         setupPlayer()
         setupPlayButton()
+        observePlaylistChange()
     }
 
     private fun checkNetworkState() {
@@ -128,6 +131,26 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private fun observePlaylistChange() {
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                playViewModel.playlistChangeEvent.consumeEach { newPlaylist ->
+                    val newItems = newPlaylist.musics.map {
+                        // todo : it에서 url 찾아서 넣어주기!
+                        MediaItem.Builder().setUri("https://catchy-tape-bucket2.kr.object.ncloudstorage.com/music/8ce4b6b0-6480-479a-99b9-54ef7e913313/music.m3u8")
+                            .setMediaId(it.id)
+                            .build()
+                    }
+                    player.clearMediaItems()
+                    player.setMediaItems(newItems)
+
+                    val index = newPlaylist.musics.indexOf(newPlaylist.startMusic)
+                    player.seekTo(index, 0)
+                    player.play()
+                }
+            }
+        }
+    }
 
     private fun setupPlayButton() {
         binding.pcvController.setOnPlayButtonClick {

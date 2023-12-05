@@ -67,6 +67,7 @@ dependencies {
     implementation(project(":feature:playlist"))
     implementation(project(":feature:mypage"))
     implementation(project(":core:data"))
+    implementation(project(":core:domain"))
 
     implementation(libs.core.ktx)
     implementation(libs.appcompat)

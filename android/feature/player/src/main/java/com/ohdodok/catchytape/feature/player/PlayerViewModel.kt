@@ -2,6 +2,7 @@ package com.ohdodok.catchytape.feature.player
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.ohdodok.catchytape.core.domain.usecase.player.CurrentPlaylistUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -25,8 +26,9 @@ sealed interface PlayerEvent {
 
 @HiltViewModel
 class PlayerViewModel @Inject constructor(
-
+    private val currentPlaylistUseCase: CurrentPlaylistUseCase,
 ) : ViewModel(), PlayerEventListener {
+    val playlistChangeEvent = currentPlaylistUseCase.currentPlaylist
 
     private val _uiState = MutableStateFlow(PlayerState())
     val uiState: StateFlow<PlayerState> = _uiState.asStateFlow()
