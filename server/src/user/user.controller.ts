@@ -8,8 +8,7 @@ import {
   Patch,
   Body,
   Query,
-  Inject,
-  LoggerService,
+  Logger,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { HTTP_STATUS_CODE } from 'src/httpStatusCode.enum';
@@ -18,13 +17,12 @@ import { Music } from 'src/entity/music.entity';
 import { CatchyException } from 'src/config/catchyException';
 import { ERROR_CODE } from 'src/config/errorCode.enum';
 import { User } from 'src/entity/user.entity';
-import { Logger } from 'winston';
 
 @Controller('users')
 export class UserController {
+  private readonly logger = new Logger('User');
   constructor(
     private userService: UserService,
-    @Inject(Logger) private readonly logger: LoggerService,
   ) {}
 
   @Get('duplicate/:name')

@@ -1,4 +1,4 @@
-import { Inject, Injectable, LoggerService } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { HTTP_STATUS_CODE } from 'src/httpStatusCode.enum';
 import { User } from 'src/entity/user.entity';
 import { Music } from 'src/entity/music.entity';
@@ -7,14 +7,13 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { PlaylistService } from 'src/playlist/playlist.service';
 import { CatchyException } from 'src/config/catchyException';
 import { ERROR_CODE } from 'src/config/errorCode.enum';
-import { Logger } from 'winston';
 
 @Injectable()
 export class UserService {
+  private readonly logger = new Logger('UserService');
   constructor(
     @InjectRepository(User) private userRepository: Repository<User>,
     private playlistService: PlaylistService,
-    @Inject(Logger) private readonly logger: LoggerService,
   ) {}
 
   async isDuplicatedUserEmail(userNickname: string): Promise<boolean> {
