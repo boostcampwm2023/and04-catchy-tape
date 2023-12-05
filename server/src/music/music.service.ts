@@ -1,4 +1,4 @@
-import { Inject, Injectable, LoggerService } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { HTTP_STATUS_CODE } from 'src/httpStatusCode.enum';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -15,16 +15,15 @@ import axios from 'axios';
 import { UploadService } from 'src/upload/upload.service';
 import { NcloudConfigService } from 'src/config/ncloud.config';
 import { AWSError } from 'aws-sdk';
-import { Logger } from 'winston';
 
 @Injectable()
 export class MusicService {
+  private readonly logger = new Logger('MusicService');
   private objectStorage: AWS.S3;
   constructor(
     @InjectRepository(Music) private musicRepository: Repository<Music>,
     private uploadService: UploadService,
     private readonly ncloudConfigService: NcloudConfigService,
-    @Inject(Logger) private readonly logger: LoggerService,
   ) {
     this.objectStorage = ncloudConfigService.createObjectStorageOption();
   }

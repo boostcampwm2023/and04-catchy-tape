@@ -9,8 +9,7 @@ import {
   UsePipes,
   ValidationPipe,
   Query,
-  Inject,
-  LoggerService,
+  Logger,
 } from '@nestjs/common';
 import { MusicService } from './music.service';
 import { HTTP_STATUS_CODE } from 'src/httpStatusCode.enum';
@@ -18,14 +17,13 @@ import { MusicCreateDto } from 'src/dto/musicCreate.dto';
 import { AuthGuard } from '@nestjs/passport';
 import { Genres } from 'src/constants';
 import { Music } from 'src/entity/music.entity';
-import { Logger } from 'winston';
 
 @Controller('musics')
 export class MusicController {
+  private readonly logger = new Logger('MusicController');
   private objectStorage: AWS.S3;
   constructor(
     private readonly musicService: MusicService,
-    @Inject(Logger) private readonly logger: LoggerService,
   ) {}
 
   @Post()
