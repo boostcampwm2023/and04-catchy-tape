@@ -7,6 +7,7 @@ import {
   UseGuards,
   Patch,
   Body,
+  Query,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { HTTP_STATUS_CODE } from 'src/httpStatusCode.enum';
@@ -66,5 +67,14 @@ export class UserController {
   async getMyInformation(@Req() req): Promise<User> {
     const user_id = req.user.userId;
     return this.userService.getUserInformation(user_id);
+  }
+
+  @Get('search')
+  @UseGuards(AuthGuard())
+  @HttpCode(HTTP_STATUS_CODE.SUCCESS)
+  async getCertainNicknameUser(
+    @Query('keyword') keyword: string,
+  ): Promise<User[]> {
+    return this.userService.getCertainKeywordNicknameUser(keyword);
   }
 }
