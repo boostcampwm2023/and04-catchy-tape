@@ -8,21 +8,17 @@ import com.ohdodok.catchytape.core.domain.model.Music
 
 
 fun ExoPlayer.moveNextMedia() {
+    seekToNextMediaItem()
     if (isPlaying) {
-        seekToNextMediaItem()
         play()
-    } else {
-        seekToNextMediaItem()
     }
 }
 
 
 fun ExoPlayer.movePreviousMedia() {
+    seekToPreviousMediaItem()
     if (isPlaying) {
-        seekToPreviousMediaItem()
         play()
-    } else {
-        seekToPreviousMediaItem()
     }
 }
 
