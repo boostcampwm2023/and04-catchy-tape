@@ -1,4 +1,4 @@
-import { Inject, Injectable, LoggerService } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CatchyException } from 'src/config/catchyException';
@@ -10,15 +10,14 @@ import { HTTP_STATUS_CODE } from 'src/httpStatusCode.enum';
 import { PlaylistService } from 'src/playlist/playlist.service';
 import { Repository } from 'typeorm';
 import { v4 as uuid } from 'uuid';
-import { Logger } from 'winston';
 
 @Injectable()
 export class AuthService {
+  private readonly logger = new Logger('AuthService');
   constructor(
     @InjectRepository(User) private userRepository: Repository<User>,
     private jwtService: JwtService,
     private readonly playlistService: PlaylistService,
-    @Inject(Logger) private readonly logger: LoggerService,
   ) {}
 
   async login(email: string): Promise<{ accessToken: string }> {

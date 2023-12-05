@@ -4,9 +4,7 @@ import {
   Delete,
   Get,
   HttpCode,
-  Inject,
   Logger,
-  LoggerService,
   Post,
   Req,
   UseGuards,
@@ -21,9 +19,9 @@ import { User } from 'src/entity/user.entity';
 
 @Controller('users')
 export class AuthController {
+  private readonly logger = new Logger('AuthController');
   constructor(
     private authService: AuthService,
-    @Inject(Logger) private readonly logger: LoggerService,
   ) {}
 
   @Post('login')
