@@ -116,6 +116,7 @@ export class Music extends BaseEntity {
         title: true,
         cover: true,
         music_file: true,
+        genre: true,
         user: {
           user_id: true,
           nickname: true,
