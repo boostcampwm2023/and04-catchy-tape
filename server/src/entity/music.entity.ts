@@ -107,7 +107,7 @@ export class Music extends BaseEntity {
   static async getCertainMusicByTitle(keyword: string): Promise<Music[]> {
     return await this.find({
       relations: {
-        user: false,
+        user: true,
         music_playlist: false,
       },
       select: {
@@ -116,6 +116,10 @@ export class Music extends BaseEntity {
         title: true,
         cover: true,
         music_file: true,
+        user: {
+          user_id: true,
+          nickname: true,
+        },
       },
       where: {
         title: ILike(`%${keyword}%`),
