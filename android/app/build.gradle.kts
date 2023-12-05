@@ -66,6 +66,7 @@ dependencies {
     implementation(project(":feature:player"))
     implementation(project(":feature:playlist"))
     implementation(project(":feature:mypage"))
+    implementation(project(":feature:search"))
     implementation(project(":core:data"))
     implementation(project(":core:domain"))
 
