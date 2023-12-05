@@ -1,5 +1,6 @@
 package com.ohdodok.catchytape
 
+import android.animation.ObjectAnimator
 import android.content.ComponentName
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities.NET_CAPABILITY_VALIDATED
@@ -109,11 +110,34 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun hideBottomNav() {
-        binding.bottomNav.visibility = View.GONE
+        val period = 700L
+        takeDownBottomNav(period)
+
+        lifecycleScope.launch {
+            delay(period)
+            binding.bottomNav.visibility = View.GONE
+        }
     }
 
     private fun showBottomNav() {
+        raiseBottomNav()
+
         binding.bottomNav.visibility = View.VISIBLE
+    }
+
+    private fun takeDownBottomNav(period: Long) {
+        val height = binding.bottomNav.height.toFloat()
+        ObjectAnimator.ofFloat(binding.bottomNav, "translationY", height).apply {
+            duration = period
+            start()
+        }
+    }
+
+    private fun raiseBottomNav() {
+        ObjectAnimator.ofFloat(binding.bottomNav, "translationY", 0f).apply {
+            duration = 700
+            start()
+        }
     }
 
     private fun hidePlayerController() {
