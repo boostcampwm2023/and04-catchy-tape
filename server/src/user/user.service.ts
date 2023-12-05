@@ -82,4 +82,16 @@ export class UserService {
       );
     }
   }
+
+  async getCertainKeywordNicknameUser(keyword: string): Promise<User[]> {
+    try {
+      return User.getCertainUserByNickname(keyword);
+    } catch {
+      throw new CatchyException(
+        'QUERY_ERROR',
+        HTTP_STATUS_CODE.SERVER_ERROR,
+        ERROR_CODE.QUERY_ERROR,
+      );
+    }
+  }
 }

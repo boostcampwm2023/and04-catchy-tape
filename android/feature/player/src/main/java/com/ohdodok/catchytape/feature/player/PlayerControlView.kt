@@ -52,9 +52,6 @@ class PlayerControlView(context: Context, attrs: AttributeSet) : ConstraintLayou
                 thumbnailUrl = getString(R.styleable.PlayerBarView_thumbnailUrl) ?: ""
                 title = getString(R.styleable.PlayerBarView_title) ?: ""
                 artist = getString(R.styleable.PlayerBarView_artist) ?: ""
-                isPlaying = getBoolean(R.styleable.PlayerBarView_isPlaying, false)
-                progress = getInt(R.styleable.PlayerBarView_progress, 0)
-                duration = getInt(R.styleable.PlayerBarView_duration, 0)
             } finally {
                 recycle()
             }
@@ -77,4 +74,11 @@ class PlayerControlView(context: Context, attrs: AttributeSet) : ConstraintLayou
         else AppCompatResources.getDrawable(context, drawable.ic_play)
     }
 
+    fun setOnPreviousButtonClick(onPreviousButtonClick: () -> Unit) {
+        binding.ibPrevious.setOnClickListener { onPreviousButtonClick() }
+    }
+
+    fun setOnNextButtonClick(onNextButtonClick: () -> Unit) {
+        binding.ibNext.setOnClickListener { onNextButtonClick() }
+    }
 }

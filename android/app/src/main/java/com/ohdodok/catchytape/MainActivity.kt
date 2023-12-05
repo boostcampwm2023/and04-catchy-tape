@@ -1,5 +1,6 @@
 package com.ohdodok.catchytape
 
+import android.content.ComponentName
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities.NET_CAPABILITY_VALIDATED
 import android.os.Bundle
@@ -12,6 +13,8 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.media3.common.MediaItem
 import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.session.MediaController
+import androidx.media3.session.SessionToken
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
@@ -21,6 +24,7 @@ import com.ohdodok.catchytape.feature.player.PlayerListener
 import com.ohdodok.catchytape.feature.player.PlayerViewModel
 import com.ohdodok.catchytape.feature.player.millisecondsPerSecond
 import com.ohdodok.catchytape.feature.player.navigateToPlayer
+import com.ohdodok.catchytape.mediacontrol.PlaybackService
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.channels.consumeEach
 import kotlinx.coroutines.delay
@@ -36,7 +40,6 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var connectivityManager: ConnectivityManager
     private val playViewModel: PlayerViewModel by viewModels()
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,7 +58,19 @@ class MainActivity : AppCompatActivity() {
 
         setupPlayer()
         setupPlayButton()
+        setupPreviousButton()
+        setupNextButton()
         observePlaylistChange()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        connectToMediaSession()
+    }
+
+    private fun connectToMediaSession() {
+        val sessionToken = SessionToken(this, ComponentName(this, PlaybackService::class.java))
+        MediaController.Builder(this, sessionToken).buildAsync()
     }
 
     private fun checkNetworkState() {
@@ -82,7 +97,6 @@ class MainActivity : AppCompatActivity() {
 
                 else -> {
                     showBottomNav()
-                    showPlayerController()
                 }
             }
         }
@@ -105,11 +119,6 @@ class MainActivity : AppCompatActivity() {
     private fun hidePlayerController() {
         binding.pcvController.visibility = View.GONE
     }
-
-    private fun showPlayerController() {
-        binding.pcvController.visibility = View.VISIBLE
-    }
-
 
     private fun setupPlayer() {
         player.addListener(PlayerListener(playViewModel))
@@ -156,6 +165,20 @@ class MainActivity : AppCompatActivity() {
         binding.pcvController.setOnPlayButtonClick {
             if (playViewModel.uiState.value.isPlaying) player.pause()
             else player.play()
+        }
+    }
+
+    private fun setupPreviousButton() {
+        binding.pcvController.setOnPreviousButtonClick {
+            player.seekToPreviousMediaItem()
+            player.play()
+        }
+    }
+
+    private fun setupNextButton() {
+        binding.pcvController.setOnNextButtonClick {
+            player.seekToNextMediaItem()
+            player.play()
         }
     }
 }

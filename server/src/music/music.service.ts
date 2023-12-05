@@ -299,4 +299,16 @@ export class MusicService {
       );
     }
   }
+
+  async getCertainKeywordNicknameUser(keyword: string): Promise<Music[]> {
+    try {
+      return await Music.getCertainMusicByTitle(keyword);
+    } catch {
+      throw new CatchyException(
+        'QUERY_ERROR',
+        HTTP_STATUS_CODE.SERVER_ERROR,
+        ERROR_CODE.QUERY_ERROR,
+      );
+    }
+  }
 }

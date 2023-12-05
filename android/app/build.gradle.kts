@@ -20,8 +20,8 @@ android {
         applicationId = "com.ohdodok.catchytape"
         minSdk = 26
         targetSdk = 33
-        versionCode = 1
-        versionName = "0.1.0"
+        versionCode = 2
+        versionName = "0.2.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -66,6 +66,7 @@ dependencies {
     implementation(project(":feature:player"))
     implementation(project(":feature:playlist"))
     implementation(project(":feature:mypage"))
+    implementation(project(":feature:search"))
     implementation(project(":core:data"))
     implementation(project(":core:domain"))
 
@@ -79,5 +80,5 @@ dependencies {
 
     testImplementation(libs.junit)
 
-    implementation(libs.bundles.exoplayer)
+    implementation(libs.media3.session)
 }

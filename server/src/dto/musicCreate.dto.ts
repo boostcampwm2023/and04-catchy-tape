@@ -10,7 +10,7 @@ export class MusicCreateDto {
   @IsNotEmpty()
   @IsString()
   @MaxLength(50, { message: '글자 수가 50을 넘어갔습니다.' })
-  @Matches(/^[가-힣a-zA-Z ]*$/)
+  @Matches(/^[가-힣a-zA-Z0-9 ]*$/)
   title: string;
 
   @IsNotEmpty()

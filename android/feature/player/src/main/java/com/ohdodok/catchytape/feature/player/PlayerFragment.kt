@@ -4,14 +4,13 @@ import android.os.Bundle
 import android.view.View
 import android.widget.SeekBar
 import androidx.fragment.app.activityViewModels
-import androidx.media3.common.MediaItem
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import com.ohdodok.catchytape.core.ui.BaseFragment
+import com.ohdodok.catchytape.core.ui.toMessageId
 import com.ohdodok.catchytape.feature.player.databinding.FragmentPlayerBinding
 import dagger.hilt.android.AndroidEntryPoint
-import timber.log.Timber
 import javax.inject.Inject
 
 const val millisecondsPerSecond = 1000
@@ -28,15 +27,9 @@ class PlayerFragment : BaseFragment<FragmentPlayerBinding>(R.layout.fragment_pla
         binding.viewModel = viewModel
 
         setUpSeekBar()
-        // todo : 실제 데이터로 변경
-//        setMedia("https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8")
         setupButtons()
         collectEvents()
     }
-
-
-
-
 
     private fun setUpSeekBar() {
         binding.sbMusicProgress.setOnSeekBarChangeListener(object :
@@ -54,13 +47,6 @@ class PlayerFragment : BaseFragment<FragmentPlayerBinding>(R.layout.fragment_pla
         })
     }
 
-    private fun setMedia(url: String) {
-        val mediaItem = MediaItem.fromUri(url)
-
-        player.setMediaItem(mediaItem)
-        player.play()
-    }
-
     private fun setupButtons() {
         binding.btnPlay.setOnClickListener {
             if (viewModel.uiState.value.isPlaying) player.pause()
@@ -70,13 +56,23 @@ class PlayerFragment : BaseFragment<FragmentPlayerBinding>(R.layout.fragment_pla
         binding.ibDown.setOnClickListener {
             findNavController().popBackStack()
         }
+
+        binding.btnNext.setOnClickListener {
+            player.seekToNextMediaItem()
+            player.play()
+        }
+
+        binding.btnPrevious.setOnClickListener {
+            player.seekToPreviousMediaItem()
+            player.play()
+        }
     }
 
     private fun collectEvents() {
         repeatOnStarted {
             viewModel.events.collect { event ->
                 when (event) {
-                    is PlayerEvent.ShowError -> Timber.d(event.error.message ?: "")
+                    is PlayerEvent.ShowError -> showMessage(event.error.toMessageId())
                 }
             }
         }

@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="upload_file">파일 업로드</string>
+
+    <string name="invalid_music_title">한글, 영어, 숫자만 가능합니다.</string>
 </resources>

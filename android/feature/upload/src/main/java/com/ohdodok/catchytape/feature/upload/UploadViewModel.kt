@@ -7,6 +7,7 @@ import com.ohdodok.catchytape.core.domain.model.CtException
 import com.ohdodok.catchytape.core.domain.repository.MusicRepository
 import com.ohdodok.catchytape.core.domain.usecase.upload.UploadFileUseCase
 import com.ohdodok.catchytape.core.domain.usecase.upload.UploadMusicUseCase
+import com.ohdodok.catchytape.core.domain.usecase.upload.ValidateMusicTitleUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -25,18 +26,18 @@ import java.io.File
 import javax.inject.Inject
 
 data class UploadUiState(
-    val musicTitle: String = "",
+    val musicTitleState: MusicTitleState = MusicTitleState(),
     val musicGenre: String = "",
     val imageState: UploadedFileState = UploadedFileState(),
     val audioState: UploadedFileState = UploadedFileState(),
     val encoding: Boolean = false,
-    val musicGenres: List<String> = emptyList()
+    val musicGenres: List<String> = emptyList(),
 ) {
     val isLoading: Boolean
         get() = imageState.isLoading || audioState.isLoading || encoding
 
     val isUploadEnable: Boolean
-        get() = musicTitle.isNotBlank()
+        get() = musicTitleState.title.isNotBlank() && musicTitleState.isValid
                 && musicGenre.isNotBlank()
                 && imageState.url.isNotBlank()
                 && audioState.url.isNotBlank()
@@ -46,6 +47,11 @@ data class UploadUiState(
 data class UploadedFileState(
     val isLoading: Boolean = false,
     val url: String = ""
+)
+
+data class MusicTitleState(
+    val title: String = "",
+    val isValid: Boolean = true
 )
 
 sealed interface UploadEvent {
@@ -58,7 +64,8 @@ sealed interface UploadEvent {
 class UploadViewModel @Inject constructor(
     private val musicRepository: MusicRepository,
     private val uploadFileUseCase: UploadFileUseCase,
-    private val uploadMusicUseCase: UploadMusicUseCase
+    private val uploadMusicUseCase: UploadMusicUseCase,
+    private val validateMusicTitleUseCase: ValidateMusicTitleUseCase
 ) : ViewModel() {
 
     private val _events = MutableSharedFlow<UploadEvent>()
@@ -90,7 +97,14 @@ class UploadViewModel @Inject constructor(
     }
 
     fun updateMusicTitle(title: CharSequence) {
-        _uiState.update { it.copy(musicTitle = title.toString()) }
+        _uiState.update {
+            it.copy(
+                musicTitleState = it.musicTitleState.copy(
+                    title = title.toString(),
+                    isValid = validateMusicTitleUseCase(title.toString())
+                )
+            )
+        }
     }
 
     fun updateMusicGenre(genre: CharSequence) {
@@ -123,7 +137,7 @@ class UploadViewModel @Inject constructor(
         uploadMusicUseCase(
             imageUrl = uiState.value.imageState.url,
             audioUrl = uiState.value.audioState.url,
-            title = uiState.value.musicTitle,
+            title = uiState.value.musicTitleState.title,
             genre = uiState.value.musicGenre
         ).onStart {
             _uiState.update { it.copy(encoding = true) }
