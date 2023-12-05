@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable, LoggerService } from '@nestjs/common';
 import { HTTP_STATUS_CODE } from 'src/httpStatusCode.enum';
 import { User } from 'src/entity/user.entity';
 import { Music } from 'src/entity/music.entity';
@@ -7,12 +7,14 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { PlaylistService } from 'src/playlist/playlist.service';
 import { CatchyException } from 'src/config/catchyException';
 import { ERROR_CODE } from 'src/config/errorCode.enum';
+import { Logger } from 'winston';
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectRepository(User) private userRepository: Repository<User>,
     private playlistService: PlaylistService,
+    @Inject(Logger) private readonly logger: LoggerService,
   ) {}
 
   async isDuplicatedUserEmail(userNickname: string): Promise<boolean> {
@@ -27,6 +29,7 @@ export class UserService {
 
       return false;
     } catch {
+      this.logger.error(`user.service - isDuplicatedUserEmail : SERVICE_ERROR`);
       throw new CatchyException(
         'SERVER ERROR',
         HTTP_STATUS_CODE.SERVER_ERROR,
@@ -46,6 +49,7 @@ export class UserService {
       });
 
       if (!targetUser) {
+        this.logger.error(`user.service - updateUserImage : NOT_EXIST_USER`);
         throw new CatchyException(
           'NOT_EXIST_USER',
           HTTP_STATUS_CODE.BAD_REQUEST,
@@ -61,6 +65,7 @@ export class UserService {
         throw err;
       }
 
+      this.logger.error(`user.service - updateUserImage : SERVICE_ERROR`);
       throw new CatchyException(
         'SERVER_ERROR',
         HTTP_STATUS_CODE.SERVER_ERROR,
@@ -75,6 +80,7 @@ export class UserService {
         where: { user_id },
       });
     } catch {
+      this.logger.error(`user.service - getUserInfomation : SERVICE_ERROR`);
       throw new CatchyException(
         'SERVER_ERROR',
         HTTP_STATUS_CODE.SERVER_ERROR,
@@ -87,6 +93,9 @@ export class UserService {
     try {
       return User.getCertainUserByNickname(keyword);
     } catch {
+      this.logger.error(
+        `user.service - getCertainKeywordNicknameUser : QUERY_ERROR`,
+      );
       throw new CatchyException(
         'QUERY_ERROR',
         HTTP_STATUS_CODE.SERVER_ERROR,
