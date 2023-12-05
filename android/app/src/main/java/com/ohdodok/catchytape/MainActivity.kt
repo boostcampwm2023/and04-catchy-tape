@@ -152,8 +152,7 @@ class MainActivity : AppCompatActivity() {
                     player.clearMediaItems()
                     player.setMediaItems(newItems)
 
-                    val index = newPlaylist.musics.indexOf(newPlaylist.startMusic)
-                    player.seekTo(index, 0)
+                    player.seekTo(newPlaylist.startMusicIndex, 0)
                     player.play()
                 }
             }
