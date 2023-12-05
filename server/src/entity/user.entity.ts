@@ -5,6 +5,7 @@ import {
   BaseEntity,
   PrimaryColumn,
   OneToMany,
+  ILike,
 } from 'typeorm';
 import { Playlist } from './playlist.entity';
 import { Music } from './music.entity';
@@ -31,4 +32,23 @@ export class User extends BaseEntity {
 
   @OneToMany(() => Playlist, (playlist) => playlist.user)
   playlists: Playlist[];
+
+  static async getCertainUserByNickname(keyword: string): Promise<User[]> {
+    return this.find({
+      relations: {
+        musics: false,
+        playlists: false,
+      },
+      select: {
+        user_id: true,
+        nickname: true,
+        user_email: true,
+        photo: true,
+        created_at: true,
+      },
+      where: {
+        nickname: ILike(`%${keyword}%`),
+      },
+    });
+  }
 }
