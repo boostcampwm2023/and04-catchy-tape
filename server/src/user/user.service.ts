@@ -88,9 +88,9 @@ export class UserService {
       return User.getCertainUserByNickname(keyword);
     } catch {
       throw new CatchyException(
-        'SERVER_ERROR',
+        'QUERY_ERROR',
         HTTP_STATUS_CODE.SERVER_ERROR,
-        ERROR_CODE.SERVICE_ERROR,
+        ERROR_CODE.QUERY_ERROR,
       );
     }
   }
