@@ -6,7 +6,6 @@ import androidx.media3.common.MediaMetadata
 import androidx.media3.exoplayer.ExoPlayer
 import com.ohdodok.catchytape.core.domain.model.Music
 
-
 fun ExoPlayer.moveNextMedia() {
     seekToNextMediaItem()
     if (isPlaying) {
@@ -14,14 +13,12 @@ fun ExoPlayer.moveNextMedia() {
     }
 }
 
-
 fun ExoPlayer.movePreviousMedia() {
     seekToPreviousMediaItem()
     if (isPlaying) {
         play()
     }
 }
-
 
 fun getMediasWithMetaData(musics: List<Music>): List<MediaItem> {
     val mediaItemBuilder = MediaItem.Builder()
