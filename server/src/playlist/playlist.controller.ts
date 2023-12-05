@@ -95,14 +95,13 @@ export class PlaylistController {
           recentPlaylistId,
         ),
       };
-    } else {
-      return {
-        music_playlist_id: await this.playlistService.addMusicToPlaylist(
-          user_id,
-          recentPlaylistId,
-          music_id,
-        ),
-      };
     }
+    return {
+      music_playlist_id: await this.playlistService.addMusicToPlaylist(
+        user_id,
+        recentPlaylistId,
+        music_id,
+      ),
+    };
   }
 }
