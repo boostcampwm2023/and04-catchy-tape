@@ -6,6 +6,7 @@ import com.ohdodok.catchytape.core.domain.model.CtErrorType
 import com.ohdodok.catchytape.core.domain.model.CtException
 import com.ohdodok.catchytape.core.domain.model.Music
 import com.ohdodok.catchytape.core.domain.repository.PlaylistRepository
+import com.ohdodok.catchytape.core.domain.usecase.player.CurrentPlaylistUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -35,13 +36,9 @@ sealed interface PlayerEvent {
 @HiltViewModel
 class PlayerViewModel @Inject constructor(
     private val playlistRepository: PlaylistRepository,
+    private val currentPlaylistUseCase: CurrentPlaylistUseCase,
 ) : ViewModel(), PlayerEventListener {
-
-    val dummyUris = listOf(
-        "https://catchy-tape-bucket2.kr.object.ncloudstorage.com/music/379c98d8-df30-4df1-90a8-e9d45d80789a/music.m3u8",
-        "https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8",
-        "https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8"
-    ) // TODO : dummys 삭제 필요
+    val playlistChangeEvent = currentPlaylistUseCase.currentPlaylist
 
     private val _uiState = MutableStateFlow(PlayerState())
     val uiState: StateFlow<PlayerState> = _uiState.asStateFlow()

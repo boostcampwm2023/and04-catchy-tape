@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable, Logger, LoggerService } from '@nestjs/common';
 import { HTTP_STATUS_CODE } from 'src/httpStatusCode.enum';
 import { NcloudConfigService } from './../config/ncloud.config';
 import { S3 } from 'aws-sdk';
@@ -10,8 +10,11 @@ import { Readable } from 'stream';
 
 @Injectable()
 export class UploadService {
+  private readonly logger = new Logger('UploadService');
   private objectStorage: S3;
-  constructor(private readonly nCloudConfigService: NcloudConfigService) {
+  constructor(
+    private readonly nCloudConfigService: NcloudConfigService,
+  ) {
     this.objectStorage = nCloudConfigService.createObjectStorageOption();
   }
 
@@ -36,6 +39,9 @@ export class UploadService {
   ): Promise<{ url: string }> {
     try {
       if (!this.isValidUUIDPattern(musicId)) {
+        this.logger.error(
+          `upload.service - uploadMusic : INVALID_INPUT_UUID_VALUE`,
+        );
         throw new CatchyException(
           'INVALID_INPUT_UUID_VALUE',
           HTTP_STATUS_CODE.BAD_REQUEST,
@@ -55,6 +61,7 @@ export class UploadService {
 
       return { url: uploadResult.Location };
     } catch {
+      this.logger.error(`upload.service - uploadMusic : SERVICE_ERROR`);
       throw new CatchyException(
         'SERVER ERROR',
         HTTP_STATUS_CODE.SERVER_ERROR,
@@ -70,6 +77,9 @@ export class UploadService {
   ): Promise<{ url: string }> {
     try {
       if (!this.isValidUUIDPattern(id)) {
+        this.logger.error(
+          `upload.service - uploadImage : INVALID_INPUT_UUID_VALUE`,
+        );
         throw new CatchyException(
           'INVALID_INPUT_UUID_VALUE',
           HTTP_STATUS_CODE.BAD_REQUEST,
@@ -78,6 +88,9 @@ export class UploadService {
       }
 
       if (!this.isValidType(type)) {
+        this.logger.error(
+          `upload.service - uploadImage : INVALID_INPUT_TYPE_VALUE`,
+        );
         throw new CatchyException(
           'INVALID_INPUT_TYPE_VALUE',
           HTTP_STATUS_CODE.BAD_REQUEST,
@@ -104,6 +117,7 @@ export class UploadService {
 
       return { url: uploadResult.Location };
     } catch {
+      this.logger.error(`upload.service - uploadImage : SERVICE_ERROR`);
       throw new CatchyException(
         'SERVER ERROR',
         HTTP_STATUS_CODE.SERVER_ERROR,
@@ -128,8 +142,11 @@ export class UploadService {
         .promise();
 
       return { url: uploadResult.Location };
-    } catch(err) {
+    } catch (err) {
       console.log(err);
+      this.logger.error(
+        `upload.service - uploadEncodedFile : NCP_UPLOAD_ERROR`,
+      );
       throw new CatchyException(
         'NCP_UPLOAD_ERROR',
         HTTP_STATUS_CODE.SERVER_ERROR,

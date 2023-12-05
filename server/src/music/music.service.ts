@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { HTTP_STATUS_CODE } from 'src/httpStatusCode.enum';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -18,6 +18,7 @@ import { AWSError } from 'aws-sdk';
 
 @Injectable()
 export class MusicService {
+  private readonly logger = new Logger('MusicService');
   private objectStorage: AWS.S3;
   constructor(
     @InjectRepository(Music) private musicRepository: Repository<Music>,
@@ -68,7 +69,50 @@ export class MusicService {
     };
   }
 
-  private async executeEncoding(
+  async encodeMusic(musicId: string, musicPath: string): Promise<string> {
+    try {
+      ffmpeg.setFfmpegPath(ffmpegInstaller.path);
+
+      const { outputMusicPath, entireMusicPath, outputPath, tempFilePath } =
+        this.setEncodingPaths(musicPath);
+
+      fs.mkdirSync(outputMusicPath, { recursive: true });
+
+      const musicFileResponse = await axios.get(musicPath, {
+        responseType: 'arraybuffer',
+      });
+
+      const musicBuffer = Buffer.from(musicFileResponse.data);
+
+      fs.writeFile(tempFilePath, musicBuffer, (err) => {
+        if (err) throw new Error();
+      });
+
+      const encodedFileURL = await this.executeEncoding(
+        tempFilePath,
+        outputPath,
+        outputMusicPath,
+        musicId,
+      );
+
+      fs.rmdirSync(entireMusicPath, { recursive: true });
+
+      return encodedFileURL;
+    } catch (err) {
+      if (err instanceof CatchyException) {
+        throw err;
+      }
+
+      this.logger.error(`music.service - encodeMusic : MUSIC_ENCODE_ERROR`);
+      throw new CatchyException(
+        'MUSIC_ENCODE_ERROR',
+        HTTP_STATUS_CODE.SERVER_ERROR,
+        ERROR_CODE.MUSIC_ENCODE_ERROR,
+      );
+    }
+  }
+
+  async executeEncoding(
     tempFilePath: string,
     outputPath: string,
     outputMusicPath: string,
@@ -173,6 +217,7 @@ export class MusicService {
         throw err;
       }
 
+      this.logger.error(`music.service - uploadEncodedFile : SERVICE_ERROR`);
       throw new CatchyException(
         'SERVICE_ERROR',
         HTTP_STATUS_CODE.SERVER_ERROR,
@@ -212,7 +257,14 @@ export class MusicService {
         genre,
       } = musicCreateDto;
 
-      this.validateGenre(genre);
+      if (!this.isValidGenre(genre)) {
+        this.logger.error(`music.service - createMusic : NOT_EXIST_GENRE`);
+        throw new CatchyException(
+          'NOT_EXIST_GENRE',
+          HTTP_STATUS_CODE.BAD_REQUEST,
+          ERROR_CODE.NOT_EXIST_GENRE,
+        );
+      }
 
       const encodedFileURL = await this.encodeMusic(music_id, music_file);
 
@@ -230,6 +282,7 @@ export class MusicService {
         throw err;
       }
 
+      this.logger.error(`music.service - createMusic : SERVICE_ERROR`);
       throw new CatchyException(
         'SERVER ERROR',
         HTTP_STATUS_CODE.SERVER_ERROR,
@@ -242,6 +295,7 @@ export class MusicService {
     try {
       return Music.getRecentMusic();
     } catch {
+      this.logger.error(`music.service - getRecentMusic : SERVICE_ERROR`);
       throw new CatchyException(
         'SERVER ERROR',
         HTTP_STATUS_CODE.SERVER_ERROR,
@@ -254,6 +308,7 @@ export class MusicService {
     try {
       return Music.getMusicListByUserId(userId, count);
     } catch {
+      this.logger.error(`music.service - getMyUploads : SERVICE_ERROR`);
       throw new CatchyException(
         'SERVER_ERROR',
         HTTP_STATUS_CODE.SERVER_ERROR,
@@ -267,6 +322,7 @@ export class MusicService {
       const targetMusic: Music = await Music.getMusicById(music_id);
 
       if (!targetMusic) {
+        this.logger.error(`music.service - getMusicInfo : NOT_EXIST_MUSIC`);
         throw new CatchyException(
           'NOT_EXIST_MUSIC',
           HTTP_STATUS_CODE.BAD_REQUEST,
@@ -276,6 +332,8 @@ export class MusicService {
       return targetMusic;
     } catch (err) {
       if (err instanceof CatchyException) throw err;
+
+      this.logger.error(`music.service - getMusicInfo : SERVICE_ERROR`);
       throw new CatchyException(
         'SERVER_ERROR',
         HTTP_STATUS_CODE.SERVER_ERROR,
@@ -303,6 +361,9 @@ export class MusicService {
       const awsError = err as AWSError;
 
       if (awsError && awsError.code === 'NoSuchKey') {
+        this.logger.error(
+          `music.service - getEncodedChunkFiles : NOT_EXIST_TS_IN_BUCKET`,
+        );
         throw new CatchyException(
           'NOT_EXIST_TS_IN_BUCKET',
           HTTP_STATUS_CODE.NOT_FOUND,
@@ -310,10 +371,26 @@ export class MusicService {
         );
       }
 
+      this.logger.error(`music.service - getEncodedChunkFiles : SERVICE_ERROR`);
       throw new CatchyException(
         'SERVER_ERROR',
         HTTP_STATUS_CODE.SERVER_ERROR,
         ERROR_CODE.SERVICE_ERROR,
+      );
+    }
+  }
+
+  async getCertainKeywordNicknameUser(keyword: string): Promise<Music[]> {
+    try {
+      return await Music.getCertainMusicByTitle(keyword);
+    } catch {
+      this.logger.error(
+        `music.service - getCertainKeywordNicknameUser : QUERY_ERROR`,
+      );
+      throw new CatchyException(
+        'QUERY_ERROR',
+        HTTP_STATUS_CODE.SERVER_ERROR,
+        ERROR_CODE.QUERY_ERROR,
       );
     }
   }

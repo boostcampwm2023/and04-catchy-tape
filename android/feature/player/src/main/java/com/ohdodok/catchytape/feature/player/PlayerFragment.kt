@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.View
 import android.widget.SeekBar
 import androidx.fragment.app.activityViewModels
-import androidx.media3.common.MediaItem
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
@@ -28,10 +27,6 @@ class PlayerFragment : BaseFragment<FragmentPlayerBinding>(R.layout.fragment_pla
         binding.viewModel = viewModel
 
         setUpSeekBar()
-        // todo : 실제 데이터로 변경
-        //setMedia("https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8")
-        setMedias()
-
         setupButtons()
         collectEvents()
     }
@@ -51,20 +46,6 @@ class PlayerFragment : BaseFragment<FragmentPlayerBinding>(R.layout.fragment_pla
             override fun onStopTrackingTouch(p0: SeekBar?) {}
         })
     }
-
-    private fun setMedia(url: String) {
-        val mediaItem = MediaItem.fromUri(url)
-
-        player.setMediaItem(mediaItem)
-        player.play()
-    }
-
-    private fun setMedias() {
-        val mediaItems = viewModel.dummyUris.map { MediaItem.fromUri(it) }
-        player.setMediaItems(mediaItems)
-        player.play()
-    }
-
 
     private fun setupButtons() {
         binding.btnPlay.setOnClickListener {
