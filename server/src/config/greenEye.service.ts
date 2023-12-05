@@ -48,10 +48,11 @@ export class GreenEyeService {
 
   async getResultOfNormalImage(imageUrl: string): Promise<GreenEyeResponseDto> {
     try {
-      return await fetch(
-        this.greenEyeRequestUrl,
-        this.getRequestInit(imageUrl),
-      ).then((res) => res.json());
+      return await fetch(this.greenEyeRequestUrl, this.getRequestInit(imageUrl))
+        .then((res) => res.json())
+        .then((err) => {
+          throw new Error();
+        });
     } catch {
       throw new CatchyException(
         'INVALID_GREEN_EYE_REQUEST',
