@@ -4,10 +4,10 @@ import {
   CreateDateColumn,
   BaseEntity,
   JoinColumn,
-  PrimaryGeneratedColumn,
   ManyToOne,
   OneToMany,
   PrimaryColumn,
+  ILike,
 } from 'typeorm';
 import { User } from './user.entity';
 import { Genres } from 'src/constants';
@@ -101,6 +101,28 @@ export class Music extends BaseEntity {
       relations: { user: true },
       select: { user: { user_id: true, nickname: true } },
       where: { music_id },
+    });
+  }
+
+  static async getCertainMusicByTitle(keyword: string): Promise<Music[]> {
+    return await this.find({
+      relations: {
+        user: false,
+        music_playlist: false,
+      },
+      select: {
+        music_id: true,
+        lyrics: true,
+        title: true,
+        cover: true,
+        music_file: true,
+      },
+      where: {
+        title: ILike(`%${keyword}%`),
+      },
+      order: {
+        created_at: 'DESC',
+      },
     });
   }
 }
