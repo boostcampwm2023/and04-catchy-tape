@@ -77,7 +77,6 @@ class PlaylistViewModel @Inject constructor(
     }
 }
 
-
 sealed interface PlaylistsEvent {
 
     data class NavigateToPlaylistDetail(val playlistId: Int) : PlaylistsEvent
