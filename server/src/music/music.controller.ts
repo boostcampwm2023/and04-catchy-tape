@@ -81,4 +81,13 @@ export class MusicController {
       file: await this.musicService.getEncodedChunkFiles(music_id, fileName),
     };
   }
+
+  @Get('search')
+  @UseGuards(AuthGuard())
+  @HttpCode(HTTP_STATUS_CODE.SUCCESS)
+  async getCertainTitleMusic(
+    @Query('keyword') keyword: string,
+  ): Promise<Music[]> {
+    return this.musicService.getCertainKeywordNicknameUser(keyword);
+  }
 }

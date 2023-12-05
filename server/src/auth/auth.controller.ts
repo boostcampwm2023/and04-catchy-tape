@@ -4,6 +4,9 @@ import {
   Delete,
   Get,
   HttpCode,
+  Inject,
+  Logger,
+  LoggerService,
   Post,
   Req,
   UseGuards,
@@ -18,7 +21,10 @@ import { User } from 'src/entity/user.entity';
 
 @Controller('users')
 export class AuthController {
-  constructor(private authService: AuthService) {}
+  constructor(
+    private authService: AuthService,
+    @Inject(Logger) private readonly logger: LoggerService,
+  ) {}
 
   @Post('login')
   @HttpCode(HTTP_STATUS_CODE.SUCCESS)
@@ -43,13 +49,14 @@ export class AuthController {
   @HttpCode(HTTP_STATUS_CODE.SUCCESS)
   verifyToken(@Req() req): { userId: string } {
     const user: User = req.user;
+    this.logger.log(`GET /users/verify - ${user.nickname}: verified`);
     return { userId: user.user_id };
   }
 
   @Delete()
   @UseGuards(AuthGuard())
   @HttpCode(HTTP_STATUS_CODE.SUCCESS)
-  async deleteUser(@Req() req): Promise<{userId: string}> {
+  async deleteUser(@Req() req): Promise<{ userId: string }> {
     const user: User = req.user;
     return await this.authService.deleteUser(user);
   }

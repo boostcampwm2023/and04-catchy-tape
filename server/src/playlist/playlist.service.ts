@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CatchyException } from 'src/config/catchyException';
 import { ERROR_CODE } from 'src/config/errorCode.enum';
+import { RECENT_PLAYLIST_NAME } from 'src/constants';
 import { PlaylistCreateDto } from 'src/dto/playlistCreate.dto';
 import { Music } from 'src/entity/music.entity';
 import { Music_Playlist } from 'src/entity/music_playlist.entity';
@@ -82,6 +83,7 @@ export class PlaylistService {
         this.music_playlistRepository.create({
           music: { music_id: musicId },
           playlist: { playlist_id: playlistId },
+          updated_at: new Date(),
         });
 
       const result: Music_Playlist =
@@ -219,6 +221,46 @@ export class PlaylistService {
         'SERVER ERROR',
         HTTP_STATUS_CODE.SERVER_ERROR,
         ERROR_CODE.SERVER_ERROR,
+      );
+    }
+  }
+
+  async getRecentPlaylist(user_id: string): Promise<Playlist> {
+    try {
+      return await this.playlistRepository.findOne({
+        where: {
+          user: { user_id },
+          playlist_title: RECENT_PLAYLIST_NAME,
+        },
+      });
+    } catch {
+      throw new CatchyException(
+        'QUERY_ERROR',
+        HTTP_STATUS_CODE.SERVER_ERROR,
+        ERROR_CODE.QUERY_ERROR,
+      );
+    }
+  }
+
+  async updateRecentMusic(
+    music_id: string,
+    playlist_id: number,
+  ): Promise<number> {
+    try {
+      const music_playlist: Music_Playlist =
+        await this.music_playlistRepository.findOne({
+          where: { music: { music_id }, playlist: { playlist_id } },
+        });
+
+      music_playlist.updated_at = new Date();
+      const savedData: Music_Playlist =
+        await this.music_playlistRepository.save(music_playlist);
+      return savedData.music_playlist_id;
+    } catch {
+      throw new CatchyException(
+        'SERVICE_ERROR',
+        HTTP_STATUS_CODE.SERVER_ERROR,
+        ERROR_CODE.SERVICE_ERROR,
       );
     }
   }

@@ -3,12 +3,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/playlist_nav_graph"
-    app:startDestination="@id/playlist_fragment">
+    app:startDestination="@id/playlists_fragment">
 
     <fragment
-        android:id="@+id/playlist_fragment"
+        android:id="@+id/playlists_fragment"
         android:name="com.ohdodok.catchytape.feature.playlist.PlaylistsFragment"
-        android:label="PlaylistsFragment"
+        android:label="playlists"
         tools:layout="@layout/fragment_playlists">
 
         <action
@@ -20,7 +20,7 @@
     <fragment
         android:id="@+id/playlist_detail_fragment"
         android:name="com.ohdodok.catchytape.feature.playlist.PlaylistDetailFragment"
-        android:label="PlaylistDetailFragment"
+        android:label="playlist detail"
         tools:layout="@layout/fragment_playlist_detail">
 
         <argument
