@@ -7,6 +7,8 @@
         <item name="android:windowLightStatusBar">true</item>
         <item name="android:windowBackground">@color/white</item>
         <item name="android:textColor">@color/on_surface</item>
+
+        <item name="colorSecondaryContainer">@color/primary_container</item>
     </style>
 
     <style name="Theme.CatchyTape" parent="Base.Theme.CatchyTape" />
