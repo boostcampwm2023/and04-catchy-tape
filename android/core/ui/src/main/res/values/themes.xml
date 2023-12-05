@@ -35,8 +35,12 @@
         <item name="android:textSize">12sp</item>
     </style>
 
+    <style name="AppBarLayout" parent="Widget.Material3.AppBarLayout">
+        <item name="android:background">@android:color/transparent</item>
+        <item name="android:fitsSystemWindows">true</item>
+    </style>
+
     <style name="ToolBar" parent="Widget.Material3.Toolbar">
-        <item name="android:layout_marginTop">@dimen/status_bar_height</item>
         <item name="titleTextColor">@color/on_surface</item>
         <item name="navigationIconTint">@color/on_surface</item>
     </style>

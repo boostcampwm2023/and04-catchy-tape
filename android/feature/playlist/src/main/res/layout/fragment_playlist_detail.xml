@@ -19,8 +19,8 @@
             android:id="@+id/iv_playlist_thumbnail"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:scaleType="center"
             android:alpha="0.2"
+            android:scaleType="center"
             app:imgUrl="@{viewModel.uiState.musics.get(0).imageUrl}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -37,10 +37,12 @@
             app:layout_constraintStart_toStartOf="@id/iv_playlist_thumbnail"
             app:layout_constraintTop_toTopOf="@id/iv_playlist_thumbnail" />
 
-        <com.google.android.material.appbar.CollapsingToolbarLayout
-            android:id="@+id/ctl_playlist_detail"
+        <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/abl_playlist_detail"
+            style="@style/AppBarLayout"
             android:layout_width="match_parent"
-            android:layout_height="?attr/collapsingToolbarLayoutLargeSize"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
@@ -50,11 +52,22 @@
                 style="@style/ToolBar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:navigationIcon="@drawable/ic_arrow_back"
-                app:title="최근 재생 목록 (임시)"
-                tools:title="최근 재생 목록" />
+                app:navigationIcon="@drawable/ic_arrow_back" />
 
-        </com.google.android.material.appbar.CollapsingToolbarLayout>
+        </com.google.android.material.appbar.AppBarLayout>
+
+        <TextView
+            android:id="@+id/tv_playlist_title"
+            style="@style/TitleLarge"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/margin_horizontal"
+            android:layout_marginTop="@dimen/medium"
+            android:text="최근 재생 목록 (임시)"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/abl_playlist_detail"
+            tools:text="최근 재생 목록" />
 
         <ImageButton
             android:id="@+id/ib_play"
@@ -66,7 +79,7 @@
             app:layout_constraintBottom_toTopOf="@id/rv_playlist"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/ctl_playlist_detail" />
+            app:layout_constraintTop_toBottomOf="@id/tv_playlist_title" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_playlist"
@@ -79,7 +92,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/ctl_playlist_detail"
+            app:layout_constraintTop_toBottomOf="@id/tv_playlist_title"
             app:list="@{viewModel.uiState.musics}"
             tools:listitem="@layout/item_music_vertical" />
 
