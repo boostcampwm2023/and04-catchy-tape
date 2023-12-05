@@ -3,6 +3,8 @@ import {
   Controller,
   Get,
   HttpCode,
+  Inject,
+  LoggerService,
   Param,
   Patch,
   Post,
@@ -17,10 +19,14 @@ import { HTTP_STATUS_CODE } from 'src/httpStatusCode.enum';
 import { PlaylistCreateDto } from 'src/dto/playlistCreate.dto';
 import { Playlist } from 'src/entity/playlist.entity';
 import { Music } from 'src/entity/music.entity';
+import { Logger } from 'winston';
 
 @Controller('playlists')
 export class PlaylistController {
-  constructor(private playlistService: PlaylistService) {}
+  constructor(
+    private playlistService: PlaylistService,
+    @Inject(Logger) private readonly logger: LoggerService,
+  ) {}
 
   @Post()
   @UseGuards(AuthGuard())
@@ -30,6 +36,9 @@ export class PlaylistController {
     @Req() req,
     @Body() playlistCreateDto: PlaylistCreateDto,
   ): Promise<{ playlist_id: number }> {
+    this.logger.log(
+      `POST /playlists - nickname=${req.user.nickname}, body=${playlistCreateDto}`,
+    );
     const userId: string = req.user.user_id;
     const playlistId: number = await this.playlistService.createPlaylist(
       userId,
@@ -46,6 +55,9 @@ export class PlaylistController {
     @Param('playlistId') playlistId: number,
     @Body('musicId') music_id: string,
   ): Promise<{ music_playlist_id: number }> {
+    this.logger.log(
+      `POST /playlists/${playlistId} - nickname=${req.user.nickname}, musicId=${music_id}`,
+    );
     const userId: string = req.user.user_id;
     const music_playlist_id: number =
       await this.playlistService.addMusicToPlaylist(
@@ -60,6 +72,7 @@ export class PlaylistController {
   @UseGuards(AuthGuard())
   @HttpCode(HTTP_STATUS_CODE.SUCCESS)
   async getUserPlaylists(@Req() req): Promise<Playlist[]> {
+    this.logger.log(`GET /playlists - nickname=${req.user.nickname}`);
     const userId: string = req.user.user_id;
     const playlists: Playlist[] =
       await this.playlistService.getUserPlaylists(userId);
@@ -73,6 +86,9 @@ export class PlaylistController {
     @Req() req,
     @Param('playlistId') playlistId: number,
   ): Promise<Music[]> {
+    this.logger.log(
+      `GET /playlists/${playlistId} - nickname=${req.user.nickname}`,
+    );
     const userId: string = req.user.user_id;
     return await this.playlistService.getPlaylistMusics(userId, playlistId);
   }
@@ -84,6 +100,9 @@ export class PlaylistController {
     @Req() req,
     @Body('musicId') music_id: string,
   ): Promise<{ music_playlist_id: number }> {
+    this.logger.log(
+      `PATCH /playlists/recent-played - nickname=${req.user.nickname}, music_id=${music_id}`,
+    );
     const user_id: string = req.user.user_id;
     const recentPlaylist: Playlist =
       await this.playlistService.getRecentPlaylist(user_id);
