@@ -80,7 +80,7 @@ export class PlaylistController {
   @Patch('recent-played')
   @UseGuards(AuthGuard())
   @HttpCode(HTTP_STATUS_CODE.SUCCESS)
-  async updateRecentPlay(
+  async updateRecentPlayMusic(
     @Req() req,
     @Body('musicId') music_id: string,
   ): Promise<{ music_playlist_id: number }> {
