@@ -145,8 +145,7 @@ class MainActivity : AppCompatActivity() {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 playViewModel.playlistChangeEvent.consumeEach { newPlaylist ->
                     val newItems = newPlaylist.musics.map {
-                        // todo : it에서 url 찾아서 넣어주기!
-                        MediaItem.Builder().setUri("https://catchy-tape-bucket2.kr.object.ncloudstorage.com/music/8ce4b6b0-6480-479a-99b9-54ef7e913313/music.m3u8")
+                        MediaItem.Builder().setUri(it.musicUrl)
                             .setMediaId(it.id)
                             .build()
                     }
