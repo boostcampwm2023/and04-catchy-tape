@@ -26,6 +26,7 @@ import com.ohdodok.catchytape.feature.player.millisecondsPerSecond
 import com.ohdodok.catchytape.feature.player.navigateToPlayer
 import com.ohdodok.catchytape.mediacontrol.PlaybackService
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.channels.consumeEach
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -55,11 +56,11 @@ class MainActivity : AppCompatActivity() {
         val networkStateObserver = NetworkStateObserver(connectivityManager, ::checkNetworkState)
         lifecycle.addObserver(networkStateObserver)
 
-        setMedias()
         setupPlayer()
         setupPlayButton()
         setupPreviousButton()
         setupNextButton()
+        observePlaylistChange()
     }
 
     override fun onStart() {
@@ -139,6 +140,25 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private fun observePlaylistChange() {
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                playViewModel.playlistChangeEvent.consumeEach { newPlaylist ->
+                    val newItems = newPlaylist.musics.map {
+                        MediaItem.Builder().setUri(it.musicUrl)
+                            .setMediaId(it.id)
+                            .build()
+                    }
+                    player.clearMediaItems()
+                    player.setMediaItems(newItems)
+
+                    player.seekTo(newPlaylist.startMusicIndex, 0)
+                    player.play()
+                }
+            }
+        }
+    }
+
     private fun setupPlayButton() {
         binding.pcvController.setOnPlayButtonClick {
             if (playViewModel.uiState.value.isPlaying) player.pause()
@@ -158,11 +178,5 @@ class MainActivity : AppCompatActivity() {
             player.seekToNextMediaItem()
             player.play()
         }
-    }
-
-    private fun setMedias() {
-        val mediaItems = playViewModel.dummyUris.map { MediaItem.fromUri(it) }
-        player.setMediaItems(mediaItems)
-        player.play()
     }
 }

@@ -8,11 +8,16 @@
         <variable
             name="music"
             type="com.ohdodok.catchytape.core.domain.model.Music" />
+
+        <variable
+            name="listener"
+            type="com.ohdodok.catchytape.core.ui.MusicAdapter.Listener" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:onClick="@{() -> listener.onClick(music)}"
         android:paddingEnd="@dimen/medium">
 
         <ImageView

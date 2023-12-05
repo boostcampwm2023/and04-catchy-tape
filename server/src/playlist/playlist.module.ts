@@ -6,6 +6,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from 'src/auth/auth.module';
 import { Music_Playlist } from 'src/entity/music_playlist.entity';
 import { Music } from 'src/entity/music.entity';
+import { Logger } from 'winston';
 
 @Module({
   imports: [
@@ -13,7 +14,7 @@ import { Music } from 'src/entity/music.entity';
     AuthModule,
   ],
   controllers: [PlaylistController],
-  providers: [PlaylistService],
+  providers: [PlaylistService, Logger],
   exports: [PlaylistService],
 })
 export class PlaylistModule {}

@@ -20,7 +20,8 @@ data class MusicResponse (
             id = musicId,
             title = title,
             artist = user.nickname,
-            imageUrl = cover
+            imageUrl = cover,
+            musicUrl = musicFile,
         )
     }
 }
