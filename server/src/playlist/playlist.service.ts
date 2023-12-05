@@ -1,4 +1,4 @@
-import { Inject, Injectable, LoggerService } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CatchyException } from 'src/config/catchyException';
 import { ERROR_CODE } from 'src/config/errorCode.enum';
@@ -9,10 +9,10 @@ import { Music_Playlist } from 'src/entity/music_playlist.entity';
 import { Playlist } from 'src/entity/playlist.entity';
 import { HTTP_STATUS_CODE } from 'src/httpStatusCode.enum';
 import { Repository } from 'typeorm';
-import { Logger } from 'winston';
 
 @Injectable()
 export class PlaylistService {
+  private readonly logger = new Logger('PlaylistService');
   constructor(
     @InjectRepository(Playlist)
     private playlistRepository: Repository<Playlist>,
@@ -20,7 +20,6 @@ export class PlaylistService {
     private music_playlistRepository: Repository<Music_Playlist>,
     @InjectRepository(Music)
     private MusicRepository: Repository<Music>,
-    @Inject(Logger) private readonly logger: LoggerService,
   ) {}
 
   async createPlaylist(

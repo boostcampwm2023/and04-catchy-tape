@@ -3,8 +3,7 @@ import {
   Controller,
   Get,
   HttpCode,
-  Inject,
-  LoggerService,
+  Logger,
   Param,
   Patch,
   Post,
@@ -19,13 +18,12 @@ import { HTTP_STATUS_CODE } from 'src/httpStatusCode.enum';
 import { PlaylistCreateDto } from 'src/dto/playlistCreate.dto';
 import { Playlist } from 'src/entity/playlist.entity';
 import { Music } from 'src/entity/music.entity';
-import { Logger } from 'winston';
 
 @Controller('playlists')
 export class PlaylistController {
+  private readonly logger = new Logger('Playlist');
   constructor(
     private playlistService: PlaylistService,
-    @Inject(Logger) private readonly logger: LoggerService,
   ) {}
 
   @Post()
