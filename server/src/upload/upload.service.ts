@@ -1,4 +1,4 @@
-import { Inject, Injectable, LoggerService } from '@nestjs/common';
+import { Inject, Injectable, Logger, LoggerService } from '@nestjs/common';
 import { HTTP_STATUS_CODE } from 'src/httpStatusCode.enum';
 import { NcloudConfigService } from './../config/ncloud.config';
 import { S3 } from 'aws-sdk';
@@ -7,14 +7,13 @@ import { CatchyException } from 'src/config/catchyException';
 import { ERROR_CODE } from 'src/config/errorCode.enum';
 import * as fs from 'fs';
 import { Readable } from 'stream';
-import { Logger } from 'winston';
 
 @Injectable()
 export class UploadService {
+  private readonly logger = new Logger('UploadService');
   private objectStorage: S3;
   constructor(
     private readonly nCloudConfigService: NcloudConfigService,
-    @Inject(Logger) private readonly logger: LoggerService,
   ) {
     this.objectStorage = nCloudConfigService.createObjectStorageOption();
   }

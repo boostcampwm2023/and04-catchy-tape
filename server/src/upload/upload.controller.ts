@@ -13,8 +13,7 @@ import {
   MaxFileSizeValidator,
   ValidationPipe,
   UsePipes,
-  Inject,
-  LoggerService,
+  Logger,
 } from '@nestjs/common';
 import { UploadService } from './upload.service';
 import { HTTP_STATUS_CODE } from 'src/httpStatusCode.enum';
@@ -24,13 +23,12 @@ import { CatchyException } from 'src/config/catchyException';
 import { ERROR_CODE } from 'src/config/errorCode.enum';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { fileSize } from 'src/constants';
-import { Logger } from 'winston';
 
 @Controller('upload')
 export class UploadController {
+  private readonly logger = new Logger('Upload');
   constructor(
     private uploadService: UploadService,
-    @Inject(Logger) private readonly logger: LoggerService,
   ) {}
 
   @Get('uuid')
