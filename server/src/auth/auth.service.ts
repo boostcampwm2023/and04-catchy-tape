@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable, LoggerService } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CatchyException } from 'src/config/catchyException';
@@ -10,6 +10,7 @@ import { HTTP_STATUS_CODE } from 'src/httpStatusCode.enum';
 import { PlaylistService } from 'src/playlist/playlist.service';
 import { Repository } from 'typeorm';
 import { v4 as uuid } from 'uuid';
+import { Logger } from 'winston';
 
 @Injectable()
 export class AuthService {
@@ -17,6 +18,7 @@ export class AuthService {
     @InjectRepository(User) private userRepository: Repository<User>,
     private jwtService: JwtService,
     private readonly playlistService: PlaylistService,
+    @Inject(Logger) private readonly logger: LoggerService,
   ) {}
 
   async login(email: string): Promise<{ accessToken: string }> {
@@ -30,6 +32,7 @@ export class AuthService {
 
       return { accessToken };
     } else {
+      this.logger.error(`auth.service - login : NOT_EXIST_USER`);
       throw new CatchyException(
         'NOT_EXIST_USER',
         HTTP_STATUS_CODE['WRONG_TOKEN'],
@@ -43,6 +46,7 @@ export class AuthService {
     const email: string = await this.getGoogleEmail(idToken);
 
     if (await this.isExistEmail(email)) {
+      this.logger.error(`auth.service - signup : ALREADY_EXIST_EMAIL`);
       throw new CatchyException(
         'ALREADY_EXIST_EMAIL',
         HTTP_STATUS_CODE.BAD_REQUEST,
@@ -64,6 +68,7 @@ export class AuthService {
       });
       return this.login(email);
     }
+    this.logger.error(`auth.service - signup : WRONG_TOKEN`);
     throw new CatchyException(
       'WRONG_TOKEN',
       HTTP_STATUS_CODE.WRONG_TOKEN,
@@ -79,6 +84,7 @@ export class AuthService {
     }).then((res) => res.json());
 
     if (!userInfo.email) {
+      this.logger.log(`auth.service - getGoogleEmail : EXPIRED_TOKEN`);
       throw new CatchyException(
         'EXPIRED_TOKEN',
         HTTP_STATUS_CODE.WRONG_TOKEN,
