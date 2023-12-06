@@ -101,7 +101,7 @@ export class UserController {
     @Body('musicId') music_id: string,
   ): Promise<{ recent_played_id: number }> {
     this.logger.log(
-      `PUT /playlists/recent-played - nickname=${req.user.nickname}, music_id=${music_id}`,
+      `PUT /user/recent-played - nickname=${req.user.nickname}, music_id=${music_id}`,
     );
     const user_id: string = req.user.user_id;
     const recent_played_id: number = await this.userService.updateRecentMusic(
@@ -109,5 +109,20 @@ export class UserController {
       user_id,
     );
     return { recent_played_id };
+  }
+
+  @Get('recent-info')
+  @UseGuards(AuthGuard())
+  @HttpCode(HTTP_STATUS_CODE.SUCCESS)
+  async getRecentPlaylistInfo(
+    @Req() req,
+  ): Promise<{ music_count: number; thumbnail: string }> {
+    const user_id: string = req.user.user_id;
+    this.logger.log(`GET /user/recent-info - nickname=${req.user.nickname}`);
+    const music_count: number =
+      await this.userService.getRecentPlaylistMusicCount(user_id);
+    const thumbnail: string =
+      await this.userService.getRecentPlaylistThumbnail(user_id);
+    return { music_count, thumbnail };
   }
 }

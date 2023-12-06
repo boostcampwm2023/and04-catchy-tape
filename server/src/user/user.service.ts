@@ -129,7 +129,7 @@ export class UserService {
       return musicCount != 0;
     } catch {
       this.logger.error(
-        `playlist.service - isExistMusicInRecentPlaylist : QUERY_ERROR`,
+        `user.service - isExistMusicInRecentPlaylist : QUERY_ERROR`,
       );
       throw new CatchyException(
         'QUERY_ERROR',
@@ -163,9 +163,49 @@ export class UserService {
     } catch (err) {
       if (err instanceof CatchyException) throw err;
 
-      this.logger.error(`playlist.service - updateRecentMusic : SERVICE_ERROR`);
+      this.logger.error(`user.service - updateRecentMusic : SERVICE_ERROR`);
       throw new CatchyException(
         'SERVICE_ERROR',
+        HTTP_STATUS_CODE.SERVER_ERROR,
+        ERROR_CODE.QUERY_ERROR,
+      );
+    }
+  }
+
+  async getRecentPlaylistMusicCount(user_id: string): Promise<number> {
+    try {
+      return await this.recentPlayedRepository.count({
+        where: { user: { user_id } },
+      });
+    } catch {
+      this.logger.error(
+        `user.service - getRecentPlaylistMusicCount : QUERY_ERROR`,
+      );
+      throw new CatchyException(
+        'QUERY_ERROR',
+        HTTP_STATUS_CODE.SERVER_ERROR,
+        ERROR_CODE.QUERY_ERROR,
+      );
+    }
+  }
+
+  async getRecentPlaylistThumbnail(user_id: string): Promise<string> {
+    try {
+      const recentMusic: Recent_Played =
+        await this.recentPlayedRepository.findOne({
+          relations: { music: true, user: true },
+          select: { music: { cover: true } },
+          where: { user: { user_id } },
+          order: { played_at: 'DESC' },
+        });
+
+      return recentMusic.music.cover;
+    } catch {
+      this.logger.error(
+        `user.service - getRecentPlaylistThumbnail : QUERY_ERROR`,
+      );
+      throw new CatchyException(
+        'QUERY_ERROR',
         HTTP_STATUS_CODE.SERVER_ERROR,
         ERROR_CODE.QUERY_ERROR,
       );
