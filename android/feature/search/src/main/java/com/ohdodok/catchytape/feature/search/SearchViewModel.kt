@@ -15,6 +15,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
@@ -23,13 +24,9 @@ import kotlinx.coroutines.plus
 import javax.inject.Inject
 
 data class SearchUiState(
-    val keyword: String = "",
+    val searchedMusics: List<Music> = emptyList()
 )
 
-data class SearchedMusics(
-    val maxThreeMusics: List<Music> = emptyList(),
-    val totalMusics: List<Music> = emptyList()
-)
 
 @HiltViewModel
 class SearchViewModel @Inject constructor(
@@ -42,9 +39,8 @@ class SearchViewModel @Inject constructor(
     private val _events = MutableSharedFlow<SearchEvent>()
     val events: SharedFlow<SearchEvent> = _events.asSharedFlow()
 
-    private val _searchedMusics = MutableStateFlow(SearchedMusics())
-    val searchedMusics: StateFlow<SearchedMusics> = _searchedMusics.asStateFlow()
-
+    private val _keyword = MutableStateFlow("")
+    val keyword: StateFlow<String> = _keyword.asStateFlow()
 
     private val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
         val errorType =
@@ -61,25 +57,22 @@ class SearchViewModel @Inject constructor(
     }
 
     fun updateKeyword(newKeyword: String) {
-        _uiState.update { it.copy(keyword = newKeyword) }
+        _keyword.update { newKeyword }
     }
 
     private fun observeUiState() {
-        _uiState.debounce(300).onEach { uiState ->
-            if (uiState.keyword.isNotBlank()) {
-                fetchSearchedMusics(uiState.keyword)
-            }
+        _keyword.debounce(300).filter {
+            it.isNotBlank()
+        }.onEach {
+            fetchSearchedMusics(it)
         }.launchIn(viewModelScopeWithExceptionHandler)
     }
 
     private fun fetchSearchedMusics(keyword: String) {
         musicRepository.getSearchedMusics(keyword).onEach { musics ->
-            _searchedMusics.update {
-                it.copy(maxThreeMusics = musics.take(3), totalMusics = musics)
-            }
+            _uiState.update { it.copy(searchedMusics = musics) }
         }.launchIn(viewModelScopeWithExceptionHandler)
     }
-
 }
 
 
