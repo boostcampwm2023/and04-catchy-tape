@@ -15,6 +15,9 @@ class PlayerControlView(context: Context, attrs: AttributeSet) : ConstraintLayou
 
     private val binding: ViewPlayerControlBinding =
         ViewPlayerControlBinding.inflate(LayoutInflater.from(context), this, true)
+    val moveNextImageView = binding.ibNext
+    val movePreviousImageView = binding.ibPrevious
+    val playImageView = binding.ibPlay
 
     var music: Music? = null
         set(value) {
