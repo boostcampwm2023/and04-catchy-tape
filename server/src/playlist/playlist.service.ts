@@ -7,6 +7,7 @@ import { PlaylistCreateDto } from 'src/dto/playlistCreate.dto';
 import { Music } from 'src/entity/music.entity';
 import { Music_Playlist } from 'src/entity/music_playlist.entity';
 import { Playlist } from 'src/entity/playlist.entity';
+import { Recent_Played } from 'src/entity/recent_played.entity';
 import { HTTP_STATUS_CODE } from 'src/httpStatusCode.enum';
 import { Repository } from 'typeorm';
 
@@ -20,6 +21,8 @@ export class PlaylistService {
     private music_playlistRepository: Repository<Music_Playlist>,
     @InjectRepository(Music)
     private MusicRepository: Repository<Music>,
+    @InjectRepository(Recent_Played)
+    private recentPlaylistRepository: Repository<Recent_Played>,
   ) {}
 
   async createPlaylist(
@@ -263,6 +266,21 @@ export class PlaylistService {
       });
     } catch {
       this.logger.error(`playlist.service - getRecentPlaylist : QUERY_ERROR`);
+      throw new CatchyException(
+        'QUERY_ERROR',
+        HTTP_STATUS_CODE.SERVER_ERROR,
+        ERROR_CODE.QUERY_ERROR,
+      );
+    }
+  }
+
+  async isExistMusicInRecentPlaylist(music_id: string, user_id: string) {
+    try {
+      const musicCount: number = await this.recentPlaylistRepository.count({
+        where: { music: { music_id }, user: { user_id } },
+      });
+      return musicCount != 0;
+    } catch {
       throw new CatchyException(
         'QUERY_ERROR',
         HTTP_STATUS_CODE.SERVER_ERROR,
