@@ -53,7 +53,6 @@ fun ExoPlayer.changePlayBtnState(playBtn: View) {
     }
 }
 
-
 fun getMediasWithMetaData(musics: List<Music>): List<MediaItem> {
     val mediaItemBuilder = MediaItem.Builder()
     val mediaMetadataBuilder = MediaMetadata.Builder()
