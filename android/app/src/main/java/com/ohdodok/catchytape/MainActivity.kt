@@ -9,6 +9,7 @@ import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.animation.doOnEnd
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -111,29 +112,17 @@ class MainActivity : AppCompatActivity() {
 
     private fun hideBottomNav() {
         val period = 700L
-        takeDownBottomNav(period)
 
-        lifecycleScope.launch {
-            delay(period)
-            binding.bottomNav.visibility = View.GONE
-        }
-    }
-
-    private fun showBottomNav() {
-        raiseBottomNav()
-
-        binding.bottomNav.visibility = View.VISIBLE
-    }
-
-    private fun takeDownBottomNav(period: Long) {
         val height = binding.bottomNav.height.toFloat()
         ObjectAnimator.ofFloat(binding.bottomNav, "translationY", height).apply {
             duration = period
+            doOnEnd { binding.bottomNav.visibility = View.GONE }
             start()
         }
     }
 
-    private fun raiseBottomNav() {
+    private fun showBottomNav() {
+        binding.bottomNav.visibility = View.VISIBLE
         ObjectAnimator.ofFloat(binding.bottomNav, "translationY", 0f).apply {
             duration = 700
             start()
