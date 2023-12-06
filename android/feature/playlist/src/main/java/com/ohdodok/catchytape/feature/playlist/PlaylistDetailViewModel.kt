@@ -14,7 +14,8 @@ data class PlaylistDetailUiState(
             id = "1",
             title = "title",
             artist = "artist",
-            imageUrl = "https://i.pinimg.com/736x/6a/be/29/6abe2929274d6459c815ac752fb0c057.jpg"
+            imageUrl = "https://i.pinimg.com/736x/6a/be/29/6abe2929274d6459c815ac752fb0c057.jpg",
+            musicUrl = "",
         )
     )
 )
