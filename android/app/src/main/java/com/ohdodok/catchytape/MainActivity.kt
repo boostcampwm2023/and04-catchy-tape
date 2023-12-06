@@ -107,6 +107,7 @@ class MainActivity : AppCompatActivity() {
 
                 else -> {
                     showBottomNav()
+                    showPlayerController()
                 }
             }
         }
@@ -137,6 +138,10 @@ class MainActivity : AppCompatActivity() {
 
     private fun hidePlayerController() {
         binding.pcvController.visibility = View.GONE
+    }
+
+    private fun showPlayerController() {
+        binding.pcvController.visibility = View.VISIBLE
     }
 
     private fun setupPlayer() {

@@ -35,15 +35,13 @@
             android:id="@+id/pcv_controller"
             android:layout_width="0dp"
             android:layout_height="65dp"
-            app:artist="@string/artist"
             app:duration="@{viewModel.uiState.duration}"
             app:layout_constraintBottom_toTopOf="@id/bottom_nav"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
+            app:music="@{viewModel.uiState.currentMusic}"
             app:playing="@{viewModel.uiState.isPlaying}"
-            app:progress="@{viewModel.uiState.currentPositionSecond}"
-            app:thumbnailUrl="https://picsum.photos/200"
-            app:title="@string/title" />
+            app:progress="@{viewModel.uiState.currentPositionSecond}" />
 
         <com.google.android.material.bottomnavigation.BottomNavigationView
             android:id="@+id/bottom_nav"
