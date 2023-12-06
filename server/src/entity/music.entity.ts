@@ -12,6 +12,7 @@ import {
 import { User } from './user.entity';
 import { Genres } from 'src/constants';
 import { Music_Playlist } from './music_playlist.entity';
+import { Recent_Played } from './recent_played.entity';
 
 @Entity({ name: 'music' })
 export class Music extends BaseEntity {
@@ -42,6 +43,9 @@ export class Music extends BaseEntity {
 
   @OneToMany(() => Music_Playlist, (music_playlist) => music_playlist.music)
   music_playlist: Music_Playlist[];
+
+  @OneToMany(() => Recent_Played, (recent_played) => recent_played.music)
+  recent_played: Recent_Played[];
 
   static async getMusicListByUserId(
     userId: string,
