@@ -7,7 +7,7 @@
 
         <variable
             name="playlist"
-            type="com.ohdodok.catchytape.feature.playlist.model.PlaylistUiModel" />
+            type="com.ohdodok.catchytape.core.ui.model.PlaylistUiModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

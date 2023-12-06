@@ -7,6 +7,7 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import com.ohdodok.catchytape.core.ui.BaseFragment
+import com.ohdodok.catchytape.core.ui.PlaylistAdapter
 import com.ohdodok.catchytape.core.ui.toMessageId
 import com.ohdodok.catchytape.feature.playlist.databinding.FragmentPlaylistsBinding
 import dagger.hilt.android.AndroidEntryPoint
