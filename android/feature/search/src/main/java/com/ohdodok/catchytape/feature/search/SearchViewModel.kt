@@ -60,11 +60,10 @@ class SearchViewModel @Inject constructor(
     }
 
     private fun observeKeyword() {
-        _keyword.debounce(300).filter {
-            it.isNotBlank()
-        }.onEach {
-            fetchSearchedMusics(it)
-        }.launchIn(viewModelScopeWithExceptionHandler)
+        _keyword.filter { it.isNotBlank() }
+            .debounce(300)
+            .onEach { fetchSearchedMusics(it) }
+            .launchIn(viewModelScopeWithExceptionHandler)
     }
 
     private fun fetchSearchedMusics(keyword: String) {
