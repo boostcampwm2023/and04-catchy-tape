@@ -4,13 +4,14 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.viewModels
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.ohdodok.catchytape.core.ui.databinding.BottomSheetPlaylistBinding
-import com.ohdodok.catchytape.core.ui.model.PlaylistUiModel
+import dagger.hilt.android.AndroidEntryPoint
 
-class PlaylistBottomSheet(
-    private val playlists: List<PlaylistUiModel>,
-) : BottomSheetDialogFragment() {
+@AndroidEntryPoint
+class PlaylistBottomSheet : BottomSheetDialogFragment() {
+    val viewModel: PlaylistBottomSheetViewModel by viewModels()
 
     private var _binding: BottomSheetPlaylistBinding? = null
     private val binding get() = _binding!!
@@ -19,17 +20,17 @@ class PlaylistBottomSheet(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View  {
+    ): View {
         _binding = BottomSheetPlaylistBinding.inflate(inflater, container, false)
-
-        binding.rvPlaylists.adapter = PlaylistAdapter().apply {
-            submitList(playlists)
-        }
+        binding.lifecycleOwner = viewLifecycleOwner
+        binding.viewModel = viewModel
+        binding.rvPlaylists.adapter = PlaylistAdapter()
 
         return binding.root
     }
 
-    companion object {
-        const val TAG = "PlaylistBottomSheet"
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }
