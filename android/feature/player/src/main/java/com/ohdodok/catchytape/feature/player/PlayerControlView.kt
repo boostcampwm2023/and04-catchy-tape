@@ -6,6 +6,7 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.constraintlayout.widget.ConstraintLayout
+import com.ohdodok.catchytape.core.domain.model.Music
 import com.ohdodok.catchytape.core.ui.R.drawable
 import com.ohdodok.catchytape.core.ui.bindImg
 import com.ohdodok.catchytape.feature.player.databinding.ViewPlayerControlBinding
@@ -14,9 +15,19 @@ class PlayerControlView(context: Context, attrs: AttributeSet) : ConstraintLayou
 
     private val binding: ViewPlayerControlBinding =
         ViewPlayerControlBinding.inflate(LayoutInflater.from(context), this, true)
-    private lateinit var thumbnailUrl: String
-    private lateinit var title: String
-    private lateinit var artist: String
+
+    var music: Music? = null
+        set(value) {
+            field = value
+            if (value == null) {
+                binding.tvNoPlaylist.visibility = VISIBLE
+            } else {
+                binding.tvNoPlaylist.visibility = GONE
+                binding.tvTitle.text = value.title
+                binding.tvArtist.text = value.artist
+                binding.ivThumbnail.bindImg(value.imageUrl)
+            }
+        }
 
     var isPlaying: Boolean = false
         set(value) {
@@ -35,35 +46,6 @@ class PlayerControlView(context: Context, attrs: AttributeSet) : ConstraintLayou
             field = value
             binding.lpiPlayerProgress.max = value
         }
-
-    init {
-        initAttrs(attrs)
-        initView()
-    }
-
-
-    private fun initAttrs(attrs: AttributeSet) {
-        context.theme.obtainStyledAttributes(
-            attrs,
-            R.styleable.PlayerBarView,
-            0, 0
-        ).apply {
-            try {
-                thumbnailUrl = getString(R.styleable.PlayerBarView_thumbnailUrl) ?: ""
-                title = getString(R.styleable.PlayerBarView_title) ?: ""
-                artist = getString(R.styleable.PlayerBarView_artist) ?: ""
-            } finally {
-                recycle()
-            }
-        }
-    }
-
-    private fun initView() {
-        binding.ivThumbnail.bindImg(thumbnailUrl)
-        binding.tvTitle.text = title
-        binding.tvArtist.text = artist
-    }
-
 
     fun setOnPlayButtonClick(onPlayButtonClick: () -> Unit) {
         binding.ibPlay.setOnClickListener { onPlayButtonClick() }

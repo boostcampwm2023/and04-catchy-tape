@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ohdodok.catchytape.core.domain.model.CtErrorType
 import com.ohdodok.catchytape.core.domain.model.CtException
+import com.ohdodok.catchytape.core.domain.model.Playlist
 import com.ohdodok.catchytape.core.domain.repository.PlaylistRepository
 import com.ohdodok.catchytape.feature.playlist.model.PlaylistUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -56,7 +57,7 @@ class PlaylistViewModel @Inject constructor(
                             title = playlist.title,
                             thumbnailUrl = playlist.thumbnailUrl,
                             trackSize = playlist.trackSize,
-                            onClick = { onPlaylistClick(playlist.id) },
+                            onClick = { onPlaylistClick(playlist) },
                         )
                     }
                 )
@@ -70,15 +71,15 @@ class PlaylistViewModel @Inject constructor(
         }
     }
 
-    private fun onPlaylistClick(playlistId: Int) {
+    private fun onPlaylistClick(playlist: Playlist) {
         viewModelScope.launch {
-            _events.emit(PlaylistsEvent.NavigateToPlaylistDetail(playlistId))
+            _events.emit(PlaylistsEvent.NavigateToPlaylistDetail(playlist))
         }
     }
 }
 
 sealed interface PlaylistsEvent {
 
-    data class NavigateToPlaylistDetail(val playlistId: Int) : PlaylistsEvent
+    data class NavigateToPlaylistDetail(val playlist: Playlist) : PlaylistsEvent
     data class ShowMessage(val error: CtErrorType) : PlaylistsEvent
 }

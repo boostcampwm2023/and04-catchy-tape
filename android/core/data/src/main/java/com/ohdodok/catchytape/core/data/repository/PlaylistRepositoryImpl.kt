@@ -30,6 +30,11 @@ class PlaylistRepositoryImpl @Inject constructor(
         val response = userApi.getRecentPlayed()
         emit(response.toDomains())
     }
+
+    override fun getPlaylist(playlistId: Int): Flow<List<Music>> = flow {
+        val response = playlistApi.getPlaylist(playlistId)
+        emit(response.toDomains())
+    }
 }
 
 

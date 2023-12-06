@@ -4,12 +4,13 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ohdodok.catchytape.core.domain.model.CtErrorType
 import com.ohdodok.catchytape.core.domain.model.CtException
+import com.ohdodok.catchytape.core.domain.model.CurrentPlaylist
 import com.ohdodok.catchytape.core.domain.model.Music
 import com.ohdodok.catchytape.core.domain.repository.MusicRepository
-import com.ohdodok.catchytape.core.domain.repository.PlaylistRepository
 import com.ohdodok.catchytape.core.domain.usecase.player.CurrentPlaylistUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.channels.consumeEach
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -20,12 +21,11 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.plus
 import timber.log.Timber
 import javax.inject.Inject
 
 data class PlayerState(
-    val playlist: List<Music> = emptyList(),
+    val currentMusic: Music? = null,
     val isPlaying: Boolean = false,
     val currentPositionSecond: Int = 0,
     val duration: Int = 0,
@@ -37,11 +37,12 @@ sealed interface PlayerEvent {
 
 @HiltViewModel
 class PlayerViewModel @Inject constructor(
-    private val playlistRepository: PlaylistRepository,
     private val currentPlaylistUseCase: CurrentPlaylistUseCase,
     private val musicRepository: MusicRepository,
 ) : ViewModel(), PlayerEventListener {
-    val playlistChangeEvent = currentPlaylistUseCase.currentPlaylist
+
+    private val _currentPlaylist = MutableStateFlow<CurrentPlaylist?>(null)
+    val currentPlaylist: StateFlow<CurrentPlaylist?> = _currentPlaylist.asStateFlow()
 
     private val _uiState = MutableStateFlow(PlayerState())
     val uiState: StateFlow<PlayerState> = _uiState.asStateFlow()
@@ -54,21 +55,15 @@ class PlayerViewModel @Inject constructor(
         viewModelScope.launch { _events.emit(PlayerEvent.ShowError(errorType)) }
     }
 
-    private val viewModelScopeWithExceptionHandler = viewModelScope + exceptionHandler
-
     init {
-        fetchRecentPlaylist()
+        observePlaylistChange()
     }
 
-    private fun fetchRecentPlaylist() {
-        playlistRepository.getRecentPlaylist().onEach { recentPlaylist ->
-            _uiState.update { it.copy(playlist = recentPlaylist) }
-        }.launchIn(viewModelScopeWithExceptionHandler)
-    }
-
-    private fun sendEvent(event: PlayerEvent) {
-        viewModelScope.launch {
-            _events.emit(event)
+    private fun observePlaylistChange() {
+        viewModelScope.launch(exceptionHandler) {
+            currentPlaylistUseCase.currentPlaylist.consumeEach {
+                _currentPlaylist.value = it
+            }
         }
     }
 
@@ -98,9 +93,10 @@ class PlayerViewModel @Inject constructor(
     }
 
     override fun onMediaItemChanged(index: Int, duration: Int) {
-
-        _uiState.update {
-            it.copy(duration = duration)
+        currentPlaylist.value?.let { playlist ->
+            _uiState.update {
+                it.copy(duration = duration, currentMusic = playlist.musics[index])
+            }
         }
     }
 }
