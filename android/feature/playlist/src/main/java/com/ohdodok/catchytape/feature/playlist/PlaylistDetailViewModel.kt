@@ -1,5 +1,6 @@
 package com.ohdodok.catchytape.feature.playlist
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ohdodok.catchytape.core.domain.model.Music
@@ -19,13 +20,22 @@ data class PlaylistDetailUiState(
 
 @HiltViewModel
 class PlaylistDetailViewModel @Inject constructor(
+    savedStateHandle: SavedStateHandle,
     private val playlistRepository: PlaylistRepository,
 ) : ViewModel() {
+
+    private val playlistId: Int = requireNotNull(savedStateHandle["playlistId"]) {
+        "playlistId가 반드시 전달 되어야 해요."
+    }
 
     private val _uiState = MutableStateFlow(PlaylistDetailUiState())
     val uiState: StateFlow<PlaylistDetailUiState> = _uiState.asStateFlow()
 
-    fun fetchMusics(playlistId: Int) {
+    init {
+        fetchMusics()
+    }
+
+    private fun fetchMusics() {
         playlistRepository.getPlaylist(playlistId)
             .onEach { musics ->
                 _uiState.update { it.copy(musics = musics) }

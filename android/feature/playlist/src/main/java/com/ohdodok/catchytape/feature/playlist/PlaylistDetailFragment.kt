@@ -15,7 +15,6 @@ class PlaylistDetailFragment :
     BaseFragment<FragmentPlaylistDetailBinding>(R.layout.fragment_playlist_detail) {
 
     private val viewModel: PlaylistDetailViewModel by viewModels()
-    private val args: PlaylistDetailFragmentArgs by navArgs()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -23,12 +22,6 @@ class PlaylistDetailFragment :
         binding.viewModel = viewModel
         setupBackStack(binding.tbPlaylistDetail)
         binding.rvPlaylist.adapter = MusicAdapter(Orientation.VERTICAL)
-        fetchPlaylist()
-    }
-
-    private fun fetchPlaylist() {
-        val playlistId = args.playlistId
-        viewModel.fetchMusics(playlistId)
     }
 }
 
