@@ -3,20 +3,32 @@ package com.ohdodok.catchytape.feature.playlist
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.ohdodok.catchytape.core.domain.model.CtErrorType
+import com.ohdodok.catchytape.core.domain.model.CtException
 import com.ohdodok.catchytape.core.domain.model.Music
 import com.ohdodok.catchytape.core.domain.repository.PlaylistRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.plus
 import javax.inject.Inject
 
 data class PlaylistDetailUiState(
     val musics: List<Music> = emptyList()
 )
+
+sealed interface PlaylistDetailEvent {
+    data class ShowMessage(val error: CtErrorType) : PlaylistDetailEvent
+}
 
 @HiltViewModel
 class PlaylistDetailViewModel @Inject constructor(
@@ -31,6 +43,16 @@ class PlaylistDetailViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(PlaylistDetailUiState())
     val uiState: StateFlow<PlaylistDetailUiState> = _uiState.asStateFlow()
 
+    private val _events = MutableSharedFlow<PlaylistDetailEvent>()
+    val events: SharedFlow<PlaylistDetailEvent> = _events.asSharedFlow()
+
+    private val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
+        val errorType = if (throwable is CtException) throwable.ctError else CtErrorType.UN_KNOWN
+        viewModelScope.launch { _events.emit(PlaylistDetailEvent.ShowMessage(errorType)) }
+    }
+
+    private val viewModelScopeWithExceptionHandler = viewModelScope + exceptionHandler
+
     init {
         fetchMusics()
     }
@@ -40,6 +62,6 @@ class PlaylistDetailViewModel @Inject constructor(
             .onEach { musics ->
                 _uiState.update { it.copy(musics = musics) }
             }
-            .launchIn(viewModelScope)
+            .launchIn(viewModelScopeWithExceptionHandler)
     }
 }
