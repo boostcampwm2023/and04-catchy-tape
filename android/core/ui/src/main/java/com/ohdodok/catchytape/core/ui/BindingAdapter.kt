@@ -14,7 +14,9 @@ fun <T, VH : RecyclerView.ViewHolder> RecyclerView.bindItems(items: List<T>) {
 }
 
 @BindingAdapter("imgUrl")
-fun ImageView.bindImg(url: String) {
+fun ImageView.bindImg(url: String?) {
+    if (url == null) return
+
     Glide.with(this.context)
         .load(url)
         .into(this)
