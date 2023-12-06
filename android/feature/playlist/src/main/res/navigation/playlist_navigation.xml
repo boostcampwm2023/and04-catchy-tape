@@ -27,6 +27,10 @@
             android:name="playlistId"
             app:argType="integer" />
 
+        <argument
+            android:name="title"
+            app:argType="string" />
+
     </fragment>
 
 </navigation>

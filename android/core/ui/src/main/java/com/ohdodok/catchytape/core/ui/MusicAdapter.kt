@@ -62,6 +62,7 @@ class MusicAdapter(
 
         fun bind(item: Music) {
             binding.music = item
+            binding.listener = listener
         }
 
         companion object {
