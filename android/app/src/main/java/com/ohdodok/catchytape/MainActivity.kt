@@ -25,6 +25,7 @@ import androidx.navigation.ui.setupWithNavController
 import com.ohdodok.catchytape.databinding.ActivityMainBinding
 import com.ohdodok.catchytape.feature.player.PlayerListener
 import com.ohdodok.catchytape.feature.player.PlayerViewModel
+import com.ohdodok.catchytape.feature.player.getMediasWithMetaData
 import com.ohdodok.catchytape.feature.player.millisecondsPerSecond
 import com.ohdodok.catchytape.feature.player.moveNextMedia
 import com.ohdodok.catchytape.feature.player.movePreviousMedia
@@ -33,6 +34,8 @@ import com.ohdodok.catchytape.mediasession.PlaybackService
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.channels.consumeEach
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import com.ohdodok.catchytape.core.ui.R.string as uiString
@@ -107,6 +110,7 @@ class MainActivity : AppCompatActivity() {
 
                 else -> {
                     showBottomNav()
+                    showPlayerController()
                 }
             }
         }
@@ -139,6 +143,10 @@ class MainActivity : AppCompatActivity() {
         binding.pcvController.visibility = View.GONE
     }
 
+    private fun showPlayerController() {
+        binding.pcvController.visibility = View.VISIBLE
+    }
+
     private fun setupPlayer() {
         player.addListener(PlayerListener(playViewModel))
         player.prepare()
@@ -162,16 +170,12 @@ class MainActivity : AppCompatActivity() {
     private fun observePlaylistChange() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                playViewModel.playlistChangeEvent.consumeEach { newPlaylist ->
-                    val newItems = newPlaylist.musics.map {
-                        MediaItem.Builder().setUri(it.musicUrl)
-                            .setMediaId(it.id)
-                            .build()
-                    }
+                playViewModel.currentPlaylist.filterNotNull().collect {
+                    val newItems = getMediasWithMetaData(it.musics)
                     player.clearMediaItems()
                     player.setMediaItems(newItems)
 
-                    player.seekTo(newPlaylist.startMusicIndex, 0)
+                    player.seekTo(it.startMusicIndex, 0)
                     player.play()
                 }
             }

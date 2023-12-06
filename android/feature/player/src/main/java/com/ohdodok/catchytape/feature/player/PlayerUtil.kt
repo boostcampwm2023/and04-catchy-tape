@@ -26,7 +26,7 @@ fun getMediasWithMetaData(musics: List<Music>): List<MediaItem> {
     return musics.map { music ->
         mediaItemBuilder
             .setMediaId(music.id)
-            .setUri("~~~~.m3u8") // TODO :Music domain에서 변수 추가 되면 반영해야 함
+            .setUri(music.musicUrl)
             .setMediaMetadata(
                 mediaMetadataBuilder
                     .setArtist(music.artist)
