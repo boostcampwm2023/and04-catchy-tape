@@ -35,7 +35,6 @@
             android:id="@+id/pcv_controller"
             android:layout_width="0dp"
             android:layout_height="65dp"
-            android:visibility="@{viewModel.uiState.playlist.empty ? view.GONE : view.VISIBLE}"
             app:artist="@string/artist"
             app:duration="@{viewModel.uiState.duration}"
             app:layout_constraintBottom_toTopOf="@id/bottom_nav"

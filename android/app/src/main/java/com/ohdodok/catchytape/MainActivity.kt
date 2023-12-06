@@ -162,17 +162,19 @@ class MainActivity : AppCompatActivity() {
     private fun observePlaylistChange() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                playViewModel.playlistChangeEvent.consumeEach { newPlaylist ->
-                    val newItems = newPlaylist.musics.map {
-                        MediaItem.Builder().setUri(it.musicUrl)
-                            .setMediaId(it.id)
-                            .build()
-                    }
-                    player.clearMediaItems()
-                    player.setMediaItems(newItems)
+                playViewModel.currentPlaylist.collect {
+                    it?.let {
+                        val newItems = it.musics.map { music ->
+                            MediaItem.Builder().setUri(music.musicUrl)
+                                .setMediaId(music.id)
+                                .build()
+                        }
+                        player.clearMediaItems()
+                        player.setMediaItems(newItems)
 
-                    player.seekTo(newPlaylist.startMusicIndex, 0)
-                    player.play()
+                        player.seekTo(it.startMusicIndex, 0)
+                        player.play()
+                    }
                 }
             }
         }
