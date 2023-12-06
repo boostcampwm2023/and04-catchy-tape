@@ -34,6 +34,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.channels.consumeEach
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 import com.ohdodok.catchytape.core.ui.R.string as uiString
 
@@ -81,6 +82,10 @@ class MainActivity : AppCompatActivity() {
 
     override fun onStop() {
         super.onStop()
+        val a = player.currentMediaItem
+        val b = player.currentPosition.toInt()
+        val c = player.currentTracks
+        Timber.d("${a},${b},${c}")
         playViewModel.savePlayedMusicInfo()
     }
 

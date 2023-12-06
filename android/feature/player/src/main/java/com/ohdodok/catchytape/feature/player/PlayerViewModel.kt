@@ -87,7 +87,7 @@ class PlayerViewModel @Inject constructor(
     fun savePlayedMusicInfo() {
         viewModelScope.launch {
             Timber.d("saveInfo")
-            musicRepository.savePlayedMusicInfo("", 0, 1)
+            musicRepository.savePlayedMusicInfo("", 0, _uiState.value.currentPositionSecond)
         }
     }
 
