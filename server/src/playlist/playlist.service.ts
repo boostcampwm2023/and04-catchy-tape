@@ -6,7 +6,6 @@ import { PlaylistCreateDto } from 'src/dto/playlistCreate.dto';
 import { Music } from 'src/entity/music.entity';
 import { Music_Playlist } from 'src/entity/music_playlist.entity';
 import { Playlist } from 'src/entity/playlist.entity';
-import { Recent_Played } from 'src/entity/recent_played.entity';
 import { HTTP_STATUS_CODE } from 'src/httpStatusCode.enum';
 import { Repository } from 'typeorm';
 
@@ -20,8 +19,6 @@ export class PlaylistService {
     private music_playlistRepository: Repository<Music_Playlist>,
     @InjectRepository(Music)
     private MusicRepository: Repository<Music>,
-    @InjectRepository(Recent_Played)
-    private recentPlayedRepository: Repository<Recent_Played>,
   ) {}
 
   async createPlaylist(
@@ -236,60 +233,6 @@ export class PlaylistService {
         'SERVER_ERROR',
         HTTP_STATUS_CODE.SERVER_ERROR,
         ERROR_CODE.SERVICE_ERROR,
-      );
-    }
-  }
-
-  async isExistMusicInRecentPlaylist(
-    music_id: string,
-    user_id: string,
-  ): Promise<boolean> {
-    try {
-      const musicCount: number = await this.recentPlayedRepository.count({
-        where: { music: { music_id }, user: { user_id } },
-      });
-      return musicCount != 0;
-    } catch {
-      this.logger.error(
-        `playlist.service - isExistMusicInRecentPlaylist : QUERY_ERROR`,
-      );
-      throw new CatchyException(
-        'QUERY_ERROR',
-        HTTP_STATUS_CODE.SERVER_ERROR,
-        ERROR_CODE.QUERY_ERROR,
-      );
-    }
-  }
-
-  async updateRecentMusic(music_id: string, user_id: string): Promise<number> {
-    try {
-      if (!(await this.isExistMusicInRecentPlaylist(music_id, user_id))) {
-        const newRow: Recent_Played = this.recentPlayedRepository.create({
-          music: { music_id },
-          user: { user_id },
-          played_at: new Date(),
-        });
-        const addedRow: Recent_Played =
-          await this.recentPlayedRepository.save(newRow);
-        return addedRow.recent_played_id;
-      }
-
-      const targetRow: Recent_Played =
-        await this.recentPlayedRepository.findOne({
-          where: { music: { music_id }, user: { user_id } },
-        });
-      targetRow.played_at = new Date();
-      const updatedRow: Recent_Played =
-        await this.recentPlayedRepository.save(targetRow);
-      return updatedRow.recent_played_id;
-    } catch (err) {
-      if (err instanceof CatchyException) throw err;
-
-      this.logger.error(`playlist.service - updateRecentMusic : SERVICE_ERROR`);
-      throw new CatchyException(
-        'SERVICE_ERROR',
-        HTTP_STATUS_CODE.SERVER_ERROR,
-        ERROR_CODE.QUERY_ERROR,
       );
     }
   }

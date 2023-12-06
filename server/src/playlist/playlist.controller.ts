@@ -88,20 +88,4 @@ export class PlaylistController {
     const userId: string = req.user.user_id;
     return await this.playlistService.getPlaylistMusics(userId, playlistId);
   }
-
-  @Put('recent-played')
-  @UseGuards(AuthGuard())
-  @HttpCode(HTTP_STATUS_CODE.SUCCESS)
-  async updateRecentPlayMusic(
-    @Req() req,
-    @Body('musicId') music_id: string,
-  ): Promise<{ recent_played_id: number }> {
-    this.logger.log(
-      `PUT /playlists/recent-played - nickname=${req.user.nickname}, music_id=${music_id}`,
-    );
-    const user_id: string = req.user.user_id;
-    const recent_played_id: number =
-      await this.playlistService.updateRecentMusic(music_id, user_id);
-    return { recent_played_id };
-  }
 }
