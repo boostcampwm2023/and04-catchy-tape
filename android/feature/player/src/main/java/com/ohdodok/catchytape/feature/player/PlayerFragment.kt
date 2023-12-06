@@ -7,8 +7,10 @@ import androidx.fragment.app.activityViewModels
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
+import com.ohdodok.catchytape.core.domain.model.Playlist
 import com.ohdodok.catchytape.core.ui.BaseFragment
 import com.ohdodok.catchytape.core.ui.PlaylistBottomSheet
+import com.ohdodok.catchytape.core.ui.model.PlaylistUiModel
 import com.ohdodok.catchytape.core.ui.toMessageId
 import com.ohdodok.catchytape.feature.player.databinding.FragmentPlayerBinding
 import dagger.hilt.android.AndroidEntryPoint
@@ -65,11 +67,6 @@ class PlayerFragment : BaseFragment<FragmentPlayerBinding>(R.layout.fragment_pla
         binding.btnPrevious.setOnClickListener {
             player.movePreviousMedia()
         }
-
-        binding.btnAddToPlaylist.setOnClickListener {
-            val bottomSheet = PlaylistBottomSheet()
-            bottomSheet.show(parentFragmentManager, PlaylistBottomSheet.TAG)
-        }
     }
 
     private fun collectEvents() {
@@ -77,6 +74,10 @@ class PlayerFragment : BaseFragment<FragmentPlayerBinding>(R.layout.fragment_pla
             viewModel.events.collect { event ->
                 when (event) {
                     is PlayerEvent.ShowError -> showMessage(event.error.toMessageId())
+                    is PlayerEvent.AddToPlaylist -> {
+                        PlaylistBottomSheet(event.playlists.toUiModels())
+                            .show(parentFragmentManager, PlaylistBottomSheet.TAG)
+                    }
                 }
             }
         }
@@ -85,4 +86,16 @@ class PlayerFragment : BaseFragment<FragmentPlayerBinding>(R.layout.fragment_pla
 
 fun NavController.navigateToPlayer() {
     this.navigate(R.id.player_nav_graph)
+}
+
+private fun List<Playlist>.toUiModels(): List<PlaylistUiModel> = this.map { it.toUiModel() }
+
+private fun Playlist.toUiModel(): PlaylistUiModel {
+    return PlaylistUiModel(
+        id = id,
+        title = title,
+        thumbnailUrl = thumbnailUrl,
+        trackSize = trackSize,
+        onClick = {}
+    )
 }
