@@ -50,6 +50,8 @@
             android:id="@+id/bottom_nav"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:background="@color/surface_bright"
+            app:itemIconTint="@color/navigation_view_item_icon_tint"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

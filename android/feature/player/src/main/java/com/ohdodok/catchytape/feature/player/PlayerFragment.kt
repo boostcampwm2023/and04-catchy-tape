@@ -58,13 +58,11 @@ class PlayerFragment : BaseFragment<FragmentPlayerBinding>(R.layout.fragment_pla
         }
 
         binding.btnNext.setOnClickListener {
-            player.seekToNextMediaItem()
-            player.play()
+            player.moveNextMedia()
         }
 
         binding.btnPrevious.setOnClickListener {
-            player.seekToPreviousMediaItem()
-            player.play()
+            player.movePreviousMedia()
         }
     }
 

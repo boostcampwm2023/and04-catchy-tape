@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Logger, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -11,6 +11,7 @@ import { Repository } from 'typeorm';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
+  private readonly logger = new Logger('JwtLogger');
   constructor(
     @InjectRepository(User) private userRepository: Repository<User>,
     private configService: ConfigService,
@@ -29,6 +30,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     });
 
     if (!user || !user_id) {
+      this.logger.error(`request user_id=${user_id} : NOT_EXIST_USER`);
       throw new CatchyException(
         'NOT_EXIST_USER',
         HTTP_STATUS_CODE['WRONG_TOKEN'],

@@ -8,6 +8,7 @@ import { PlaylistService } from 'src/playlist/playlist.service';
 import { Playlist } from 'src/entity/playlist.entity';
 import { Music_Playlist } from 'src/entity/music_playlist.entity';
 import { Music } from 'src/entity/music.entity';
+import { Logger } from 'winston';
 
 @Module({
   imports: [
@@ -15,6 +16,6 @@ import { Music } from 'src/entity/music.entity';
     AuthModule,
   ],
   controllers: [UserController],
-  providers: [UserService, PlaylistService],
+  providers: [UserService, PlaylistService, Logger],
 })
 export class UserModule {}
