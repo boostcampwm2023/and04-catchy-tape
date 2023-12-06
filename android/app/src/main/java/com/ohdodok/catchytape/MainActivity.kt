@@ -14,7 +14,6 @@ import androidx.core.view.WindowCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import androidx.media3.common.MediaItem
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.session.MediaController
 import androidx.media3.session.SessionToken
@@ -25,6 +24,8 @@ import androidx.navigation.ui.setupWithNavController
 import com.ohdodok.catchytape.databinding.ActivityMainBinding
 import com.ohdodok.catchytape.feature.player.PlayerListener
 import com.ohdodok.catchytape.feature.player.PlayerViewModel
+import com.ohdodok.catchytape.feature.player.changeMoveBtnState
+import com.ohdodok.catchytape.feature.player.changePlayBtnState
 import com.ohdodok.catchytape.feature.player.getMediasWithMetaData
 import com.ohdodok.catchytape.feature.player.millisecondsPerSecond
 import com.ohdodok.catchytape.feature.player.moveNextMedia
@@ -32,9 +33,7 @@ import com.ohdodok.catchytape.feature.player.movePreviousMedia
 import com.ohdodok.catchytape.feature.player.navigateToPlayer
 import com.ohdodok.catchytape.mediasession.PlaybackService
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.channels.consumeEach
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -145,6 +144,11 @@ class MainActivity : AppCompatActivity() {
 
     private fun showPlayerController() {
         binding.pcvController.visibility = View.VISIBLE
+        player.changePlayBtnState(binding.pcvController.playImageView)
+        player.changeMoveBtnState(
+            binding.pcvController.moveNextImageView,
+            binding.pcvController.movePreviousImageView
+        )
     }
 
     private fun setupPlayer() {
@@ -187,17 +191,26 @@ class MainActivity : AppCompatActivity() {
             if (playViewModel.uiState.value.isPlaying) player.pause()
             else player.play()
         }
+        player.changePlayBtnState(binding.pcvController.playImageView)
     }
 
     private fun setupPreviousButton() {
         binding.pcvController.setOnPreviousButtonClick {
             player.movePreviousMedia()
+            player.changeMoveBtnState(
+                binding.pcvController.moveNextImageView,
+                binding.pcvController.movePreviousImageView
+            )
         }
     }
 
     private fun setupNextButton() {
         binding.pcvController.setOnNextButtonClick {
             player.moveNextMedia()
+            player.changeMoveBtnState(
+                binding.pcvController.moveNextImageView,
+                binding.pcvController.movePreviousImageView
+            )
         }
     }
 }
