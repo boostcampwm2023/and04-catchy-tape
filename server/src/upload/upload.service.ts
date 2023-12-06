@@ -1,4 +1,4 @@
-import { Inject, Injectable, Logger, LoggerService } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { HTTP_STATUS_CODE } from 'src/httpStatusCode.enum';
 import { NcloudConfigService } from './../config/ncloud.config';
 import { S3 } from 'aws-sdk';
@@ -7,6 +7,8 @@ import { CatchyException } from 'src/config/catchyException';
 import { ERROR_CODE } from 'src/config/errorCode.enum';
 import * as fs from 'fs';
 import { Readable } from 'stream';
+import { GreenEyeService } from '../config/greenEye.service';
+import { DeleteObjectOutput } from 'aws-sdk/clients/s3';
 
 @Injectable()
 export class UploadService {
@@ -14,6 +16,7 @@ export class UploadService {
   private objectStorage: S3;
   constructor(
     private readonly nCloudConfigService: NcloudConfigService,
+    private readonly greenEyeService: GreenEyeService,
   ) {
     this.objectStorage = nCloudConfigService.createObjectStorageOption();
   }
@@ -31,6 +34,47 @@ export class UploadService {
     if (uuidPattern.test(uuid)) return true;
 
     return false;
+  }
+
+  private async deleteObjectStorageImage(
+    path: string,
+  ): Promise<DeleteObjectOutput> {
+    return await this.objectStorage
+      .deleteObject({
+        Bucket: 'catchy-tape-bucket2',
+        Key: path,
+      })
+      .promise();
+  }
+
+  async checkImageNormal(
+    message: string,
+    confidence: number,
+    keyPath: string,
+  ): Promise<void> {
+    if (message !== 'SUCCESS') {
+      await this.deleteObjectStorageImage(keyPath);
+
+      this.logger.error(
+        `upload.service - checkImageNormal : FAIL_GREEN_EYE_IMAGE_RECOGNITION`,
+      );
+      throw new CatchyException(
+        'FAIL_GREEN_EYE_IMAGE_RECOGNITION',
+        HTTP_STATUS_CODE.BAD_REQUEST,
+        ERROR_CODE.FAIL_GREEN_EYE_IMAGE_RECOGNITION,
+      );
+    }
+
+    if (confidence < 0.9) {
+      await this.deleteObjectStorageImage(keyPath);
+
+      this.logger.error(`upload.service - checkImageNormal : BAD_IMAGE`);
+      throw new CatchyException(
+        'BAD_IMAGE',
+        HTTP_STATUS_CODE.BAD_REQUEST,
+        ERROR_CODE.BAD_IMAGE,
+      );
+    }
   }
 
   async uploadMusic(
@@ -98,8 +142,6 @@ export class UploadService {
         );
       }
 
-      const encodedFileName = encodeURIComponent(file.originalname);
-
       const keyPath =
         type === 'user'
           ? `image/user/${id}/image.png`
@@ -115,8 +157,22 @@ export class UploadService {
         })
         .promise();
 
+      const { images } = await this.greenEyeService.getResultOfNormalImage(
+        uploadResult.Location,
+      );
+
+      await this.checkImageNormal(
+        images[0].message,
+        images[0].confidence,
+        keyPath,
+      );
+
       return { url: uploadResult.Location };
-    } catch {
+    } catch (err) {
+      if (err instanceof CatchyException) {
+        throw err;
+      }
+
       this.logger.error(`upload.service - uploadImage : SERVICE_ERROR`);
       throw new CatchyException(
         'SERVER ERROR',
