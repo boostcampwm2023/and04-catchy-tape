@@ -50,7 +50,7 @@ export class GreenEyeService {
     try {
       return await fetch(this.greenEyeRequestUrl, this.getRequestInit(imageUrl))
         .then((res) => res.json())
-        .then((err) => {
+        .catch((err) => {
           throw new Error();
         });
     } catch {
