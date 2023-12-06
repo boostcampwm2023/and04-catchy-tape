@@ -39,20 +39,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/et_search" />
 
-        <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/btn_more"
-            style="@style/BodySmall"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/margin_horizontal"
-            android:background="@android:color/transparent"
-            android:minWidth="0dp"
-            android:minHeight="0dp"
-            android:text="@string/more"
-            app:layout_constraintBottom_toBottomOf="@id/tv_music"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@id/tv_music" />
-
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_search"
             android:layout_width="0dp"
@@ -63,7 +49,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/btn_more"
+            app:layout_constraintTop_toBottomOf="@id/tv_music"
             app:list="@{viewModel.searchedMusics.maxThreeMusics}"
             tools:itemCount="3"
             tools:listitem="@layout/item_music_vertical" />
