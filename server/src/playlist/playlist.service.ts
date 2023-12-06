@@ -255,24 +255,6 @@ export class PlaylistService {
     }
   }
 
-  // async getRecentPlaylist(user_id: string): Promise<Playlist> {
-  //   try {
-  //     return await this.playlistRepository.findOne({
-  //       where: {
-  //         user: { user_id },
-  //         playlist_title: RECENT_PLAYLIST_NAME,
-  //       },
-  //     });
-  //   } catch {
-  //     this.logger.error(`playlist.service - getRecentPlaylist : QUERY_ERROR`);
-  //     throw new CatchyException(
-  //       'QUERY_ERROR',
-  //       HTTP_STATUS_CODE.SERVER_ERROR,
-  //       ERROR_CODE.QUERY_ERROR,
-  //     );
-  //   }
-  // }
-
   async isExistMusicInRecentPlaylist(
     music_id: string,
     user_id: string,
@@ -326,28 +308,4 @@ export class PlaylistService {
       );
     }
   }
-
-  // async updateRecentMusic(
-  //   music_id: string,
-  //   playlist_id: number,
-  // ): Promise<number> {
-  //   try {
-  //     const music_playlist: Music_Playlist =
-  //       await this.music_playlistRepository.findOne({
-  //         where: { music: { music_id }, playlist: { playlist_id } },
-  //       });
-
-  //     music_playlist.created_at = new Date();
-  //     const savedData: Music_Playlist =
-  //       await this.music_playlistRepository.save(music_playlist);
-  //     return savedData.music_playlist_id;
-  //   } catch {
-  //     this.logger.error(`playlist.service - updateRecentMusic : SERVICE_ERROR`);
-  //     throw new CatchyException(
-  //       'SERVICE_ERROR',
-  //       HTTP_STATUS_CODE.SERVER_ERROR,
-  //       ERROR_CODE.SERVICE_ERROR,
-  //     );
-  //   }
-  // }
 }

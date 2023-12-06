@@ -9,10 +9,17 @@ import { Playlist } from 'src/entity/playlist.entity';
 import { Music_Playlist } from 'src/entity/music_playlist.entity';
 import { Music } from 'src/entity/music.entity';
 import { Logger } from 'winston';
+import { Recent_Played } from 'src/entity/recent_played.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([User, Playlist, Music_Playlist, Music]),
+    TypeOrmModule.forFeature([
+      User,
+      Playlist,
+      Music_Playlist,
+      Music,
+      Recent_Played,
+    ]),
     AuthModule,
   ],
   controllers: [UserController],
