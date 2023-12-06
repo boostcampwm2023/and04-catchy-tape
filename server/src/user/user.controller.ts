@@ -21,9 +21,7 @@ import { User } from 'src/entity/user.entity';
 @Controller('users')
 export class UserController {
   private readonly logger = new Logger('User');
-  constructor(
-    private userService: UserService,
-  ) {}
+  constructor(private userService: UserService) {}
 
   @Get('duplicate/:name')
   @HttpCode(HTTP_STATUS_CODE.NOT_DUPLICATED_NICKNAME)
@@ -45,11 +43,16 @@ export class UserController {
   @Get('recent-played')
   @UseGuards(AuthGuard())
   @HttpCode(HTTP_STATUS_CODE.SUCCESS)
-  async getUserRecentPlayedMusics(@Req() req): Promise<Music[]> {
+  async getUserRecentPlayedMusics(
+    @Req() req,
+    @Query('count') count: number,
+  ): Promise<Music[]> {
     this.logger.log(`GET /users/recent-played - nickname=${req.user.nickname}`);
     const userId = req.user.userId;
-    const userMusicData =
-      await this.userService.getRecentPlayedMusicByUserId(userId);
+    const userMusicData = await this.userService.getRecentPlayedMusicByUserId(
+      userId,
+      count,
+    );
 
     return userMusicData;
   }

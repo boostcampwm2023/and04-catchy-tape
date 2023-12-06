@@ -14,7 +14,6 @@ export enum Genres {
   'etc' = 'etc',
 }
 
-export const RECENT_PLAYLIST_NAME = '최근 재생 목록';
 export const keyFlags = ['user', 'cover'];
 
 export const contentTypeHandler: Record<string, string> = {

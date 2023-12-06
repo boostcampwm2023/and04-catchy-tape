@@ -240,21 +240,6 @@ export class PlaylistService {
     }
   }
 
-  async getRecentMusicsByUserId(userId: string) {
-    try {
-      return Music_Playlist.getRecentPlayedMusicByUserId(userId);
-    } catch {
-      this.logger.error(
-        `playlist.service - getRecentMusicsByUserId : SERVER_ERROR`,
-      );
-      throw new CatchyException(
-        'SERVER ERROR',
-        HTTP_STATUS_CODE.SERVER_ERROR,
-        ERROR_CODE.SERVER_ERROR,
-      );
-    }
-  }
-
   async isExistMusicInRecentPlaylist(
     music_id: string,
     user_id: string,

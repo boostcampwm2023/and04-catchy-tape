@@ -4,16 +4,15 @@ import { User } from 'src/entity/user.entity';
 import { Music } from 'src/entity/music.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-import { PlaylistService } from 'src/playlist/playlist.service';
 import { CatchyException } from 'src/config/catchyException';
 import { ERROR_CODE } from 'src/config/errorCode.enum';
+import { Recent_Played } from 'src/entity/recent_played.entity';
 
 @Injectable()
 export class UserService {
   private readonly logger = new Logger('UserService');
   constructor(
     @InjectRepository(User) private userRepository: Repository<User>,
-    private playlistService: PlaylistService,
   ) {}
 
   async isDuplicatedUserEmail(userNickname: string): Promise<boolean> {
@@ -37,8 +36,22 @@ export class UserService {
     }
   }
 
-  async getRecentPlayedMusicByUserId(userId: string): Promise<Music[]> {
-    return await this.playlistService.getRecentMusicsByUserId(userId);
+  async getRecentPlayedMusicByUserId(
+    userId: string,
+    count: number,
+  ): Promise<Music[]> {
+    try {
+      return await Recent_Played.getRecentPlayedMusicByUserId(userId, count);
+    } catch {
+      this.logger.error(
+        `user.service - getRecentPlayedMusicByUserId : QUERY_ERROR`,
+      );
+      throw new CatchyException(
+        'QUERY_ERROR',
+        HTTP_STATUS_CODE.SERVER_ERROR,
+        ERROR_CODE.QUERY_ERROR,
+      );
+    }
   }
 
   async updateUserImage(user_id: string, image_url: string): Promise<string> {
