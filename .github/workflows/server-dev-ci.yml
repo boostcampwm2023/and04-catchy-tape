@@ -34,5 +34,30 @@ jobs:
         if: steps.cache.outputs.cache-hit != 'true'
         run: npm install
 
+      - name: Create dev.env file
+        env:
+          DB_HOST_IP: ${{ secrets.SERVER_DEV_DB_HOST_IP }}
+          DB_PORT: ${{ secrets.SERVER_DEV_DB_PORT }}
+          DB_USER_NAME: ${{ secrets.SERVER_DEV_DB_USER_NAME }}
+          DB_PASSWORD: ${{ secrets.SERVER_DEV_DB_PASSWORD }}
+          DB_DATABASE_NAME: ${{ secrets.SERVER_DEV_DB_DATABASE_NAME }}
+          ACCESS_ID: ${{ secrets.SERVER_ENV_ACCESS_ID }}
+          SECRET_ACCESS_KEY: ${{ secrets.SERVER_ENV_SECRET_ACCESS_KEY }}
+          JWT_SECRET_KEY: ${{ secrets.SERVER_ENV_JWT_SECRET_KEY }}
+          GREEN_EYE_SECRET_KEY: ${{secrets.GREEN_EYE_SECRET_KEY}}
+          GREEN_EYE_REQUEST_URL: ${{secrets.GREEN_EYE_REQUEST_URL}}
+        run: |
+          touch dev.env
+          echo "DB_HOST_IP=$DB_HOST_IP" >> dev.env
+          echo "DB_PORT=$DB_PORT" >> dev.env
+          echo "DB_USER_NAME=$DB_USER_NAME" >> dev.env
+          echo "DB_PASSWORD=$DB_PASSWORD" >> dev.env
+          echo "DB_DATABASE_NAME=$DB_DATABASE_NAME" >> dev.env
+          echo "ACCESS_ID=$ACCESS_ID" >> dev.env
+          echo "SECRET_ACCESS_KEY=$SECRET_ACCESS_KEY" >> dev.env
+          echo "JWT_SECRET_KEY=$JWT_SECRET_KEY" >> dev.env
+          echo "GREEN_EYE_SECRET_KEY=$GREEN_EYE_SECRET_KEY" >> dev.env
+          echo "GREEN_EYE_REQUEST_URL=$GREEN_EYE_REQUEST_URL" >> dev.env
+
       - name: Execute Test
         run: npm run test
