@@ -1,6 +1,7 @@
 package com.ohdodok.catchytape.core.domain.repository
 
 import com.ohdodok.catchytape.core.domain.model.Music
+import com.ohdodok.catchytape.core.domain.model.PlayedMusic
 import kotlinx.coroutines.flow.Flow
 
 interface MusicRepository {
@@ -14,4 +15,8 @@ interface MusicRepository {
     fun getMyMusics(): Flow<List<Music>>
 
     fun getSearchedMusics(keyword: String): Flow<List<Music>>
+
+    fun getPlayedMusicInfo(): Flow<PlayedMusic>
+
+    suspend fun savePlayedMusicInfo(musicUrl: String, playlistId: Int, positionSecond: Int)
 }
