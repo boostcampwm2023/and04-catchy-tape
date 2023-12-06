@@ -51,16 +51,14 @@ class PlayerViewModel @Inject constructor(
     }
 
     init {
-        viewModelScope.launch {
+        observePlaylistChange()
+    }
+
+    private fun observePlaylistChange() {
+        viewModelScope.launch(exceptionHandler) {
             currentPlaylistUseCase.currentPlaylist.consumeEach {
                 _currentPlaylist.value = it
             }
-        }
-    }
-
-    private fun sendEvent(event: PlayerEvent) {
-        viewModelScope.launch {
-            _events.emit(event)
         }
     }
 

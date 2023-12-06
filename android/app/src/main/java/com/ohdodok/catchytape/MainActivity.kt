@@ -25,6 +25,7 @@ import androidx.navigation.ui.setupWithNavController
 import com.ohdodok.catchytape.databinding.ActivityMainBinding
 import com.ohdodok.catchytape.feature.player.PlayerListener
 import com.ohdodok.catchytape.feature.player.PlayerViewModel
+import com.ohdodok.catchytape.feature.player.getMediasWithMetaData
 import com.ohdodok.catchytape.feature.player.millisecondsPerSecond
 import com.ohdodok.catchytape.feature.player.moveNextMedia
 import com.ohdodok.catchytape.feature.player.movePreviousMedia
@@ -169,11 +170,7 @@ class MainActivity : AppCompatActivity() {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 playViewModel.currentPlaylist.collect {
                     it?.let {
-                        val newItems = it.musics.map { music ->
-                            MediaItem.Builder().setUri(music.musicUrl)
-                                .setMediaId(music.id)
-                                .build()
-                        }
+                        val newItems = getMediasWithMetaData(it.musics)
                         player.clearMediaItems()
                         player.setMediaItems(newItems)
 
