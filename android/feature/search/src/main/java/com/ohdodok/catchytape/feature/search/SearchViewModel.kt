@@ -52,14 +52,14 @@ class SearchViewModel @Inject constructor(
     private val viewModelScopeWithExceptionHandler = viewModelScope + exceptionHandler
 
     init {
-        observeUiState()
+        observeKeyword()
     }
 
     fun updateKeyword(newKeyword: String) {
         _keyword.update { newKeyword }
     }
 
-    private fun observeUiState() {
+    private fun observeKeyword() {
         _keyword.debounce(300).filter {
             it.isNotBlank()
         }.onEach {
