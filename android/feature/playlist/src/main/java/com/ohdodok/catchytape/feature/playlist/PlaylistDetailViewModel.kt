@@ -69,6 +69,8 @@ class PlaylistDetailViewModel @Inject constructor(
             .launchIn(viewModelScopeWithExceptionHandler)
     }
 
+    // fixme : 지금은 플레이 버튼이 무조건 첫 번째 노래부터 재생하지만,
+    //  만약 현재 재생 목록이 재생 중이라면 재생 중이던 곡부터 다시 재생해야 한다.
     fun playFromFirst() {
         val musics = uiState.value.musics
         if(musics.isEmpty()) return

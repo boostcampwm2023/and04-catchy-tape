@@ -25,9 +25,16 @@ class PlaylistDetailFragment :
 
         binding.viewModel = viewModel
         setupBackStack(binding.tbPlaylistDetail)
-        binding.rvPlaylist.adapter = MusicAdapter(Orientation.VERTICAL)
 
+        setupPlaylist()
         collectEvents()
+    }
+
+    private fun setupPlaylist() {
+        binding.rvPlaylist.adapter = MusicAdapter(
+            musicItemOrientation = Orientation.VERTICAL,
+            listener = viewModel,
+        )
     }
 
     private fun collectEvents() {
@@ -43,8 +50,6 @@ class PlaylistDetailFragment :
 }
 
 private fun NavController.navigateToPlayerScreen() {
-    println("왜 안 되지")
-
     val targetUri = "android-app://com.ohdodok.catchytape/player_fragment".toUri()
     val request = NavDeepLinkRequest.Builder.fromUri(targetUri).build()
 
