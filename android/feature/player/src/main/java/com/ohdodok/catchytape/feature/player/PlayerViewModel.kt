@@ -6,6 +6,8 @@ import com.ohdodok.catchytape.core.domain.model.CtErrorType
 import com.ohdodok.catchytape.core.domain.model.CtException
 import com.ohdodok.catchytape.core.domain.model.CurrentPlaylist
 import com.ohdodok.catchytape.core.domain.model.Music
+import com.ohdodok.catchytape.core.domain.model.Playlist
+import com.ohdodok.catchytape.core.domain.repository.PlaylistRepository
 import com.ohdodok.catchytape.core.domain.usecase.player.CurrentPlaylistUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
@@ -16,6 +18,7 @@ import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -29,11 +32,13 @@ data class PlayerState(
 
 sealed interface PlayerEvent {
     data class ShowError(val error: CtErrorType) : PlayerEvent
+    data class AddToPlaylist(val playlists: List<Playlist>) : PlayerEvent
 }
 
 @HiltViewModel
 class PlayerViewModel @Inject constructor(
     private val currentPlaylistUseCase: CurrentPlaylistUseCase,
+    private val playlistRepository: PlaylistRepository,
 ) : ViewModel(), PlayerEventListener {
 
     private val _currentPlaylist = MutableStateFlow<CurrentPlaylist?>(null)
@@ -65,6 +70,13 @@ class PlayerViewModel @Inject constructor(
     fun updateCurrentPosition(positionSecond: Int) {
         _uiState.update {
             it.copy(currentPositionSecond = positionSecond)
+        }
+    }
+
+    fun addToPlaylist() {
+        viewModelScope.launch(exceptionHandler) {
+            val playlists = playlistRepository.getPlaylists().first()
+            _events.emit(PlayerEvent.AddToPlaylist(playlists))
         }
     }
 
