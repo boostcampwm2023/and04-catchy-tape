@@ -53,5 +53,6 @@
     <string name="error_message_not_exist_genre">"error_message_not_exist_genre"</string>
     <string name="error_message_expired_token">"error_message_expired_token"</string>
     <string name="error_message_service">"error_message_service"</string>
+    <string name="add_to_playlist">재생 목록에 노래 추가</string>
 
 </resources>
