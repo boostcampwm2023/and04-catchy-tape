@@ -2,6 +2,7 @@ package com.ohdodok.catchytape.core.data.repository
 
 import com.ohdodok.catchytape.core.data.api.PlaylistApi
 import com.ohdodok.catchytape.core.data.api.UserApi
+import com.ohdodok.catchytape.core.data.model.AddMusicToPlaylistRequest
 import com.ohdodok.catchytape.core.data.model.PlaylistRequest
 import com.ohdodok.catchytape.core.data.model.toDomains
 import com.ohdodok.catchytape.core.domain.model.Music
@@ -34,6 +35,13 @@ class PlaylistRepositoryImpl @Inject constructor(
     override fun getPlaylist(playlistId: Int): Flow<List<Music>> = flow {
         val response = playlistApi.getPlaylist(playlistId)
         emit(response.toDomains())
+    }
+
+    override suspend fun addMusicToPlaylist(playlistId: Int, musicId: String) {
+        playlistApi.postMusicToPlaylist(
+            playlistId = playlistId,
+            music = AddMusicToPlaylistRequest(musicId),
+        )
     }
 }
 

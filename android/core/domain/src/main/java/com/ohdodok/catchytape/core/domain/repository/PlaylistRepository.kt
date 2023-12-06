@@ -13,4 +13,6 @@ interface PlaylistRepository {
     fun getRecentPlaylist(): Flow<List<Music>>
 
     fun getPlaylist(playlistId: Int): Flow<List<Music>>
+
+    suspend fun addMusicToPlaylist(playlistId: Int, musicId: String)
 }
