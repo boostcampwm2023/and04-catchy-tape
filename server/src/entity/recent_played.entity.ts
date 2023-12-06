@@ -24,4 +24,37 @@ export class Recent_Played extends BaseEntity {
 
   @Column()
   played_at: Date;
+
+  static async getRecentPlayedMusicByUserId(
+    user_id: string,
+    count: number,
+  ): Promise<Music[]> {
+    return await this.find({
+      relations: {
+        music: true,
+        user: true,
+      },
+      where: {
+        user: {
+          user_id,
+        },
+      },
+      select: {
+        recent_played_id: false,
+        music: {
+          music_id: true,
+          title: true,
+          music_file: true,
+          cover: true,
+          genre: true,
+        },
+      },
+      order: {
+        played_at: 'DESC',
+      },
+      take: count,
+    }).then((recent_played: Recent_Played[]) =>
+      recent_played.map((recent) => recent.music),
+    );
+  }
 }
