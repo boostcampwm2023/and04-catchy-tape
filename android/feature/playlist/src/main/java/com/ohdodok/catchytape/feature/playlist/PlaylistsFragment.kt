@@ -40,7 +40,10 @@ class PlaylistsFragment : BaseFragment<FragmentPlaylistsBinding>(R.layout.fragme
                     }
 
                     is PlaylistsEvent.NavigateToPlaylistDetail -> {
-                        findNavController().navigateToPlaylistDetail(event.playlist.id)
+                        findNavController().navigateToPlaylistDetail(
+                            event.playlist.id,
+                            event.playlist.title,
+                        )
                     }
                 }
             }
@@ -53,10 +56,11 @@ class PlaylistsFragment : BaseFragment<FragmentPlaylistsBinding>(R.layout.fragme
 
 }
 
-private fun NavController.navigateToPlaylistDetail(playlistId: Int) {
+private fun NavController.navigateToPlaylistDetail(playlistId: Int, title: String) {
     navigate(
         PlaylistsFragmentDirections.actionPlaylistsFragmentToPlaylistDetailFragment(
-            playlistId = playlistId
+            playlistId = playlistId,
+            title = title,
         )
     )
 }
