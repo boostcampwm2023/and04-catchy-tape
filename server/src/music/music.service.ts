@@ -158,48 +158,6 @@ export class MusicService {
     });
   }
 
-  async encodeMusic(musicId: string, musicPath: string): Promise<string> {
-    try {
-      ffmpeg.setFfmpegPath(ffmpegInstaller.path);
-
-      const { outputMusicPath, entireMusicPath, outputPath, tempFilePath } =
-        this.setEncodingPaths(musicPath);
-
-      fs.mkdirSync(outputMusicPath, { recursive: true });
-
-      const musicFileResponse = await axios.get(musicPath, {
-        responseType: 'arraybuffer',
-      });
-
-      const musicBuffer = Buffer.from(musicFileResponse.data);
-
-      fs.writeFile(tempFilePath, musicBuffer, (err) => {
-        if (err) throw new Error();
-      });
-
-      const encodedFileURL = await this.executeEncoding(
-        tempFilePath,
-        outputPath,
-        outputMusicPath,
-        musicId,
-      );
-
-      fs.rmdirSync(entireMusicPath, { recursive: true });
-
-      return encodedFileURL;
-    } catch (err) {
-      if (err instanceof CatchyException) {
-        throw err;
-      }
-
-      throw new CatchyException(
-        'MUSIC_ENCODE_ERROR',
-        HTTP_STATUS_CODE.SERVER_ERROR,
-        ERROR_CODE.SERVER_ERROR,
-      );
-    }
-  }
-
   private async uploadEncodedFile(
     file: string,
     musicId: string,
