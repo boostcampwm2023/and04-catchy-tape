@@ -8,7 +8,6 @@ import {
 } from 'typeorm';
 import { Music } from './music.entity';
 import { Playlist } from './playlist.entity';
-import { RECENT_PLAYLIST_NAME } from 'src/constants';
 
 @Entity({ name: 'music_playlist' })
 export class Music_Playlist extends BaseEntity {
@@ -24,7 +23,7 @@ export class Music_Playlist extends BaseEntity {
   playlist: Playlist;
 
   @Column()
-  updated_at: Date;
+  created_at: Date;
 
   static async getMusicListByPlaylistId(playlistId: number): Promise<Music[]> {
     return this.find({
@@ -46,40 +45,8 @@ export class Music_Playlist extends BaseEntity {
         music_playlist_id: false,
       },
       order: {
-        updated_at: 'DESC',
+        created_at: 'DESC',
       },
-    }).then((a: Music_Playlist[]) => a.map((b) => b.music));
-  }
-
-  static async getRecentPlayedMusicByUserId(userId: string): Promise<Music[]> {
-    return await this.find({
-      relations: {
-        music: true,
-      },
-      where: {
-        playlist: {
-          playlist_title: RECENT_PLAYLIST_NAME,
-        },
-        music: {
-          user: {
-            user_id: userId,
-          },
-        },
-      },
-      select: {
-        music_playlist_id: false,
-        music: {
-          music_id: true,
-          title: true,
-          music_file: true,
-          cover: true,
-          genre: true,
-        },
-      },
-      order: {
-        updated_at: 'DESC',
-      },
-      take: 10,
     }).then((a: Music_Playlist[]) => a.map((b) => b.music));
   }
 
@@ -94,7 +61,7 @@ export class Music_Playlist extends BaseEntity {
       relations: { music: true },
       select: { music: { cover: true } },
       where: { playlist: { playlist_id } },
-      order: { updated_at: 'DESC' },
+      order: { created_at: 'DESC' },
     });
   }
 }
