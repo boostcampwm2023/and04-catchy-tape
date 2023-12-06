@@ -1,4 +1,4 @@
-import { Inject, Injectable, Logger, LoggerService } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { HTTP_STATUS_CODE } from 'src/httpStatusCode.enum';
 import { NcloudConfigService } from './../config/ncloud.config';
 import { S3 } from 'aws-sdk';
@@ -170,12 +170,6 @@ export class UploadService {
       return { url: uploadResult.Location };
     } catch (err) {
       if (err instanceof CatchyException) {
-        if (err.message === 'INVALID_GREEN_EYE_REQUEST') {
-          this.logger.error(
-            `greenEye.service - getResultOfNormalImage : INVALID_GREEN_EYE_REQUEST`,
-          );
-        }
-
         throw err;
       }
 
