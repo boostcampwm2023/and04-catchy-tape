@@ -31,7 +31,7 @@ export class Recent_Played extends BaseEntity {
   ): Promise<Music[]> {
     return await this.find({
       relations: {
-        music: true,
+        music: { user: true },
         user: true,
       },
       where: {
@@ -47,6 +47,7 @@ export class Recent_Played extends BaseEntity {
           music_file: true,
           cover: true,
           genre: true,
+          user: { user_id: true, nickname: true },
         },
       },
       order: {
