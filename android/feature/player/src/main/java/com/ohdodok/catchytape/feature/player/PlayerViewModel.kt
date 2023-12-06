@@ -29,7 +29,6 @@ data class PlayerState(
 
 sealed interface PlayerEvent {
     data class ShowError(val error: CtErrorType) : PlayerEvent
-    data object AddToPlaylist : PlayerEvent
 }
 
 @HiltViewModel
@@ -66,12 +65,6 @@ class PlayerViewModel @Inject constructor(
     fun updateCurrentPosition(positionSecond: Int) {
         _uiState.update {
             it.copy(currentPositionSecond = positionSecond)
-        }
-    }
-
-    fun addToPlaylist() {
-        viewModelScope.launch(exceptionHandler) {
-            _events.emit(PlayerEvent.AddToPlaylist)
         }
     }
 

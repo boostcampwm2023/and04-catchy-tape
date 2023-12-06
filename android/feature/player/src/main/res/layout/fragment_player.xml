@@ -86,7 +86,6 @@
             android:layout_marginEnd="@dimen/margin_horizontal"
             android:backgroundTint="@color/surface_bright"
             android:minWidth="0dp"
-            android:onClick="@{() -> viewModel.addToPlaylist()}"
             android:paddingHorizontal="12dp"
             android:paddingVertical="0dp"
             android:text="@string/save"
