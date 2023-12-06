@@ -7,6 +7,8 @@ import com.ohdodok.catchytape.core.domain.model.CtErrorType
 import com.ohdodok.catchytape.core.domain.model.CtException
 import com.ohdodok.catchytape.core.domain.model.Music
 import com.ohdodok.catchytape.core.domain.repository.PlaylistRepository
+import com.ohdodok.catchytape.core.domain.usecase.player.CurrentPlaylistUseCase
+import com.ohdodok.catchytape.core.ui.MusicAdapter
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -28,13 +30,15 @@ data class PlaylistDetailUiState(
 
 sealed interface PlaylistDetailEvent {
     data class ShowMessage(val error: CtErrorType) : PlaylistDetailEvent
+    data object NavigateToPlayerScreen : PlaylistDetailEvent
 }
 
 @HiltViewModel
 class PlaylistDetailViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val playlistRepository: PlaylistRepository,
-) : ViewModel() {
+    private val currentPlaylistUseCase: CurrentPlaylistUseCase,
+) : ViewModel(), MusicAdapter.Listener {
 
     private val playlistId: Int = requireNotNull(savedStateHandle["playlistId"]) {
         "playlistId가 반드시 전달 되어야 해요."
@@ -63,5 +67,23 @@ class PlaylistDetailViewModel @Inject constructor(
                 _uiState.update { it.copy(musics = musics) }
             }
             .launchIn(viewModelScopeWithExceptionHandler)
+    }
+
+    fun playFromFirst() {
+        val musics = uiState.value.musics
+        if(musics.isEmpty()) return
+
+        play(musics.first())
+    }
+
+    private fun play(music: Music) {
+        currentPlaylistUseCase.playMusics(music, uiState.value.musics)
+        viewModelScopeWithExceptionHandler.launch {
+            _events.emit(PlaylistDetailEvent.NavigateToPlayerScreen)
+        }
+    }
+
+    override fun onClick(music: Music) {
+        play(music)
     }
 }

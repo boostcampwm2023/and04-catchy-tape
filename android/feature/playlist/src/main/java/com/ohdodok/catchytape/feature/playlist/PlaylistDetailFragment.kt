@@ -2,7 +2,11 @@ package com.ohdodok.catchytape.feature.playlist
 
 import android.os.Bundle
 import android.view.View
+import androidx.core.net.toUri
 import androidx.fragment.app.viewModels
+import androidx.navigation.NavController
+import androidx.navigation.NavDeepLinkRequest
+import androidx.navigation.fragment.findNavController
 import com.ohdodok.catchytape.core.ui.BaseFragment
 import com.ohdodok.catchytape.core.ui.MusicAdapter
 import com.ohdodok.catchytape.core.ui.Orientation
@@ -31,9 +35,18 @@ class PlaylistDetailFragment :
             viewModel.events.collect { event ->
                 when (event) {
                     is PlaylistDetailEvent.ShowMessage -> showMessage(event.error.toMessageId())
+                    is PlaylistDetailEvent.NavigateToPlayerScreen -> findNavController().navigateToPlayerScreen()
                 }
             }
         }
     }
 }
 
+private fun NavController.navigateToPlayerScreen() {
+    println("왜 안 되지")
+
+    val targetUri = "android-app://com.ohdodok.catchytape/player_fragment".toUri()
+    val request = NavDeepLinkRequest.Builder.fromUri(targetUri).build()
+
+    this.navigate(request)
+}
