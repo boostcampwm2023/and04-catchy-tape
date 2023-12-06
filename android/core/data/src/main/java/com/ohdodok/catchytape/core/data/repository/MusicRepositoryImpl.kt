@@ -47,4 +47,9 @@ class MusicRepositoryImpl @Inject constructor(
         val myMusics = musicApi.getMyUploads()
         emit(myMusics.toDomains())
     }
+
+    override fun getSearchedMusics(keyword: String): Flow<List<Music>> = flow {
+        val searchedMusics = musicApi.getSearchedMusics(keyword)
+        emit(searchedMusics.toDomains())
+    }
 }
