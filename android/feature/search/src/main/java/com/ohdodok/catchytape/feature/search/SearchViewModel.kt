@@ -27,7 +27,6 @@ data class SearchUiState(
     val searchedMusics: List<Music> = emptyList()
 )
 
-
 @HiltViewModel
 class SearchViewModel @Inject constructor(
     private val musicRepository: MusicRepository
