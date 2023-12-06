@@ -34,6 +34,8 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 import com.ohdodok.catchytape.core.ui.R.string as uiString
 
+private const val BOTTOM_NAV_ANIMATION_DURATION = 700L
+
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
@@ -111,11 +113,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun hideBottomNav() {
-        val period = 700L
-
         val height = binding.bottomNav.height.toFloat()
         ObjectAnimator.ofFloat(binding.bottomNav, "translationY", height).apply {
-            duration = period
+            duration = BOTTOM_NAV_ANIMATION_DURATION
             doOnEnd { binding.bottomNav.visibility = View.GONE }
             start()
         }
@@ -124,7 +124,7 @@ class MainActivity : AppCompatActivity() {
     private fun showBottomNav() {
         binding.bottomNav.visibility = View.VISIBLE
         ObjectAnimator.ofFloat(binding.bottomNav, "translationY", 0f).apply {
-            duration = 700
+            duration = BOTTOM_NAV_ANIMATION_DURATION
             start()
         }
     }
