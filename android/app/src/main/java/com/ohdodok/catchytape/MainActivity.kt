@@ -1,5 +1,6 @@
 package com.ohdodok.catchytape
 
+import android.animation.ObjectAnimator
 import android.content.ComponentName
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities.NET_CAPABILITY_VALIDATED
@@ -8,6 +9,7 @@ import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.animation.doOnEnd
 import androidx.core.view.WindowCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -34,6 +36,8 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import com.ohdodok.catchytape.core.ui.R.string as uiString
+
+private const val BOTTOM_NAV_ANIMATION_DURATION = 700L
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
@@ -115,11 +119,20 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun hideBottomNav() {
-        binding.bottomNav.visibility = View.GONE
+        val height = binding.bottomNav.height.toFloat()
+        ObjectAnimator.ofFloat(binding.bottomNav, "translationY", height).apply {
+            duration = BOTTOM_NAV_ANIMATION_DURATION
+            doOnEnd { binding.bottomNav.visibility = View.GONE }
+            start()
+        }
     }
 
     private fun showBottomNav() {
         binding.bottomNav.visibility = View.VISIBLE
+        ObjectAnimator.ofFloat(binding.bottomNav, "translationY", 0f).apply {
+            duration = BOTTOM_NAV_ANIMATION_DURATION
+            start()
+        }
     }
 
     private fun hidePlayerController() {

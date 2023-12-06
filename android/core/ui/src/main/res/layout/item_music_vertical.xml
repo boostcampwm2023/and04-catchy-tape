@@ -24,6 +24,7 @@
             android:id="@+id/iv_thumbnail"
             android:layout_width="@dimen/music_vertical_img"
             android:layout_height="@dimen/music_vertical_img"
+            android:scaleType="centerCrop"
             app:imgUrl="@{music.imageUrl}"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"

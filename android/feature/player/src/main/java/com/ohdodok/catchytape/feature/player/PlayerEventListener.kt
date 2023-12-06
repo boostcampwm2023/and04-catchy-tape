@@ -4,5 +4,5 @@ interface PlayerEventListener {
 
     fun onPlayingChanged(isPlaying: Boolean)
 
-    fun onMediaItemChanged(duration: Int)
+    fun onMediaItemChanged(index: Int, duration: Int)
 }

@@ -81,7 +81,10 @@ class PlayerViewModel @Inject constructor(
         }
     }
 
-    override fun onMediaItemChanged(duration: Int) {
-        _uiState.update { it.copy(duration = duration) }
+    override fun onMediaItemChanged(index: Int, duration: Int) {
+
+        _uiState.update {
+            it.copy(duration = duration)
+        }
     }
 }
