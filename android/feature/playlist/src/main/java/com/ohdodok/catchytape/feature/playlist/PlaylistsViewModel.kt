@@ -4,8 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ohdodok.catchytape.core.domain.model.CtErrorType
 import com.ohdodok.catchytape.core.domain.model.CtException
-import com.ohdodok.catchytape.core.domain.model.Playlist
 import com.ohdodok.catchytape.core.domain.repository.PlaylistRepository
+import com.ohdodok.catchytape.feature.playlist.model.PlaylistUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -21,7 +21,7 @@ import kotlinx.coroutines.plus
 import javax.inject.Inject
 
 data class PlaylistsUiState(
-    val playlists: List<Playlist> = emptyList()
+    val playlists: List<PlaylistUiModel> = emptyList()
 )
 
 @HiltViewModel
@@ -48,7 +48,19 @@ class PlaylistViewModel @Inject constructor(
 
     fun fetchPlaylists() {
         playlistRepository.getPlaylists().onEach { playlists ->
-            _uiState.update { it.copy(playlists = playlists) }
+            _uiState.update {
+                it.copy(
+                    playlists = playlists.map { playlist ->
+                        PlaylistUiModel(
+                            id = playlist.id,
+                            title = playlist.title,
+                            thumbnailUrl = playlist.thumbnailUrl,
+                            trackSize = playlist.trackSize,
+                            onClick = { onPlaylistClick(playlist.id) },
+                        )
+                    }
+                )
+            }
         }.launchIn(viewModelScopeWithExceptionHandler)
     }
 
@@ -57,9 +69,16 @@ class PlaylistViewModel @Inject constructor(
             playlistRepository.postPlaylist(playlistTitle)
         }
     }
+
+    private fun onPlaylistClick(playlistId: Int) {
+        viewModelScope.launch {
+            _events.emit(PlaylistsEvent.NavigateToPlaylistDetail(playlistId))
+        }
+    }
 }
 
-
 sealed interface PlaylistsEvent {
+
+    data class NavigateToPlaylistDetail(val playlistId: Int) : PlaylistsEvent
     data class ShowMessage(val error: CtErrorType) : PlaylistsEvent
 }

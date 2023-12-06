@@ -14,7 +14,7 @@
     <string name="confirm">확인</string>
     <string name="complete">완료</string>
     <string name="save">저장</string>
-    <string name="play">썸네일 이미지</string>
+    <string name="play">재생하기</string>
 
     <string name="recently_played_song">최근 재생한 노래</string>
     <string name="recently_added_song">최근 추가된 노래</string>
