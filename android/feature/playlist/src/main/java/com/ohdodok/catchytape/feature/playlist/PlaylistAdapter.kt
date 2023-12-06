@@ -5,11 +5,11 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.ohdodok.catchytape.core.domain.model.Playlist
 import com.ohdodok.catchytape.feature.playlist.databinding.ItemPlaylistBinding
+import com.ohdodok.catchytape.feature.playlist.model.PlaylistUiModel
 
 class PlaylistAdapter :
-    ListAdapter<Playlist, PlaylistAdapter.PlaylistViewHolder>(PlaylistItemDiffUtil) {
+    ListAdapter<PlaylistUiModel, PlaylistAdapter.PlaylistViewHolder>(PlaylistItemDiffUtil) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PlaylistViewHolder {
         return PlaylistViewHolder.from(parent)
@@ -22,7 +22,7 @@ class PlaylistAdapter :
     class PlaylistViewHolder private constructor(private val binding: ItemPlaylistBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(item: Playlist) {
+        fun bind(item: PlaylistUiModel) {
             binding.playlist = item
         }
 
@@ -37,12 +37,12 @@ class PlaylistAdapter :
         }
     }
 
-    object PlaylistItemDiffUtil : DiffUtil.ItemCallback<Playlist>() {
-        override fun areItemsTheSame(oldItem: Playlist, newItem: Playlist): Boolean {
+    object PlaylistItemDiffUtil : DiffUtil.ItemCallback<PlaylistUiModel>() {
+        override fun areItemsTheSame(oldItem: PlaylistUiModel, newItem: PlaylistUiModel): Boolean {
             return oldItem.id == newItem.id
         }
 
-        override fun areContentsTheSame(oldItem: Playlist, newItem: Playlist): Boolean {
+        override fun areContentsTheSame(oldItem: PlaylistUiModel, newItem: PlaylistUiModel): Boolean {
             return oldItem == newItem
         }
     }
