@@ -8,16 +8,11 @@ import { ConfigService } from '@nestjs/config';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Music } from 'src/entity/music.entity';
-import { realMusicCreateInfo, user } from 'test/constants/music.mockData';
+import { user } from 'test/constants/music.mockData';
 import { MusicController } from './music.controller';
-import * as request from 'supertest';
-import { HTTP_STATUS_CODE } from 'src/httpStatusCode.enum';
 import { User } from 'src/entity/user.entity';
 import { AuthService } from 'src/auth/auth.service';
 import { JwtService } from '@nestjs/jwt';
-import { PlaylistService } from 'src/playlist/playlist.service';
-import { Playlist } from 'src/entity/playlist.entity';
-import { Music_Playlist } from 'src/entity/music_playlist.entity';
 import { AuthGuard } from '@nestjs/passport';
 import { GreenEyeService } from 'src/config/greenEye.service';
 
@@ -40,7 +35,6 @@ describe('UploadController', () => {
         ConfigService,
         GreenEyeService,
         AuthService,
-        PlaylistService,
         JwtService,
         {
           provide: getRepositoryToken(Music),
@@ -48,14 +42,6 @@ describe('UploadController', () => {
         },
         {
           provide: getRepositoryToken(User),
-          useClass: Repository,
-        },
-        {
-          provide: getRepositoryToken(Playlist),
-          useClass: Repository,
-        },
-        {
-          provide: getRepositoryToken(Music_Playlist),
           useClass: Repository,
         },
       ],

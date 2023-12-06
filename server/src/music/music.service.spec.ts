@@ -15,6 +15,7 @@ import {
   newMusicData,
 } from 'test/constants/music.mockData';
 import { GreenEyeService } from 'src/config/greenEye.service';
+import { Recent_Played } from 'src/entity/recent_played.entity';
 
 describe('UploadController', () => {
   let app: INestApplication;
@@ -36,6 +37,10 @@ describe('UploadController', () => {
         GreenEyeService,
         {
           provide: getRepositoryToken(Music),
+          useClass: Repository,
+        },
+        {
+          provide: getRepositoryToken(Recent_Played),
           useClass: Repository,
         },
       ],
