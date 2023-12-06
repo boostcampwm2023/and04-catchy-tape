@@ -8,6 +8,7 @@ import androidx.media3.exoplayer.ExoPlayer
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import com.ohdodok.catchytape.core.ui.BaseFragment
+import com.ohdodok.catchytape.core.ui.PlaylistBottomSheet
 import com.ohdodok.catchytape.core.ui.toMessageId
 import com.ohdodok.catchytape.feature.player.databinding.FragmentPlayerBinding
 import dagger.hilt.android.AndroidEntryPoint
@@ -63,6 +64,11 @@ class PlayerFragment : BaseFragment<FragmentPlayerBinding>(R.layout.fragment_pla
 
         binding.btnPrevious.setOnClickListener {
             player.movePreviousMedia()
+        }
+
+        binding.btnAddToPlaylist.setOnClickListener {
+            val bottomSheet = PlaylistBottomSheet()
+            bottomSheet.show(parentFragmentManager, PlaylistBottomSheet.TAG)
         }
     }
 
