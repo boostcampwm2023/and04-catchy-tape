@@ -21,7 +21,7 @@
             android:layout_height="0dp"
             android:alpha="0.2"
             android:scaleType="center"
-            app:imgUrl="@{viewModel.uiState.musics.get(0).imageUrl}"
+            app:imgUrl="@{viewModel.uiState.musics.isEmpty() ? null : viewModel.uiState.musics[0].imageUrl}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
