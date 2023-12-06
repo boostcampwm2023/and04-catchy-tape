@@ -40,7 +40,7 @@ class PlaylistsFragment : BaseFragment<FragmentPlaylistsBinding>(R.layout.fragme
                     }
 
                     is PlaylistsEvent.NavigateToPlaylistDetail -> {
-                        findNavController().navigateToPlaylistDetail(event.playlistId)
+                        findNavController().navigateToPlaylistDetail(event.playlist.id)
                     }
                 }
             }
