@@ -66,6 +66,7 @@ class MainActivity : AppCompatActivity() {
         val networkStateObserver = NetworkStateObserver(connectivityManager, ::checkNetworkState)
         lifecycle.addObserver(networkStateObserver)
 
+        playViewModel.getPlayedMusicInfo()
         setupPlayer()
         setupPlayButton()
         setupPreviousButton()
@@ -76,6 +77,11 @@ class MainActivity : AppCompatActivity() {
     override fun onStart() {
         super.onStart()
         connectToMediaSession()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        playViewModel.savePlayedMusicInfo()
     }
 
     private fun connectToMediaSession() {

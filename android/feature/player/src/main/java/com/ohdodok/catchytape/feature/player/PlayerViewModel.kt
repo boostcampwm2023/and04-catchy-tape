@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.ohdodok.catchytape.core.domain.model.CtErrorType
 import com.ohdodok.catchytape.core.domain.model.CtException
 import com.ohdodok.catchytape.core.domain.model.Music
+import com.ohdodok.catchytape.core.domain.repository.MusicRepository
 import com.ohdodok.catchytape.core.domain.repository.PlaylistRepository
 import com.ohdodok.catchytape.core.domain.usecase.player.CurrentPlaylistUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -20,6 +21,7 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.plus
+import timber.log.Timber
 import javax.inject.Inject
 
 data class PlayerState(
@@ -37,6 +39,7 @@ sealed interface PlayerEvent {
 class PlayerViewModel @Inject constructor(
     private val playlistRepository: PlaylistRepository,
     private val currentPlaylistUseCase: CurrentPlaylistUseCase,
+    private val musicRepository: MusicRepository,
 ) : ViewModel(), PlayerEventListener {
     val playlistChangeEvent = currentPlaylistUseCase.currentPlaylist
 
@@ -72,6 +75,19 @@ class PlayerViewModel @Inject constructor(
     fun updateCurrentPosition(positionSecond: Int) {
         _uiState.update {
             it.copy(currentPositionSecond = positionSecond)
+        }
+    }
+
+    fun getPlayedMusicInfo() {
+        musicRepository.getPlayedMusicInfo().onEach {
+            Timber.d("${it}")
+        }.launchIn(viewModelScope)
+    }
+
+    fun savePlayedMusicInfo() {
+        viewModelScope.launch {
+            Timber.d("saveInfo")
+            musicRepository.savePlayedMusicInfo("", 0, 1)
         }
     }
 
