@@ -16,6 +16,7 @@ export class UploadService {
   private objectStorage: S3;
   constructor(
     private readonly nCloudConfigService: NcloudConfigService,
+    private readonly greenEyeService: GreenEyeService,
   ) {
     this.objectStorage = nCloudConfigService.createObjectStorageOption();
   }
@@ -54,6 +55,9 @@ export class UploadService {
     if (message !== 'SUCCESS') {
       await this.deleteObjectStorageImage(keyPath);
 
+      this.logger.error(
+        `upload.service - checkImageNormal : FAIL_GREEN_EYE_IMAGE_RECOGNITION`,
+      );
       throw new CatchyException(
         'FAIL_GREEN_EYE_IMAGE_RECOGNITION',
         HTTP_STATUS_CODE.BAD_REQUEST,
@@ -64,6 +68,7 @@ export class UploadService {
     if (confidence < 0.9) {
       await this.deleteObjectStorageImage(keyPath);
 
+      this.logger.error(`upload.service - checkImageNormal : BAD_IMAGE`);
       throw new CatchyException(
         'BAD_IMAGE',
         HTTP_STATUS_CODE.BAD_REQUEST,
@@ -163,7 +168,17 @@ export class UploadService {
       );
 
       return { url: uploadResult.Location };
-    } catch {
+    } catch (err) {
+      if (err instanceof CatchyException) {
+        if (err.message === 'INVALID_GREEN_EYE_REQUEST') {
+          this.logger.error(
+            `greenEye.service - getResultOfNormalImage : INVALID_GREEN_EYE_REQUEST`,
+          );
+        }
+
+        throw err;
+      }
+
       this.logger.error(`upload.service - uploadImage : SERVICE_ERROR`);
       throw new CatchyException(
         'SERVER ERROR',
