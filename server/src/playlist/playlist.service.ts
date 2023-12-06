@@ -2,7 +2,6 @@ import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CatchyException } from 'src/config/catchyException';
 import { ERROR_CODE } from 'src/config/errorCode.enum';
-import { RECENT_PLAYLIST_NAME } from 'src/constants';
 import { PlaylistCreateDto } from 'src/dto/playlistCreate.dto';
 import { Music } from 'src/entity/music.entity';
 import { Music_Playlist } from 'src/entity/music_playlist.entity';
@@ -22,7 +21,7 @@ export class PlaylistService {
     @InjectRepository(Music)
     private MusicRepository: Repository<Music>,
     @InjectRepository(Recent_Played)
-    private recentPlaylistRepository: Repository<Recent_Played>,
+    private recentPlayedRepository: Repository<Recent_Played>,
   ) {}
 
   async createPlaylist(
@@ -256,31 +255,37 @@ export class PlaylistService {
     }
   }
 
-  async getRecentPlaylist(user_id: string): Promise<Playlist> {
-    try {
-      return await this.playlistRepository.findOne({
-        where: {
-          user: { user_id },
-          playlist_title: RECENT_PLAYLIST_NAME,
-        },
-      });
-    } catch {
-      this.logger.error(`playlist.service - getRecentPlaylist : QUERY_ERROR`);
-      throw new CatchyException(
-        'QUERY_ERROR',
-        HTTP_STATUS_CODE.SERVER_ERROR,
-        ERROR_CODE.QUERY_ERROR,
-      );
-    }
-  }
+  // async getRecentPlaylist(user_id: string): Promise<Playlist> {
+  //   try {
+  //     return await this.playlistRepository.findOne({
+  //       where: {
+  //         user: { user_id },
+  //         playlist_title: RECENT_PLAYLIST_NAME,
+  //       },
+  //     });
+  //   } catch {
+  //     this.logger.error(`playlist.service - getRecentPlaylist : QUERY_ERROR`);
+  //     throw new CatchyException(
+  //       'QUERY_ERROR',
+  //       HTTP_STATUS_CODE.SERVER_ERROR,
+  //       ERROR_CODE.QUERY_ERROR,
+  //     );
+  //   }
+  // }
 
-  async isExistMusicInRecentPlaylist(music_id: string, user_id: string) {
+  async isExistMusicInRecentPlaylist(
+    music_id: string,
+    user_id: string,
+  ): Promise<boolean> {
     try {
-      const musicCount: number = await this.recentPlaylistRepository.count({
+      const musicCount: number = await this.recentPlayedRepository.count({
         where: { music: { music_id }, user: { user_id } },
       });
       return musicCount != 0;
     } catch {
+      this.logger.error(
+        `playlist.service - isExistMusicInRecentPlaylist : QUERY_ERROR`,
+      );
       throw new CatchyException(
         'QUERY_ERROR',
         HTTP_STATUS_CODE.SERVER_ERROR,
@@ -289,27 +294,60 @@ export class PlaylistService {
     }
   }
 
-  async updateRecentMusic(
-    music_id: string,
-    playlist_id: number,
-  ): Promise<number> {
+  async updateRecentMusic(music_id: string, user_id: string): Promise<number> {
     try {
-      const music_playlist: Music_Playlist =
-        await this.music_playlistRepository.findOne({
-          where: { music: { music_id }, playlist: { playlist_id } },
+      if (!(await this.isExistMusicInRecentPlaylist(music_id, user_id))) {
+        const newRow: Recent_Played = this.recentPlayedRepository.create({
+          music: { music_id },
+          user: { user_id },
+          played_at: new Date(),
         });
+        const addedRow: Recent_Played =
+          await this.recentPlayedRepository.save(newRow);
+        return addedRow.recent_played_id;
+      }
 
-      music_playlist.created_at = new Date();
-      const savedData: Music_Playlist =
-        await this.music_playlistRepository.save(music_playlist);
-      return savedData.music_playlist_id;
-    } catch {
+      const targetRow: Recent_Played =
+        await this.recentPlayedRepository.findOne({
+          where: { music: { music_id }, user: { user_id } },
+        });
+      targetRow.played_at = new Date();
+      const updatedRow: Recent_Played =
+        await this.recentPlayedRepository.save(targetRow);
+      return updatedRow.recent_played_id;
+    } catch (err) {
+      if (err instanceof CatchyException) throw err;
+
       this.logger.error(`playlist.service - updateRecentMusic : SERVICE_ERROR`);
       throw new CatchyException(
         'SERVICE_ERROR',
         HTTP_STATUS_CODE.SERVER_ERROR,
-        ERROR_CODE.SERVICE_ERROR,
+        ERROR_CODE.QUERY_ERROR,
       );
     }
   }
+
+  // async updateRecentMusic(
+  //   music_id: string,
+  //   playlist_id: number,
+  // ): Promise<number> {
+  //   try {
+  //     const music_playlist: Music_Playlist =
+  //       await this.music_playlistRepository.findOne({
+  //         where: { music: { music_id }, playlist: { playlist_id } },
+  //       });
+
+  //     music_playlist.created_at = new Date();
+  //     const savedData: Music_Playlist =
+  //       await this.music_playlistRepository.save(music_playlist);
+  //     return savedData.music_playlist_id;
+  //   } catch {
+  //     this.logger.error(`playlist.service - updateRecentMusic : SERVICE_ERROR`);
+  //     throw new CatchyException(
+  //       'SERVICE_ERROR',
+  //       HTTP_STATUS_CODE.SERVER_ERROR,
+  //       ERROR_CODE.SERVICE_ERROR,
+  //     );
+  //   }
+  // }
 }
