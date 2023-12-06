@@ -7,8 +7,11 @@ import com.ohdodok.catchytape.core.domain.model.Playlist
 import com.ohdodok.catchytape.core.domain.repository.PlaylistRepository
 import com.ohdodok.catchytape.core.ui.model.PlaylistUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
@@ -21,11 +24,14 @@ class PlaylistBottomSheetViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val musicId: String = requireNotNull(savedStateHandle["musicId"]) {
-        "반드시 musicId를 받아야 합니다."
+        "musicId 정보가 누락되었어요."
     }
 
     private val _playlists = MutableStateFlow(emptyList<PlaylistUiModel>())
     val playlists: StateFlow<List<PlaylistUiModel>> = _playlists.asStateFlow()
+
+    private val _closeEvent = MutableSharedFlow<Unit>()
+    val closeEvent: SharedFlow<Unit> = _closeEvent.asSharedFlow()
 
     init {
         fetchPlaylists()
@@ -40,6 +46,7 @@ class PlaylistBottomSheetViewModel @Inject constructor(
     private fun addMusicToPlaylist(playlistId: Int, musicId: String) {
         viewModelScope.launch {
             playlistRepository.addMusicToPlaylist(playlistId = playlistId, musicId = musicId)
+            _closeEvent.emit(Unit)
         }
     }
 
