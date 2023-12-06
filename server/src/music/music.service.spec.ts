@@ -14,6 +14,7 @@ import {
   musicCreateInfo,
   newMusicData,
 } from 'test/constants/music.mockData';
+import { GreenEyeService } from 'src/config/greenEye.service';
 
 describe('UploadController', () => {
   let app: INestApplication;
@@ -32,6 +33,7 @@ describe('UploadController', () => {
         UploadService,
         NcloudConfigService,
         ConfigService,
+        GreenEyeService,
         {
           provide: getRepositoryToken(Music),
           useClass: Repository,

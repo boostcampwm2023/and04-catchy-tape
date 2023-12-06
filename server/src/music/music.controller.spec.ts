@@ -19,6 +19,7 @@ import { PlaylistService } from 'src/playlist/playlist.service';
 import { Playlist } from 'src/entity/playlist.entity';
 import { Music_Playlist } from 'src/entity/music_playlist.entity';
 import { AuthGuard } from '@nestjs/passport';
+import { GreenEyeService } from 'src/config/greenEye.service';
 
 describe('UploadController', () => {
   let app: INestApplication;
@@ -37,6 +38,7 @@ describe('UploadController', () => {
         UploadService,
         NcloudConfigService,
         ConfigService,
+        GreenEyeService,
         AuthService,
         PlaylistService,
         JwtService,

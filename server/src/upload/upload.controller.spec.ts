@@ -7,6 +7,7 @@ import * as fs from 'fs';
 import { Readable } from 'stream';
 import * as request from 'supertest';
 import { INestApplication } from '@nestjs/common';
+import { GreenEyeService } from 'src/config/greenEye.service';
 
 describe('UploadController', () => {
   let app: INestApplication;
@@ -19,7 +20,12 @@ describe('UploadController', () => {
     const module: TestingModule = await Test.createTestingModule({
       imports: [],
       controllers: [UploadController],
-      providers: [UploadService, NcloudConfigService, ConfigService],
+      providers: [
+        UploadService,
+        NcloudConfigService,
+        ConfigService,
+        GreenEyeService,
+      ],
     }).compile();
 
     configService = module.get<ConfigService>(ConfigService);
