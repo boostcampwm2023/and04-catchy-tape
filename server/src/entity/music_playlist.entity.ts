@@ -24,7 +24,7 @@ export class Music_Playlist extends BaseEntity {
   playlist: Playlist;
 
   @Column()
-  updated_at: Date;
+  created_at: Date;
 
   static async getMusicListByPlaylistId(playlistId: number): Promise<Music[]> {
     return this.find({
@@ -46,7 +46,7 @@ export class Music_Playlist extends BaseEntity {
         music_playlist_id: false,
       },
       order: {
-        updated_at: 'DESC',
+        created_at: 'DESC',
       },
     }).then((a: Music_Playlist[]) => a.map((b) => b.music));
   }
@@ -77,7 +77,7 @@ export class Music_Playlist extends BaseEntity {
         },
       },
       order: {
-        updated_at: 'DESC',
+        created_at: 'DESC',
       },
       take: 10,
     }).then((a: Music_Playlist[]) => a.map((b) => b.music));
@@ -94,7 +94,7 @@ export class Music_Playlist extends BaseEntity {
       relations: { music: true },
       select: { music: { cover: true } },
       where: { playlist: { playlist_id } },
-      order: { updated_at: 'DESC' },
+      order: { created_at: 'DESC' },
     });
   }
 }

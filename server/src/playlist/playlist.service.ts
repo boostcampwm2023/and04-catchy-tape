@@ -94,7 +94,7 @@ export class PlaylistService {
         this.music_playlistRepository.create({
           music: { music_id: musicId },
           playlist: { playlist_id: playlistId },
-          updated_at: new Date(),
+          created_at: new Date(),
         });
 
       const result: Music_Playlist =
@@ -281,7 +281,7 @@ export class PlaylistService {
           where: { music: { music_id }, playlist: { playlist_id } },
         });
 
-      music_playlist.updated_at = new Date();
+      music_playlist.created_at = new Date();
       const savedData: Music_Playlist =
         await this.music_playlistRepository.save(music_playlist);
       return savedData.music_playlist_id;
