@@ -23,8 +23,10 @@ import com.ohdodok.catchytape.databinding.ActivityMainBinding
 import com.ohdodok.catchytape.feature.player.PlayerListener
 import com.ohdodok.catchytape.feature.player.PlayerViewModel
 import com.ohdodok.catchytape.feature.player.millisecondsPerSecond
+import com.ohdodok.catchytape.feature.player.moveNextMedia
+import com.ohdodok.catchytape.feature.player.movePreviousMedia
 import com.ohdodok.catchytape.feature.player.navigateToPlayer
-import com.ohdodok.catchytape.mediacontrol.PlaybackService
+import com.ohdodok.catchytape.mediasession.PlaybackService
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.channels.consumeEach
 import kotlinx.coroutines.delay
@@ -168,15 +170,13 @@ class MainActivity : AppCompatActivity() {
 
     private fun setupPreviousButton() {
         binding.pcvController.setOnPreviousButtonClick {
-            player.seekToPreviousMediaItem()
-            player.play()
+            player.movePreviousMedia()
         }
     }
 
     private fun setupNextButton() {
         binding.pcvController.setOnNextButtonClick {
-            player.seekToNextMediaItem()
-            player.play()
+            player.moveNextMedia()
         }
     }
 }
