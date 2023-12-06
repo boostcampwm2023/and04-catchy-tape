@@ -3,11 +3,13 @@ package com.ohdodok.catchytape.feature.player
 import android.os.Bundle
 import android.view.View
 import android.widget.SeekBar
+import androidx.core.view.ViewCompat
 import androidx.fragment.app.activityViewModels
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import com.ohdodok.catchytape.core.ui.BaseFragment
+import com.ohdodok.catchytape.core.ui.RootViewInsetsCallback
 import com.ohdodok.catchytape.core.ui.toMessageId
 import com.ohdodok.catchytape.feature.player.databinding.FragmentPlayerBinding
 import dagger.hilt.android.AndroidEntryPoint
@@ -24,6 +26,8 @@ class PlayerFragment : BaseFragment<FragmentPlayerBinding>(R.layout.fragment_pla
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        ViewCompat.setOnApplyWindowInsetsListener(binding.root, RootViewInsetsCallback())
         binding.viewModel = viewModel
 
         setUpSeekBar()
