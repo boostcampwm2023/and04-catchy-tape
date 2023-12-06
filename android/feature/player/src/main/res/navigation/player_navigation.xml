@@ -22,6 +22,11 @@
         android:id="@+id/playlist_bottom_sheet"
         android:name="com.ohdodok.catchytape.core.ui.PlaylistBottomSheet"
         android:label="playlist bottom sheet"
-        tools:layout="@layout/bottom_sheet_playlist" />
+        tools:layout="@layout/bottom_sheet_playlist">
+
+        <argument
+            android:name="musicId"
+            app:argType="string" />
+    </dialog>
 
 </navigation>
