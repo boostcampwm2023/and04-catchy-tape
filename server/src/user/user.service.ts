@@ -141,6 +141,16 @@ export class UserService {
 
   async updateRecentMusic(music_id: string, user_id: string): Promise<number> {
     try {
+      if (!(await Music.getMusicById(music_id))) {
+        this.logger.error(
+          `user.service - updateRecentMusic : NOT_EXIST_MUSIC_ID`,
+        );
+        throw new CatchyException(
+          'NOT_EXIST_MUSIC_ID',
+          HTTP_STATUS_CODE.BAD_REQUEST,
+          ERROR_CODE.NOT_EXIST_MUSIC_ID,
+        );
+      }
       if (!(await this.isExistMusicInRecentPlaylist(music_id, user_id))) {
         const newRow: Recent_Played = this.recentPlayedRepository.create({
           music: { music_id },
