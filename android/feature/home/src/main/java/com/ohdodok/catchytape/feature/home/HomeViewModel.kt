@@ -6,6 +6,7 @@ import com.ohdodok.catchytape.core.domain.model.CtErrorType
 import com.ohdodok.catchytape.core.domain.model.CtException
 import com.ohdodok.catchytape.core.domain.model.Music
 import com.ohdodok.catchytape.core.domain.repository.MusicRepository
+import com.ohdodok.catchytape.core.domain.repository.PlaylistRepository
 import com.ohdodok.catchytape.core.domain.usecase.player.CurrentPlaylistUseCase
 import com.ohdodok.catchytape.core.ui.MusicAdapter
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -23,12 +24,16 @@ import kotlinx.coroutines.plus
 import javax.inject.Inject
 
 data class HomeUiState(
-    val recentlyUploadedMusics: List<Music> = emptyList()
-)
+    val recentlyUploadedMusics: List<Music> = emptyList(),
+    val recentlyPlayedMusics: List<Music> = emptyList(),
+) {
+    val firstRecentlyPlayedMusicImageUrl: String? = recentlyPlayedMusics.firstOrNull()?.imageUrl
+}
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val musicRepository: MusicRepository,
+    private val playlistRepository: PlaylistRepository,
     private val currentPlaylistUseCase: CurrentPlaylistUseCase,
 ) : ViewModel(), MusicAdapter.Listener {
 
@@ -55,6 +60,15 @@ class HomeViewModel @Inject constructor(
             .onEach { musics ->
                 _uiState.update {
                     it.copy(recentlyUploadedMusics = musics)
+                }
+            }.launchIn(viewModelScopeWithExceptionHandler)
+    }
+
+    fun fetchRecentPlayedMusics() {
+        playlistRepository.getRecentPlaylist()
+            .onEach { musics ->
+                _uiState.update {
+                    it.copy(recentlyPlayedMusics = musics)
                 }
             }.launchIn(viewModelScopeWithExceptionHandler)
     }

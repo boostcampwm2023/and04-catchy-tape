@@ -29,6 +29,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
         )
         observeEvents()
         viewModel.fetchUploadedMusics()
+        viewModel.fetchRecentPlayedMusics()
         setupButtons()
     }
 
