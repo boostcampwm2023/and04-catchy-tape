@@ -76,6 +76,7 @@
             android:background="@drawable/btn_circle_background"
             android:contentDescription="@string/play"
             android:src="@drawable/ic_play"
+            app:tint="@color/surface"
             android:onClick="@{() -> viewModel.playFromFirst()}"
             app:layout_constraintBottom_toTopOf="@id/rv_playlist"
             app:layout_constraintEnd_toEndOf="parent"

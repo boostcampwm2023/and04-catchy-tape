@@ -34,7 +34,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
         )
         observeEvents()
         viewModel.fetchUploadedMusics()
-        viewModel.fetchRecentPlayedMusics()
+        viewModel.fetchRecentlyPlayedMusics()
         setupButtons()
     }
 
@@ -60,10 +60,6 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
                 NavDeepLinkRequest.Builder.fromUri("android-app://com.ohdodok.catchytape/upload_fragment".toUri())
                     .build()
             findNavController().navigate(request)
-        }
-
-        binding.ivRecentlyPlayedSong.setOnClickListener {
-            findNavController().navigateToPlayerScreen()
         }
     }
 }

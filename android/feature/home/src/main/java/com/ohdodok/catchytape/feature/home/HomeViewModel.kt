@@ -64,13 +64,20 @@ class HomeViewModel @Inject constructor(
             }.launchIn(viewModelScopeWithExceptionHandler)
     }
 
-    fun fetchRecentPlayedMusics() {
+    fun fetchRecentlyPlayedMusics() {
         playlistRepository.getRecentPlaylist()
             .onEach { musics ->
                 _uiState.update {
                     it.copy(recentlyPlayedMusics = musics)
                 }
             }.launchIn(viewModelScopeWithExceptionHandler)
+    }
+
+    fun playRecentlyPlayedMusic() {
+        currentPlaylistUseCase.playMusics(uiState.value.recentlyPlayedMusics.first(), uiState.value.recentlyPlayedMusics)
+        viewModelScope.launch {
+            _events.emit(HomeEvent.NavigateToPlayerScreen)
+        }
     }
 
     override fun onClick(music: Music) {
