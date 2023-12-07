@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import * as AWS from 'aws-sdk';
-// import CryptoJS from 'crypto-js';
 import { HmacSHA256, enc } from 'crypto-js';
 import { getTimeStamp } from 'src/constants';
 
