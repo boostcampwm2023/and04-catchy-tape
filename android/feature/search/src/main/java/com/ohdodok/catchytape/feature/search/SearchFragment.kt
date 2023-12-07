@@ -2,10 +2,12 @@ package com.ohdodok.catchytape.feature.search
 
 import android.os.Bundle
 import android.view.View
+import androidx.core.view.ViewCompat
 import androidx.fragment.app.viewModels
 import com.ohdodok.catchytape.core.ui.BaseFragment
 import com.ohdodok.catchytape.core.ui.MusicAdapter
 import com.ohdodok.catchytape.core.ui.Orientation
+import com.ohdodok.catchytape.core.ui.RootViewInsetsCallback
 import com.ohdodok.catchytape.core.ui.toMessageId
 import com.ohdodok.catchytape.feature.search.databinding.FragmentSearchBinding
 import dagger.hilt.android.AndroidEntryPoint
@@ -18,10 +20,14 @@ class SearchFragment : BaseFragment<FragmentSearchBinding>(R.layout.fragment_sea
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        ViewCompat.setOnApplyWindowInsetsListener(binding.root, RootViewInsetsCallback())
+
         binding.viewModel = viewModel
 
         observeEvents()
         setupRecyclerView()
+
     }
 
     private fun setupRecyclerView() {

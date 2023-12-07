@@ -52,6 +52,7 @@ export const newMusicData: Music = {
     created_at: new Date(),
   } as User,
   music_playlist: [],
+  recent_played: [],
   hasId: () => true,
   save: async () => newMusicData,
   remove: async () => newMusicData,

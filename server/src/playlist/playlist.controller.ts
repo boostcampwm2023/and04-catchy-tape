@@ -5,8 +5,8 @@ import {
   HttpCode,
   Logger,
   Param,
-  Patch,
   Post,
+  Put,
   Req,
   UseGuards,
   UsePipes,
@@ -22,9 +22,7 @@ import { Music } from 'src/entity/music.entity';
 @Controller('playlists')
 export class PlaylistController {
   private readonly logger = new Logger('Playlist');
-  constructor(
-    private playlistService: PlaylistService,
-  ) {}
+  constructor(private playlistService: PlaylistService) {}
 
   @Post()
   @UseGuards(AuthGuard())
@@ -89,36 +87,5 @@ export class PlaylistController {
     );
     const userId: string = req.user.user_id;
     return await this.playlistService.getPlaylistMusics(userId, playlistId);
-  }
-
-  @Patch('recent-played')
-  @UseGuards(AuthGuard())
-  @HttpCode(HTTP_STATUS_CODE.SUCCESS)
-  async updateRecentPlayMusic(
-    @Req() req,
-    @Body('musicId') music_id: string,
-  ): Promise<{ music_playlist_id: number }> {
-    this.logger.log(
-      `PATCH /playlists/recent-played - nickname=${req.user.nickname}, music_id=${music_id}`,
-    );
-    const user_id: string = req.user.user_id;
-    const recentPlaylist: Playlist =
-      await this.playlistService.getRecentPlaylist(user_id);
-    const recentPlaylistId: number = recentPlaylist.playlist_id;
-    if (await this.playlistService.isAlreadyAdded(recentPlaylistId, music_id)) {
-      return {
-        music_playlist_id: await this.playlistService.updateRecentMusic(
-          music_id,
-          recentPlaylistId,
-        ),
-      };
-    }
-    return {
-      music_playlist_id: await this.playlistService.addMusicToPlaylist(
-        user_id,
-        recentPlaylistId,
-        music_id,
-      ),
-    };
   }
 }

@@ -3,6 +3,7 @@ package com.ohdodok.catchytape.feature.home
 import android.os.Bundle
 import android.view.View
 import androidx.core.net.toUri
+import androidx.core.view.ViewCompat
 import androidx.fragment.app.viewModels
 import androidx.navigation.NavController
 import androidx.navigation.NavDeepLinkRequest
@@ -10,6 +11,7 @@ import androidx.navigation.fragment.findNavController
 import com.ohdodok.catchytape.core.ui.BaseFragment
 import com.ohdodok.catchytape.core.ui.MusicAdapter
 import com.ohdodok.catchytape.core.ui.Orientation
+import com.ohdodok.catchytape.core.ui.RootViewInsetsCallback
 import com.ohdodok.catchytape.core.ui.toMessageId
 import com.ohdodok.catchytape.feature.home.databinding.FragmentHomeBinding
 import dagger.hilt.android.AndroidEntryPoint
@@ -21,6 +23,9 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(R.layout.fragment_home) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        ViewCompat.setOnApplyWindowInsetsListener(binding.root, RootViewInsetsCallback())
+
         binding.viewModel = viewModel
 
         binding.rvRecentlyAddedSong.adapter = MusicAdapter(
