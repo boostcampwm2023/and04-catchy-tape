@@ -1,12 +1,12 @@
-package com.ohdodok.catchytape.feature.playlist
+package com.ohdodok.catchytape.core.ui
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.ohdodok.catchytape.feature.playlist.databinding.ItemPlaylistBinding
-import com.ohdodok.catchytape.feature.playlist.model.PlaylistUiModel
+import com.ohdodok.catchytape.core.ui.databinding.ItemPlaylistBinding
+import com.ohdodok.catchytape.core.ui.model.PlaylistUiModel
 
 class PlaylistAdapter :
     ListAdapter<PlaylistUiModel, PlaylistAdapter.PlaylistViewHolder>(PlaylistItemDiffUtil) {

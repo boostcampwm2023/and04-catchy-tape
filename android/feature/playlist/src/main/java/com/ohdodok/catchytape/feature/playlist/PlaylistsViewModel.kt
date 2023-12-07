@@ -6,8 +6,8 @@ import com.ohdodok.catchytape.core.domain.model.CtErrorType
 import com.ohdodok.catchytape.core.domain.model.CtException
 import com.ohdodok.catchytape.core.domain.model.Playlist
 import com.ohdodok.catchytape.core.domain.repository.PlaylistRepository
+import com.ohdodok.catchytape.core.ui.model.PlaylistUiModel
 import com.ohdodok.catchytape.core.domain.usecase.playlist.GetPlaylistsUseCase
-import com.ohdodok.catchytape.feature.playlist.model.PlaylistUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.flow.MutableSharedFlow
