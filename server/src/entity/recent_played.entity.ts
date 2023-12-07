@@ -2,6 +2,7 @@ import {
   BaseEntity,
   Column,
   Entity,
+  Index,
   JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
@@ -10,6 +11,7 @@ import { Music } from './music.entity';
 import { User } from './user.entity';
 
 @Entity({ name: 'recent_played' })
+@Index(['user', 'music'])
 export class Recent_Played extends BaseEntity {
   @PrimaryGeneratedColumn()
   recent_played_id: number;
@@ -23,6 +25,7 @@ export class Recent_Played extends BaseEntity {
   user: User;
 
   @Column()
+  @Index()
   played_at: Date;
 
   static async getRecentPlayedMusicByUserId(

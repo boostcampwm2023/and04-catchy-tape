@@ -2,6 +2,7 @@ import {
   BaseEntity,
   Column,
   Entity,
+  Index,
   JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
@@ -20,9 +21,11 @@ export class Music_Playlist extends BaseEntity {
 
   @ManyToOne(() => Playlist, (playlist) => playlist.music_playlist)
   @JoinColumn({ name: 'playlist_id' })
+  @Index()
   playlist: Playlist;
 
   @Column()
+  @Index()
   created_at: Date;
 
   static async getMusicListByPlaylistId(playlistId: number): Promise<Music[]> {

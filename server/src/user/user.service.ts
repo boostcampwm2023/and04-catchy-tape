@@ -177,7 +177,7 @@ export class UserService {
       throw new CatchyException(
         'SERVICE_ERROR',
         HTTP_STATUS_CODE.SERVER_ERROR,
-        ERROR_CODE.QUERY_ERROR,
+        ERROR_CODE.SERVICE_ERROR,
       );
     }
   }

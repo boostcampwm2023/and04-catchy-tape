@@ -8,6 +8,7 @@ import {
   OneToMany,
   PrimaryColumn,
   ILike,
+  Index,
 } from 'typeorm';
 import { User } from './user.entity';
 import { Genres } from 'src/constants';
@@ -35,6 +36,7 @@ export class Music extends BaseEntity {
   genre: Genres;
 
   @CreateDateColumn()
+  @Index()
   created_at: Date;
 
   @ManyToOne(() => User, (user) => user.musics)

@@ -1,5 +1,7 @@
 FROM node:20
 
+ENV TZ=Asia/Seoul
+
 WORKDIR /catchy-tape
 
 COPY . .
