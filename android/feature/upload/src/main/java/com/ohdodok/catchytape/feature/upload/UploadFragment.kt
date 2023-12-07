@@ -7,6 +7,7 @@ import android.view.View
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.result.contract.ActivityResultContracts.PickVisualMedia
+import androidx.core.view.ViewCompat
 import androidx.databinding.BindingAdapter
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -14,6 +15,7 @@ import com.google.android.material.textfield.TextInputLayout
 import com.ohdodok.catchytape.catchytape.upload.R
 import com.ohdodok.catchytape.catchytape.upload.databinding.FragmentUploadBinding
 import com.ohdodok.catchytape.core.ui.BaseFragment
+import com.ohdodok.catchytape.core.ui.RootViewInsetsCallback
 import com.ohdodok.catchytape.core.ui.toMessageId
 import dagger.hilt.android.AndroidEntryPoint
 import java.io.File
@@ -37,6 +39,8 @@ class UploadFragment : BaseFragment<FragmentUploadBinding>(R.layout.fragment_upl
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        ViewCompat.setOnApplyWindowInsetsListener(binding.root, RootViewInsetsCallback())
         binding.viewModel = viewModel
 
         observeEvents()
