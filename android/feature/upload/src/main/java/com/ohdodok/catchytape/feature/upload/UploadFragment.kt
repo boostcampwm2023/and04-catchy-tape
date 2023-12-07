@@ -16,7 +16,7 @@ import com.ohdodok.catchytape.catchytape.upload.R
 import com.ohdodok.catchytape.catchytape.upload.databinding.FragmentUploadBinding
 import com.ohdodok.catchytape.core.ui.BaseFragment
 import com.ohdodok.catchytape.core.ui.RootViewInsetsCallback
-import com.ohdodok.catchytape.core.ui.toMessageId
+import com.ohdodok.catchytape.core.ui.cterror.toMessageId
 import dagger.hilt.android.AndroidEntryPoint
 import java.io.File
 import java.io.FileOutputStream

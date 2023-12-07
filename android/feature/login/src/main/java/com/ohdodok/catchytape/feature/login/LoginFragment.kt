@@ -12,7 +12,7 @@ import androidx.navigation.fragment.findNavController
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.ohdodok.catchytape.core.ui.BaseFragment
-import com.ohdodok.catchytape.core.ui.toMessageId
+import com.ohdodok.catchytape.core.ui.cterror.toMessageId
 import com.ohdodok.catchytape.feature.login.databinding.FragmentLoginBinding
 import dagger.hilt.android.AndroidEntryPoint
 

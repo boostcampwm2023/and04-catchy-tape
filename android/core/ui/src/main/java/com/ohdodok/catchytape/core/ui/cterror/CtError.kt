@@ -1,7 +1,7 @@
-package com.ohdodok.catchytape.core.ui
+package com.ohdodok.catchytape.core.ui.cterror
 
 import com.ohdodok.catchytape.core.domain.model.CtErrorType
-
+import com.ohdodok.catchytape.core.ui.R
 
 fun CtErrorType.toMessageId(): Int {
     return when (this) {
@@ -22,6 +22,10 @@ fun CtErrorType.toMessageId(): Int {
         CtErrorType.NOT_EXIST_GENRE -> R.string.error_message_not_exist_genre
         CtErrorType.EXPIRED_TOKEN -> R.string.error_message_expired_token
         CtErrorType.SERVICE -> R.string.error_message_service
+        CtErrorType.BAD_IMAGE -> R.string.error_message_bad_image
+        CtErrorType.ENCODING_FAILURE -> R.string.error_encoding_failure
+        CtErrorType.FAIL_GREEN_EYE_IMAGE_RECOGNITION -> R.string.error_message_server
+        CtErrorType.INVALID_GREEN_EYE_REQUEST -> R.string.error_message_server
     }
 
 }

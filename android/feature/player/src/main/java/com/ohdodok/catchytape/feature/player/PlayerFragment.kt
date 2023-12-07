@@ -10,7 +10,7 @@ import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import com.ohdodok.catchytape.core.ui.BaseFragment
 import com.ohdodok.catchytape.core.ui.RootViewInsetsCallback
-import com.ohdodok.catchytape.core.ui.toMessageId
+import com.ohdodok.catchytape.core.ui.cterror.toMessageId
 import com.ohdodok.catchytape.feature.player.databinding.FragmentPlayerBinding
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject

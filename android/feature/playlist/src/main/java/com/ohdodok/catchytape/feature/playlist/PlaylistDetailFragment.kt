@@ -10,7 +10,7 @@ import androidx.navigation.fragment.findNavController
 import com.ohdodok.catchytape.core.ui.BaseFragment
 import com.ohdodok.catchytape.core.ui.MusicAdapter
 import com.ohdodok.catchytape.core.ui.Orientation
-import com.ohdodok.catchytape.core.ui.toMessageId
+import com.ohdodok.catchytape.core.ui.cterror.toMessageId
 import com.ohdodok.catchytape.feature.playlist.databinding.FragmentPlaylistDetailBinding
 import dagger.hilt.android.AndroidEntryPoint
 

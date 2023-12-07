@@ -15,10 +15,14 @@ enum class CtErrorType(val errorCode: Int) {
     NOT_EXIST_USER(4005),
     ALREADY_EXIST_EMAIL(4006),
     NOT_EXIST_GENRE(4007),
+    INVALID_GREEN_EYE_REQUEST(4011),
+    FAIL_GREEN_EYE_IMAGE_RECOGNITION(4012),
+    BAD_IMAGE(4013),
     WRONG_TOKEN(4100),
     EXPIRED_TOKEN(4101),
     SERVER(5000),
-    SERVICE(5001);
+    SERVICE(5001),
+    ENCODING_FAILURE(5002);
 
     companion object {
         val ctErrorEnums = CtErrorType.values().toList()
