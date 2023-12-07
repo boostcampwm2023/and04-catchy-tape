@@ -1,5 +1,6 @@
 package com.ohdodok.catchytape.mediasession
 
+import android.content.Intent
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.session.MediaSession
 import androidx.media3.session.MediaSessionService
@@ -24,6 +25,11 @@ class PlaybackService : MediaSessionService()  {
             mediaSession = null
         }
         super.onDestroy()
+    }
+
+    override fun onTaskRemoved(rootIntent: Intent?) {
+        player.pause()
+        stopSelf()
     }
 
     override fun onGetSession(
