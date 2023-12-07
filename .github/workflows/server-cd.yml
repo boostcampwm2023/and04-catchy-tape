@@ -60,9 +60,9 @@ jobs:
           echo "JWT_SECRET_KEY=$JWT_SECRET_KEY" >> prod.env
           echo "GREEN_EYE_SECRET_KEY=$GREEN_EYE_SECRET_KEY" >> prod.env
           echo "GREEN_EYE_REQUEST_URL=$GREEN_EYE_REQUEST_URL" >> prod.env
-          echo "CLOUD_FUNCTIONS_EXECUTE_URL" >> prod.env
-          echo "CLOUD_FUNCTIONS_REQUEST_URL" >> prod.env
-          echo "API_GW_ACCESS_KEY" >> prod.env
+          echo "CLOUD_FUNCTIONS_EXECUTE_URL=$CLOUD_FUNCTIONS_EXECUTE_URL" >> prod.env
+          echo "CLOUD_FUNCTIONS_REQUEST_URL=$CLOUD_FUNCTIONS_REQUEST_URL" >> prod.env
+          echo "API_GW_ACCESS_KEY=$API_GW_ACCESS_KEY" >> prod.env
 
       - name: Build Docker image
         run: docker build --platform linux/amd64 ./server -t ${{ secrets.NCP_REGISTRY }}/catchy-tape:latest
