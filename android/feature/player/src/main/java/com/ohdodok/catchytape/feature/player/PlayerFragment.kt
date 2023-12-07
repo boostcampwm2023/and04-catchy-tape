@@ -48,8 +48,6 @@ class PlayerFragment : BaseFragment<FragmentPlayerBinding>(R.layout.fragment_pla
     }
 
     private fun setupButtons() {
-        player.changeMoveBtnState(binding.ibNext, binding.ibPrevious)
-
         binding.ibPlay.setOnClickListener {
             if (viewModel.uiState.value.isPlaying) player.pause()
             else player.play()
@@ -61,12 +59,10 @@ class PlayerFragment : BaseFragment<FragmentPlayerBinding>(R.layout.fragment_pla
 
         binding.ibNext.setOnClickListener {
             player.moveNextMedia()
-            player.changeMoveBtnState(binding.ibNext, binding.ibPrevious)
         }
 
         binding.ibPrevious.setOnClickListener {
             player.movePreviousMedia()
-            player.changeMoveBtnState(binding.ibNext, binding.ibPrevious)
         }
     }
 

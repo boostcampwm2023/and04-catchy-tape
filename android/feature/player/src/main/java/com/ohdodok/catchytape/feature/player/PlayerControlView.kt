@@ -15,9 +15,6 @@ class PlayerControlView(context: Context, attrs: AttributeSet) : ConstraintLayou
 
     private val binding: ViewPlayerControlBinding =
         ViewPlayerControlBinding.inflate(LayoutInflater.from(context), this, true)
-    val moveNextImageView = binding.ibNext
-    val movePreviousImageView = binding.ibPrevious
-    val playImageView = binding.ibPlay
 
     var music: Music? = null
         set(value) {
@@ -48,6 +45,24 @@ class PlayerControlView(context: Context, attrs: AttributeSet) : ConstraintLayou
         set(value) {
             field = value
             binding.lpiPlayerProgress.max = value
+        }
+
+    var nextEnabled: Boolean = false
+        set(value) {
+            field = value
+            binding.ibNext.isEnabled = value
+        }
+
+    var playEnabled: Boolean = false
+        set(value) {
+            field = value
+            binding.ibPlay.isEnabled = value
+        }
+
+    var previousEnabled: Boolean = false
+        set(value) {
+            field = value
+            binding.ibPrevious.isEnabled = value
         }
 
     fun setOnPlayButtonClick(onPlayButtonClick: () -> Unit) {
