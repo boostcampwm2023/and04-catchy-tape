@@ -113,7 +113,6 @@
             <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:maxLength="10"
                 android:onTextChanged="@{(text, start, before, count) -> viewModel.updateMusicTitle(text)}" />
 
         </com.google.android.material.textfield.TextInputLayout>
