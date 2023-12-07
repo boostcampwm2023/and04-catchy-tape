@@ -1,5 +1,6 @@
 package com.ohdodok.catchytape.core.data.api
 
+import com.ohdodok.catchytape.core.data.model.AddMusicToPlaylistRequest
 import com.ohdodok.catchytape.core.data.model.MusicResponse
 import com.ohdodok.catchytape.core.data.model.PlaylistRequest
 import com.ohdodok.catchytape.core.data.model.PlaylistResponse
@@ -22,4 +23,10 @@ interface PlaylistApi {
     suspend fun getPlaylist(
         @Path("playlistId")playlistId: Int
     ): List<MusicResponse>
+
+    @POST("playlists/{playlistId}")
+    suspend fun postMusicToPlaylist(
+        @Path("playlistId")playlistId: Int,
+        @Body music: AddMusicToPlaylistRequest,
+    )
 }

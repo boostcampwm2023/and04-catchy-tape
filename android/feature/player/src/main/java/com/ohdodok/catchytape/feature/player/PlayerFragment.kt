@@ -68,6 +68,10 @@ class PlayerFragment : BaseFragment<FragmentPlayerBinding>(R.layout.fragment_pla
         binding.btnPrevious.setOnClickListener {
             player.movePreviousMedia()
         }
+
+        binding.btnAddToPlaylist.setOnClickListener {
+            findNavController().showPlaylistBottomSheet()
+        }
     }
 
     private fun collectEvents() {
@@ -78,6 +82,13 @@ class PlayerFragment : BaseFragment<FragmentPlayerBinding>(R.layout.fragment_pla
                 }
             }
         }
+    }
+
+    private fun NavController.showPlaylistBottomSheet() {
+        val musicId = viewModel.uiState.value.currentMusic?.id ?: return
+
+        val action = PlayerFragmentDirections.actionPlayerFragmentToPlaylistBottomSheet(musicId = musicId)
+        this.navigate(action)
     }
 }
 

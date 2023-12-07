@@ -1,4 +1,4 @@
-package com.ohdodok.catchytape.feature.playlist.model
+package com.ohdodok.catchytape.core.ui.model
 
 data class PlaylistUiModel(
     val id: Int,
