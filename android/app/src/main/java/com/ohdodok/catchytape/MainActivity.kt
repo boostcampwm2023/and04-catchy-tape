@@ -22,6 +22,7 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.ohdodok.catchytape.databinding.ActivityMainBinding
+import com.ohdodok.catchytape.feature.player.PlayerEvent
 import com.ohdodok.catchytape.feature.player.PlayerListener
 import com.ohdodok.catchytape.feature.player.PlayerViewModel
 import com.ohdodok.catchytape.feature.player.getMediasWithMetaData
@@ -32,7 +33,8 @@ import com.ohdodok.catchytape.feature.player.onPreviousBtnClick
 import com.ohdodok.catchytape.mediasession.PlaybackService
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import com.ohdodok.catchytape.core.ui.R.string as uiString
@@ -167,14 +169,16 @@ class MainActivity : AppCompatActivity() {
     private fun observePlaylistChange() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                playViewModel.currentPlaylist.filterNotNull().collect {
-                    val newItems = getMediasWithMetaData(it.musics)
-                    player.clearMediaItems()
-                    player.setMediaItems(newItems)
+                playViewModel.events
+                    .filterIsInstance<PlayerEvent.PlaylistChanged>()
+                    .collectLatest { event ->
+                        val newItems = getMediasWithMetaData(event.currentPlaylist.musics)
+                        player.clearMediaItems()
+                        player.setMediaItems(newItems)
 
-                    player.seekTo(it.startMusicIndex, 0)
-                    player.play()
-                }
+                        player.seekTo(event.currentPlaylist.startMusicIndex, 0)
+                        player.play()
+                    }
             }
         }
     }

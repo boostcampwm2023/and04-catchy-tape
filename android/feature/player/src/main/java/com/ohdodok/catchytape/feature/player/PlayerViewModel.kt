@@ -36,6 +36,7 @@ data class PlayerState(
 
 sealed interface PlayerEvent {
     data class ShowError(val error: CtErrorType) : PlayerEvent
+    data class PlaylistChanged(val currentPlaylist: CurrentPlaylist) : PlayerEvent
 }
 
 @HiltViewModel
@@ -66,6 +67,7 @@ class PlayerViewModel @Inject constructor(
         viewModelScope.launch(exceptionHandler) {
             currentPlaylistUseCase.currentPlaylist.consumeEach {
                 _currentPlaylist.value = it
+                _events.emit(PlayerEvent.PlaylistChanged(it))
             }
         }
     }

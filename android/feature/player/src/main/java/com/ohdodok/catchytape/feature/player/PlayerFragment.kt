@@ -79,6 +79,7 @@ class PlayerFragment : BaseFragment<FragmentPlayerBinding>(R.layout.fragment_pla
             viewModel.events.collect { event ->
                 when (event) {
                     is PlayerEvent.ShowError -> showMessage(event.error.toMessageId())
+                    is PlayerEvent.PlaylistChanged -> { /* MainActivity에서 처리 됨 */ }
                 }
             }
         }
