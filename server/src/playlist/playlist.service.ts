@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CatchyException } from 'src/config/catchyException';
 import { ERROR_CODE } from 'src/config/errorCode.enum';
@@ -11,6 +11,7 @@ import { Repository } from 'typeorm';
 
 @Injectable()
 export class PlaylistService {
+  private readonly logger = new Logger('PlaylistService');
   constructor(
     @InjectRepository(Playlist)
     private playlistRepository: Repository<Playlist>,
@@ -37,6 +38,7 @@ export class PlaylistService {
       const playlistId: number = result.playlist_id;
       return playlistId;
     } catch {
+      this.logger.error(`playlist.service - createPlaylist : SERVICE_ERROR`);
       throw new CatchyException(
         'SERVER_ERROR',
         HTTP_STATUS_CODE.SERVER_ERROR,
@@ -52,6 +54,9 @@ export class PlaylistService {
   ): Promise<number> {
     // 사용자 플리가 있는지 확인
     if (!(await this.isExistPlaylistOnUser(playlistId, userId))) {
+      this.logger.error(
+        `playlist.service - addMusicToPlaylist : NOT_EXIST_PLAYLIST_ON_USER`,
+      );
       throw new CatchyException(
         'NOT_EXIST_PLAYLIST_ON_USER',
         HTTP_STATUS_CODE.BAD_REQUEST,
@@ -60,6 +65,9 @@ export class PlaylistService {
     }
     // 음악 있는지 확인
     if (!(await this.isExistMusic(musicId))) {
+      this.logger.error(
+        `playlist.service - addMusicToPlaylist : NOT_EXIST_MUSIC`,
+      );
       throw new CatchyException(
         'NOT_EXIST_MUSIC',
         HTTP_STATUS_CODE.BAD_REQUEST,
@@ -69,6 +77,9 @@ export class PlaylistService {
 
     // 이미 추가된 음악인지 확인
     if (await this.isAlreadyAdded(playlistId, musicId)) {
+      this.logger.error(
+        `playlist.service - addMusicToPlaylist : ALREADY_ADDED`,
+      );
       throw new CatchyException(
         'ALREADY_ADDED',
         HTTP_STATUS_CODE.BAD_REQUEST,
@@ -82,6 +93,7 @@ export class PlaylistService {
         this.music_playlistRepository.create({
           music: { music_id: musicId },
           playlist: { playlist_id: playlistId },
+          created_at: new Date(),
         });
 
       const result: Music_Playlist =
@@ -89,6 +101,9 @@ export class PlaylistService {
       this.setUpdatedAtNow(playlistId);
       return result.music_playlist_id;
     } catch {
+      this.logger.error(
+        `playlist.service - addMusicToPlaylist : SERVICE_ERROR`,
+      );
       throw new CatchyException(
         'SERVER_ERROR',
         HTTP_STATUS_CODE.SERVER_ERROR,
@@ -105,6 +120,7 @@ export class PlaylistService {
       });
       return count !== 0;
     } catch {
+      this.logger.error(`playlist.service - isAlreadyAdded : SERVICE_ERROR`);
       throw new CatchyException(
         'SERVER_ERROR',
         HTTP_STATUS_CODE.SERVER_ERROR,
@@ -124,6 +140,9 @@ export class PlaylistService {
       });
       return playlistCount !== 0;
     } catch {
+      this.logger.error(
+        `playlist.service - isExistPlaylistOnUser : SERVICE_ERROR`,
+      );
       throw new CatchyException(
         'SERVER_ERROR',
         HTTP_STATUS_CODE.SERVER_ERROR,
@@ -140,6 +159,7 @@ export class PlaylistService {
 
       return musicCount !== 0;
     } catch {
+      this.logger.error(`playlist.service - isExistMusic : SERVICE_ERROR`);
       throw new CatchyException(
         'SERVER_ERROR',
         HTTP_STATUS_CODE.SERVER_ERROR,
@@ -156,6 +176,7 @@ export class PlaylistService {
       targetPlaylist.updated_at = new Date();
       this.playlistRepository.save(targetPlaylist);
     } catch {
+      this.logger.error(`playlist.service - setUpdatedAtNow : SERVICE_ERROR`);
       throw new CatchyException(
         'SERVER_ERROR',
         HTTP_STATUS_CODE.SERVER_ERROR,
@@ -181,6 +202,7 @@ export class PlaylistService {
       await Promise.all(thumbnailPromises);
       return playlists;
     } catch {
+      this.logger.error(`playlist.service - getUserPlaylists : SERVICE_ERROR`);
       throw new CatchyException(
         'SERVER_ERROR',
         HTTP_STATUS_CODE.SERVER_ERROR,
@@ -194,6 +216,9 @@ export class PlaylistService {
     playlistId: number,
   ): Promise<Music[]> {
     if (!(await this.isExistPlaylistOnUser(playlistId, userId))) {
+      this.logger.error(
+        `playlist.service - getPlaylistMusics : NOT_EXIST_PLAYLIST_ON_USER`,
+      );
       throw new CatchyException(
         'NOT_EXIST_PLAYLIST_ON_USER',
         HTTP_STATUS_CODE.BAD_REQUEST,
@@ -203,22 +228,11 @@ export class PlaylistService {
     try {
       return Music_Playlist.getMusicListByPlaylistId(playlistId);
     } catch {
+      this.logger.error(`playlist.service - getPlaylistMusics : SERVICE_ERROR`);
       throw new CatchyException(
         'SERVER_ERROR',
         HTTP_STATUS_CODE.SERVER_ERROR,
         ERROR_CODE.SERVICE_ERROR,
-      );
-    }
-  }
-
-  async getRecentMusicsByUserId(userId: string) {
-    try {
-      return Music_Playlist.getRecentPlayedMusicByUserId(userId);
-    } catch {
-      throw new CatchyException(
-        'SERVER ERROR',
-        HTTP_STATUS_CODE.SERVER_ERROR,
-        ERROR_CODE.SERVER_ERROR,
       );
     }
   }

@@ -1,5 +1,6 @@
 package com.ohdodok.catchytape
 
+import android.animation.ObjectAnimator
 import android.content.ComponentName
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities.NET_CAPABILITY_VALIDATED
@@ -8,6 +9,8 @@ import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.animation.doOnEnd
+import androidx.core.view.WindowCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -19,16 +22,24 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.ohdodok.catchytape.databinding.ActivityMainBinding
+import com.ohdodok.catchytape.feature.player.PlayerEvent
 import com.ohdodok.catchytape.feature.player.PlayerListener
 import com.ohdodok.catchytape.feature.player.PlayerViewModel
-import com.ohdodok.catchytape.mediacontrol.PlaybackService
+import com.ohdodok.catchytape.feature.player.getMediasWithMetaData
 import com.ohdodok.catchytape.feature.player.millisecondsPerSecond
+import com.ohdodok.catchytape.feature.player.moveNextMedia
 import com.ohdodok.catchytape.feature.player.navigateToPlayer
+import com.ohdodok.catchytape.feature.player.onPreviousBtnClick
+import com.ohdodok.catchytape.mediasession.PlaybackService
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import com.ohdodok.catchytape.core.ui.R.string as uiString
+
+private const val BOTTOM_NAV_ANIMATION_DURATION = 700L
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
@@ -39,13 +50,15 @@ class MainActivity : AppCompatActivity() {
     private lateinit var connectivityManager: ConnectivityManager
     private val playViewModel: PlayerViewModel by viewModels()
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
         binding.viewModel = playViewModel
         binding.lifecycleOwner = this
+
+        WindowCompat.setDecorFitsSystemWindows(window, false)
 
         setupBottomNav()
         setUpPlayerController()
@@ -57,6 +70,9 @@ class MainActivity : AppCompatActivity() {
 
         setupPlayer()
         setupPlayButton()
+        setupPreviousButton()
+        setupNextButton()
+        observePlaylistChange()
     }
 
     override fun onStart() {
@@ -106,11 +122,20 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun hideBottomNav() {
-        binding.bottomNav.visibility = View.GONE
+        val height = binding.bottomNav.height.toFloat()
+        ObjectAnimator.ofFloat(binding.bottomNav, "translationY", height).apply {
+            duration = BOTTOM_NAV_ANIMATION_DURATION
+            doOnEnd { binding.bottomNav.visibility = View.GONE }
+            start()
+        }
     }
 
     private fun showBottomNav() {
         binding.bottomNav.visibility = View.VISIBLE
+        ObjectAnimator.ofFloat(binding.bottomNav, "translationY", 0f).apply {
+            duration = BOTTOM_NAV_ANIMATION_DURATION
+            start()
+        }
     }
 
     private fun hidePlayerController() {
@@ -120,7 +145,6 @@ class MainActivity : AppCompatActivity() {
     private fun showPlayerController() {
         binding.pcvController.visibility = View.VISIBLE
     }
-
 
     private fun setupPlayer() {
         player.addListener(PlayerListener(playViewModel))
@@ -142,11 +166,39 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private fun observePlaylistChange() {
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                playViewModel.events
+                    .filterIsInstance<PlayerEvent.PlaylistChanged>()
+                    .collectLatest { event ->
+                        val newItems = getMediasWithMetaData(event.currentPlaylist.musics)
+                        player.clearMediaItems()
+                        player.setMediaItems(newItems)
+
+                        player.seekTo(event.currentPlaylist.startMusicIndex, 0)
+                        player.play()
+                    }
+            }
+        }
+    }
 
     private fun setupPlayButton() {
         binding.pcvController.setOnPlayButtonClick {
             if (playViewModel.uiState.value.isPlaying) player.pause()
             else player.play()
+        }
+    }
+
+    private fun setupPreviousButton() {
+        binding.pcvController.setOnPreviousButtonClick {
+            player.onPreviousBtnClick()
+        }
+    }
+
+    private fun setupNextButton() {
+        binding.pcvController.setOnNextButtonClick {
+            player.moveNextMedia()
         }
     }
 }

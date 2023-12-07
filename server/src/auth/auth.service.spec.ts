@@ -8,6 +8,7 @@ import { PlaylistService } from 'src/playlist/playlist.service';
 import { Playlist } from 'src/entity/playlist.entity';
 import { Music } from 'src/entity/music.entity';
 import { Music_Playlist } from 'src/entity/music_playlist.entity';
+import { PassportModule } from '@nestjs/passport';
 
 describe('AuthService', () => {
   let service: AuthService;
@@ -17,7 +18,7 @@ describe('AuthService', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      imports: [JwtModule],
+      imports: [PassportModule.register({ defaultStrategy: 'jwt' }), JwtModule],
       providers: [
         AuthService,
         {

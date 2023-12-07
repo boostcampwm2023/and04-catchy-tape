@@ -1,6 +1,8 @@
 import {
   BaseEntity,
+  Column,
   Entity,
+  Index,
   JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
@@ -19,7 +21,12 @@ export class Music_Playlist extends BaseEntity {
 
   @ManyToOne(() => Playlist, (playlist) => playlist.music_playlist)
   @JoinColumn({ name: 'playlist_id' })
+  @Index()
   playlist: Playlist;
+
+  @Column()
+  @Index()
+  created_at: Date;
 
   static async getMusicListByPlaylistId(playlistId: number): Promise<Music[]> {
     return this.find({
@@ -41,40 +48,8 @@ export class Music_Playlist extends BaseEntity {
         music_playlist_id: false,
       },
       order: {
-        music_playlist_id: 'DESC',
+        created_at: 'DESC',
       },
-    }).then((a: Music_Playlist[]) => a.map((b) => b.music));
-  }
-
-  static async getRecentPlayedMusicByUserId(userId: string): Promise<Music[]> {
-    return await this.find({
-      relations: {
-        music: true,
-      },
-      where: {
-        playlist: {
-          playlist_title: '최근 재생 목록',
-        },
-        music: {
-          user: {
-            user_id: userId,
-          },
-        },
-      },
-      select: {
-        music_playlist_id: false,
-        music: {
-          music_id: true,
-          title: true,
-          music_file: true,
-          cover: true,
-          genre: true,
-        },
-      },
-      order: {
-        music_playlist_id: 'DESC',
-      },
-      take: 10,
     }).then((a: Music_Playlist[]) => a.map((b) => b.music));
   }
 
@@ -89,7 +64,7 @@ export class Music_Playlist extends BaseEntity {
       relations: { music: true },
       select: { music: { cover: true } },
       where: { playlist: { playlist_id } },
-      order: { music_playlist_id: 'DESC' },
+      order: { created_at: 'DESC' },
     });
   }
 }

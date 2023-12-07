@@ -3,6 +3,7 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  Index,
   JoinColumn,
   ManyToOne,
   OneToMany,
@@ -27,6 +28,7 @@ export class Playlist extends BaseEntity {
 
   @ManyToOne(() => User, (user) => user.playlists)
   @JoinColumn({ name: 'user_id' })
+  @Index()
   user: User;
 
   @OneToMany(() => Music_Playlist, (music_playlist) => music_playlist.playlist)

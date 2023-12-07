@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="65dp"
         android:background="@color/surface_bright">
@@ -20,15 +20,26 @@
             tools:background="@color/on_surface_variant" />
 
         <TextView
+            android:id="@+id/tv_no_playlist"
+            style="@style/BodyMedium"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/medium"
+            android:text="@string/no_playlist"
+            app:layout_constraintBottom_toBottomOf="@id/iv_thumbnail"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/iv_thumbnail" />
+
+        <TextView
             android:id="@+id/tv_title"
             style="@style/BodyMedium"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/medium"
-            android:ellipsize="end"
+            android:ellipsize="marquee"
             android:maxLines="1"
             app:layout_constraintBottom_toTopOf="@id/tv_artist"
-            app:layout_constraintEnd_toStartOf="@id/ib_play"
+            app:layout_constraintEnd_toStartOf="@id/ib_previous"
             app:layout_constraintStart_toEndOf="@id/iv_thumbnail"
             app:layout_constraintTop_toTopOf="@id/iv_thumbnail"
             app:layout_constraintVertical_chainStyle="packed"
@@ -39,7 +50,7 @@
             style="@style/BodySmall"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:ellipsize="end"
+            android:ellipsize="marquee"
             android:maxLines="1"
             android:textColor="@color/on_surface_variant"
             app:layout_constraintBottom_toBottomOf="@id/iv_thumbnail"
@@ -48,13 +59,33 @@
             tools:text="데이먼스 이어" />
 
         <ImageButton
+            android:id="@+id/ib_previous"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="@android:color/transparent"
+            android:contentDescription="@string/previous_music"
+            android:src="@drawable/ic_previous"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/ib_play"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageButton
             android:id="@+id/ib_play"
             android:layout_width="48dp"
             android:layout_height="48dp"
-            android:layout_marginEnd="6dp"
             android:background="@android:color/transparent"
-            android:contentDescription="@string/play"
             android:src="@drawable/ic_play"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/ib_next"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageButton
+            android:id="@+id/ib_next"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="@android:color/transparent"
+            android:contentDescription="@string/next_music"
+            android:src="@drawable/ic_next"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />

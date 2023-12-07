@@ -1,22 +1,20 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CatchyException } from 'src/config/catchyException';
 import { ERROR_CODE } from 'src/config/errorCode.enum';
-import { RECENT_PLAYLIST_NAME } from 'src/constants';
 import { UserCreateDto } from 'src/dto/userCreate.dto';
 import { User } from 'src/entity/user.entity';
 import { HTTP_STATUS_CODE } from 'src/httpStatusCode.enum';
-import { PlaylistService } from 'src/playlist/playlist.service';
 import { Repository } from 'typeorm';
 import { v4 as uuid } from 'uuid';
 
 @Injectable()
 export class AuthService {
+  private readonly logger = new Logger('AuthService');
   constructor(
     @InjectRepository(User) private userRepository: Repository<User>,
     private jwtService: JwtService,
-    private readonly playlistService: PlaylistService,
   ) {}
 
   async login(email: string): Promise<{ accessToken: string }> {
@@ -30,6 +28,7 @@ export class AuthService {
 
       return { accessToken };
     } else {
+      this.logger.error(`auth.service - login : NOT_EXIST_USER`);
       throw new CatchyException(
         'NOT_EXIST_USER',
         HTTP_STATUS_CODE['WRONG_TOKEN'],
@@ -43,6 +42,7 @@ export class AuthService {
     const email: string = await this.getGoogleEmail(idToken);
 
     if (await this.isExistEmail(email)) {
+      this.logger.error(`auth.service - signup : ALREADY_EXIST_EMAIL`);
       throw new CatchyException(
         'ALREADY_EXIST_EMAIL',
         HTTP_STATUS_CODE.BAD_REQUEST,
@@ -59,11 +59,9 @@ export class AuthService {
       });
       await this.userRepository.save(newUser);
 
-      this.playlistService.createPlaylist(newUser.user_id, {
-        title: RECENT_PLAYLIST_NAME,
-      });
       return this.login(email);
     }
+    this.logger.error(`auth.service - signup : WRONG_TOKEN`);
     throw new CatchyException(
       'WRONG_TOKEN',
       HTTP_STATUS_CODE.WRONG_TOKEN,
@@ -79,6 +77,7 @@ export class AuthService {
     }).then((res) => res.json());
 
     if (!userInfo.email) {
+      this.logger.log(`auth.service - getGoogleEmail : EXPIRED_TOKEN`);
       throw new CatchyException(
         'EXPIRED_TOKEN',
         HTTP_STATUS_CODE.WRONG_TOKEN,

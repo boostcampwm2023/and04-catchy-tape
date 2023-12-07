@@ -5,10 +5,11 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { User } from 'src/entity/user.entity';
 import { Repository } from 'typeorm';
 import { JwtModule, JwtService } from '@nestjs/jwt';
-import { PlaylistService } from 'src/playlist/playlist.service';
 import { Playlist } from 'src/entity/playlist.entity';
 import { Music } from 'src/entity/music.entity';
 import { Music_Playlist } from 'src/entity/music_playlist.entity';
+import { Logger } from '@nestjs/common';
+import { PassportModule } from '@nestjs/passport';
 
 describe('AuthController', () => {
   let controller: AuthController;
@@ -18,9 +19,10 @@ describe('AuthController', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      imports: [JwtModule],
+      imports: [PassportModule.register({ defaultStrategy: 'jwt' }), JwtModule],
       controllers: [AuthController],
       providers: [
+        Logger,
         AuthService,
         {
           provide: getRepositoryToken(User),
@@ -38,7 +40,6 @@ describe('AuthController', () => {
           provide: getRepositoryToken(Music_Playlist),
           useClass: Repository,
         },
-        PlaylistService,
       ],
     }).compile();
 

@@ -12,8 +12,21 @@
         tools:layout="@layout/fragment_player">
 
         <deepLink app:uri="android-app://com.ohdodok.catchytape/player_fragment" />
-
+        <action
+            android:id="@+id/action_player_fragment_to_playlist_bottom_sheet"
+            app:destination="@id/playlist_bottom_sheet" />
 
     </fragment>
+
+    <dialog
+        android:id="@+id/playlist_bottom_sheet"
+        android:name="com.ohdodok.catchytape.core.ui.PlaylistBottomSheet"
+        android:label="playlist bottom sheet"
+        tools:layout="@layout/bottom_sheet_playlist">
+
+        <argument
+            android:name="musicId"
+            app:argType="string" />
+    </dialog>
 
 </navigation>

@@ -6,6 +6,10 @@
     <data>
 
         <variable
+            name="view"
+            type="android.view.View" />
+
+        <variable
             name="viewModel"
             type="com.ohdodok.catchytape.feature.player.PlayerViewModel" />
     </data>
@@ -31,21 +35,23 @@
             android:id="@+id/pcv_controller"
             android:layout_width="0dp"
             android:layout_height="65dp"
-            app:artist="@string/artist"
             app:duration="@{viewModel.uiState.duration}"
-            app:playing="@{viewModel.uiState.isPlaying}"
             app:layout_constraintBottom_toTopOf="@id/bottom_nav"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:progress="@{viewModel.uiState.currentPositionSecond}"
-            app:thumbnailUrl="https://picsum.photos/200"
-            app:title="@string/title" />
-
+            app:music="@{viewModel.uiState.currentMusic}"
+            app:nextEnabled="@{viewModel.uiState.nextEnable}"
+            app:playEnabled="@{viewModel.uiState.playEnable}"
+            app:playing="@{viewModel.uiState.isPlaying}"
+            app:previousEnabled="@{viewModel.uiState.previousEnable}"
+            app:progress="@{viewModel.uiState.currentPositionSecond}" />
 
         <com.google.android.material.bottomnavigation.BottomNavigationView
             android:id="@+id/bottom_nav"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:background="@color/surface_bright"
+            app:itemIconTint="@color/navigation_view_item_icon_tint"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

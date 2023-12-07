@@ -4,14 +4,16 @@ import {
   CreateDateColumn,
   BaseEntity,
   JoinColumn,
-  PrimaryGeneratedColumn,
   ManyToOne,
   OneToMany,
   PrimaryColumn,
+  ILike,
+  Index,
 } from 'typeorm';
 import { User } from './user.entity';
 import { Genres } from 'src/constants';
 import { Music_Playlist } from './music_playlist.entity';
+import { Recent_Played } from './recent_played.entity';
 
 @Entity({ name: 'music' })
 export class Music extends BaseEntity {
@@ -34,6 +36,7 @@ export class Music extends BaseEntity {
   genre: Genres;
 
   @CreateDateColumn()
+  @Index()
   created_at: Date;
 
   @ManyToOne(() => User, (user) => user.musics)
@@ -42,6 +45,9 @@ export class Music extends BaseEntity {
 
   @OneToMany(() => Music_Playlist, (music_playlist) => music_playlist.music)
   music_playlist: Music_Playlist[];
+
+  @OneToMany(() => Recent_Played, (recent_played) => recent_played.music)
+  recent_played: Recent_Played[];
 
   static async getMusicListByUserId(
     userId: string,
@@ -101,6 +107,33 @@ export class Music extends BaseEntity {
       relations: { user: true },
       select: { user: { user_id: true, nickname: true } },
       where: { music_id },
+    });
+  }
+
+  static async getCertainMusicByTitle(keyword: string): Promise<Music[]> {
+    return await this.find({
+      relations: {
+        user: true,
+        music_playlist: false,
+      },
+      select: {
+        music_id: true,
+        lyrics: true,
+        title: true,
+        cover: true,
+        music_file: true,
+        genre: true,
+        user: {
+          user_id: true,
+          nickname: true,
+        },
+      },
+      where: {
+        title: ILike(`%${keyword}%`),
+      },
+      order: {
+        created_at: 'DESC',
+      },
     });
   }
 }

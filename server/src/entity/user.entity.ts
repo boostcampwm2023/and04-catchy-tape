@@ -5,9 +5,11 @@ import {
   BaseEntity,
   PrimaryColumn,
   OneToMany,
+  ILike,
 } from 'typeorm';
 import { Playlist } from './playlist.entity';
 import { Music } from './music.entity';
+import { Recent_Played } from './recent_played.entity';
 
 @Entity({ name: 'user' })
 export class User extends BaseEntity {
@@ -31,4 +33,26 @@ export class User extends BaseEntity {
 
   @OneToMany(() => Playlist, (playlist) => playlist.user)
   playlists: Playlist[];
+
+  @OneToMany(() => Recent_Played, (recent_played) => recent_played.user)
+  recent_played: Recent_Played[];
+
+  static async getCertainUserByNickname(keyword: string): Promise<User[]> {
+    return this.find({
+      relations: {
+        musics: false,
+        playlists: false,
+      },
+      select: {
+        user_id: true,
+        nickname: true,
+        user_email: true,
+        photo: true,
+        created_at: true,
+      },
+      where: {
+        nickname: ILike(`%${keyword}%`),
+      },
+    });
+  }
 }

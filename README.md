@@ -44,7 +44,14 @@
 ### 📡 Server
 | Category  | TechStack |
 | ------------- | ------------- |
-|   |   |
+| Framework, Language | NestJS, TypeScript  |
+| DB | MySQL  |
+| ORM | TypeORM  |
+| Test | Jest  |
+| API Docs | SwaggerHub  |
+| CI/CD | Github Actions  |
+| NCP | Server, Container Registry, VPC, Object Storage|
+
 <details>
 <summary>그 외 기록</summary>
 

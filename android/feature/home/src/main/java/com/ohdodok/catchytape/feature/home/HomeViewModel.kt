@@ -6,6 +6,9 @@ import com.ohdodok.catchytape.core.domain.model.CtErrorType
 import com.ohdodok.catchytape.core.domain.model.CtException
 import com.ohdodok.catchytape.core.domain.model.Music
 import com.ohdodok.catchytape.core.domain.repository.MusicRepository
+import com.ohdodok.catchytape.core.domain.repository.PlaylistRepository
+import com.ohdodok.catchytape.core.domain.usecase.player.CurrentPlaylistUseCase
+import com.ohdodok.catchytape.core.ui.MusicAdapter
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -21,13 +24,18 @@ import kotlinx.coroutines.plus
 import javax.inject.Inject
 
 data class HomeUiState(
-    val recentlyUploadedMusics: List<Music> = emptyList()
-)
+    val recentlyUploadedMusics: List<Music> = emptyList(),
+    val recentlyPlayedMusics: List<Music> = emptyList(),
+) {
+    val firstRecentlyPlayedMusicImageUrl: String? = recentlyPlayedMusics.firstOrNull()?.imageUrl
+}
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val musicRepository: MusicRepository
-) : ViewModel() {
+    private val musicRepository: MusicRepository,
+    private val playlistRepository: PlaylistRepository,
+    private val currentPlaylistUseCase: CurrentPlaylistUseCase,
+) : ViewModel(), MusicAdapter.Listener {
 
     private val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
         viewModelScope.launch {
@@ -55,8 +63,32 @@ class HomeViewModel @Inject constructor(
                 }
             }.launchIn(viewModelScopeWithExceptionHandler)
     }
+
+    fun fetchRecentlyPlayedMusics() {
+        playlistRepository.getRecentPlaylist()
+            .onEach { musics ->
+                _uiState.update {
+                    it.copy(recentlyPlayedMusics = musics)
+                }
+            }.launchIn(viewModelScopeWithExceptionHandler)
+    }
+
+    fun playRecentlyPlayedMusic() {
+        currentPlaylistUseCase.playMusics(uiState.value.recentlyPlayedMusics.first(), uiState.value.recentlyPlayedMusics)
+        viewModelScope.launch {
+            _events.emit(HomeEvent.NavigateToPlayerScreen)
+        }
+    }
+
+    override fun onClick(music: Music) {
+        currentPlaylistUseCase.playMusics(music, uiState.value.recentlyUploadedMusics)
+        viewModelScope.launch {
+            _events.emit(HomeEvent.NavigateToPlayerScreen)
+        }
+    }
 }
 
 sealed interface HomeEvent {
     data class ShowMessage(val error: CtErrorType) : HomeEvent
+    data object NavigateToPlayerScreen : HomeEvent
 }

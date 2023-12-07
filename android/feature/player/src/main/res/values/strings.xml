@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="minutes_and_seconds_format">%d:%02d</string>
-    <string name="play">재생하기</string>
+
+    <string name="previous_music">이전 곡</string>
+    <string name="next_music">다음 곡</string>
+
+    <string name="no_playlist">곡 목록이 없습니다.</string>
 </resources>

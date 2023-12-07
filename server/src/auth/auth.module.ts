@@ -7,10 +7,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from 'src/entity/user.entity';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
-import { PlaylistService } from 'src/playlist/playlist.service';
-import { Playlist } from 'src/entity/playlist.entity';
-import { Music } from 'src/entity/music.entity';
-import { Music_Playlist } from 'src/entity/music_playlist.entity';
+import { Logger } from 'winston';
 
 @Module({
   imports: [
@@ -23,9 +20,9 @@ import { Music_Playlist } from 'src/entity/music_playlist.entity';
       }),
       inject: [ConfigService],
     }),
-    TypeOrmModule.forFeature([User, Playlist, Music, Music_Playlist]),
+    TypeOrmModule.forFeature([User]),
   ],
-  providers: [JwtStrategy, AuthService, PlaylistService],
+  providers: [JwtStrategy, AuthService, Logger],
   exports: [JwtStrategy, PassportModule],
   controllers: [AuthController],
 })
