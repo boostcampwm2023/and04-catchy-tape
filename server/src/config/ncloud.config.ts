@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import * as AWS from 'aws-sdk';
-import * as CryptoJS from 'crypto-js';
+import CryptoJS from 'crypto-js';
 import { getTimeStamp } from 'src/constants';
 
 @Injectable()
