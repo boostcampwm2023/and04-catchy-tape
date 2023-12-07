@@ -14,4 +14,6 @@ interface MusicRepository {
     fun getMyMusics(): Flow<List<Music>>
 
     fun getSearchedMusics(keyword: String): Flow<List<Music>>
+
+    suspend fun updateRecentPlayedMusic(musicId: String)
 }

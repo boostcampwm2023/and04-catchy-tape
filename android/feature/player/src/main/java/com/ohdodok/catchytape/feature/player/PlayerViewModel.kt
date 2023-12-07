@@ -6,6 +6,7 @@ import com.ohdodok.catchytape.core.domain.model.CtErrorType
 import com.ohdodok.catchytape.core.domain.model.CtException
 import com.ohdodok.catchytape.core.domain.model.CurrentPlaylist
 import com.ohdodok.catchytape.core.domain.model.Music
+import com.ohdodok.catchytape.core.domain.repository.MusicRepository
 import com.ohdodok.catchytape.core.domain.usecase.player.CurrentPlaylistUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
@@ -34,6 +35,7 @@ sealed interface PlayerEvent {
 @HiltViewModel
 class PlayerViewModel @Inject constructor(
     private val currentPlaylistUseCase: CurrentPlaylistUseCase,
+    private val musicRepository: MusicRepository,
 ) : ViewModel(), PlayerEventListener {
 
     private val _currentPlaylist = MutableStateFlow<CurrentPlaylist?>(null)
@@ -78,6 +80,9 @@ class PlayerViewModel @Inject constructor(
         currentPlaylist.value?.let { playlist ->
             _uiState.update {
                 it.copy(duration = duration, currentMusic = playlist.musics[index])
+            }
+            viewModelScope.launch {
+                musicRepository.updateRecentPlayedMusic(playlist.musics[index].id)
             }
         }
     }
