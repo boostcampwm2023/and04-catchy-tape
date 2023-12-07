@@ -47,6 +47,24 @@ class PlayerControlView(context: Context, attrs: AttributeSet) : ConstraintLayou
             binding.lpiPlayerProgress.max = value
         }
 
+    var nextEnabled: Boolean = false
+        set(value) {
+            field = value
+            binding.ibNext.isEnabled = value
+        }
+
+    var playEnabled: Boolean = false
+        set(value) {
+            field = value
+            binding.ibPlay.isEnabled = value
+        }
+
+    var previousEnabled: Boolean = false
+        set(value) {
+            field = value
+            binding.ibPrevious.isEnabled = value
+        }
+
     fun setOnPlayButtonClick(onPlayButtonClick: () -> Unit) {
         binding.ibPlay.setOnClickListener { onPlayButtonClick() }
     }

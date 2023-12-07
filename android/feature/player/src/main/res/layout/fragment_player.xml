@@ -136,38 +136,41 @@
             app:seconds="@{viewModel.uiState.duration}"
             tools:text="2:04" />
 
-        <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/btn_play"
+        <ImageButton
+            android:id="@+id/ib_play"
             android:layout_width="32dp"
             android:layout_height="32dp"
             android:layout_marginTop="@dimen/medium"
-            android:background="@{viewModel.uiState.playing ? @drawable/ic_pause : @drawable/ic_play}"
-            android:backgroundTint="@color/on_surface"
+            android:background="@android:color/transparent"
+            android:src="@{viewModel.uiState.playing ? @drawable/ic_pause : @drawable/ic_play}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_current_time" />
 
-        <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/btn_previous"
+        <ImageButton
+            android:id="@+id/ib_previous"
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:layout_marginEnd="40dp"
-            android:background="@drawable/ic_previous"
-            android:backgroundTint="@color/on_surface"
-            app:layout_constraintBottom_toBottomOf="@id/btn_play"
-            app:layout_constraintEnd_toStartOf="@id/btn_play"
-            app:layout_constraintTop_toTopOf="@id/btn_play" />
+            android:background="@android:color/transparent"
+            android:enabled="@{viewModel.uiState.isPreviousEnable}"
+            android:src="@drawable/ic_previous"
+            app:layout_constraintBottom_toBottomOf="@id/ib_play"
+            app:layout_constraintEnd_toStartOf="@id/ib_play"
+            app:layout_constraintTop_toTopOf="@id/ib_play" />
 
-        <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/btn_next"
+        <ImageButton
+            android:id="@+id/ib_next"
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:layout_marginStart="40dp"
-            android:background="@drawable/ic_next"
-            android:backgroundTint="@color/on_surface"
-            app:layout_constraintBottom_toBottomOf="@id/btn_play"
-            app:layout_constraintStart_toEndOf="@id/btn_play"
-            app:layout_constraintTop_toTopOf="@id/btn_play" />
+            android:background="@android:color/transparent"
+            android:enabled="@{viewModel.uiState.isNextEnable}"
+            android:src="@drawable/ic_next"
+            app:layout_constraintBottom_toBottomOf="@id/ib_play"
+            app:layout_constraintStart_toEndOf="@id/ib_play"
+            app:layout_constraintTop_toTopOf="@id/ib_play" />
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
