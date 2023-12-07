@@ -72,6 +72,20 @@ async function uploadEncodedFile(filePath, musicId, fileName, objectStorage) {
   }
 }
 
+async function saveMp3File(outputMusicPath, musicPath, tempFilePath) {
+  fs.mkdirSync(outputMusicPath, { recursive: true });
+
+  const musicFileResponse = await axios.get(musicPath, {
+    responseType: 'arraybuffer',
+  });
+
+  const musicBuffer = Buffer.from(musicFileResponse.data);
+
+  fs.writeFile(tempFilePath, musicBuffer, (err) => {
+    if (err) throw new Error();
+  });
+}
+
 async function encodeMusic(musicId, musicPath, objectStorage) {
   try {
     ffmpeg.setFfmpegPath(path);
@@ -79,17 +93,7 @@ async function encodeMusic(musicId, musicPath, objectStorage) {
     const { outputMusicPath, outputPath, tempFilePath } =
       setEncodingPaths(musicPath);
 
-    fs.mkdirSync(outputMusicPath, { recursive: true });
-
-    const musicFileResponse = await axios.get(musicPath, {
-      responseType: 'arraybuffer',
-    });
-
-    const musicBuffer = Buffer.from(musicFileResponse.data);
-
-    fs.writeFile(tempFilePath, musicBuffer, (err) => {
-      if (err) throw new Error();
-    });
+    await saveMp3File(outputMusicPath, musicPath, tempFilePath);
 
     const encodedFileURL = await executeEncoding(
       tempFilePath,
