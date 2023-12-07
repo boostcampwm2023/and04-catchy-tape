@@ -66,7 +66,7 @@ class PlayerFragment : BaseFragment<FragmentPlayerBinding>(R.layout.fragment_pla
         }
 
         binding.ibPrevious.setOnClickListener {
-            player.movePreviousMedia()
+            player.onPreviousBtnClick()
         }
 
         binding.btnAddToPlaylist.setOnClickListener {

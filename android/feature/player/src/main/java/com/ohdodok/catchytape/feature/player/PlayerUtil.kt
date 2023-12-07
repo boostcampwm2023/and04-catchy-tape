@@ -6,6 +6,9 @@ import androidx.media3.common.MediaMetadata
 import androidx.media3.exoplayer.ExoPlayer
 import com.ohdodok.catchytape.core.domain.model.Music
 
+
+private const val POSITION_MOVE_HEAD_STANDARD = 0.05
+
 fun ExoPlayer.moveNextMedia() {
     seekToNextMediaItem()
     if (isPlaying) {
@@ -17,6 +20,19 @@ fun ExoPlayer.movePreviousMedia() {
     seekToPreviousMediaItem()
     if (isPlaying) {
         play()
+    }
+}
+
+fun ExoPlayer.moveHeadMedia() {
+    seekTo(0)
+    play()
+}
+
+fun ExoPlayer.onPreviousBtnClick() {
+    if (currentPosition.toFloat() / duration.toFloat() < POSITION_MOVE_HEAD_STANDARD) {
+        movePreviousMedia()
+    } else {
+        moveHeadMedia()
     }
 }
 
