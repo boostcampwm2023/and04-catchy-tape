@@ -30,18 +30,16 @@ data class UploadUiState(
     val musicGenre: String = "",
     val imageState: UploadedFileState = UploadedFileState(),
     val audioState: UploadedFileState = UploadedFileState(),
-    val encoding: Boolean = false,
     val musicGenres: List<String> = emptyList(),
 ) {
     val isLoading: Boolean
-        get() = imageState.isLoading || audioState.isLoading || encoding
+        get() = imageState.isLoading || audioState.isLoading
 
     val isUploadEnable: Boolean
         get() = musicTitleState.title.isNotBlank() && musicTitleState.isValid
                 && musicGenre.isNotBlank()
                 && imageState.url.isNotBlank()
                 && audioState.url.isNotBlank()
-                && !encoding
 }
 
 data class UploadedFileState(
@@ -139,12 +137,8 @@ class UploadViewModel @Inject constructor(
             audioUrl = uiState.value.audioState.url,
             title = uiState.value.musicTitleState.title,
             genre = uiState.value.musicGenre
-        ).onStart {
-            _uiState.update { it.copy(encoding = true) }
-        }.onEach {
+        ).onEach {
             _events.emit(UploadEvent.NavigateToBack)
-        }.onCompletion {
-            _uiState.update { it.copy(encoding = false) }
         }.launchIn(viewModelScopeWithExceptionHandler)
     }
 }
