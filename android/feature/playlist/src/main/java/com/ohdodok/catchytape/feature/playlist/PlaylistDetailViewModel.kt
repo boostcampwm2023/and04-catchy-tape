@@ -6,8 +6,8 @@ import androidx.lifecycle.viewModelScope
 import com.ohdodok.catchytape.core.domain.model.CtErrorType
 import com.ohdodok.catchytape.core.domain.model.CtException
 import com.ohdodok.catchytape.core.domain.model.Music
-import com.ohdodok.catchytape.core.domain.repository.PlaylistRepository
 import com.ohdodok.catchytape.core.domain.usecase.player.CurrentPlaylistUseCase
+import com.ohdodok.catchytape.core.domain.usecase.playlist.GetPlaylistUseCase
 import com.ohdodok.catchytape.core.ui.MusicAdapter
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
@@ -36,8 +36,8 @@ sealed interface PlaylistDetailEvent {
 @HiltViewModel
 class PlaylistDetailViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
-    private val playlistRepository: PlaylistRepository,
     private val currentPlaylistUseCase: CurrentPlaylistUseCase,
+    private val getPlaylistUseCase: GetPlaylistUseCase,
 ) : ViewModel(), MusicAdapter.Listener {
 
     val title: String = requireNotNull(savedStateHandle["title"]) {
@@ -65,11 +65,9 @@ class PlaylistDetailViewModel @Inject constructor(
     }
 
     private fun fetchMusics() {
-        playlistRepository.getPlaylist(playlistId)
-            .onEach { musics ->
+        getPlaylistUseCase(playlistId).onEach { musics ->
                 _uiState.update { it.copy(musics = musics) }
-            }
-            .launchIn(viewModelScopeWithExceptionHandler)
+            }.launchIn(viewModelScopeWithExceptionHandler)
     }
 
     fun playFromFirst() {

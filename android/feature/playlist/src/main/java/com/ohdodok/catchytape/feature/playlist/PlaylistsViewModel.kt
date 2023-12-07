@@ -7,6 +7,7 @@ import com.ohdodok.catchytape.core.domain.model.CtException
 import com.ohdodok.catchytape.core.domain.model.Playlist
 import com.ohdodok.catchytape.core.domain.repository.PlaylistRepository
 import com.ohdodok.catchytape.core.ui.model.PlaylistUiModel
+import com.ohdodok.catchytape.core.domain.usecase.playlist.GetPlaylistsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -27,6 +28,7 @@ data class PlaylistsUiState(
 
 @HiltViewModel
 class PlaylistViewModel @Inject constructor(
+    private val getPlaylistsUseCase: GetPlaylistsUseCase,
     private val playlistRepository: PlaylistRepository
 ) : ViewModel() {
 
@@ -48,7 +50,7 @@ class PlaylistViewModel @Inject constructor(
 
 
     fun fetchPlaylists() {
-        playlistRepository.getPlaylists().onEach { playlists ->
+        getPlaylistsUseCase().onEach { playlists ->
             _uiState.update {
                 it.copy(
                     playlists = playlists.map { playlist ->
