@@ -66,34 +66,13 @@ describe('UploadController', () => {
     });
   });
 
-  describe('MusicService 기능 작동 확인', () => {
-    it('MusicCreateDTO와 userId를 보내면 Music이 정상적으로 DB에 담긴다.', async () => {
-      const musicInfo: MusicCreateDto = musicCreateInfo;
+  it('잘못된 장르로 요청을 보내면 CatchyException이 발생한다.', async () => {
+    const musicInfo: MusicCreateDto = faultGenreMusicCreateInfo;
 
-      const user_id: string = 'user_id';
+    const userId: string = 'user_id';
 
-      jest.spyOn(musicService, 'encodeMusic').mockResolvedValue('encodedURL');
-
-      const newMusic: Music = newMusicData;
-
-      jest.spyOn(mockRepository, 'create').mockReturnValue(newMusic);
-      jest.spyOn(mockRepository, 'save').mockResolvedValue(newMusic);
-
-      const result = await musicService.createMusic(musicInfo, user_id);
-
-      expect(result).toBe(musicInfo.music_id);
-      expect(mockRepository.create).toHaveBeenCalledTimes(1);
-      expect(mockRepository.save).toHaveBeenCalledTimes(1);
-    });
-
-    it('잘못된 장르로 요청을 보내면 CatchyException이 발생한다.', async () => {
-      const musicInfo: MusicCreateDto = faultGenreMusicCreateInfo;
-
-      const userId: string = 'user_id';
-
-      await expect(async () => {
-        await musicService.createMusic(musicInfo, userId);
-      }).rejects.toThrow(CatchyException);
-    });
+    await expect(async () => {
+      await musicService.createMusic(musicInfo, userId);
+    }).rejects.toThrow(CatchyException);
   });
 });

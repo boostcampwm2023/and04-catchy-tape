@@ -20,3 +20,7 @@ export const contentTypeHandler: Record<string, string> = {
   image: 'image/png',
   music: 'audio/mpeg',
 };
+
+export const getTimeStamp = (): number => {
+  return new Date().getTime();
+};

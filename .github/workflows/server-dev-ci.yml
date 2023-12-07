@@ -46,6 +46,9 @@ jobs:
           JWT_SECRET_KEY: ${{ secrets.SERVER_ENV_JWT_SECRET_KEY }}
           GREEN_EYE_SECRET_KEY: ${{secrets.GREEN_EYE_SECRET_KEY}}
           GREEN_EYE_REQUEST_URL: ${{secrets.GREEN_EYE_REQUEST_URL}}
+          CLOUD_FUNCTIONS_EXECUTE_URL: ${{secrets.CLOUD_FUNCTIONS_EXECUTE_URL}}
+          CLOUD_FUNCTIONS_REQUEST_URL: ${{secrets.CLOUD_FUNCTIONS_REQUEST_URL}}
+          API_GW_ACCESS_KEY: ${{secrets.API_GW_ACCESS_KEY}}
         run: |
           touch dev.env
           echo "DB_HOST_IP=$DB_HOST_IP" >> dev.env
@@ -58,6 +61,9 @@ jobs:
           echo "JWT_SECRET_KEY=$JWT_SECRET_KEY" >> dev.env
           echo "GREEN_EYE_SECRET_KEY=$GREEN_EYE_SECRET_KEY" >> dev.env
           echo "GREEN_EYE_REQUEST_URL=$GREEN_EYE_REQUEST_URL" >> dev.env
+          echo "CLOUD_FUNCTIONS_EXECUTE_URL" >> dev.env
+          echo "CLOUD_FUNCTIONS_REQUEST_URL" >> dev.env
+          echo "API_GW_ACCESS_KEY" >> dev.env
 
       - name: Execute Test
         run: npm run test
