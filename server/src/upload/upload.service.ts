@@ -9,16 +9,20 @@ import * as fs from 'fs';
 import { Readable } from 'stream';
 import { GreenEyeService } from '../config/greenEye.service';
 import { DeleteObjectOutput } from 'aws-sdk/clients/s3';
+import axios from 'axios';
+import { CloudFunctionsResponseDto } from 'src/dto/cloudFunctions.response.dto';
 
 @Injectable()
 export class UploadService {
   private readonly logger = new Logger('UploadService');
   private objectStorage: S3;
+  private encodingActionUrl: string;
   constructor(
     private readonly nCloudConfigService: NcloudConfigService,
     private readonly greenEyeService: GreenEyeService,
   ) {
     this.objectStorage = nCloudConfigService.createObjectStorageOption();
+    this.encodingActionUrl = nCloudConfigService.getExecuteActionsUrl();
   }
 
   private isValidType(flag: string): boolean {
@@ -93,7 +97,7 @@ export class UploadService {
         );
       }
 
-      const uploadResult = await this.objectStorage
+      await this.objectStorage
         .upload({
           Bucket: 'catchy-tape-bucket2',
           Key: `music/${musicId}/music.mp3`,
@@ -103,8 +107,45 @@ export class UploadService {
         })
         .promise();
 
-      return { url: uploadResult.Location };
-    } catch {
+      const params = {
+        container_name: 'catchy-tape-bucket2',
+        music_id: musicId,
+      };
+
+      const result: CloudFunctionsResponseDto = await axios
+        .post(
+          this.encodingActionUrl,
+          params,
+          this.nCloudConfigService.getRequestActionUrlHeaders(),
+        )
+        .then((response) => response.data)
+        .catch((err) => {
+          this.logger.error(
+            `upload.service - uploadMusic : MUSIC_ENCODE_REQUEST_ERROR`,
+          );
+          throw new CatchyException(
+            'MUSIC_ENCODE_ERROR',
+            HTTP_STATUS_CODE.SERVER_ERROR,
+            ERROR_CODE.MUSIC_ENCODE_ERROR,
+          );
+        });
+
+      if (!result.body.url) {
+        this.logger.error(`upload.service - uploadMusic : MUSIC_ENCODE_ERROR`);
+        throw new CatchyException(
+          'MUSIC_ENCODE_ERROR',
+          HTTP_STATUS_CODE.SERVER_ERROR,
+          ERROR_CODE.MUSIC_ENCODE_ERROR,
+        );
+      }
+
+      return { url: result.body.url };
+    } catch (err) {
+      console.log(err);
+      if (err instanceof CatchyException) {
+        throw err;
+      }
+
       this.logger.error(`upload.service - uploadMusic : SERVICE_ERROR`);
       throw new CatchyException(
         'SERVER ERROR',
