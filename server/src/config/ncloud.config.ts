@@ -11,7 +11,6 @@ export class NcloudConfigService {
   private readonly gatewayKey: string;
   private readonly executeActionsUrl: string;
   private readonly requestActionsUrl: string;
-  private readonly timestamp: string;
 
   constructor(private readonly configService: ConfigService) {
     this.accessKey = this.configService.get<string>('ACCESS_ID');
@@ -23,7 +22,6 @@ export class NcloudConfigService {
     this.requestActionsUrl = this.configService.get<string>(
       'CLOUD_FUNCTIONS_REQUEST_URL',
     );
-    this.timestamp = `${getTimeStamp()}`;
   }
 
   createObjectStorageOption(): AWS.S3 {
@@ -38,12 +36,12 @@ export class NcloudConfigService {
     });
   }
 
-  makeSignature(): string {
+  makeSignature(curTimeStamp: number): string {
     const method = 'POST';
     const blank = ' ';
     const url = this.requestActionsUrl;
     const line = '\n';
-    const timestamp = this.timestamp;
+    const timestamp = `${curTimeStamp}`;
     const accessKey = this.accessKey;
 
     const message = `${method}${blank}${url}${line}${timestamp}${line}${accessKey}`;
@@ -58,13 +56,14 @@ export class NcloudConfigService {
   }
 
   getRequestActionUrlHeaders(): { headers: Record<string, string> } {
+    const curTimeStamp = getTimeStamp();
     return {
       headers: {
         'Content-Type': 'application/json',
         'x-ncp-iam-access-key': this.accessKey,
-        'x-ncp-apigw-timestamp': this.timestamp,
+        'x-ncp-apigw-timestamp': `${curTimeStamp}`,
         'x-ncp-apigw-api-key': this.gatewayKey,
-        'x-ncp-apigw-signature-v2': this.makeSignature(),
+        'x-ncp-apigw-signature-v2': this.makeSignature(curTimeStamp),
       },
     };
   }
