@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import * as AWS from 'aws-sdk';
-import CryptoJS from 'crypto-js';
+import { HmacSHA256, enc } from 'crypto-js';
 import { getTimeStamp } from 'src/constants';
 
 @Injectable()
@@ -39,22 +39,18 @@ export class NcloudConfigService {
   }
 
   makeSignature(): string {
-    const hmac = CryptoJS.algo.HMAC.create(
-      CryptoJS.algo.SHA256,
-      this.secretKey,
-    );
+    const method = 'POST';
+    const blank = ' ';
+    const url = this.requestActionsUrl;
+    const line = '\n';
+    const timestamp = this.timestamp;
+    const accessKey = this.accessKey;
 
-    hmac.update('POST');
-    hmac.update(' ');
-    hmac.update(this.requestActionsUrl);
-    hmac.update('\n');
-    hmac.update(this.timestamp);
-    hmac.update('\n');
-    hmac.update(this.accessKey);
+    const message = `${method}${blank}${url}${line}${timestamp}${line}${accessKey}`;
 
-    const hash = hmac.finalize();
+    const hmac = HmacSHA256(message, this.secretKey);
 
-    return hash.toString(CryptoJS.enc.Base64);
+    return enc.Base64.stringify(hmac);
   }
 
   getExecuteActionsUrl(): string {
