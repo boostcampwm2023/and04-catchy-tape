@@ -25,7 +25,13 @@ data class PlayerState(
     val isPlaying: Boolean = false,
     val currentPositionSecond: Int = 0,
     val duration: Int = 0,
-)
+    val isNextEnable: Boolean = false,
+    val isPreviousEnable: Boolean = false
+
+) {
+    val isPlayEnable: Boolean
+        get() = currentMusic != null
+}
 
 sealed interface PlayerEvent {
     data class ShowError(val error: CtErrorType) : PlayerEvent
@@ -77,7 +83,12 @@ class PlayerViewModel @Inject constructor(
     override fun onMediaItemChanged(index: Int, duration: Int) {
         currentPlaylist.value?.let { playlist ->
             _uiState.update {
-                it.copy(duration = duration, currentMusic = playlist.musics[index])
+                it.copy(
+                    duration = duration,
+                    currentMusic = playlist.musics[index],
+                    isNextEnable = playlist.musics.size != index + 1,
+                    isPreviousEnable = index != 0
+                )
             }
         }
     }
