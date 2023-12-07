@@ -1,6 +1,5 @@
 package com.ohdodok.catchytape.feature.player
 
-import android.view.View
 import androidx.core.net.toUri
 import androidx.media3.common.MediaItem
 import androidx.media3.common.MediaMetadata
@@ -18,38 +17,6 @@ fun ExoPlayer.movePreviousMedia() {
     seekToPreviousMediaItem()
     if (isPlaying) {
         play()
-    }
-}
-
-private fun unableBtn(button: View) {
-    button.isEnabled = false
-    button.alpha = 0.3f
-}
-
-private fun enableBtn(button: View) {
-    button.isEnabled = true
-    button.alpha = 1.0f
-}
-
-fun ExoPlayer.changeMoveBtnState(nextBtn: View, previousBtn: View) {
-    if (nextMediaItemIndex == -1) {
-        unableBtn(nextBtn)
-    } else {
-        enableBtn(nextBtn)
-    }
-
-    if (previousMediaItemIndex == -1) {
-        unableBtn(previousBtn)
-    } else {
-        enableBtn(previousBtn)
-    }
-}
-
-fun ExoPlayer.changePlayBtnState(playBtn: View) {
-    if (currentMediaItem == null) {
-        unableBtn(playBtn)
-    } else {
-        enableBtn(playBtn)
     }
 }
 
