@@ -6,6 +6,8 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import javax.inject.Inject
 
+const val RECENT_PLAYLIST_ID = 0
+
 class GetPlaylistsUseCase @Inject constructor(
     private val playlistRepository: PlaylistRepository
 ) {
@@ -15,7 +17,7 @@ class GetPlaylistsUseCase @Inject constructor(
         playlistRepository.getRecentPlaylist()
     ) { playlists, recentPlaylist ->
         (playlists + Playlist(
-            id = 0,
+            id = RECENT_PLAYLIST_ID,
             title = "최근 재생 목록",
             thumbnailUrl = recentPlaylist.firstOrNull()?.imageUrl ?: "",
             trackSize = recentPlaylist.size,

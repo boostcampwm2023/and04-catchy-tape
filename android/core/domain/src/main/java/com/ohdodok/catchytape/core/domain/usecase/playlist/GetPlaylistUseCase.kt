@@ -10,7 +10,7 @@ class GetPlaylistUseCase @Inject constructor(
 ) {
 
     operator fun invoke(playlistId: Int): Flow<List<Music>> {
-        return if (playlistId == 0) {
+        return if (playlistId == RECENT_PLAYLIST_ID) {
             playlistRepository.getRecentPlaylist()
         } else {
             playlistRepository.getPlaylist(playlistId)
