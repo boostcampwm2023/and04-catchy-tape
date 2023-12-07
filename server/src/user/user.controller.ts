@@ -49,7 +49,7 @@ export class UserController {
     @Query('count') count: number,
   ): Promise<Music[]> {
     this.logger.log(`GET /users/recent-played - nickname=${req.user.nickname}`);
-    const userId = req.user.userId;
+    const userId = req.user.user_id;
     const userMusicData = await this.userService.getRecentPlayedMusicByUserId(
       userId,
       count,
@@ -68,7 +68,7 @@ export class UserController {
     this.logger.log(
       `PATCH /users/image - nickname=${req.user.nickname}, image_url=${image_url}`,
     );
-    const user_id = req.user.userId;
+    const user_id = req.user.user_id;
     return {
       user_id: await this.userService.updateUserImage(user_id, image_url),
     };
@@ -79,7 +79,7 @@ export class UserController {
   @HttpCode(HTTP_STATUS_CODE.SUCCESS)
   async getMyInformation(@Req() req): Promise<User> {
     this.logger.log(`GET /users/my-info - nickname=${req.user.nickname}`);
-    const user_id = req.user.userId;
+    const user_id = req.user.user_id;
     return this.userService.getUserInformation(user_id);
   }
 

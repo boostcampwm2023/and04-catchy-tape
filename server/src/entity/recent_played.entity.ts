@@ -38,9 +38,7 @@ export class Recent_Played extends BaseEntity {
         user: true,
       },
       where: {
-        user: {
-          user_id,
-        },
+        user: { user_id },
       },
       select: {
         recent_played_id: false,
