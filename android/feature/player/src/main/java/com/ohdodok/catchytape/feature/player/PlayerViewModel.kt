@@ -36,6 +36,7 @@ data class PlayerState(
 
 sealed interface PlayerEvent {
     data class ShowError(val error: CtErrorType) : PlayerEvent
+    data class PlaylistChanged(val currentPlaylist: CurrentPlaylist) : PlayerEvent
 }
 
 @HiltViewModel
@@ -44,8 +45,8 @@ class PlayerViewModel @Inject constructor(
     private val musicRepository: MusicRepository,
 ) : ViewModel(), PlayerEventListener {
 
-    private val _currentPlaylist = MutableStateFlow<CurrentPlaylist?>(null)
-    val currentPlaylist: StateFlow<CurrentPlaylist?> = _currentPlaylist.asStateFlow()
+    private val _currentPlaylist = MutableStateFlow<List<Music>?>(null)
+    val currentPlaylist: StateFlow<List<Music>?> = _currentPlaylist.asStateFlow()
 
     private val _uiState = MutableStateFlow(PlayerState())
     val uiState: StateFlow<PlayerState> = _uiState.asStateFlow()
@@ -65,7 +66,8 @@ class PlayerViewModel @Inject constructor(
     private fun observePlaylistChange() {
         viewModelScope.launch(exceptionHandler) {
             currentPlaylistUseCase.currentPlaylist.consumeEach {
-                _currentPlaylist.value = it
+                _currentPlaylist.value = it.musics
+                _events.emit(PlayerEvent.PlaylistChanged(it))
             }
         }
     }
@@ -87,14 +89,14 @@ class PlayerViewModel @Inject constructor(
             _uiState.update {
                 it.copy(
                     duration = duration,
-                    currentMusic = playlist.musics[index],
+                    currentMusic = playlist[index],
                     currentPositionSecond = 0,
-                    isNextEnable = playlist.musics.lastIndex != index,
+                    isNextEnable = playlist.lastIndex != index,
                     isPreviousEnable = index != 0
                 )
             }
             viewModelScope.launch {
-                musicRepository.updateRecentPlayedMusic(playlist.musics[index].id)
+                musicRepository.updateRecentPlayedMusic(playlist[index].id)
             }
         }
     }
