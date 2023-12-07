@@ -27,8 +27,8 @@ import com.ohdodok.catchytape.feature.player.PlayerViewModel
 import com.ohdodok.catchytape.feature.player.getMediasWithMetaData
 import com.ohdodok.catchytape.feature.player.millisecondsPerSecond
 import com.ohdodok.catchytape.feature.player.moveNextMedia
-import com.ohdodok.catchytape.feature.player.movePreviousMedia
 import com.ohdodok.catchytape.feature.player.navigateToPlayer
+import com.ohdodok.catchytape.feature.player.onPreviousBtnClick
 import com.ohdodok.catchytape.mediasession.PlaybackService
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
@@ -188,7 +188,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun setupPreviousButton() {
         binding.pcvController.setOnPreviousButtonClick {
-            player.movePreviousMedia()
+            player.onPreviousBtnClick()
         }
     }
 

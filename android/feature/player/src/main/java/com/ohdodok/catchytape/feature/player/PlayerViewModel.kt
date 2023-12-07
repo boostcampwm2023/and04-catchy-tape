@@ -88,6 +88,7 @@ class PlayerViewModel @Inject constructor(
                 it.copy(
                     duration = duration,
                     currentMusic = playlist.musics[index],
+                    currentPositionSecond = 0,
                     isNextEnable = playlist.musics.lastIndex != index,
                     isPreviousEnable = index != 0
                 )
