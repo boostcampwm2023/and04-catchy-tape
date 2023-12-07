@@ -69,7 +69,7 @@ export class UploadService {
       );
     }
 
-    if (confidence < 0.9) {
+    if (confidence < 0.7) {
       await this.deleteObjectStorageImage(keyPath);
 
       this.logger.error(`upload.service - checkImageNormal : BAD_IMAGE`);
