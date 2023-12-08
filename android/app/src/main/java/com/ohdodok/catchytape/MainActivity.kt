@@ -80,11 +80,6 @@ class MainActivity : AppCompatActivity() {
         connectToMediaSession()
     }
 
-    override fun onStop() {
-        player.pause()
-        super.onStop()
-    }
-
     private fun connectToMediaSession() {
         val sessionToken = SessionToken(this, ComponentName(this, PlaybackService::class.java))
         MediaController.Builder(this, sessionToken).buildAsync()
