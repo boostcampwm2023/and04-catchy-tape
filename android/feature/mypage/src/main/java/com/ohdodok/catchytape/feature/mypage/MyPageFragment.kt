@@ -2,8 +2,10 @@ package com.ohdodok.catchytape.feature.mypage
 
 import android.os.Bundle
 import android.view.View
+import androidx.core.net.toUri
 import androidx.core.view.ViewCompat
 import androidx.fragment.app.viewModels
+import androidx.navigation.NavDeepLinkRequest
 import androidx.navigation.fragment.findNavController
 import com.ohdodok.catchytape.core.ui.BaseFragment
 import com.ohdodok.catchytape.core.ui.MusicAdapter
@@ -44,6 +46,12 @@ class MyPageFragment : BaseFragment<FragmentMyPageBinding>(R.layout.fragment_my_
         binding.btnMore.setOnClickListener {
             val action = MyPageFragmentDirections.actionMyPageFragmentToMyMusicsFragment()
             findNavController().navigate(action)
+        }
+        binding.btnUpload.setOnClickListener {
+            val request =
+                NavDeepLinkRequest.Builder.fromUri("android-app://com.ohdodok.catchytape/upload_fragment".toUri())
+                    .build()
+            findNavController().navigate(request)
         }
     }
 
