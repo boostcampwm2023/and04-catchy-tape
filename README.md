@@ -28,7 +28,7 @@
 ### 🤖 Android
 | Category  | TechStack | 기록 |
 | ------------- | ------------- | ------------- |
-| Architecture  | Clean Architecture, Multi Module, MVVM  | [프로젝트 구조](https://tral-lalala.tistory.com/126)⎮[build-logic](https://algosketch.tistory.com/179)⎮[네트워크 예외처리](www.naver.com)
+| Architecture  | Clean Architecture, Multi Module, MVVM  | [프로젝트 구조](https://tral-lalala.tistory.com/126)⎮[build-logic](https://algosketch.tistory.com/179)⎮[네트워크 예외처리](https://github.com/boostcampwm2023/and04-catchy-tape/wiki/Android-%EA%B0%9C%EB%B0%9C%EC%97%90%EC%84%9C,-%EB%84%A4%ED%8A%B8%EC%9B%8C%ED%81%AC-%EC%98%88%EC%99%B8-%EC%B2%98%EB%A6%AC)
 | DI | Hilt | 
 | Network | Retrofit, OkHttp, Kotlin Serialization | [역/직렬화 라이브러리 비교](https://github.com/boostcampwm2023/and04-catchy-tape/wiki/%EC%97%AD-%EC%A7%81%EB%A0%AC%ED%99%94-%EB%9D%BC%EC%9D%B4%EB%B8%8C%EB%9F%AC%EB%A6%AC-%EB%B9%84%EA%B5%90)
 | Asynchronous | Coroutines, Flow
