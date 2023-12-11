@@ -30,9 +30,10 @@
 | ------------- | ------------- | ------------- |
 | Architecture  | Clean Architecture, Multi Module, MVVM  | [프로젝트 구조](https://tral-lalala.tistory.com/126)⎮[build-logic](https://algosketch.tistory.com/179)⎮[네트워크 예외처리](www.naver.com)
 | DI | Hilt | 
-| Network | Retrofit, Kotlin Serialization | [역/직렬화 라이브러리 비교](https://github.com/boostcampwm2023/and04-catchy-tape/wiki/%EC%97%AD-%EC%A7%81%EB%A0%AC%ED%99%94-%EB%9D%BC%EC%9D%B4%EB%B8%8C%EB%9F%AC%EB%A6%AC-%EB%B9%84%EA%B5%90)
+| Network | Retrofit, OkHttp, Kotlin Serialization | [역/직렬화 라이브러리 비교](https://github.com/boostcampwm2023/and04-catchy-tape/wiki/%EC%97%AD-%EC%A7%81%EB%A0%AC%ED%99%94-%EB%9D%BC%EC%9D%B4%EB%B8%8C%EB%9F%AC%EB%A6%AC-%EB%B9%84%EA%B5%90)
 | Asynchronous | Coroutines, Flow
-| Jetpack | DataBinding, Navigation |
+| Jetpack | Media3, DataBinding, Navigation, DataStore |
+| Image | Glide
 | CI/CD | Github Actions |[PR 단위 테스트 자동화](https://algosketch.tistory.com/178)⎮[Github Release 자동화](https://tral-lalala.tistory.com/127)⎮[Firebase App 배포 자동화](https://tral-lalala.tistory.com/128)
 | Test | Kotest
 | Logging | Timber | [Timber 적용 이유](https://github.com/boostcampwm2023/and04-catchy-tape/wiki/Android-%EA%B0%9C%EB%B0%9C%EC%8B%9C-Timber%EC%9D%84-%EC%A0%81%EC%9A%A9%ED%95%9C-%EC%9D%B4%EC%9C%A0)
