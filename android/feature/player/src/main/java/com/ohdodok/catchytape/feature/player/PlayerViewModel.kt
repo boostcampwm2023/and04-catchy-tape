@@ -1,6 +1,7 @@
 package com.ohdodok.catchytape.feature.player
 
 import androidx.lifecycle.ViewModel
+
 import androidx.lifecycle.viewModelScope
 import com.ohdodok.catchytape.core.domain.model.CtErrorType
 import com.ohdodok.catchytape.core.domain.model.CtException
@@ -28,7 +29,6 @@ data class PlayerState(
     val duration: Int = 0,
     val isNextEnable: Boolean = false,
     val isPreviousEnable: Boolean = false
-
 ) {
     val isPlayEnable: Boolean
         get() = currentMusic != null
@@ -69,7 +69,9 @@ class PlayerViewModel @Inject constructor(
         viewModelScope.launch(exceptionHandler) {
             for (currentPlaylist in currentPlaylistUseCase.currentPlaylist) {
                 _currentPlaylist.value = currentPlaylist.musics
-                _events.emit(PlayerEvent.PlaylistChanged(currentPlaylist))
+                if (currentPlaylist.startMusic.id != _uiState.value.currentMusic?.id) {
+                    _events.emit(PlayerEvent.PlaylistChanged(currentPlaylist))
+                }
             }
         }
     }
