@@ -19,6 +19,7 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.plus
 import javax.inject.Inject
 
 data class PlayerState(
@@ -59,6 +60,8 @@ class PlayerViewModel @Inject constructor(
         viewModelScope.launch { _events.emit(PlayerEvent.ShowError(errorType)) }
     }
 
+    private val viewModelScopeWithExceptionHandler = viewModelScope + exceptionHandler
+
     init {
         observePlaylistChange()
     }
@@ -95,7 +98,7 @@ class PlayerViewModel @Inject constructor(
                     isPreviousEnable = index != 0
                 )
             }
-            viewModelScope.launch {
+            viewModelScopeWithExceptionHandler.launch {
                 musicRepository.updateRecentPlayedMusic(playlist[index].id)
             }
         }
