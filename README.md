@@ -54,7 +54,7 @@
 | DB | MySQL  | 
 | ORM | TypeORM  | [TypeORM 사용 이유](https://round-caution-9fd.notion.site/prisma-vs-TypeORM-0c8c89b3d5374405aca9e9c1db0a73b6)⎮ [관련 개념 학습](https://round-caution-9fd.notion.site/Server-624068a499114a14ba1388e198bb0dde?p=09210f9a985246639720c50e269f70a5&pm=s)|
 | Test | Jest  |
-| API Docs | SwaggerHub  | [Swagger Hub 링크](https://app.swaggerhub.com/apis/12201944/CatchyTapeAPI/1.0.0)
+| API Docs | SwaggerHub  | [Swagger Hub 링크](https://app.swaggerhub.com/apis/12201944/CatchyTapeImsi/1.0.0)
 | CI/CD | Github Actions  | [Github Actions 활용한 자동 배포](https://round-caution-9fd.notion.site/Github-Action-29d0d57f5a434954b4a7b4aa8c3b57e0) |
 | NCP | Server, Container Registry, VPC, Object Storage|[vpc 환경](https://round-caution-9fd.notion.site/VPC-a8eefbec2f0244629ee2a092c454ebd7) |
 | 기술적 도전 |음악 인코딩, 인덱싱, docker 활용 배포, 부하 테스트| [인코딩](https://round-caution-9fd.notion.site/Cloud-Functions-d7f1528dd32146f6b8f0b255ef33ebd7)⎮[인덱싱](https://round-caution-9fd.notion.site/ERD-DB-74377ed10a2347d1ac15f181134f52a1)⎮[배포](https://round-caution-9fd.notion.site/docker-aa7522e8c5cf4b9c9135d6f6b2114fd4) |
