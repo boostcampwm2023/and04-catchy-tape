@@ -53,10 +53,4 @@ export const newMusicData: Music = {
   } as User,
   music_playlist: [],
   recent_played: [],
-  hasId: () => true,
-  save: async () => newMusicData,
-  remove: async () => newMusicData,
-  softRemove: async () => newMusicData,
-  recover: async () => newMusicData,
-  reload: async () => {},
-};
+} as Music;
