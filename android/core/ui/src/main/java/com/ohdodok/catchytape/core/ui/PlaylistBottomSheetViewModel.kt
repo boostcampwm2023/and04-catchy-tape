@@ -3,6 +3,7 @@ package com.ohdodok.catchytape.core.ui
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.ohdodok.catchytape.core.domain.model.CtErrorType
 import com.ohdodok.catchytape.core.domain.model.Playlist
 import com.ohdodok.catchytape.core.domain.repository.PlaylistRepository
 import com.ohdodok.catchytape.core.ui.model.PlaylistUiModel
@@ -17,6 +18,11 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+sealed interface PlaylistBottomSheetEvent {
+    data object Close : PlaylistBottomSheetEvent
+    data class ShowMessage(val error: CtErrorType) : PlaylistBottomSheetEvent
+}
+
 @HiltViewModel
 class PlaylistBottomSheetViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
@@ -30,8 +36,8 @@ class PlaylistBottomSheetViewModel @Inject constructor(
     private val _playlists = MutableStateFlow(emptyList<PlaylistUiModel>())
     val playlists: StateFlow<List<PlaylistUiModel>> = _playlists.asStateFlow()
 
-    private val _closeEvent = MutableSharedFlow<Unit>()
-    val closeEvent: SharedFlow<Unit> = _closeEvent.asSharedFlow()
+    private val _events = MutableSharedFlow<PlaylistBottomSheetEvent>()
+    val events: SharedFlow<PlaylistBottomSheetEvent> = _events.asSharedFlow()
 
     init {
         fetchPlaylists()
@@ -46,7 +52,7 @@ class PlaylistBottomSheetViewModel @Inject constructor(
     private fun addMusicToPlaylist(playlistId: Int, musicId: String) {
         viewModelScope.launch {
             playlistRepository.addMusicToPlaylist(playlistId = playlistId, musicId = musicId)
-            _closeEvent.emit(Unit)
+            _events.emit(PlaylistBottomSheetEvent.Close)
         }
     }
 
