@@ -6,6 +6,8 @@ import com.ohdodok.catchytape.core.domain.model.CtErrorType
 import com.ohdodok.catchytape.core.domain.model.CtException
 import com.ohdodok.catchytape.core.domain.model.Music
 import com.ohdodok.catchytape.core.domain.repository.MusicRepository
+import com.ohdodok.catchytape.core.domain.usecase.player.CurrentPlaylistUseCase
+import com.ohdodok.catchytape.core.ui.MusicAdapter
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -28,8 +30,9 @@ data class SearchUiState(
 
 @HiltViewModel
 class SearchViewModel @Inject constructor(
-    private val musicRepository: MusicRepository
-) : ViewModel() {
+    private val musicRepository: MusicRepository,
+    private val currentPlaylistUseCase: CurrentPlaylistUseCase,
+    ) : ViewModel(), MusicAdapter.Listener {
 
     private val _uiState = MutableStateFlow(SearchUiState())
     val uiState: StateFlow<SearchUiState> = _uiState.asStateFlow()
@@ -73,9 +76,17 @@ class SearchViewModel @Inject constructor(
             }.launchIn(viewModelScopeWithExceptionHandler)
         }
     }
+
+    override fun onClick(music: Music) {
+        currentPlaylistUseCase.playMusic(music)
+        viewModelScope.launch {
+            _events.emit(SearchEvent.NavigateToPlayerScreen)
+        }
+    }
 }
 
 
 sealed interface SearchEvent {
     data class ShowMessage(val error: CtErrorType) : SearchEvent
+    data object NavigateToPlayerScreen : SearchEvent
 }

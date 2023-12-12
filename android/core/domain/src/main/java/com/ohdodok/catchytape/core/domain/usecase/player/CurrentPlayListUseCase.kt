@@ -27,4 +27,13 @@ class CurrentPlaylistUseCase @Inject constructor() {
             _currentPlaylist.send(newPlaylist)
         }
     }
+
+    fun playMusic(music: Music) {
+        val newPlaylist = CurrentPlaylist(
+            startMusic = music,
+            musics = listOf(music),
+        )
+
+        scope.launch { _currentPlaylist.send(newPlaylist) }
+    }
 }
