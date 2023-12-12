@@ -28,7 +28,7 @@ class AndroidFeaturePlugin : Plugin<Project> {
             val libs = extensions.getByType<VersionCatalogsExtension>().named("libs")
 
             dependencies {
-                add("implementation", project(":core:ui"))
+                add("api", project(":core:ui"))
                 add("implementation", project(":core:domain"))
 
                 add("testImplementation", libs.findLibrary("junit").get())
