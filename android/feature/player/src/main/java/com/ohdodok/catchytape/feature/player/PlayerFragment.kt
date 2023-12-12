@@ -75,11 +75,12 @@ class PlayerFragment : BaseFragment<FragmentPlayerBinding>(R.layout.fragment_pla
     private fun NavController.showPlaylistBottomSheet() {
         val musicId = viewModel.uiState.value.currentMusic?.id ?: return
 
+
         val action = PlayerFragmentDirections.actionPlayerFragmentToPlaylistBottomSheet(musicId = musicId)
-        this.navigate(action)
+        navigate(action)
     }
 }
 
 fun NavController.navigateToPlayer() {
-    this.navigate(R.id.player_nav_graph)
+    navigate(R.id.player_nav_graph)
 }

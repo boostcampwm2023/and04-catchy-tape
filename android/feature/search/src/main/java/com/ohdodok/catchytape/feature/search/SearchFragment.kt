@@ -65,5 +65,5 @@ private fun NavController.navigateToPlayerScreen() {
         NavDeepLinkRequest.Builder.fromUri("android-app://com.ohdodok.catchytape/player_fragment".toUri())
             .build()
 
-    this.navigate(request)
+    navigate(request)
 }
