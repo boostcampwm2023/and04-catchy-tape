@@ -18,7 +18,7 @@ import dagger.hilt.android.AndroidEntryPoint
 class PlaylistsFragment : BaseFragment<FragmentPlaylistsBinding>(R.layout.fragment_playlists),
     NewPlaylistDialog.NewPlaylistDialogListener {
 
-    val viewModel: PlaylistViewModel by viewModels()
+    val viewModel: PlaylistsViewModel by viewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -57,7 +57,6 @@ class PlaylistsFragment : BaseFragment<FragmentPlaylistsBinding>(R.layout.fragme
     override fun onPositiveButtonClicked(dialog: DialogFragment, title: String) {
         viewModel.createPlaylist(title)
     }
-
 }
 
 private fun NavController.navigateToPlaylistDetail(playlistId: Int, title: String) {
