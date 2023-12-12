@@ -2,8 +2,12 @@ package com.ohdodok.catchytape.feature.search
 
 import android.os.Bundle
 import android.view.View
+import androidx.core.net.toUri
 import androidx.core.view.ViewCompat
 import androidx.fragment.app.viewModels
+import androidx.navigation.NavController
+import androidx.navigation.NavDeepLinkRequest
+import androidx.navigation.fragment.findNavController
 import com.ohdodok.catchytape.core.ui.BaseFragment
 import com.ohdodok.catchytape.core.ui.MusicAdapter
 import com.ohdodok.catchytape.core.ui.Orientation
@@ -31,7 +35,10 @@ class SearchFragment : BaseFragment<FragmentSearchBinding>(R.layout.fragment_sea
     }
 
     private fun setupRecyclerView() {
-        binding.rvSearch.adapter = MusicAdapter(Orientation.VERTICAL)
+        binding.rvSearch.adapter = MusicAdapter(
+            musicItemOrientation = Orientation.VERTICAL,
+            listener = viewModel
+        )
     }
 
     private fun observeEvents() {
@@ -41,9 +48,22 @@ class SearchFragment : BaseFragment<FragmentSearchBinding>(R.layout.fragment_sea
                     is SearchEvent.ShowMessage -> {
                         showMessage(event.error.toMessageId())
                     }
+
+                    is SearchEvent.NavigateToPlayerScreen -> {
+                        findNavController().navigateToPlayerScreen()
+                    }
                 }
             }
         }
     }
 
+}
+
+
+private fun NavController.navigateToPlayerScreen() {
+    val request =
+        NavDeepLinkRequest.Builder.fromUri("android-app://com.ohdodok.catchytape/player_fragment".toUri())
+            .build()
+
+    this.navigate(request)
 }

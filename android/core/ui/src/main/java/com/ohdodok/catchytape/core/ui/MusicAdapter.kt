@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.snackbar.Snackbar
 import com.ohdodok.catchytape.core.domain.model.Music
 import com.ohdodok.catchytape.core.ui.MusicAdapter.Listener
 import com.ohdodok.catchytape.core.ui.databinding.ItemMusicHorizontalBinding
@@ -59,6 +60,12 @@ class MusicAdapter(
         private val listener: Listener,
     ) :
         RecyclerView.ViewHolder(binding.root) {
+        private val moreMessage = itemView.context.getText(R.string.develop_in_future)
+        init {
+            binding.ibMore.setOnClickListener {
+                Snackbar.make(itemView, moreMessage, Snackbar.LENGTH_LONG).show()
+            }
+        }
 
         fun bind(item: Music) {
             binding.music = item

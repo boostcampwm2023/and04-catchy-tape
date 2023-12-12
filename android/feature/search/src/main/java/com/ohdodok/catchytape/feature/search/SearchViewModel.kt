@@ -6,6 +6,8 @@ import com.ohdodok.catchytape.core.domain.model.CtErrorType
 import com.ohdodok.catchytape.core.domain.model.CtException
 import com.ohdodok.catchytape.core.domain.model.Music
 import com.ohdodok.catchytape.core.domain.repository.MusicRepository
+import com.ohdodok.catchytape.core.domain.usecase.player.CurrentPlaylistUseCase
+import com.ohdodok.catchytape.core.ui.MusicAdapter
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -15,7 +17,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.debounce
-import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
@@ -29,8 +30,9 @@ data class SearchUiState(
 
 @HiltViewModel
 class SearchViewModel @Inject constructor(
-    private val musicRepository: MusicRepository
-) : ViewModel() {
+    private val musicRepository: MusicRepository,
+    private val currentPlaylistUseCase: CurrentPlaylistUseCase,
+    ) : ViewModel(), MusicAdapter.Listener {
 
     private val _uiState = MutableStateFlow(SearchUiState())
     val uiState: StateFlow<SearchUiState> = _uiState.asStateFlow()
@@ -60,20 +62,31 @@ class SearchViewModel @Inject constructor(
     }
 
     private fun observeKeyword() {
-        _keyword.filter { it.isNotBlank() }
-            .debounce(300)
+        _keyword.debounce(300)
             .onEach { fetchSearchedMusics(it) }
             .launchIn(viewModelScopeWithExceptionHandler)
     }
 
     private fun fetchSearchedMusics(keyword: String) {
-        musicRepository.getSearchedMusics(keyword).onEach { musics ->
-            _uiState.update { it.copy(searchedMusics = musics) }
-        }.launchIn(viewModelScopeWithExceptionHandler)
+        if (keyword.isBlank()) {
+            _uiState.update { it.copy(searchedMusics = emptyList()) }
+        } else {
+            musicRepository.getSearchedMusics(keyword).onEach { musics ->
+                _uiState.update { it.copy(searchedMusics = musics) }
+            }.launchIn(viewModelScopeWithExceptionHandler)
+        }
+    }
+
+    override fun onClick(music: Music) {
+        currentPlaylistUseCase.playMusic(music)
+        viewModelScope.launch {
+            _events.emit(SearchEvent.NavigateToPlayerScreen)
+        }
     }
 }
 
 
 sealed interface SearchEvent {
     data class ShowMessage(val error: CtErrorType) : SearchEvent
+    data object NavigateToPlayerScreen : SearchEvent
 }
