@@ -102,7 +102,8 @@ class MainActivity : AppCompatActivity() {
 
         navHostFragment.findNavController().addOnDestinationChangedListener { _, destination, _ ->
             when (destination.id) {
-                com.ohdodok.catchytape.feature.player.R.id.player_fragment -> {
+                com.ohdodok.catchytape.feature.player.R.id.player_fragment,
+                com.ohdodok.catchytape.feature.player.R.id.playlist_bottom_sheet -> {
                     hideBottomNav()
                     hidePlayerController()
                 }

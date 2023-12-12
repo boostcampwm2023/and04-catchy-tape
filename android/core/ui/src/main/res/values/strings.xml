@@ -37,6 +37,7 @@
     <string name="track_size">트랙 %d개</string>
 
     <string name="add_to_playlist">재생 목록에 노래 추가</string>
+    <string name="add_to_playlist_success">노래를 추가했어요.</string>
 
     <string name="error_message_connection">"error_message_connection"</string>
     <string name="error_message_ssl_hand_shake">"error_message_ssl_hand_shake"</string>
@@ -48,7 +49,7 @@
     <string name="error_message_server">서버가 작업 중이에요. 잠시만 기다려주세요.</string>
     <string name="error_message_not_exist_playlist_on_user">"error_message_not_exist_playlist_on_user"</string>
     <string name="error_message_not_exist_music">"error_message_not_exist_music"</string>
-    <string name="error_message_already_added">"error_message_already_added"</string>
+    <string name="error_message_already_added">이미 추가된 음악이에요.</string>
     <string name="error_message_invalid_input_value">"error_message_invalid_input_value"</string>
     <string name="error_message_not_exist_user">"error_message_not_exist_user"</string>
     <string name="error_message_already_exist_email">이미 회원가입이 완료된 이메일이에요 !</string>
