@@ -6,11 +6,6 @@ plugins {
 android {
     namespace = "com.ohdodok.catchytape.feature.search"
 
-    defaultConfig {
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        consumerProguardFiles("consumer-rules.pro")
-    }
-
     buildTypes {
         release {
             isMinifyEnabled = false

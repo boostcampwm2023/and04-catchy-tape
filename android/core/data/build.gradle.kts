@@ -1,5 +1,5 @@
-import java.util.Properties
 import java.io.FileInputStream
+import java.util.Properties
 
 @Suppress("DSL_SCOPE_VIOLATION") // TODO: Remove once KTIJ-19369 is fixed
 plugins {
@@ -16,10 +16,7 @@ android {
     namespace = "com.ohdodok.catchytape.core.data"
 
     defaultConfig {
-
         buildConfigField("String", "BASE_URL", localProperties["server.url"] as String)
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        consumerProguardFiles("consumer-rules.pro")
     }
 
     buildTypes {

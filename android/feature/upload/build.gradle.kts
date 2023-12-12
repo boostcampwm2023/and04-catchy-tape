@@ -6,12 +6,6 @@ plugins {
 android {
     namespace = "com.ohdodok.catchytape.catchytape.upload"
 
-    defaultConfig {
-
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        consumerProguardFiles("consumer-rules.pro")
-    }
-
     buildTypes {
         release {
             isMinifyEnabled = false

@@ -6,11 +6,6 @@ plugins {
 android {
     namespace = "com.ohdodok.catchytape.feature.mypage"
 
-    defaultConfig {
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        consumerProguardFiles("consumer-rules.pro")
-    }
-
     buildTypes {
         buildTypes {
             release {
