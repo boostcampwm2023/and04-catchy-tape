@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.annotation.StringRes
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -11,7 +12,6 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import com.google.android.material.snackbar.Snackbar
 import com.ohdodok.catchytape.core.ui.cterror.toMessageId
 import com.ohdodok.catchytape.core.ui.databinding.BottomSheetPlaylistBinding
 import dagger.hilt.android.AndroidEntryPoint
@@ -44,7 +44,8 @@ class PlaylistBottomSheet : BottomSheetDialogFragment() {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.events.collect { event ->
                     when (event) {
-                        is PlaylistBottomSheetEvent.Close -> {
+                        is PlaylistBottomSheetEvent.Success -> {
+                            showMessage(R.string.add_to_playlist_success)
                             findNavController().popBackStack()
                         }
 
@@ -58,7 +59,7 @@ class PlaylistBottomSheet : BottomSheetDialogFragment() {
     }
 
     private fun showMessage(@StringRes messageId: Int) {
-        Snackbar.make(this.requireView(), messageId, Snackbar.LENGTH_LONG).show()
+        Toast.makeText(requireActivity(), messageId, Toast.LENGTH_SHORT).show()
     }
 
     override fun onDestroyView() {

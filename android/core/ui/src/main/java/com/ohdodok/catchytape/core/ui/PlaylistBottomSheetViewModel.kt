@@ -21,7 +21,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 sealed interface PlaylistBottomSheetEvent {
-    data object Close : PlaylistBottomSheetEvent
+    data object Success : PlaylistBottomSheetEvent
     data class ShowMessage(val error: CtErrorType) : PlaylistBottomSheetEvent
 }
 
@@ -62,7 +62,7 @@ class PlaylistBottomSheetViewModel @Inject constructor(
     private fun addMusicToPlaylist(playlistId: Int, musicId: String) {
         viewModelScope.launch(exceptionHandler) {
             playlistRepository.addMusicToPlaylist(playlistId = playlistId, musicId = musicId)
-            _events.emit(PlaylistBottomSheetEvent.Close)
+            _events.emit(PlaylistBottomSheetEvent.Success)
         }
     }
 
