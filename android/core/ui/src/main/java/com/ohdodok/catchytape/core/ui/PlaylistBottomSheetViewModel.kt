@@ -4,10 +4,12 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ohdodok.catchytape.core.domain.model.CtErrorType
+import com.ohdodok.catchytape.core.domain.model.CtException
 import com.ohdodok.catchytape.core.domain.model.Playlist
 import com.ohdodok.catchytape.core.domain.repository.PlaylistRepository
 import com.ohdodok.catchytape.core.ui.model.PlaylistUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -39,6 +41,14 @@ class PlaylistBottomSheetViewModel @Inject constructor(
     private val _events = MutableSharedFlow<PlaylistBottomSheetEvent>()
     val events: SharedFlow<PlaylistBottomSheetEvent> = _events.asSharedFlow()
 
+    private val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
+        val errorType =
+            if (throwable is CtException) throwable.ctError
+            else CtErrorType.UN_KNOWN
+
+        viewModelScope.launch { _events.emit(PlaylistBottomSheetEvent.ShowMessage(errorType)) }
+    }
+
     init {
         fetchPlaylists()
     }
@@ -50,7 +60,7 @@ class PlaylistBottomSheetViewModel @Inject constructor(
     }
 
     private fun addMusicToPlaylist(playlistId: Int, musicId: String) {
-        viewModelScope.launch {
+        viewModelScope.launch(exceptionHandler) {
             playlistRepository.addMusicToPlaylist(playlistId = playlistId, musicId = musicId)
             _events.emit(PlaylistBottomSheetEvent.Close)
         }
