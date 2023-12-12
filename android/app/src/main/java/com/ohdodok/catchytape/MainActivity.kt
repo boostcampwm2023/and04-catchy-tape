@@ -21,6 +21,7 @@ import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.setupWithNavController
+import com.ohdodok.catchytape.core.ui.cterror.toMessageId
 import com.ohdodok.catchytape.databinding.ActivityMainBinding
 import com.ohdodok.catchytape.feature.player.PlayerEvent
 import com.ohdodok.catchytape.feature.player.PlayerListener
@@ -34,7 +35,6 @@ import com.ohdodok.catchytape.mediasession.PlaybackService
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import com.ohdodok.catchytape.core.ui.R.string as uiString
@@ -170,16 +170,22 @@ class MainActivity : AppCompatActivity() {
     private fun observePlaylistChange() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                playViewModel.events
-                    .filterIsInstance<PlayerEvent.PlaylistChanged>()
-                    .collectLatest { event ->
-                        val newItems = getMediasWithMetaData(event.currentPlaylist.musics)
-                        player.clearMediaItems()
-                        player.setMediaItems(newItems)
+                playViewModel.events.collectLatest { event ->
+                    when (event) {
+                        is PlayerEvent.ShowError -> {
+                            Toast.makeText(this@MainActivity, getString(event.error.toMessageId()), Toast.LENGTH_LONG).show()
+                        }
 
-                        player.seekTo(event.currentPlaylist.startMusicIndex, 0)
-                        player.play()
+                        is PlayerEvent.PlaylistChanged -> {
+                            val newItems = getMediasWithMetaData(event.currentPlaylist.musics)
+                            player.clearMediaItems()
+                            player.setMediaItems(newItems)
+
+                            player.seekTo(event.currentPlaylist.startMusicIndex, 0)
+                            player.play()
+                        }
                     }
+                }
             }
         }
     }
