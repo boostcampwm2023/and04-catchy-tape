@@ -15,7 +15,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.debounce
-import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
@@ -60,16 +59,19 @@ class SearchViewModel @Inject constructor(
     }
 
     private fun observeKeyword() {
-        _keyword.filter { it.isNotBlank() }
-            .debounce(300)
+        _keyword.debounce(300)
             .onEach { fetchSearchedMusics(it) }
             .launchIn(viewModelScopeWithExceptionHandler)
     }
 
     private fun fetchSearchedMusics(keyword: String) {
-        musicRepository.getSearchedMusics(keyword).onEach { musics ->
-            _uiState.update { it.copy(searchedMusics = musics) }
-        }.launchIn(viewModelScopeWithExceptionHandler)
+        if (keyword.isBlank()) {
+            _uiState.update { it.copy(searchedMusics = emptyList()) }
+        } else {
+            musicRepository.getSearchedMusics(keyword).onEach { musics ->
+                _uiState.update { it.copy(searchedMusics = musics) }
+            }.launchIn(viewModelScopeWithExceptionHandler)
+        }
     }
 }
 
