@@ -72,7 +72,7 @@ class MainActivity : AppCompatActivity() {
         setupPlayButton()
         setupPreviousButton()
         setupNextButton()
-        observePlaylistChange()
+        observeEvents()
     }
 
     override fun onStart() {
@@ -167,7 +167,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun observePlaylistChange() {
+    private fun observeEvents() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 playViewModel.events.collectLatest { event ->

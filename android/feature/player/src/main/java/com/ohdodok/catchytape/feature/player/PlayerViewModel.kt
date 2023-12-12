@@ -39,13 +39,11 @@ sealed interface PlayerEvent {
     data class PlaylistChanged(val currentPlaylist: CurrentPlaylist) : PlayerEvent
 }
 
-
 @HiltViewModel
 class PlayerViewModel @Inject constructor(
     private val currentPlaylistUseCase: CurrentPlaylistUseCase,
     private val musicRepository: MusicRepository,
 ) : ViewModel(), PlayerEventListener {
-
 
     private val _currentPlaylist = MutableStateFlow<List<Music>?>(null)
     val currentPlaylist: StateFlow<List<Music>?> = _currentPlaylist.asStateFlow()
