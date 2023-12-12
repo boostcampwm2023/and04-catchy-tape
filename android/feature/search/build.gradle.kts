@@ -6,15 +6,6 @@ plugins {
 android {
     namespace = "com.ohdodok.catchytape.feature.search"
 
-    buildTypes {
-        release {
-            isMinifyEnabled = false
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
-            )
-        }
-    }
     kotlinOptions {
         jvmTarget = "17"
     }

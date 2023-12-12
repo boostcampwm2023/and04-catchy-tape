@@ -17,15 +17,6 @@ android {
         buildConfigField("String", "GOOGLE_CLIENT_ID", localProperties["google.client.id"] as String)
     }
 
-    buildTypes {
-        release {
-            isMinifyEnabled = false
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
-            )
-        }
-    }
     kotlinOptions {
         jvmTarget = "17"
     }

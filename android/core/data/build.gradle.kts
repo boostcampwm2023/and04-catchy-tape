@@ -19,16 +19,6 @@ android {
         buildConfigField("String", "BASE_URL", localProperties["server.url"] as String)
     }
 
-    buildTypes {
-        release {
-            isMinifyEnabled = false
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
-            )
-        }
-    }
-
     kotlinOptions {
         jvmTarget = "17"
     }
