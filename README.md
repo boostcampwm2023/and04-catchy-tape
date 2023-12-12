@@ -40,7 +40,7 @@
 
 
 <details>
-<summary>그 외 기록</summary>
+<summary>✏️ 그 외 기록</summary>
 
 - [프로젝트 생성](https://github.com/boostcampwm2023/and04-catchy-tape/wiki/Android#%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8-%EC%83%9D%EC%84%B1%EC%8B%9C-%EA%B3%A0%EB%A0%A4%ED%95%9C-%EB%82%B4%EC%9A%A9)
 
@@ -48,20 +48,26 @@
 
 
 ### 📡 Server
-| Category  | TechStack |
-| ------------- | ------------- |
-| Framework, Language | NestJS, TypeScript  |
-| DB | MySQL  |
-| ORM | TypeORM  |
+| Category  | TechStack | 기록 |
+| ------------- | ------------- | -------------|
+| Framework, Language | NestJS, TypeScript  | [Nest 사용 이유](https://round-caution-9fd.notion.site/Nest-8da8116bb8014a95b268ea50c9080b8d) |
+| DB | MySQL  | 
+| ORM | TypeORM  | [TypeORM 사용 이유](https://round-caution-9fd.notion.site/prisma-vs-TypeORM-0c8c89b3d5374405aca9e9c1db0a73b6)⎮ [관련 개념 학습](https://round-caution-9fd.notion.site/Server-624068a499114a14ba1388e198bb0dde?p=09210f9a985246639720c50e269f70a5&pm=s)|
 | Test | Jest  |
-| API Docs | SwaggerHub  |
-| CI/CD | Github Actions  |
-| NCP | Server, Container Registry, VPC, Object Storage|
+| API Docs | SwaggerHub  | [Swagger Hub 링크](https://app.swaggerhub.com/apis/12201944/CatchyTapeAPI/1.0.0)
+| CI/CD | Github Actions  | [Github Actions 활용한 자동 배포](https://round-caution-9fd.notion.site/Github-Action-29d0d57f5a434954b4a7b4aa8c3b57e0) |
+| NCP | Server, Container Registry, VPC, Object Storage|[vpc 환경](https://round-caution-9fd.notion.site/VPC-a8eefbec2f0244629ee2a092c454ebd7) |
+| 기술적 도전 |음악 인코딩, 인덱싱, docker 활용 배포, 부하 테스트| [인코딩](https://round-caution-9fd.notion.site/Cloud-Functions-d7f1528dd32146f6b8f0b255ef33ebd7)⎮[인덱싱](https://round-caution-9fd.notion.site/ERD-DB-74377ed10a2347d1ac15f181134f52a1)⎮[배포](https://round-caution-9fd.notion.site/docker-aa7522e8c5cf4b9c9135d6f6b2114fd4) |
+| 한 눈에 보는 백엔드 기술 선정 이유 |  | [백엔드 기술 선택 이유](https://round-caution-9fd.notion.site/2a7b52b27e7d45cc980c1eea33a2ce09) |
+
+- 🔧 Architecture
+<img src="https://github.com/boostcampwm2023/and04-catchy-tape/assets/83707411/33a0c12d-22da-4ae3-836b-3aeb46015183" width=600 height=400 />
 
 <details>
-<summary>그 외 기록</summary>
-
-- 
+<summary> ✏️ 그 외 기록</summary>
+    <a href="https://round-caution-9fd.notion.site/85dad9cc5a304161bfde523f62345e05">인코딩 성능 개선기</a>
+    <br>
+    <a href="https://round-caution-9fd.notion.site/SSH-Private-DB-9965141c545849a8bba9f2ad066bc959">ssh 터널링</a>
 </details>
 
 ## Team. 🍗 오도독 
