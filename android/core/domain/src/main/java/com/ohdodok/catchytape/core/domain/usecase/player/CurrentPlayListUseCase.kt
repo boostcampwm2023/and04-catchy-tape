@@ -23,8 +23,6 @@ class CurrentPlaylistUseCase @Inject constructor() {
             musics = musics,
         )
 
-        scope.launch {
-            _currentPlaylist.send(newPlaylist)
-        }
+        scope.launch { _currentPlaylist.send(newPlaylist) }
     }
 }

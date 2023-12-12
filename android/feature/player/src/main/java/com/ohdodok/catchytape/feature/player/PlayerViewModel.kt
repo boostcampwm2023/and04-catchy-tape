@@ -10,7 +10,6 @@ import com.ohdodok.catchytape.core.domain.repository.MusicRepository
 import com.ohdodok.catchytape.core.domain.usecase.player.CurrentPlaylistUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
-import kotlinx.coroutines.channels.consumeEach
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -39,11 +38,13 @@ sealed interface PlayerEvent {
     data class PlaylistChanged(val currentPlaylist: CurrentPlaylist) : PlayerEvent
 }
 
+
 @HiltViewModel
 class PlayerViewModel @Inject constructor(
     private val currentPlaylistUseCase: CurrentPlaylistUseCase,
     private val musicRepository: MusicRepository,
 ) : ViewModel(), PlayerEventListener {
+
 
     private val _currentPlaylist = MutableStateFlow<List<Music>?>(null)
     val currentPlaylist: StateFlow<List<Music>?> = _currentPlaylist.asStateFlow()
@@ -65,9 +66,9 @@ class PlayerViewModel @Inject constructor(
 
     private fun observePlaylistChange() {
         viewModelScope.launch(exceptionHandler) {
-            currentPlaylistUseCase.currentPlaylist.consumeEach {
-                _currentPlaylist.value = it.musics
-                _events.emit(PlayerEvent.PlaylistChanged(it))
+            for (currentPlaylist in currentPlaylistUseCase.currentPlaylist) {
+                _currentPlaylist.value = currentPlaylist.musics
+                _events.emit(PlayerEvent.PlaylistChanged(currentPlaylist))
             }
         }
     }
