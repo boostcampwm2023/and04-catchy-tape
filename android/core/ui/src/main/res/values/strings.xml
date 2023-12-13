@@ -57,5 +57,6 @@
     <string name="error_message_service">"error_message_service"</string>
     <string name="error_message_bad_image">유해 이미지에요. 다른 이미지로 바꿔주세요.</string>
     <string name="error_encoding_failure">인코딩에 실패했어요. 다시 시도해 주세요.</string>
+    <string name="error_uploading_music">음악 파일 업로드에 실패했어요! 다시 시도해주세요 :)</string>
 
 </resources>
