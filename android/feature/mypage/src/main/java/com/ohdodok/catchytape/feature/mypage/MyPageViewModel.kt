@@ -6,6 +6,8 @@ import com.ohdodok.catchytape.core.domain.model.CtErrorType
 import com.ohdodok.catchytape.core.domain.model.CtException
 import com.ohdodok.catchytape.core.domain.model.Music
 import com.ohdodok.catchytape.core.domain.repository.MusicRepository
+import com.ohdodok.catchytape.core.domain.usecase.player.CurrentPlaylistUseCase
+import com.ohdodok.catchytape.core.ui.MusicAdapter
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -28,7 +30,8 @@ data class MyPageUiState(
 @HiltViewModel
 class MyPageViewModel @Inject constructor(
     private val musicRepository: MusicRepository,
-) : ViewModel() {
+    private val currentPlaylistUseCase: CurrentPlaylistUseCase,
+) : ViewModel(), MusicAdapter.Listener {
 
     private val _uiState = MutableStateFlow(MyPageUiState())
     val uiState: StateFlow<MyPageUiState> = _uiState.asStateFlow()
@@ -55,8 +58,16 @@ class MyPageViewModel @Inject constructor(
             }
             .launchIn(viewModelScopeWithExceptionHandler)
     }
+
+    override fun onClick(music: Music) {
+        currentPlaylistUseCase.playMusic(music)
+        viewModelScope.launch {
+            _events.emit(MyPageEvent.NavigateToPlayerScreen)
+        }
+    }
 }
 
 sealed interface MyPageEvent {
     data class ShowMessage(val error: CtErrorType) : MyPageEvent
+    data object NavigateToPlayerScreen : MyPageEvent
 }
