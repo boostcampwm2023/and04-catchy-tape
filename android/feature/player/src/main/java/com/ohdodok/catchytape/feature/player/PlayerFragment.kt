@@ -12,6 +12,7 @@ import androidx.navigation.fragment.findNavController
 import com.ohdodok.catchytape.core.domain.utils.throttleFirst
 import com.ohdodok.catchytape.core.ui.BaseFragment
 import com.ohdodok.catchytape.core.ui.RootViewInsetsCallback
+import com.ohdodok.catchytape.core.ui.clicksFlow
 import com.ohdodok.catchytape.feature.player.databinding.FragmentPlayerBinding
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.launchIn
@@ -71,7 +72,7 @@ class PlayerFragment : BaseFragment<FragmentPlayerBinding>(R.layout.fragment_pla
             player.onPreviousBtnClick()
         }
 
-        clicksFlow(view = binding.btnAddToPlaylist)
+        binding.btnAddToPlaylist.clicksFlow()
             .throttleFirst(500)
             .onEach { findNavController().showPlaylistBottomSheet() }
             .launchIn(viewLifecycleOwner.lifecycleScope)

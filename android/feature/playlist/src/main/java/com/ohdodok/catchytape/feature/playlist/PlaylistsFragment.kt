@@ -12,6 +12,7 @@ import com.ohdodok.catchytape.core.domain.utils.throttleFirst
 import com.ohdodok.catchytape.core.ui.BaseFragment
 import com.ohdodok.catchytape.core.ui.PlaylistAdapter
 import com.ohdodok.catchytape.core.ui.RootViewInsetsCallback
+import com.ohdodok.catchytape.core.ui.clicksFlow
 import com.ohdodok.catchytape.core.ui.cterror.toMessageId
 import com.ohdodok.catchytape.feature.playlist.databinding.FragmentPlaylistsBinding
 import dagger.hilt.android.AndroidEntryPoint
@@ -36,7 +37,7 @@ class PlaylistsFragment : BaseFragment<FragmentPlaylistsBinding>(R.layout.fragme
     }
 
     private fun setupButton(newPlaylistDialog: NewPlaylistDialog) {
-        clicksFlow(view = binding.fabNewPlaylist)
+        binding.fabNewPlaylist.clicksFlow()
             .throttleFirst(500)
             .onEach { newPlaylistDialog.show(childFragmentManager, NewPlaylistDialog.TAG) }
             .launchIn(viewLifecycleOwner.lifecycleScope)
