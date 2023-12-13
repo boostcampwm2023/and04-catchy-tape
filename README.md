@@ -51,14 +51,14 @@
 | Category  | TechStack | 기록 |
 | ------------- | ------------- | -------------|
 | Framework, Language | NestJS, TypeScript  | [Nest 사용 이유](https://round-caution-9fd.notion.site/Nest-8da8116bb8014a95b268ea50c9080b8d) |
-| DB | MySQL  | 
-| ORM | TypeORM  | [TypeORM 사용 이유](https://round-caution-9fd.notion.site/prisma-vs-TypeORM-0c8c89b3d5374405aca9e9c1db0a73b6)⎮ [관련 개념 학습](https://round-caution-9fd.notion.site/Server-624068a499114a14ba1388e198bb0dde?p=09210f9a985246639720c50e269f70a5&pm=s)|
+| DB & ORM | MySQL & TypeORM  | [TypeORM 사용 이유](https://round-caution-9fd.notion.site/prisma-vs-TypeORM-0c8c89b3d5374405aca9e9c1db0a73b6)⎮ [관련 개념 학습](https://round-caution-9fd.notion.site/Server-624068a499114a14ba1388e198bb0dde?p=09210f9a985246639720c50e269f70a5&pm=s)|
 | Test | Jest  |
+| Load Test | nGrinder  | [nGrinder 설정 관련 에러 해결](https://round-caution-9fd.notion.site/174440e709e24d7c909e8c1684c1cc75)⎮ [부하 테스트 기록지](https://round-caution-9fd.notion.site/4ead90a8131844c8b561a34908692e3c)
 | API Docs | SwaggerHub  | [Swagger Hub 링크](https://app.swaggerhub.com/apis/12201944/CatchyTapeImsi/1.0.0)
 | CI/CD | Github Actions  | [Github Actions 활용한 자동 배포](https://round-caution-9fd.notion.site/Github-Action-29d0d57f5a434954b4a7b4aa8c3b57e0) |
-| NCP | Server, Container Registry, VPC, Object Storage|[vpc 환경](https://round-caution-9fd.notion.site/VPC-a8eefbec2f0244629ee2a092c454ebd7) |
+| NCP | Server, Container Registry, VPC, Object Storage|[vpc 환경 구성](https://round-caution-9fd.notion.site/VPC-a8eefbec2f0244629ee2a092c454ebd7) |
 | 기술적 도전 |음악 인코딩, 인덱싱, docker 활용 배포, 부하 테스트| [인코딩](https://round-caution-9fd.notion.site/Cloud-Functions-d7f1528dd32146f6b8f0b255ef33ebd7)⎮[인덱싱](https://round-caution-9fd.notion.site/ERD-DB-74377ed10a2347d1ac15f181134f52a1)⎮[배포](https://round-caution-9fd.notion.site/docker-aa7522e8c5cf4b9c9135d6f6b2114fd4) |
-| 한 눈에 보는 백엔드 기술 선정 이유 |  | [백엔드 기술 선택 이유](https://round-caution-9fd.notion.site/2a7b52b27e7d45cc980c1eea33a2ce09) |
+| 한 눈에 보는 서버 기술 스택 |  | [서버 기술 선택 이유](https://round-caution-9fd.notion.site/2a7b52b27e7d45cc980c1eea33a2ce09) |
 
 - 🔧 Architecture
 <img src="https://github.com/boostcampwm2023/and04-catchy-tape/assets/83707411/33a0c12d-22da-4ae3-836b-3aeb46015183" width=600 height=400 />
@@ -76,7 +76,7 @@
 |:---:|:---:|:---:|:---:|:---:|
 |<img src="https://github.com/khw3754.png">|<img src="https://github.com/Cutiepazzipozzi.png">|<img src="https://github.com/youlalala.png">|<img src="https://github.com/HamBP.png">|<img src="https://github.com/2taezeat.png">|
 |Backend|Backend|Android|Android|Android|
-|강아지 귀여웡|엄마 뱃속으로 다시 들어가고 싶네요|hiphop은 계란이다 🥚|0과 1로 사람을 만들 수 있을까요?|Music is my life~|
+|강아지 귀여웡|엄마 뱃속으로 다시 들어가고 싶어요|hiphop은 계란이다 🥚|0과 1로 사람을 만들 수 있을까요?|Music is my life~|
 
 <div align="center">
     <a href="https://github.com/boostcampwm2023/and04-catchy-tape/wiki/%08Ground-Rule" target="_blank">그라운드 룰</a>
