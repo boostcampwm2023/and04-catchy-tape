@@ -69,9 +69,7 @@ class PlayerViewModel @Inject constructor(
         viewModelScope.launch(exceptionHandler) {
             for (currentPlaylist in currentPlaylistUseCase.currentPlaylist) {
                 _currentPlaylist.value = currentPlaylist.musics
-                if (currentPlaylist.startMusic.id != _uiState.value.currentMusic?.id) {
-                    _events.emit(PlayerEvent.PlaylistChanged(currentPlaylist))
-                }
+                _events.emit(PlayerEvent.PlaylistChanged(currentPlaylist))
             }
         }
     }
