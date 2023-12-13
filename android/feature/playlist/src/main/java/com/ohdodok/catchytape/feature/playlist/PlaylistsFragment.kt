@@ -33,10 +33,11 @@ class PlaylistsFragment : BaseFragment<FragmentPlaylistsBinding>(R.layout.fragme
         viewModel.fetchPlaylists()
 
         observeEvents()
-        setupButton(NewPlaylistDialog())
+        setupButton()
     }
 
-    private fun setupButton(newPlaylistDialog: NewPlaylistDialog) {
+    private fun setupButton() {
+        val newPlaylistDialog = NewPlaylistDialog()
         binding.fabNewPlaylist.clicksFlow()
             .throttleFirst(500)
             .onEach { newPlaylistDialog.show(childFragmentManager, NewPlaylistDialog.TAG) }
