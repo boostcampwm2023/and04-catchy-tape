@@ -8,7 +8,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
-import com.ohdodok.catchytape.core.domain.utils.throttleFist
+import com.ohdodok.catchytape.core.domain.utils.throttleFirst
 import com.ohdodok.catchytape.core.ui.BaseFragment
 import com.ohdodok.catchytape.core.ui.PlaylistAdapter
 import com.ohdodok.catchytape.core.ui.RootViewInsetsCallback
@@ -36,12 +36,10 @@ class PlaylistsFragment : BaseFragment<FragmentPlaylistsBinding>(R.layout.fragme
     }
 
     private fun setupButton(newPlaylistDialog: NewPlaylistDialog) {
-        binding.fabNewPlaylist.setOnClickListener {
-            clicksFlow(view = it).throttleFist(500)
-                .onEach {
-                    newPlaylistDialog.show(childFragmentManager, NewPlaylistDialog.TAG)
-                }.launchIn(viewLifecycleOwner.lifecycleScope)
-        }
+        clicksFlow(view = binding.fabNewPlaylist)
+            .throttleFirst(500)
+            .onEach { newPlaylistDialog.show(childFragmentManager, NewPlaylistDialog.TAG) }
+            .launchIn(viewLifecycleOwner.lifecycleScope)
     }
 
     private fun observeEvents() {

@@ -9,7 +9,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
-import com.ohdodok.catchytape.core.domain.utils.throttleFist
+import com.ohdodok.catchytape.core.domain.utils.throttleFirst
 import com.ohdodok.catchytape.core.ui.BaseFragment
 import com.ohdodok.catchytape.core.ui.RootViewInsetsCallback
 import com.ohdodok.catchytape.feature.player.databinding.FragmentPlayerBinding
@@ -71,12 +71,10 @@ class PlayerFragment : BaseFragment<FragmentPlayerBinding>(R.layout.fragment_pla
             player.onPreviousBtnClick()
         }
 
-        binding.btnAddToPlaylist.setOnClickListener {
-            clicksFlow(view = it).throttleFist(500)
-                .onEach {
-                    findNavController().showPlaylistBottomSheet()
-                }.launchIn(viewLifecycleOwner.lifecycleScope)
-        }
+        clicksFlow(view = binding.btnAddToPlaylist)
+            .throttleFirst(500)
+            .onEach { findNavController().showPlaylistBottomSheet() }
+            .launchIn(viewLifecycleOwner.lifecycleScope)
     }
 
     private fun NavController.showPlaylistBottomSheet() {
