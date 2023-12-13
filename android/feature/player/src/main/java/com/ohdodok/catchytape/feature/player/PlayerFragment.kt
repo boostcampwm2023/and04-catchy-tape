@@ -5,13 +5,17 @@ import android.view.View
 import android.widget.SeekBar
 import androidx.core.view.ViewCompat
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
+import com.ohdodok.catchytape.core.domain.utils.throttleFist
 import com.ohdodok.catchytape.core.ui.BaseFragment
 import com.ohdodok.catchytape.core.ui.RootViewInsetsCallback
 import com.ohdodok.catchytape.feature.player.databinding.FragmentPlayerBinding
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import javax.inject.Inject
 
 const val millisecondsPerSecond = 1000
@@ -68,14 +72,15 @@ class PlayerFragment : BaseFragment<FragmentPlayerBinding>(R.layout.fragment_pla
         }
 
         binding.btnAddToPlaylist.setOnClickListener {
-            findNavController().showPlaylistBottomSheet()
+            clicksFlow(view = it).throttleFist(500)
+                .onEach {
+                    findNavController().showPlaylistBottomSheet()
+                }.launchIn(viewLifecycleOwner.lifecycleScope)
         }
     }
 
     private fun NavController.showPlaylistBottomSheet() {
         val musicId = viewModel.uiState.value.currentMusic?.id ?: return
-
-
         val action = PlayerFragmentDirections.actionPlayerFragmentToPlaylistBottomSheet(musicId = musicId)
         navigate(action)
     }
@@ -84,3 +89,4 @@ class PlayerFragment : BaseFragment<FragmentPlayerBinding>(R.layout.fragment_pla
 fun NavController.navigateToPlayer() {
     navigate(R.id.player_nav_graph)
 }
+

@@ -17,6 +17,9 @@ import androidx.navigation.fragment.findNavController
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.launch
 
 abstract class BaseFragment<VB : ViewDataBinding>(
@@ -41,7 +44,7 @@ abstract class BaseFragment<VB : ViewDataBinding>(
         _binding = null
     }
 
-    protected fun setupBackStack(toolbar: MaterialToolbar){
+    protected fun setupBackStack(toolbar: MaterialToolbar) {
         toolbar.setNavigationOnClickListener {
             findNavController().popBackStack()
         }
@@ -55,6 +58,11 @@ abstract class BaseFragment<VB : ViewDataBinding>(
 
     protected fun showMessage(@StringRes messageId: Int) {
         Snackbar.make(this.requireView(), messageId, Snackbar.LENGTH_LONG).show()
+    }
+
+    protected fun clicksFlow(view: View): Flow<Unit> = callbackFlow {
+        view.setOnClickListener { trySend(Unit) }
+        awaitClose { view.setOnClickListener(null) }
     }
 
 }
