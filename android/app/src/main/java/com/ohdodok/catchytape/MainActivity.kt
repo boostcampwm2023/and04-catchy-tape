@@ -1,6 +1,5 @@
 package com.ohdodok.catchytape
 
-import android.animation.ObjectAnimator
 import android.content.ComponentName
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities.NET_CAPABILITY_VALIDATED
@@ -9,7 +8,6 @@ import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.animation.doOnEnd
 import androidx.core.view.WindowCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -123,19 +121,22 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun hideBottomNav() {
-        val height = binding.bottomNav.height.toFloat()
-        ObjectAnimator.ofFloat(binding.bottomNav, "translationY", height).apply {
-            duration = BOTTOM_NAV_ANIMATION_DURATION
-            doOnEnd { binding.bottomNav.visibility = View.GONE }
-            start()
+        with(binding.bottomNav) {
+            animate()
+                .translationY(height.toFloat())
+                .setDuration(BOTTOM_NAV_ANIMATION_DURATION)
+                .withEndAction { visibility = View.GONE }
+                .start()
         }
     }
 
     private fun showBottomNav() {
-        binding.bottomNav.visibility = View.VISIBLE
-        ObjectAnimator.ofFloat(binding.bottomNav, "translationY", 0f).apply {
-            duration = BOTTOM_NAV_ANIMATION_DURATION
-            start()
+        with(binding.bottomNav){
+            animate()
+                .translationY(0f)
+                .setDuration(BOTTOM_NAV_ANIMATION_DURATION)
+                .withStartAction { visibility = View.VISIBLE }
+                .start()
         }
     }
 
