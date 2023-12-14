@@ -35,7 +35,7 @@
 | Jetpack | Media3, DataBinding, Navigation, DataStore |
 | Image | Glide
 | CI/CD | Github Actions |[PR 단위 테스트 자동화](https://algosketch.tistory.com/178)⎮[Github Release 자동화](https://tral-lalala.tistory.com/127)⎮[Firebase App 배포 자동화](https://tral-lalala.tistory.com/128)
-| Test | Kotest
+| Test | Kotest | [Kotest 도입기](https://github.com/boostcampwm2023/and04-catchy-tape/wiki/Kotest-%EB%8F%84%EC%9E%85%EA%B8%B0)
 | Logging | Timber | [Timber 적용 이유](https://github.com/boostcampwm2023/and04-catchy-tape/wiki/Timber%EC%9D%84-%EC%A0%81%EC%9A%A9%ED%95%9C-%EC%9D%B4%EC%9C%A0)
 
 
