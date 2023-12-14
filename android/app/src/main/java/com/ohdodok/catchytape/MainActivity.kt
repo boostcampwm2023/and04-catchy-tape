@@ -121,7 +121,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun hideBottomNav() {
-        binding.bottomNav.apply {
+        with(binding.bottomNav) {
             animate()
                 .translationY(height.toFloat())
                 .setDuration(BOTTOM_NAV_ANIMATION_DURATION)
@@ -131,7 +131,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun showBottomNav() {
-        binding.bottomNav.apply {
+        with(binding.bottomNav){
             animate()
                 .translationY(0f)
                 .setDuration(BOTTOM_NAV_ANIMATION_DURATION)
