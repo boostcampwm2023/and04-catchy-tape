@@ -52,11 +52,11 @@
 | ------------- | ------------- | -------------|
 | Framework, Language | NestJS, TypeScript  | [Nest 사용 이유](https://round-caution-9fd.notion.site/Nest-8da8116bb8014a95b268ea50c9080b8d) |
 | DB & ORM | MySQL & TypeORM  | [TypeORM 사용 이유](https://round-caution-9fd.notion.site/prisma-vs-TypeORM-0c8c89b3d5374405aca9e9c1db0a73b6)⎮ [관련 개념 학습](https://round-caution-9fd.notion.site/Server-624068a499114a14ba1388e198bb0dde?p=09210f9a985246639720c50e269f70a5&pm=s)|
-| Test | Jest  |
-| Load Test | nGrinder -> k6  | [부하 테스트 일대기](https://round-caution-9fd.notion.site/174440e709e24d7c909e8c1684c1cc75)⎮ [부하 테스트 결과 기록지](https://round-caution-9fd.notion.site/4ead90a8131844c8b561a34908692e3c)
+| Test & Load Test | Jest & k6  | [부하 테스트 일대기](https://round-caution-9fd.notion.site/174440e709e24d7c909e8c1684c1cc75)⎮ [부하 테스트 결과 기록지](https://round-caution-9fd.notion.site/4ead90a8131844c8b561a34908692e3c)
 | API Docs | SwaggerHub  | [Swagger Hub 링크](https://app.swaggerhub.com/apis/12201944/CatchyTapeImsi/1.0.0)
 | CI/CD | Github Actions  | [Github Actions 활용한 자동 배포](https://round-caution-9fd.notion.site/Github-Action-29d0d57f5a434954b4a7b4aa8c3b57e0) |
-| NCP | Server, Container Registry, VPC, Object Storage|[vpc 환경 구성](https://round-caution-9fd.notion.site/VPC-a8eefbec2f0244629ee2a092c454ebd7) |
+| NCP | Server, Container Registry, VPC, Object Storage, CLOVA GreenEye, Cloud Functions|[vpc 환경 구성](https://round-caution-9fd.notion.site/VPC-a8eefbec2f0244629ee2a092c454ebd7) |
+| Logging | Winston  | [로깅 이미지](https://github.com/boostcampwm2023/and04-catchy-tape/wiki/%EC%84%9C%EB%B2%84-%EB%A1%9C%EA%B9%85-%EC%9D%B4%EB%A0%87%EA%B2%8C-%ED%96%88%EC%96%B4%EC%9A%94-!)|
 | 기술적 도전 |음악 인코딩, 인덱싱, docker 활용 배포, 부하 테스트| [인코딩](https://round-caution-9fd.notion.site/Cloud-Functions-d7f1528dd32146f6b8f0b255ef33ebd7)⎮[인덱싱](https://round-caution-9fd.notion.site/ERD-DB-74377ed10a2347d1ac15f181134f52a1)⎮[배포](https://round-caution-9fd.notion.site/docker-aa7522e8c5cf4b9c9135d6f6b2114fd4) |
 | 한 눈에 보는 서버 기술 스택 |  | [서버 기술 선정 이유](https://round-caution-9fd.notion.site/2a7b52b27e7d45cc980c1eea33a2ce09) |
 
