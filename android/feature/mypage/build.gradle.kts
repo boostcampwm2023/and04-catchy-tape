@@ -5,10 +5,6 @@ plugins {
 
 android {
     namespace = "com.ohdodok.catchytape.feature.mypage"
-
-    kotlinOptions {
-        jvmTarget = "17"
-    }
 }
 
 dependencies {
