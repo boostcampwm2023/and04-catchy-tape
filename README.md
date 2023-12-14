@@ -22,7 +22,6 @@
 | ------------- | ------------- | ------------- | ------------- |
 | <img width="200" src="https://github.com/boostcampwm2023/and04-catchy-tape/assets/62279741/a769d2f0-f3e1-4af4-8c97-58da38230ee7" /> | <img width="200" src="https://github.com/boostcampwm2023/and04-catchy-tape/assets/62279741/0789dab5-644d-4709-95c8-5dd4d16a5094"/> | <img width="200" src="https://github.com/boostcampwm2023/and04-catchy-tape/assets/62279741/c6443860-136d-444d-908e-94162714d81d" /> | <img width="200" src="https://github.com/boostcampwm2023/and04-catchy-tape/assets/62279741/956609bb-cfbb-4cf2-b676-89afa01e1837" />
 
-
 ## TechStack
 ### 🤖 Android
 | Category  | TechStack | 기록 |
@@ -71,6 +70,10 @@
     <br>
     <a href="https://round-caution-9fd.notion.site/SSH-Private-DB-9965141c545849a8bba9f2ad066bc959">ssh 터널링</a>
 </details>
+
+## 데모영상 (소리 ON🔊)
+https://github.com/boostcampwm2023/and04-catchy-tape/assets/62279741/132fa869-208e-478f-ad5e-0ac08a597778
+
 
 ## Team. 🍗 오도독 
 
