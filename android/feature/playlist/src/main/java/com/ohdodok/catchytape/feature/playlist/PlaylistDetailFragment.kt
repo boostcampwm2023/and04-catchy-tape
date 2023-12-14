@@ -53,5 +53,5 @@ private fun NavController.navigateToPlayerScreen() {
     val targetUri = "android-app://com.ohdodok.catchytape/player_fragment".toUri()
     val request = NavDeepLinkRequest.Builder.fromUri(targetUri).build()
 
-    this.navigate(request)
+    navigate(request)
 }

@@ -19,19 +19,15 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class SearchFragment : BaseFragment<FragmentSearchBinding>(R.layout.fragment_search) {
-
     private val viewModel: SearchViewModel by viewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         ViewCompat.setOnApplyWindowInsetsListener(binding.root, RootViewInsetsCallback())
-
         binding.viewModel = viewModel
-
         observeEvents()
         setupRecyclerView()
-
     }
 
     private fun setupRecyclerView() {
@@ -65,5 +61,5 @@ private fun NavController.navigateToPlayerScreen() {
         NavDeepLinkRequest.Builder.fromUri("android-app://com.ohdodok.catchytape/player_fragment".toUri())
             .build()
 
-    this.navigate(request)
+    navigate(request)
 }

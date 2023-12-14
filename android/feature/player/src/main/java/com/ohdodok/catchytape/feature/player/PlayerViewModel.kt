@@ -1,6 +1,7 @@
 package com.ohdodok.catchytape.feature.player
 
 import androidx.lifecycle.ViewModel
+
 import androidx.lifecycle.viewModelScope
 import com.ohdodok.catchytape.core.domain.model.CtErrorType
 import com.ohdodok.catchytape.core.domain.model.CtException
@@ -28,7 +29,6 @@ data class PlayerState(
     val duration: Int = 0,
     val isNextEnable: Boolean = false,
     val isPreviousEnable: Boolean = false
-
 ) {
     val isPlayEnable: Boolean
         get() = currentMusic != null

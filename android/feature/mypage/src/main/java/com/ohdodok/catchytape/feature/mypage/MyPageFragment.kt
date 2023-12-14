@@ -5,6 +5,7 @@ import android.view.View
 import androidx.core.net.toUri
 import androidx.core.view.ViewCompat
 import androidx.fragment.app.viewModels
+import androidx.navigation.NavController
 import androidx.navigation.NavDeepLinkRequest
 import androidx.navigation.fragment.findNavController
 import com.ohdodok.catchytape.core.ui.BaseFragment
@@ -37,6 +38,9 @@ class MyPageFragment : BaseFragment<FragmentMyPageBinding>(R.layout.fragment_my_
                     is MyPageEvent.ShowMessage -> {
                         showMessage(event.error.toMessageId())
                     }
+                    is MyPageEvent.NavigateToPlayerScreen -> {
+                        findNavController().navigateToPlayerScreen()
+                    }
                 }
             }
         }
@@ -56,11 +60,20 @@ class MyPageFragment : BaseFragment<FragmentMyPageBinding>(R.layout.fragment_my_
     }
 
     private fun setupRecyclerView() {
-        binding.rvMusics.adapter = MusicAdapter(Orientation.VERTICAL)
+        binding.rvMusics.adapter = MusicAdapter(
+            musicItemOrientation = Orientation.VERTICAL,
+            listener = viewModel
+        )
     }
 
     override fun onStart() {
         super.onStart()
         viewModel.fetchMyMusics(count = 3)
     }
+}
+
+private fun NavController.navigateToPlayerScreen() {
+    val request =
+        NavDeepLinkRequest.Builder.fromUri("android-app://com.ohdodok.catchytape/player_fragment".toUri()).build()
+    navigate(request)
 }
