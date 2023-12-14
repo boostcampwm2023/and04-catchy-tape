@@ -17,9 +17,6 @@ android {
         buildConfigField("String", "GOOGLE_CLIENT_ID", localProperties["google.client.id"] as String)
     }
 
-    kotlinOptions {
-        jvmTarget = "17"
-    }
     buildFeatures {
         buildConfig = true
     }

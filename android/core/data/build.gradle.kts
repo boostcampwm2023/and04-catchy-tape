@@ -19,10 +19,6 @@ android {
         buildConfigField("String", "BASE_URL", localProperties["server.url"] as String)
     }
 
-    kotlinOptions {
-        jvmTarget = "17"
-    }
-
     buildFeatures {
         buildConfig = true
     }

@@ -7,10 +7,6 @@ plugins {
 android {
     namespace = "com.ohdodok.catchytape.core.ui"
 
-    kotlinOptions {
-        jvmTarget = "17"
-    }
-
     buildFeatures {
         dataBinding = true
     }
