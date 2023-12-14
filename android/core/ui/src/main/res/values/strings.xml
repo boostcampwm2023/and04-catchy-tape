@@ -58,6 +58,7 @@
     <string name="error_message_service">서버에 오류가 생겼어요.</string>
     <string name="error_message_bad_image">유해 이미지에요. 다른 이미지로 바꿔주세요.</string>
     <string name="error_encoding_failure">인코딩에 실패했어요. 다시 시도해 주세요.</string>
+    <string name="error_uploading_music">음악 파일 업로드에 실패했어요! 다시 시도 해주세요.</string>
 
     <string name="develop_in_future">차후 개발 예정이에요!</string>
 
