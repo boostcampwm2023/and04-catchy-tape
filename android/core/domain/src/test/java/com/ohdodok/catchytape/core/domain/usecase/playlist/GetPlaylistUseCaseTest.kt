@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.flow
 
 class GetPlaylistUseCaseTest : BehaviorSpec({
 
-    given("accessToken 을 얻을 수 있는 상황에서") {
+    given("GetPlaylistUsecase 를 호출 하는 상황에서") {
         val playlistRepository: PlaylistRepository = mockk()
         val getPlaylistUseCase = GetPlaylistUseCase(playlistRepository)
         val dummyRecentPlaylist = listOf(
