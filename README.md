@@ -24,7 +24,6 @@
 
 
 ## TechStack
-*계속 업데이트 될 예정*
 ### 🤖 Android
 | Category  | TechStack | 기록 |
 | ------------- | ------------- | ------------- |
@@ -32,7 +31,7 @@
 | DI | Hilt | 
 | Network | Retrofit, OkHttp, Kotlin Serialization | [역/직렬화 라이브러리 비교](https://github.com/boostcampwm2023/and04-catchy-tape/wiki/%EC%97%AD-%EC%A7%81%EB%A0%AC%ED%99%94-%EB%9D%BC%EC%9D%B4%EB%B8%8C%EB%9F%AC%EB%A6%AC-%EB%B9%84%EA%B5%90)
 | Asynchronous | Coroutines, Flow
-| Jetpack | Media3, DataBinding, Navigation, DataStore |
+| Jetpack | Media3, DataBinding, Navigation, DataStore | [Media Session](https://round-caution-9fd.notion.site/MediaSessionService-6397c6a060404250b7b565530e1004fd?pvs=4)
 | Image | Glide
 | CI/CD | Github Actions |[PR 단위 테스트 자동화](https://algosketch.tistory.com/178)⎮[Github Release 자동화](https://tral-lalala.tistory.com/127)⎮[Firebase App 배포 자동화](https://tral-lalala.tistory.com/128)
 | Test | Kotest | [Kotest 도입기](https://github.com/boostcampwm2023/and04-catchy-tape/wiki/Kotest-%EB%8F%84%EC%9E%85%EA%B8%B0)
