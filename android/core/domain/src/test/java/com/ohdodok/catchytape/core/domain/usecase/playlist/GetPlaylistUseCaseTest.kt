@@ -14,38 +14,42 @@ class GetPlaylistUseCaseTest : BehaviorSpec({
     given("accessToken 을 얻을 수 있는 상황에서") {
         val playlistRepository: PlaylistRepository = mockk()
         val getPlaylistUseCase = GetPlaylistUseCase(playlistRepository)
-        val dummyRecentPlaylist = Music(
-            id = "odio",
-            title = "dis",
-            artist = "epicurei",
-            imageUrl = "https://duckduckgo.com/?q=dolorum",
-            musicUrl = "https://search.yahoo.com/search?p=volutpat"
+        val dummyRecentPlaylist = listOf(
+            Music(
+                id = "odio",
+                title = "dis",
+                artist = "epicurei",
+                imageUrl = "https://duckduckgo.com/?q=dolorum",
+                musicUrl = "https://search.yahoo.com/search?p=volutpat"
+            )
         )
 
-        val dummyRecentRecentPlaylist = Music(
-            id = "feugiat",
-            title = "fabellas",
-            artist = "adolescens",
-            imageUrl = "https://www.google.com/#q=sollicitudin",
-            musicUrl = "http://www.bing.com/search?q=invenire"
+        val dummyNormalPlaylist = listOf(
+            Music(
+                id = "feugiat",
+                title = "fabellas",
+                artist = "adolescens",
+                imageUrl = "https://www.google.com/#q=sollicitudin",
+                musicUrl = "http://www.bing.com/search?q=invenire"
+            )
         )
 
         `when`("playlistId이 RECENT_PLAYLIST_ID 이라면") {
             val testPlaylistId = 0 // RECENT_PLAYLIST_ID 상수 값은 0 이다.
             every { playlistRepository.getRecentPlaylist() } returns flow {
-                emit(listOf(dummyRecentPlaylist))
+                emit(dummyRecentPlaylist)
             }
             val result = getPlaylistUseCase.invoke(playlistId = testPlaylistId).first()
-            then("getRecentPlaylist 를 호출 한다") { result shouldBe listOf(dummyRecentPlaylist) }
+            then("getRecentPlaylist 를 호출 한다") { result shouldBe dummyRecentPlaylist }
         }
 
         `when`("playlistId이 RECENT_PLAYLIST_ID 이 아니면") {
             val testPlaylistId = 123
             every { playlistRepository.getPlaylist(testPlaylistId) } returns flow {
-                emit(listOf(dummyRecentRecentPlaylist))
+                emit(dummyNormalPlaylist)
             }
             val result = getPlaylistUseCase.invoke(playlistId = testPlaylistId).first()
-            then("getPlaylist 를 호출 한다") { result shouldBe listOf(dummyRecentRecentPlaylist) }
+            then("getPlaylist 를 호출 한다") { result shouldBe dummyNormalPlaylist }
         }
     }
 })
