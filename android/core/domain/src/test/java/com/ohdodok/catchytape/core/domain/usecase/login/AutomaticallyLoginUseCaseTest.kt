@@ -18,9 +18,9 @@ class AutomaticallyLoginUseCaseTest : BehaviorSpec({
         )
 
         `when`("accessToken이 Blank 이라면") {
-            val blank = ""
-            coEvery { userTokenRepository.getAccessToken() } returns blank
-            coEvery { authRepository.verifyToken(blank) } returns false
+            val inValidBlankToken = ""
+            coEvery { userTokenRepository.getAccessToken() } returns inValidBlankToken
+            coEvery { authRepository.verifyToken(inValidBlankToken) } returns false
             val result = automaticallyLoginUseCase.invoke()
 
             then("false 를 반환 한다") { result shouldBe false }
