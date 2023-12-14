@@ -41,7 +41,7 @@ abstract class BaseFragment<VB : ViewDataBinding>(
         _binding = null
     }
 
-    protected fun setupBackStack(toolbar: MaterialToolbar){
+    protected fun setupBackStack(toolbar: MaterialToolbar) {
         toolbar.setNavigationOnClickListener {
             findNavController().popBackStack()
         }
@@ -56,5 +56,4 @@ abstract class BaseFragment<VB : ViewDataBinding>(
     protected fun showMessage(@StringRes messageId: Int) {
         Snackbar.make(this.requireView(), messageId, Snackbar.LENGTH_LONG).show()
     }
-
 }

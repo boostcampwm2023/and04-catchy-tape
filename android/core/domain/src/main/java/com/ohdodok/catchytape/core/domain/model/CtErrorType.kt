@@ -22,7 +22,8 @@ enum class CtErrorType(val errorCode: Int) {
     EXPIRED_TOKEN(4101),
     SERVER(5000),
     SERVICE(5001),
-    ENCODING_FAILURE(5002);
+    ENCODING_FAILURE(5002),
+    ENCODED_MUSIC_UPLOAD_ERROR(5003);
 
     companion object {
         val ctErrorEnums = CtErrorType.values().toList()

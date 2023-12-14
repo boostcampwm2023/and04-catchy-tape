@@ -4,8 +4,8 @@
 </p>
 <div align="center">
     
-누구든지 쉽고 빠르게 노래를 공유할 수 있는,   
-숨겨진 아티스트를 발굴하고 신선한 노래를 들을 수 있는  
+누구든지 노래를 공유할 수 있는  
+숨겨진 아티스트의 노래를 들을 수 있는  
 **Catchy Tape** 로 오세요 ~ 📼 📼 
 
 
@@ -18,23 +18,29 @@
 </div>
 
 ## OverView
-*기능 개발 후 추가할 예정*
+| Player  | Playlist | Upload | Search |
+| ------------- | ------------- | ------------- | ------------- |
+| <img width="200" src="https://github.com/boostcampwm2023/and04-catchy-tape/assets/62279741/a769d2f0-f3e1-4af4-8c97-58da38230ee7" /> | <img width="200" src="https://github.com/boostcampwm2023/and04-catchy-tape/assets/62279741/0789dab5-644d-4709-95c8-5dd4d16a5094"/> | <img width="200" src="https://github.com/boostcampwm2023/and04-catchy-tape/assets/62279741/c6443860-136d-444d-908e-94162714d81d" /> | <img width="200" src="https://github.com/boostcampwm2023/and04-catchy-tape/assets/62279741/956609bb-cfbb-4cf2-b676-89afa01e1837" />
+
 
 ## TechStack
 *계속 업데이트 될 예정*
 ### 🤖 Android
 | Category  | TechStack | 기록 |
 | ------------- | ------------- | ------------- |
-| Architecture  | Clean Architecture, Multi Module, MVVM  | [프로젝트 구조](https://tral-lalala.tistory.com/126)⎮[build-logic](https://algosketch.tistory.com/179)
+| Architecture  | Clean Architecture, Multi Module, MVVM  | [프로젝트 구조](https://tral-lalala.tistory.com/126)⎮[build-logic](https://algosketch.tistory.com/179)⎮[네트워크 예외처리](https://github.com/boostcampwm2023/and04-catchy-tape/wiki/%EB%84%A4%ED%8A%B8%EC%9B%8C%ED%81%AC-%EC%98%88%EC%99%B8-%EC%B2%98%EB%A6%AC)
 | DI | Hilt | 
-| Network | Retrofit, Kotlin Serialization | [역/직렬화 라이브러리 비교](https://github.com/boostcampwm2023/and04-catchy-tape/wiki/%EC%97%AD-%EC%A7%81%EB%A0%AC%ED%99%94-%EB%9D%BC%EC%9D%B4%EB%B8%8C%EB%9F%AC%EB%A6%AC-%EB%B9%84%EA%B5%90)
+| Network | Retrofit, OkHttp, Kotlin Serialization | [역/직렬화 라이브러리 비교](https://github.com/boostcampwm2023/and04-catchy-tape/wiki/%EC%97%AD-%EC%A7%81%EB%A0%AC%ED%99%94-%EB%9D%BC%EC%9D%B4%EB%B8%8C%EB%9F%AC%EB%A6%AC-%EB%B9%84%EA%B5%90)
 | Asynchronous | Coroutines, Flow
-| Jetpack | DataBinding, Navigation |
+| Jetpack | Media3, DataBinding, Navigation, DataStore |
+| Image | Glide
 | CI/CD | Github Actions |[PR 단위 테스트 자동화](https://algosketch.tistory.com/178)⎮[Github Release 자동화](https://tral-lalala.tistory.com/127)⎮[Firebase App 배포 자동화](https://tral-lalala.tistory.com/128)
 | Test | Kotest
+| Logging | Timber | [Timber 적용 이유](https://github.com/boostcampwm2023/and04-catchy-tape/wiki/Timber%EC%9D%84-%EC%A0%81%EC%9A%A9%ED%95%9C-%EC%9D%B4%EC%9C%A0)
+
 
 <details>
-<summary>그 외 기록</summary>
+<summary>✏️ 그 외 기록</summary>
 
 - [프로젝트 생성](https://github.com/boostcampwm2023/and04-catchy-tape/wiki/Android#%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8-%EC%83%9D%EC%84%B1%EC%8B%9C-%EA%B3%A0%EB%A0%A4%ED%95%9C-%EB%82%B4%EC%9A%A9)
 
@@ -42,20 +48,26 @@
 
 
 ### 📡 Server
-| Category  | TechStack |
-| ------------- | ------------- |
-| Framework, Language | NestJS, TypeScript  |
-| DB | MySQL  |
-| ORM | TypeORM  |
+| Category  | TechStack | 기록 |
+| ------------- | ------------- | -------------|
+| Framework, Language | NestJS, TypeScript  | [Nest 사용 이유](https://round-caution-9fd.notion.site/Nest-8da8116bb8014a95b268ea50c9080b8d) |
+| DB & ORM | MySQL & TypeORM  | [TypeORM 사용 이유](https://round-caution-9fd.notion.site/prisma-vs-TypeORM-0c8c89b3d5374405aca9e9c1db0a73b6)⎮ [관련 개념 학습](https://round-caution-9fd.notion.site/Server-624068a499114a14ba1388e198bb0dde?p=09210f9a985246639720c50e269f70a5&pm=s)|
 | Test | Jest  |
-| API Docs | SwaggerHub  |
-| CI/CD | Github Actions  |
-| NCP | Server, Container Registry, VPC, Object Storage|
+| Load Test | nGrinder -> k6  | [부하 테스트 일대기](https://round-caution-9fd.notion.site/174440e709e24d7c909e8c1684c1cc75)⎮ [부하 테스트 결과 기록지](https://round-caution-9fd.notion.site/4ead90a8131844c8b561a34908692e3c)
+| API Docs | SwaggerHub  | [Swagger Hub 링크](https://app.swaggerhub.com/apis/12201944/CatchyTapeImsi/1.0.0)
+| CI/CD | Github Actions  | [Github Actions 활용한 자동 배포](https://round-caution-9fd.notion.site/Github-Action-29d0d57f5a434954b4a7b4aa8c3b57e0) |
+| NCP | Server, Container Registry, VPC, Object Storage|[vpc 환경 구성](https://round-caution-9fd.notion.site/VPC-a8eefbec2f0244629ee2a092c454ebd7) |
+| 기술적 도전 |음악 인코딩, 인덱싱, docker 활용 배포, 부하 테스트| [인코딩](https://round-caution-9fd.notion.site/Cloud-Functions-d7f1528dd32146f6b8f0b255ef33ebd7)⎮[인덱싱](https://round-caution-9fd.notion.site/ERD-DB-74377ed10a2347d1ac15f181134f52a1)⎮[배포](https://round-caution-9fd.notion.site/docker-aa7522e8c5cf4b9c9135d6f6b2114fd4) |
+| 한 눈에 보는 서버 기술 스택 |  | [서버 기술 선정 이유](https://round-caution-9fd.notion.site/2a7b52b27e7d45cc980c1eea33a2ce09) |
+
+- 🔧 Architecture
+<img src="https://github.com/boostcampwm2023/and04-catchy-tape/assets/83707411/33a0c12d-22da-4ae3-836b-3aeb46015183" width=600 height=400 />
 
 <details>
-<summary>그 외 기록</summary>
-
-- 
+<summary> ✏️ 그 외 기록</summary>
+    <a href="https://round-caution-9fd.notion.site/85dad9cc5a304161bfde523f62345e05">인코딩 성능 개선기</a>
+    <br>
+    <a href="https://round-caution-9fd.notion.site/SSH-Private-DB-9965141c545849a8bba9f2ad066bc959">ssh 터널링</a>
 </details>
 
 ## Team. 🍗 오도독 
@@ -64,7 +76,7 @@
 |:---:|:---:|:---:|:---:|:---:|
 |<img src="https://github.com/khw3754.png">|<img src="https://github.com/Cutiepazzipozzi.png">|<img src="https://github.com/youlalala.png">|<img src="https://github.com/HamBP.png">|<img src="https://github.com/2taezeat.png">|
 |Backend|Backend|Android|Android|Android|
-|강아지 귀여웡|엄마 뱃속으로 다시 들어가고 싶네요|hiphop은 계란이다 🥚|0과 1로 사람을 만들 수 있을까요?|Music is my life~|
+|강아지 귀여웡|엄마 뱃속으로 다시 들어가고 싶어요|hiphop은 계란이다 🥚|0과 1로 사람을 만들 수 있을까요?|Music is my life~|
 
 <div align="center">
     <a href="https://github.com/boostcampwm2023/and04-catchy-tape/wiki/%08Ground-Rule" target="_blank">그라운드 룰</a>

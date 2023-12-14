@@ -7,7 +7,7 @@
 
         <variable
             name="viewModel"
-            type="com.ohdodok.catchytape.feature.playlist.PlaylistViewModel" />
+            type="com.ohdodok.catchytape.feature.playlist.PlaylistsViewModel" />
 
     </data>
 

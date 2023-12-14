@@ -26,6 +26,7 @@ fun CtErrorType.toMessageId(): Int {
         CtErrorType.ENCODING_FAILURE -> R.string.error_encoding_failure
         CtErrorType.FAIL_GREEN_EYE_IMAGE_RECOGNITION -> R.string.error_message_server
         CtErrorType.INVALID_GREEN_EYE_REQUEST -> R.string.error_message_server
+        CtErrorType.ENCODED_MUSIC_UPLOAD_ERROR -> R.string.error_uploading_music
     }
 
 }

@@ -1,6 +1,7 @@
 package com.ohdodok.catchytape.feature.player
 
 import androidx.lifecycle.ViewModel
+
 import androidx.lifecycle.viewModelScope
 import com.ohdodok.catchytape.core.domain.model.CtErrorType
 import com.ohdodok.catchytape.core.domain.model.CtException
@@ -10,7 +11,6 @@ import com.ohdodok.catchytape.core.domain.repository.MusicRepository
 import com.ohdodok.catchytape.core.domain.usecase.player.CurrentPlaylistUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
-import kotlinx.coroutines.channels.consumeEach
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -19,6 +19,7 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.plus
 import javax.inject.Inject
 
 data class PlayerState(
@@ -28,7 +29,6 @@ data class PlayerState(
     val duration: Int = 0,
     val isNextEnable: Boolean = false,
     val isPreviousEnable: Boolean = false
-
 ) {
     val isPlayEnable: Boolean
         get() = currentMusic != null
@@ -59,15 +59,17 @@ class PlayerViewModel @Inject constructor(
         viewModelScope.launch { _events.emit(PlayerEvent.ShowError(errorType)) }
     }
 
+    private val viewModelScopeWithExceptionHandler = viewModelScope + exceptionHandler
+
     init {
         observePlaylistChange()
     }
 
     private fun observePlaylistChange() {
         viewModelScope.launch(exceptionHandler) {
-            currentPlaylistUseCase.currentPlaylist.consumeEach {
-                _currentPlaylist.value = it.musics
-                _events.emit(PlayerEvent.PlaylistChanged(it))
+            for (currentPlaylist in currentPlaylistUseCase.currentPlaylist) {
+                _currentPlaylist.value = currentPlaylist.musics
+                _events.emit(PlayerEvent.PlaylistChanged(currentPlaylist))
             }
         }
     }
@@ -95,7 +97,7 @@ class PlayerViewModel @Inject constructor(
                     isPreviousEnable = index != 0
                 )
             }
-            viewModelScope.launch {
+            viewModelScopeWithExceptionHandler.launch {
                 musicRepository.updateRecentPlayedMusic(playlist[index].id)
             }
         }

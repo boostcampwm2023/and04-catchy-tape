@@ -1,6 +1,5 @@
 package com.ohdodok.catchytape
 
-import android.animation.ObjectAnimator
 import android.content.ComponentName
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities.NET_CAPABILITY_VALIDATED
@@ -9,7 +8,6 @@ import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.animation.doOnEnd
 import androidx.core.view.WindowCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -21,6 +19,7 @@ import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.setupWithNavController
+import com.ohdodok.catchytape.core.ui.cterror.toMessageId
 import com.ohdodok.catchytape.databinding.ActivityMainBinding
 import com.ohdodok.catchytape.feature.player.PlayerEvent
 import com.ohdodok.catchytape.feature.player.PlayerListener
@@ -34,7 +33,6 @@ import com.ohdodok.catchytape.mediasession.PlaybackService
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import com.ohdodok.catchytape.core.ui.R.string as uiString
@@ -72,7 +70,7 @@ class MainActivity : AppCompatActivity() {
         setupPlayButton()
         setupPreviousButton()
         setupNextButton()
-        observePlaylistChange()
+        observeEvents()
     }
 
     override fun onStart() {
@@ -102,7 +100,8 @@ class MainActivity : AppCompatActivity() {
 
         navHostFragment.findNavController().addOnDestinationChangedListener { _, destination, _ ->
             when (destination.id) {
-                com.ohdodok.catchytape.feature.player.R.id.player_fragment -> {
+                com.ohdodok.catchytape.feature.player.R.id.player_fragment,
+                com.ohdodok.catchytape.feature.player.R.id.playlist_bottom_sheet -> {
                     hideBottomNav()
                     hidePlayerController()
                 }
@@ -122,19 +121,22 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun hideBottomNav() {
-        val height = binding.bottomNav.height.toFloat()
-        ObjectAnimator.ofFloat(binding.bottomNav, "translationY", height).apply {
-            duration = BOTTOM_NAV_ANIMATION_DURATION
-            doOnEnd { binding.bottomNav.visibility = View.GONE }
-            start()
+        with(binding.bottomNav) {
+            animate()
+                .translationY(height.toFloat())
+                .setDuration(BOTTOM_NAV_ANIMATION_DURATION)
+                .withEndAction { visibility = View.GONE }
+                .start()
         }
     }
 
     private fun showBottomNav() {
-        binding.bottomNav.visibility = View.VISIBLE
-        ObjectAnimator.ofFloat(binding.bottomNav, "translationY", 0f).apply {
-            duration = BOTTOM_NAV_ANIMATION_DURATION
-            start()
+        with(binding.bottomNav){
+            animate()
+                .translationY(0f)
+                .setDuration(BOTTOM_NAV_ANIMATION_DURATION)
+                .withStartAction { visibility = View.VISIBLE }
+                .start()
         }
     }
 
@@ -166,19 +168,25 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun observePlaylistChange() {
+    private fun observeEvents() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                playViewModel.events
-                    .filterIsInstance<PlayerEvent.PlaylistChanged>()
-                    .collectLatest { event ->
-                        val newItems = getMediasWithMetaData(event.currentPlaylist.musics)
-                        player.clearMediaItems()
-                        player.setMediaItems(newItems)
+                playViewModel.events.collectLatest { event ->
+                    when (event) {
+                        is PlayerEvent.ShowError -> {
+                            Toast.makeText(this@MainActivity, getString(event.error.toMessageId()), Toast.LENGTH_LONG).show()
+                        }
 
-                        player.seekTo(event.currentPlaylist.startMusicIndex, 0)
-                        player.play()
+                        is PlayerEvent.PlaylistChanged -> {
+                            val newItems = getMediasWithMetaData(event.currentPlaylist.musics)
+                            player.clearMediaItems()
+                            player.setMediaItems(newItems)
+
+                            player.seekTo(event.currentPlaylist.startMusicIndex, 0)
+                            player.play()
+                        }
                     }
+                }
             }
         }
     }

@@ -37,25 +37,29 @@
     <string name="track_size">트랙 %d개</string>
 
     <string name="add_to_playlist">재생 목록에 노래 추가</string>
+    <string name="add_to_playlist_success">노래를 추가했어요.</string>
 
-    <string name="error_message_connection">"error_message_connection"</string>
-    <string name="error_message_ssl_hand_shake">"error_message_ssl_hand_shake"</string>
-    <string name="error_message_io">"error_message_io"</string>
-    <string name="error_message_un_known">"error_message_un_known"</string>
-    <string name="error_message_un_authorized">"error_message_un_authorized"</string>
-    <string name="error_message_wrong_token">error_message_wrong_token</string>
+    <string name="error_message_connection">네트워크 연결이 되어 있지 않아요.</string>
+    <string name="error_message_ssl_hand_shake">네트워크 연결이 되어 있지 않아요.</string>
+    <string name="error_message_io">네트워크 에러가 났어요. 다시 시도 해주세요.</string>
+    <string name="error_message_un_known">에러가 났어요. 다시 시도 해주세요.</string>
+    <string name="error_message_un_authorized">자동 로그인에 실패 했어요.</string>
+    <string name="error_message_wrong_token">인증 토큰이 잘못되었어요.</string>
     <string name="error_message_duplicated_nickname">중복되는 닉네임이에요. 다른 닉네임으로 설정해 주세요 :)</string>
     <string name="error_message_server">서버가 작업 중이에요. 잠시만 기다려주세요.</string>
-    <string name="error_message_not_exist_playlist_on_user">"error_message_not_exist_playlist_on_user"</string>
-    <string name="error_message_not_exist_music">"error_message_not_exist_music"</string>
-    <string name="error_message_already_added">"error_message_already_added"</string>
-    <string name="error_message_invalid_input_value">"error_message_invalid_input_value"</string>
-    <string name="error_message_not_exist_user">"error_message_not_exist_user"</string>
+    <string name="error_message_not_exist_playlist_on_user">해당 플레이리스트가 존재하지 않아요.</string>
+    <string name="error_message_not_exist_music">해당 음악이 존재 하지 않아요.</string>
+    <string name="error_message_already_added">이미 추가된 음악이에요.</string>
+    <string name="error_message_invalid_input_value">입력이 유효하지 않아요. 다시 입력 해주세요.</string>
+    <string name="error_message_not_exist_user">사용자가 존재하지 않아요.</string>
     <string name="error_message_already_exist_email">이미 회원가입이 완료된 이메일이에요 !</string>
-    <string name="error_message_not_exist_genre">"error_message_not_exist_genre"</string>
-    <string name="error_message_expired_token">"error_message_expired_token"</string>
-    <string name="error_message_service">"error_message_service"</string>
+    <string name="error_message_not_exist_genre">장르를 선택해 주세요.</string>
+    <string name="error_message_expired_token">로그인 토큰이 만료 되었어요.</string>
+    <string name="error_message_service">서버에 오류가 생겼어요.</string>
     <string name="error_message_bad_image">유해 이미지에요. 다른 이미지로 바꿔주세요.</string>
     <string name="error_encoding_failure">인코딩에 실패했어요. 다시 시도해 주세요.</string>
+    <string name="error_uploading_music">음악 파일 업로드에 실패했어요! 다시 시도 해주세요.</string>
+
+    <string name="develop_in_future">차후 개발 예정이에요!</string>
 
 </resources>
