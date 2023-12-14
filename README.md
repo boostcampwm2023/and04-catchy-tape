@@ -48,6 +48,8 @@
 
 
 ### 📡 Server
+<img width="700" alt="image" src="https://github.com/boostcampwm2023/and04-catchy-tape/assets/84065420/cfdf4c35-f94d-47fa-a0aa-2cb6cc1c56b7">
+
 | Category  | TechStack | 기록 |
 | ------------- | ------------- | -------------|
 | Framework, Language | NestJS, TypeScript  | [Nest 사용 이유](https://round-caution-9fd.notion.site/Nest-8da8116bb8014a95b268ea50c9080b8d) |
@@ -61,7 +63,7 @@
 | 한 눈에 보는 서버 기술 스택 |  | [서버 기술 선정 이유](https://round-caution-9fd.notion.site/2a7b52b27e7d45cc980c1eea33a2ce09) |
 
 - 🔧 Architecture
-<img src="https://github.com/boostcampwm2023/and04-catchy-tape/assets/83707411/33a0c12d-22da-4ae3-836b-3aeb46015183" width=600 height=400 />
+<img src="https://github.com/boostcampwm2023/and04-catchy-tape/assets/84065420/f39981f7-5281-44bb-bfc9-9b93a5cbcb57" width=800 height=530 />
 
 <details>
 <summary> ✏️ 그 외 기록</summary>
