@@ -74,15 +74,15 @@ class HomeViewModel @Inject constructor(
     }
 
     fun playRecentlyPlayedMusic() {
-        currentPlaylistUseCase.playMusics(uiState.value.recentlyPlayedMusics.first(), uiState.value.recentlyPlayedMusics)
         viewModelScope.launch {
+            currentPlaylistUseCase.playMusics(uiState.value.recentlyPlayedMusics.first(), uiState.value.recentlyPlayedMusics)
             _events.emit(HomeEvent.NavigateToPlayerScreen)
         }
     }
 
     override fun onClick(music: Music) {
-        currentPlaylistUseCase.playMusics(music, uiState.value.recentlyUploadedMusics)
         viewModelScope.launch {
+            currentPlaylistUseCase.playMusics(music, uiState.value.recentlyUploadedMusics)
             _events.emit(HomeEvent.NavigateToPlayerScreen)
         }
     }

@@ -78,8 +78,8 @@ class PlaylistDetailViewModel @Inject constructor(
     }
 
     private fun play(music: Music) {
-        currentPlaylistUseCase.playMusics(music, uiState.value.musics)
         viewModelScopeWithExceptionHandler.launch {
+            currentPlaylistUseCase.playMusics(music, uiState.value.musics)
             _events.emit(PlaylistDetailEvent.NavigateToPlayerScreen)
         }
     }
