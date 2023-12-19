@@ -73,8 +73,8 @@ class MyMusicsViewModel @Inject constructor(
     }
 
     override fun onClick(music: Music) {
-        currentPlaylistUseCase.playMusic(music)
         viewModelScope.launch {
+            currentPlaylistUseCase.playMusic(music)
             _events.emit(MyMusicsEvent.NavigateToPlayerScreen)
         }
     }
