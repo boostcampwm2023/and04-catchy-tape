@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   HttpCode,
   Logger,
@@ -87,5 +88,26 @@ export class PlaylistController {
     );
     const userId: string = req.user.user_id;
     return await this.playlistService.getPlaylistMusics(userId, playlistId);
+  }
+
+  @Delete(':playlistId')
+  @UseGuards(AuthGuard())
+  @HttpCode(HTTP_STATUS_CODE.SUCCESS)
+  async deleteMusicInPlaylist(
+    @Req() req,
+    @Param('playlistId') playlistId: number,
+    @Body('musicId') music_id: string,
+  ): Promise<{ music_playlist_id: number }> {
+    this.logger.log(
+      `DELETE /playlists/${playlistId} - nickname=${req.user.nickname}, musicId=${music_id}`,
+    );
+    const userId: string = req.user.user_id;
+    const music_playlist_id: number =
+      await this.playlistService.deleteMusicInPlaylist(
+        userId,
+        playlistId,
+        music_id,
+      );
+    return { music_playlist_id };
   }
 }
