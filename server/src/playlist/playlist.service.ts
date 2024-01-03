@@ -236,4 +236,68 @@ export class PlaylistService {
       );
     }
   }
+
+  async deleteMusicInPlaylist(
+    userId: string,
+    playlistId: number,
+    musicId: string,
+  ): Promise<number> {
+    // 사용자 플리가 있는지 확인
+    if (!(await this.isExistPlaylistOnUser(playlistId, userId))) {
+      this.logger.error(
+        `playlist.service - deleteMusicInPlaylist : NOT_EXIST_PLAYLIST_ON_USER`,
+      );
+      throw new CatchyException(
+        'NOT_EXIST_PLAYLIST_ON_USER',
+        HTTP_STATUS_CODE.BAD_REQUEST,
+        ERROR_CODE.NOT_EXIST_PLAYLIST_ON_USER,
+      );
+    }
+    // 음악 있는지 확인
+    if (!(await this.isExistMusic(musicId))) {
+      this.logger.error(
+        `playlist.service - deleteMusicInPlaylist : NOT_EXIST_MUSIC`,
+      );
+      throw new CatchyException(
+        'NOT_EXIST_MUSIC',
+        HTTP_STATUS_CODE.BAD_REQUEST,
+        ERROR_CODE.NOT_EXIST_MUSIC,
+      );
+    }
+
+    try {
+      const target: Music_Playlist =
+        await this.music_playlistRepository.findOne({
+          where: {
+            music: { music_id: musicId },
+            playlist: { playlist_id: playlistId },
+          },
+        });
+      if (target == undefined) {
+        this.logger.error(
+          `playlist.service - deleteMusicInPlaylist : NOT_ADDED_MUSIC`,
+        );
+        throw new CatchyException(
+          'NOT_ADDED_MUSIC',
+          HTTP_STATUS_CODE.BAD_REQUEST,
+          ERROR_CODE.NOT_ADDED_MUSIC,
+        );
+      }
+      this.music_playlistRepository.delete(target.music_playlist_id);
+      return target.music_playlist_id;
+    } catch (error) {
+      if (error instanceof CatchyException) {
+        throw error;
+      }
+
+      this.logger.error(
+        `playlist.service - deleteMusicInPlaylist : SERVICE_ERROR`,
+      );
+      throw new CatchyException(
+        'SERVICE_ERROR',
+        HTTP_STATUS_CODE.BAD_REQUEST,
+        ERROR_CODE.SERVICE_ERROR,
+      );
+    }
+  }
 }
