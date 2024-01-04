@@ -17,6 +17,45 @@ export class UserService {
     private recentPlayedRepository: Repository<Recent_Played>,
   ) {}
 
+  validateNickname(inputNickname: string, originalNickname: string): void {
+    if (!inputNickname) {
+      return;
+    }
+
+    if (inputNickname.length < 2 || inputNickname.length > 10) {
+      this.logger.error(
+        `user.service - validateNickname : NOT_IN_RANGE_OF_NICKNAME_LENGTH`,
+      );
+      throw new CatchyException(
+        'NOT_IN_RANGE_OF_NICKNAME_LENGTH',
+        HTTP_STATUS_CODE.SERVER_ERROR,
+        ERROR_CODE.NOT_IN_RANGE_OF_NICKNAME_LENGTH,
+      );
+    }
+
+    if (!inputNickname.match(/^[가-힣a-zA-Z0-9_.]+$/)) {
+      this.logger.error(
+        `user.service - validateNickname : INVALID_NICKNAME_PATTERN`,
+      );
+      throw new CatchyException(
+        'INVALID_NICKNAME_PATTERN',
+        HTTP_STATUS_CODE.SERVER_ERROR,
+        ERROR_CODE.INVALID_NICKNAME_PATTERN,
+      );
+    }
+
+    if (inputNickname === originalNickname) {
+      this.logger.error(
+        `user.service - validateNickname : SAME_AGAIN_NICKNAME`,
+      );
+      throw new CatchyException(
+        'SAME_AGAIN_NICKNAME',
+        HTTP_STATUS_CODE.SERVER_ERROR,
+        ERROR_CODE.SAME_AGAIN_NICKNAME,
+      );
+    }
+  }
+
   async isDuplicatedUserEmail(userNickname: string): Promise<boolean> {
     try {
       const user = await this.userRepository.findOneBy({
@@ -56,7 +95,11 @@ export class UserService {
     }
   }
 
-  async updateUserImage(user_id: string, image_url: string): Promise<string> {
+  async updateUserInformation(
+    user_id: string,
+    image_url: string,
+    nickname: string | null,
+  ): Promise<string> {
     try {
       const targetUser: User = await this.userRepository.findOne({
         where: { user_id },
@@ -71,7 +114,10 @@ export class UserService {
         );
       }
 
+      this.validateNickname(nickname, targetUser.nickname);
+
       targetUser.photo = image_url;
+      targetUser.nickname = nickname ? nickname : targetUser.nickname;
       const savedUser: User = await this.userRepository.save(targetUser);
       return savedUser.user_id;
     } catch (err) {

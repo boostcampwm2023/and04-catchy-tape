@@ -24,6 +24,27 @@ export class UserController {
   private readonly logger = new Logger('User');
   constructor(private userService: UserService) {}
 
+  @Patch()
+  @UseGuards(AuthGuard())
+  @HttpCode(HTTP_STATUS_CODE.SUCCESS)
+  async updateUserImage(
+    @Req() req,
+    @Body('image_url') image_url: string,
+    @Body('nickname') nickname: string | null,
+  ): Promise<{ user_id: string }> {
+    this.logger.log(
+      `PATCH /users - nickname=${req.user.nickname}->${nickname}, image_url=${image_url}`,
+    );
+    const user_id = req.user.user_id;
+    return {
+      user_id: await this.userService.updateUserInformation(
+        user_id,
+        image_url,
+        nickname,
+      ),
+    };
+  }
+
   @Get('duplicate/:name')
   @HttpCode(HTTP_STATUS_CODE.NOT_DUPLICATED_NICKNAME)
   async checkDuplicateNickname(
@@ -56,22 +77,6 @@ export class UserController {
     );
 
     return userMusicData;
-  }
-
-  @Patch('image')
-  @UseGuards(AuthGuard())
-  @HttpCode(HTTP_STATUS_CODE.SUCCESS)
-  async updateUserImage(
-    @Req() req,
-    @Body('image_url') image_url,
-  ): Promise<{ user_id: string }> {
-    this.logger.log(
-      `PATCH /users/image - nickname=${req.user.nickname}, image_url=${image_url}`,
-    );
-    const user_id = req.user.user_id;
-    return {
-      user_id: await this.userService.updateUserImage(user_id, image_url),
-    };
   }
 
   @Get('my-info')
