@@ -17,7 +17,7 @@ export class UserService {
     private recentPlayedRepository: Repository<Recent_Played>,
   ) {}
 
-  validateNickname(inputNickname: string, originalNickname: string): void {
+  validateNickname(inputNickname: string): void {
     if (!inputNickname) {
       return;
     }
@@ -41,17 +41,6 @@ export class UserService {
         'INVALID_NICKNAME_PATTERN',
         HTTP_STATUS_CODE.SERVER_ERROR,
         ERROR_CODE.INVALID_NICKNAME_PATTERN,
-      );
-    }
-
-    if (inputNickname === originalNickname) {
-      this.logger.error(
-        `user.service - validateNickname : SAME_AGAIN_NICKNAME`,
-      );
-      throw new CatchyException(
-        'SAME_AGAIN_NICKNAME',
-        HTTP_STATUS_CODE.SERVER_ERROR,
-        ERROR_CODE.SAME_AGAIN_NICKNAME,
       );
     }
   }
@@ -114,7 +103,15 @@ export class UserService {
         );
       }
 
-      this.validateNickname(nickname, targetUser.nickname);
+      if (await this.isDuplicatedUserEmail(nickname)) {
+        throw new CatchyException(
+          'DUPLICATED_NICKNAME',
+          HTTP_STATUS_CODE.DUPLICATED_NICKNAME,
+          ERROR_CODE.DUPLICATED_NICKNAME,
+        );
+      }
+
+      this.validateNickname(nickname);
 
       targetUser.photo = image_url;
       targetUser.nickname = nickname ? nickname : targetUser.nickname;
