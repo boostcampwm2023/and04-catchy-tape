@@ -1,6 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { HTTP_STATUS_CODE } from 'src/httpStatusCode.enum';
-import { Repository } from 'typeorm';
+import { Repository, DataSource } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { MusicCreateDto } from 'src/dto/musicCreate.dto';
 import { Music } from 'src/entity/music.entity';
@@ -19,6 +19,7 @@ export class MusicService {
     @InjectRepository(Music) private musicRepository: Repository<Music>,
     private uploadService: UploadService,
     private readonly ncloudConfigService: NcloudConfigService,
+    private readonly dataSource: DataSource,
   ) {
     this.objectStorage = ncloudConfigService.createObjectStorageOption();
   }
@@ -35,15 +36,12 @@ export class MusicService {
     musicCreateDto: MusicCreateDto,
     user_id: string,
   ): Promise<string> {
-    try {
-      const {
-        music_id,
-        title,
-        cover,
-        file: music_file,
-        genre,
-      } = musicCreateDto;
+    const { music_id, title, cover, file: music_file, genre } = musicCreateDto;
 
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.startTransaction();
+
+    try {
       if (!this.isValidGenre(genre)) {
         this.logger.error(`music.service - createMusic : NOT_EXIST_GENRE`);
         throw new CatchyException(
@@ -63,10 +61,12 @@ export class MusicService {
         user: { user_id },
       });
 
-      const savedMusic: Music = await this.musicRepository.save(newMusic);
+      await queryRunner.manager.save(newMusic);
 
-      return savedMusic.music_id;
+      await queryRunner.commitTransaction();
     } catch (err) {
+      await queryRunner.rollbackTransaction();
+
       if (err instanceof CatchyException) {
         throw err;
       }
@@ -77,7 +77,11 @@ export class MusicService {
         HTTP_STATUS_CODE.SERVER_ERROR,
         ERROR_CODE.SERVICE_ERROR,
       );
+    } finally {
+      await queryRunner.release();
     }
+
+    return music_id;
   }
 
   async getRecentMusic(): Promise<Music[]> {
