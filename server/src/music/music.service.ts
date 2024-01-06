@@ -64,6 +64,8 @@ export class MusicService {
       await queryRunner.manager.save(newMusic);
 
       await queryRunner.commitTransaction();
+
+      return music_id;
     } catch (err) {
       await queryRunner.rollbackTransaction();
 
@@ -80,8 +82,6 @@ export class MusicService {
     } finally {
       await queryRunner.release();
     }
-
-    return music_id;
   }
 
   async getRecentMusic(): Promise<Music[]> {
