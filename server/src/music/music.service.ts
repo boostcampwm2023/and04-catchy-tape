@@ -38,19 +38,19 @@ export class MusicService {
   ): Promise<string> {
     const { music_id, title, cover, file: music_file, genre } = musicCreateDto;
 
+    if (!this.isValidGenre(genre)) {
+      this.logger.error(`music.service - createMusic : NOT_EXIST_GENRE`);
+      throw new CatchyException(
+        'NOT_EXIST_GENRE',
+        HTTP_STATUS_CODE.BAD_REQUEST,
+        ERROR_CODE.NOT_EXIST_GENRE,
+      );
+    }
+
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.startTransaction();
 
     try {
-      if (!this.isValidGenre(genre)) {
-        this.logger.error(`music.service - createMusic : NOT_EXIST_GENRE`);
-        throw new CatchyException(
-          'NOT_EXIST_GENRE',
-          HTTP_STATUS_CODE.BAD_REQUEST,
-          ERROR_CODE.NOT_EXIST_GENRE,
-        );
-      }
-
       const newMusic: Music = this.musicRepository.create({
         music_id,
         title,

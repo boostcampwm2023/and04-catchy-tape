@@ -6,7 +6,7 @@ import { UploadService } from 'src/upload/upload.service';
 import { NcloudConfigService } from 'src/config/ncloud.config';
 import { ConfigService } from '@nestjs/config';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { DataSource, Repository } from 'typeorm';
 import { Music } from 'src/entity/music.entity';
 import { musicCreateInfo, user } from 'test/constants/music.mockData';
 import { MusicController } from './music.controller';
@@ -27,6 +27,7 @@ describe('UploadController', () => {
   let authService: AuthService;
   let musicRepository: Repository<Music>;
   let mockJwtStrategy = { validate: () => user };
+  let mockDataSource: jest.Mocked<DataSource>;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -49,6 +50,10 @@ describe('UploadController', () => {
           provide: getRepositoryToken(User),
           useClass: Repository,
         },
+        {
+          provide: DataSource,
+          useValue: mockDataSource,
+        },
       ],
     })
       .overrideProvider(JwtStrategy)
@@ -62,6 +67,9 @@ describe('UploadController', () => {
     musicController = module.get<MusicController>(MusicController);
     musicService = module.get<MusicService>(MusicService);
     musicRepository = module.get(getRepositoryToken(Music));
+    mockDataSource = {
+      createQueryRunner: jest.fn(),
+    } as unknown as jest.Mocked<DataSource>;
 
     app = module.createNestApplication();
     await app.init();
