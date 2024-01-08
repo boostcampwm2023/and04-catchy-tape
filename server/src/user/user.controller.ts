@@ -5,11 +5,13 @@ import {
   HttpCode,
   Param,
   UseGuards,
+  UsePipes,
   Patch,
   Body,
   Query,
   Logger,
   Put,
+  ValidationPipe,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { HTTP_STATUS_CODE } from 'src/httpStatusCode.enum';
@@ -18,11 +20,32 @@ import { Music } from 'src/entity/music.entity';
 import { CatchyException } from 'src/config/catchyException';
 import { ERROR_CODE } from 'src/config/errorCode.enum';
 import { User } from 'src/entity/user.entity';
+import { UserUpdateDto } from 'src/dto/userUpdate.dto';
 
 @Controller('users')
 export class UserController {
   private readonly logger = new Logger('User');
   constructor(private userService: UserService) {}
+
+  @Patch()
+  @UseGuards(AuthGuard())
+  @UsePipes(ValidationPipe)
+  @HttpCode(HTTP_STATUS_CODE.SUCCESS)
+  async updateUserImage(
+    @Req() req,
+    @Body() userUpdateDto: UserUpdateDto,
+  ): Promise<{ user_id: string }> {
+    this.logger.log(
+      `PATCH /users - nickname=${req.user.nickname}->${userUpdateDto.nickname}, image_url=${userUpdateDto.image_url}`,
+    );
+    const user_id = req.user.user_id;
+    return {
+      user_id: await this.userService.updateUserInformation(
+        user_id,
+        userUpdateDto,
+      ),
+    };
+  }
 
   @Get('duplicate/:name')
   @HttpCode(HTTP_STATUS_CODE.NOT_DUPLICATED_NICKNAME)
@@ -30,7 +53,7 @@ export class UserController {
     @Param('name') name: string,
   ): Promise<{ nickname: string }> {
     this.logger.log(`GET /users/duplicate/${name}`);
-    if (await this.userService.isDuplicatedUserEmail(name)) {
+    if (await this.userService.isDuplicatedUserNickname(name)) {
       throw new CatchyException(
         'DUPLICATED_NICKNAME',
         HTTP_STATUS_CODE.DUPLICATED_NICKNAME,
@@ -56,22 +79,6 @@ export class UserController {
     );
 
     return userMusicData;
-  }
-
-  @Patch('image')
-  @UseGuards(AuthGuard())
-  @HttpCode(HTTP_STATUS_CODE.SUCCESS)
-  async updateUserImage(
-    @Req() req,
-    @Body('image_url') image_url,
-  ): Promise<{ user_id: string }> {
-    this.logger.log(
-      `PATCH /users/image - nickname=${req.user.nickname}, image_url=${image_url}`,
-    );
-    const user_id = req.user.user_id;
-    return {
-      user_id: await this.userService.updateUserImage(user_id, image_url),
-    };
   }
 
   @Get('my-info')
