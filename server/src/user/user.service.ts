@@ -7,6 +7,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { CatchyException } from 'src/config/catchyException';
 import { ERROR_CODE } from 'src/config/errorCode.enum';
 import { Recent_Played } from 'src/entity/recent_played.entity';
+import { UserUpdateDto } from './../dto/userUpdate.dto';
 
 @Injectable()
 export class UserService {
@@ -17,35 +18,7 @@ export class UserService {
     private recentPlayedRepository: Repository<Recent_Played>,
   ) {}
 
-  validateNickname(inputNickname: string): void {
-    if (!inputNickname) {
-      return;
-    }
-
-    if (inputNickname.length < 2 || inputNickname.length > 10) {
-      this.logger.error(
-        `user.service - validateNickname : NOT_IN_RANGE_OF_NICKNAME_LENGTH`,
-      );
-      throw new CatchyException(
-        'NOT_IN_RANGE_OF_NICKNAME_LENGTH',
-        HTTP_STATUS_CODE.SERVER_ERROR,
-        ERROR_CODE.NOT_IN_RANGE_OF_NICKNAME_LENGTH,
-      );
-    }
-
-    if (!inputNickname.match(/^[가-힣a-zA-Z0-9_.]+$/)) {
-      this.logger.error(
-        `user.service - validateNickname : INVALID_NICKNAME_PATTERN`,
-      );
-      throw new CatchyException(
-        'INVALID_NICKNAME_PATTERN',
-        HTTP_STATUS_CODE.SERVER_ERROR,
-        ERROR_CODE.INVALID_NICKNAME_PATTERN,
-      );
-    }
-  }
-
-  async isDuplicatedUserEmail(userNickname: string): Promise<boolean> {
+  async isDuplicatedUserNickname(userNickname: string): Promise<boolean> {
     try {
       const user = await this.userRepository.findOneBy({
         nickname: userNickname,
@@ -86,8 +59,7 @@ export class UserService {
 
   async updateUserInformation(
     user_id: string,
-    image_url: string,
-    nickname: string | null,
+    userUpdateDto: UserUpdateDto,
   ): Promise<string> {
     try {
       const targetUser: User = await this.userRepository.findOne({
@@ -103,7 +75,10 @@ export class UserService {
         );
       }
 
-      if (await this.isDuplicatedUserEmail(nickname)) {
+      const nickname = userUpdateDto.nickname;
+      const image_url = userUpdateDto.image_url;
+
+      if (await this.isDuplicatedUserNickname(nickname)) {
         throw new CatchyException(
           'DUPLICATED_NICKNAME',
           HTTP_STATUS_CODE.DUPLICATED_NICKNAME,
@@ -111,10 +86,9 @@ export class UserService {
         );
       }
 
-      this.validateNickname(nickname);
-
       targetUser.photo = image_url;
       targetUser.nickname = nickname ? nickname : targetUser.nickname;
+
       const savedUser: User = await this.userRepository.save(targetUser);
       return savedUser.user_id;
     } catch (err) {
