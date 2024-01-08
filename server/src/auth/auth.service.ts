@@ -6,7 +6,7 @@ import { ERROR_CODE } from 'src/config/errorCode.enum';
 import { UserCreateDto } from 'src/dto/userCreate.dto';
 import { User } from 'src/entity/user.entity';
 import { HTTP_STATUS_CODE } from 'src/httpStatusCode.enum';
-import { Repository } from 'typeorm';
+import { Repository, DataSource } from 'typeorm';
 import { v4 as uuid } from 'uuid';
 
 @Injectable()
@@ -15,26 +15,29 @@ export class AuthService {
   constructor(
     @InjectRepository(User) private userRepository: Repository<User>,
     private jwtService: JwtService,
+    private readonly dataSource: DataSource,
   ) {}
 
   async login(email: string): Promise<{ accessToken: string }> {
-    const user: User = await this.userRepository.findOneBy({
-      user_email: email,
-    });
+    const user: User = await this.dataSource
+      .getRepository(User)
+      .createQueryBuilder('user')
+      .where('user.user_email = :email', { email })
+      .getOne();
 
     if (user) {
       const payload = { user_id: user['user_id'] };
       const accessToken = this.jwtService.sign(payload);
 
       return { accessToken };
-    } else {
-      this.logger.error(`auth.service - login : NOT_EXIST_USER`);
-      throw new CatchyException(
-        'NOT_EXIST_USER',
-        HTTP_STATUS_CODE['WRONG_TOKEN'],
-        ERROR_CODE.NOT_EXIST_USER,
-      );
     }
+
+    this.logger.error(`auth.service - login : NOT_EXIST_USER`);
+    throw new CatchyException(
+      'NOT_EXIST_USER',
+      HTTP_STATUS_CODE['WRONG_TOKEN'],
+      ERROR_CODE.NOT_EXIST_USER,
+    );
   }
 
   async signup(userCreateDto: UserCreateDto): Promise<{ accessToken: string }> {
@@ -49,24 +52,38 @@ export class AuthService {
         ERROR_CODE.ALREADY_EXIST_EMAIL,
       );
     }
-    if (email) {
-      const newUser: User = this.userRepository.create({
-        user_id: uuid(),
-        nickname,
-        photo: null,
-        user_email: email,
-        created_at: new Date(),
-      });
-      await this.userRepository.save(newUser);
 
-      return this.login(email);
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.startTransaction();
+
+    try {
+      if (email) {
+        const newUser: User = this.userRepository.create({
+          user_id: uuid(),
+          nickname,
+          photo: null,
+          user_email: email,
+          created_at: new Date(),
+        });
+
+        await queryRunner.manager.save(newUser);
+
+        await queryRunner.commitTransaction();
+
+        return await this.login(email);
+      }
+
+      this.logger.error(`auth.service - signup : WRONG_TOKEN`);
+      throw new CatchyException(
+        'WRONG_TOKEN',
+        HTTP_STATUS_CODE.WRONG_TOKEN,
+        ERROR_CODE.WRONG_TOKEN,
+      );
+    } catch {
+      await queryRunner.rollbackTransaction();
+    } finally {
+      await queryRunner.release();
     }
-    this.logger.error(`auth.service - signup : WRONG_TOKEN`);
-    throw new CatchyException(
-      'WRONG_TOKEN',
-      HTTP_STATUS_CODE.WRONG_TOKEN,
-      ERROR_CODE.WRONG_TOKEN,
-    );
   }
 
   async getGoogleEmail(googleIdToken: string): Promise<string> {
@@ -84,13 +101,16 @@ export class AuthService {
         ERROR_CODE.EXPIRED_TOKEN,
       );
     }
+
     return userInfo.email;
   }
 
   async isExistEmail(email: string): Promise<boolean> {
-    const user: User = await this.userRepository.findOneBy({
-      user_email: email,
-    });
+    const user: User = await this.dataSource
+      .getRepository(User)
+      .createQueryBuilder('user')
+      .where('user.user_email = :email', { email })
+      .getOne();
 
     if (!user) {
       return false;
@@ -100,7 +120,18 @@ export class AuthService {
   }
 
   async deleteUser(user: User): Promise<{ userId: string }> {
-    await this.userRepository.delete(user.user_id);
-    return { userId: user.user_id };
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.startTransaction();
+
+    try {
+      await queryRunner.manager.remove(user);
+      await queryRunner.commitTransaction();
+
+      return { userId: user.user_id };
+    } catch {
+      await queryRunner.rollbackTransaction();
+    } finally {
+      await queryRunner.release();
+    }
   }
 }
