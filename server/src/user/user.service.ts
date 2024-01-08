@@ -7,6 +7,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { CatchyException } from 'src/config/catchyException';
 import { ERROR_CODE } from 'src/config/errorCode.enum';
 import { Recent_Played } from 'src/entity/recent_played.entity';
+import { UserUpdateDto } from './../dto/userUpdate.dto';
 
 @Injectable()
 export class UserService {
@@ -17,7 +18,7 @@ export class UserService {
     private recentPlayedRepository: Repository<Recent_Played>,
   ) {}
 
-  async isDuplicatedUserEmail(userNickname: string): Promise<boolean> {
+  async isDuplicatedUserNickname(userNickname: string): Promise<boolean> {
     try {
       const user = await this.userRepository.findOneBy({
         nickname: userNickname,
@@ -56,7 +57,10 @@ export class UserService {
     }
   }
 
-  async updateUserImage(user_id: string, image_url: string): Promise<string> {
+  async updateUserInformation(
+    user_id: string,
+    userUpdateDto: UserUpdateDto,
+  ): Promise<string> {
     try {
       const targetUser: User = await this.userRepository.findOne({
         where: { user_id },
@@ -71,7 +75,20 @@ export class UserService {
         );
       }
 
+      const nickname = userUpdateDto.nickname;
+      const image_url = userUpdateDto.image_url;
+
+      if (await this.isDuplicatedUserNickname(nickname)) {
+        throw new CatchyException(
+          'DUPLICATED_NICKNAME',
+          HTTP_STATUS_CODE.DUPLICATED_NICKNAME,
+          ERROR_CODE.DUPLICATED_NICKNAME,
+        );
+      }
+
       targetUser.photo = image_url;
+      targetUser.nickname = nickname ? nickname : targetUser.nickname;
+
       const savedUser: User = await this.userRepository.save(targetUser);
       return savedUser.user_id;
     } catch (err) {
