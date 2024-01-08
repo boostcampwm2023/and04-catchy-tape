@@ -13,7 +13,17 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/surface_bright">
+        android:background="@drawable/bottomsheet_background">
+
+        <View
+            android:id="@+id/indicator"
+            android:layout_width="32dp"
+            android:layout_height="4dp"
+            android:layout_marginTop="@dimen/medium"
+            android:background="@drawable/bottomsheet_indicator"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/tv_title"
@@ -21,12 +31,12 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="@dimen/margin_horizontal"
-            android:layout_marginTop="@dimen/extra_large"
+            android:layout_marginTop="48dp"
             android:text="@string/add_to_playlist"
             android:textColor="@color/on_surface"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toBottomOf="@id/indicator" />
 
         <com.google.android.material.divider.MaterialDivider
             android:id="@+id/divider"
