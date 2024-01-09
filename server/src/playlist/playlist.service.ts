@@ -246,6 +246,69 @@ export class PlaylistService {
     }
   }
 
+  async deleteSinglePlaylist(
+    userId: string,
+    playlistId: number,
+  ): Promise<number> {
+    // 사용자 플리가 있는지 확인
+    if (!(await this.isExistPlaylistOnUser(playlistId, userId))) {
+      this.logger.error(
+        `playlist.service - deleteSinglePlaylist : NOT_EXIST_PLAYLIST_ON_USER`,
+      );
+      throw new CatchyException(
+        'NOT_EXIST_PLAYLIST_ON_USER',
+        HTTP_STATUS_CODE.BAD_REQUEST,
+        ERROR_CODE.NOT_EXIST_PLAYLIST_ON_USER,
+      );
+    }
+
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.startTransaction();
+
+    try {
+      const target: Playlist = await this.playlistRepository.findOne({
+        where: {
+          playlist_id: playlistId,
+          user: {
+            user_id: userId,
+          },
+        },
+      });
+
+      const targetMusics: Music_Playlist[] =
+        await this.music_playlistRepository.find({
+          where: {
+            playlist: {
+              playlist_id: playlistId,
+            },
+          },
+        });
+
+      await queryRunner.manager.remove(targetMusics);
+      await queryRunner.manager.remove(target);
+
+      await queryRunner.commitTransaction();
+      return playlistId;
+    } catch (error) {
+      await queryRunner.rollbackTransaction();
+
+      if (error instanceof CatchyException) {
+        throw error;
+      }
+
+      this.logger.error(
+        `playlist.service - deleteSinglePlaylist : SERVICE_ERROR`,
+      );
+      throw new CatchyException(
+        'SERVICE_ERROR',
+        HTTP_STATUS_CODE.BAD_REQUEST,
+        ERROR_CODE.SERVICE_ERROR,
+      );
+    } finally {
+      await queryRunner.release();
+    }
+  }
+
   async deleteMusicInPlaylist(
     userId: string,
     playlistId: number,
