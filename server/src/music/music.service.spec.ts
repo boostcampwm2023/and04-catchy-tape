@@ -5,7 +5,7 @@ import { UploadService } from 'src/upload/upload.service';
 import { NcloudConfigService } from 'src/config/ncloud.config';
 import { ConfigService } from '@nestjs/config';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { DataSource, Repository } from 'typeorm';
 import { Music } from 'src/entity/music.entity';
 import { MusicCreateDto } from 'src/dto/musicCreate.dto';
 import { CatchyException } from 'src/config/catchyException';
@@ -24,6 +24,7 @@ describe('UploadController', () => {
   let cloudService: NcloudConfigService;
   let configService: ConfigService;
   let mockRepository: jest.Mocked<Repository<Music>>;
+  let mockDataSource: jest.Mocked<DataSource>;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -43,12 +44,24 @@ describe('UploadController', () => {
           provide: getRepositoryToken(Recent_Played),
           useClass: Repository,
         },
+        {
+          provide: DataSource,
+          useValue: mockDataSource,
+        },
       ],
     }).compile();
 
     configService = module.get<ConfigService>(ConfigService);
     cloudService = module.get<NcloudConfigService>(NcloudConfigService);
     uploadService = module.get<UploadService>(UploadService);
+    mockDataSource = {
+      createQueryRunner: jest.fn().mockResolvedValue({
+        startTransaction: jest.fn(),
+        commitTransaction: jest.fn(),
+        rollbackTransaction: jest.fn(),
+        release: jest.fn(),
+      }),
+    } as unknown as jest.Mocked<DataSource>;
     mockRepository = {
       create: jest.fn(),
       save: jest.fn(),
@@ -57,6 +70,7 @@ describe('UploadController', () => {
       mockRepository,
       uploadService,
       cloudService,
+      mockDataSource,
     );
   });
 

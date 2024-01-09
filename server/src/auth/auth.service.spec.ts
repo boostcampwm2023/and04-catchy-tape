@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AuthService } from './auth.service';
-import { Repository } from 'typeorm';
+import { Repository, DataSource } from 'typeorm';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { User } from 'src/entity/user.entity';
 import { JwtModule, JwtService } from '@nestjs/jwt';
@@ -15,6 +15,7 @@ describe('AuthService', () => {
   let jwtModule: JwtModule;
   let userRepository: Repository<User>;
   let playlistService: PlaylistService;
+  let mockDataSource: jest.Mocked<DataSource>;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -38,6 +39,10 @@ describe('AuthService', () => {
           useClass: Repository,
         },
         PlaylistService,
+        {
+          provide: DataSource,
+          useValue: mockDataSource,
+        },
       ],
     }).compile();
 
