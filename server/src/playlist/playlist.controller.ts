@@ -90,6 +90,22 @@ export class PlaylistController {
     return await this.playlistService.getPlaylistMusics(userId, playlistId);
   }
 
+  @Delete()
+  @UseGuards(AuthGuard())
+  @HttpCode(HTTP_STATUS_CODE.SUCCESS)
+  async deletePlaylist(
+    @Req() req,
+    @Body('playlistId') playlistId: number,
+  ): Promise<{ playlistId: number }> {
+    this.logger.log(
+      `DELETE /playlists - nickname=${req.user.nickname}, playlistId=${playlistId}`,
+    );
+    const userId: string = req.user.user_id;
+    const deletedPlaylistId: number =
+      await this.playlistService.deleteSinglePlaylist(userId, playlistId);
+    return { playlistId: deletedPlaylistId };
+  }
+
   @Delete(':playlistId')
   @UseGuards(AuthGuard())
   @HttpCode(HTTP_STATUS_CODE.SUCCESS)
