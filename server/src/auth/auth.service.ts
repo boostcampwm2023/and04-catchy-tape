@@ -19,11 +19,9 @@ export class AuthService {
   ) {}
 
   async login(email: string): Promise<{ accessToken: string }> {
-    const user: User = await this.dataSource
-      .getRepository(User)
-      .createQueryBuilder('user')
-      .where('user.user_email = :email', { email })
-      .getOne();
+    const user: User = await this.userRepository.findOneBy({
+      user_email: email,
+    });
 
     if (user) {
       const payload = { user_id: user['user_id'] };
@@ -106,11 +104,9 @@ export class AuthService {
   }
 
   async isExistEmail(email: string): Promise<boolean> {
-    const user: User = await this.dataSource
-      .getRepository(User)
-      .createQueryBuilder('user')
-      .where('user.user_email = :email', { email })
-      .getOne();
+    const user: User = await this.userRepository.findOneBy({
+      user_email: email,
+    });
 
     if (!user) {
       return false;
