@@ -34,8 +34,18 @@ export class Playlist extends BaseEntity {
   @OneToMany(() => Music_Playlist, (music_playlist) => music_playlist.playlist)
   music_playlist: Music_Playlist[];
 
+  static async isExistPlaylistOnUser(
+    userId: string,
+    playlistId: number,
+  ): Promise<number> {
+    return this.countBy({
+      playlist_id: playlistId,
+      user: { user_id: userId },
+    });
+  }
+
   static async getPlaylistsByUserId(userId: string): Promise<Playlist[]> {
-    return this.find({
+    return await this.find({
       select: { playlist_id: true, playlist_title: true },
       where: {
         user: { user_id: userId },
