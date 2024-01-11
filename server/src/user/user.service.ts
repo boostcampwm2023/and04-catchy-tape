@@ -63,7 +63,7 @@ export class UserService {
   ): Promise<string> {
     try {
       const targetUser: User = await this.userRepository.findOne({
-        where: { user_id },
+        where: { user_id, is_deleted: false },
       });
 
       if (!targetUser) {
@@ -108,7 +108,7 @@ export class UserService {
   async getUserInformation(user_id: string): Promise<User> {
     try {
       return await this.userRepository.findOne({
-        where: { user_id },
+        where: { user_id, is_deleted: false },
       });
     } catch {
       this.logger.error(`user.service - getUserInfomation : SERVICE_ERROR`);

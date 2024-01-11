@@ -73,8 +73,8 @@ export class UploadController {
   @Post('/image')
   @UseGuards(AuthGuard())
   @HttpCode(HTTP_STATUS_CODE.SUCCESS)
+  @UsePipes(ValidationPipe)
   @UseInterceptors(FileInterceptor('file'))
-  @HttpCode(HTTP_STATUS_CODE.SUCCESS)
   async uploadImage(
     @Req() req,
     @UploadedFile(
