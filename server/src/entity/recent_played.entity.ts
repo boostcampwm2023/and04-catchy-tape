@@ -61,4 +61,15 @@ export class Recent_Played extends BaseEntity {
       recent_played.map((recent) => recent.music),
     );
   }
+
+  static async getRecentPlayedId(
+    music_id: string,
+    user_id: string,
+  ): Promise<number> {
+    return (
+      await this.findOne({
+        where: { music: { music_id }, user: { user_id } },
+      })
+    ).recent_played_id;
+  }
 }
