@@ -4,7 +4,7 @@ import { Repository, DataSource } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { MusicCreateDto } from 'src/dto/musicCreate.dto';
 import { Music } from 'src/entity/music.entity';
-import { Genres } from 'src/constants';
+import { Genres, SLICE_COUNT } from 'src/constants';
 import { CatchyException } from 'src/config/catchyException';
 import { ERROR_CODE } from 'src/config/errorCode.enum';
 import { UploadService } from 'src/upload/upload.service';
@@ -203,11 +203,8 @@ export class MusicService {
       const music: Music = await Music.getMusicById(musicId);
       this.musicRepository.delete(music.music_id);
 
-      const sliceCount: number =
-        'https://catchy-tape-bucket2.kr.object.ncloudstorage.com/'.length;
-      const musicFilePath: string = music.music_file.slice(sliceCount, sliceCount + 41);
-      const coverFilePath: string = music.cover.slice(sliceCount, sliceCount + 46);
-      console.log(coverFilePath, musicFilePath);
+      const musicFilePath: string = music.music_file.slice(SLICE_COUNT, SLICE_COUNT + 41);
+      const coverFilePath: string = music.cover.slice(SLICE_COUNT, SLICE_COUNT + 46);
 
       if (musicFilePath) this.deleteFolder(musicFilePath);
       if (coverFilePath) this.deleteFolder(coverFilePath);
