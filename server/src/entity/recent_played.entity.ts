@@ -16,7 +16,9 @@ export class Recent_Played extends BaseEntity {
   @PrimaryGeneratedColumn()
   recent_played_id: number;
 
-  @ManyToOne(() => Music, (music) => music.recent_played)
+  @ManyToOne(() => Music, (music) => music.recent_played, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn({ name: 'music_id' })
   music: Music;
 

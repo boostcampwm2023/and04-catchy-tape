@@ -24,3 +24,5 @@ export const contentTypeHandler: Record<string, string> = {
 export const getTimeStamp = (): number => {
   return new Date().getTime();
 };
+
+export const SLICE_COUNT: number = 'https://catchy-tape-bucket2.kr.object.ncloudstorage.com/'.length;

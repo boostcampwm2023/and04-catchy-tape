@@ -10,6 +10,7 @@ import {
   ValidationPipe,
   Query,
   Logger,
+  Delete,
 } from '@nestjs/common';
 import { MusicService } from './music.service';
 import { HTTP_STATUS_CODE } from 'src/httpStatusCode.enum';
@@ -22,9 +23,7 @@ import { Music } from 'src/entity/music.entity';
 export class MusicController {
   private readonly logger = new Logger('Music');
   private objectStorage: AWS.S3;
-  constructor(
-    private readonly musicService: MusicService,
-  ) {}
+  constructor(private readonly musicService: MusicService) {}
 
   @Post()
   @UsePipes(ValidationPipe)
@@ -102,5 +101,16 @@ export class MusicController {
   ): Promise<Music[]> {
     this.logger.log(`GET /musics/search - keyword=${keyword}`);
     return this.musicService.getCertainKeywordNicknameUser(keyword);
+  }
+
+  @Delete()
+  @UseGuards(AuthGuard())
+  @HttpCode(HTTP_STATUS_CODE.SUCCESS)
+  async deleteMusic(
+    @Req() req,
+    @Body('music_id') music_id: string,
+  ): Promise<string> {
+    const userId = req.user.user_id;
+    return await this.musicService.deleteMusicById(music_id, userId);
   }
 }

@@ -4,12 +4,13 @@ import { Repository, DataSource } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { MusicCreateDto } from 'src/dto/musicCreate.dto';
 import { Music } from 'src/entity/music.entity';
-import { Genres } from 'src/constants';
+import { Genres, SLICE_COUNT } from 'src/constants';
 import { CatchyException } from 'src/config/catchyException';
 import { ERROR_CODE } from 'src/config/errorCode.enum';
 import { UploadService } from 'src/upload/upload.service';
 import { NcloudConfigService } from 'src/config/ncloud.config';
 import { AWSError } from 'aws-sdk';
+import { DeleteObjectOutput } from 'aws-sdk/clients/s3';
 
 @Injectable()
 export class MusicService {
@@ -184,6 +185,88 @@ export class MusicService {
         'QUERY_ERROR',
         HTTP_STATUS_CODE.SERVER_ERROR,
         ERROR_CODE.QUERY_ERROR,
+      );
+    }
+  }
+
+  async deleteMusicById(musicId: string, userId: string): Promise<string> {
+    if (!(await Music.isMusicOwner(musicId, userId))) {
+      this.logger.error(`music.service - deleteMusicById : NOT_EXIST_MUSIC`);
+      throw new CatchyException(
+        'NOT_EXIST_MUSIC',
+        HTTP_STATUS_CODE.SERVER_ERROR,
+        ERROR_CODE.NOT_EXIST_MUSIC,
+      );
+    }
+
+    try {
+      const music: Music = await Music.getMusicById(musicId);
+      this.musicRepository.delete(music.music_id);
+
+      const musicFilePath: string = music.music_file.slice(SLICE_COUNT, SLICE_COUNT + 41);
+      const coverFilePath: string = music.cover.slice(SLICE_COUNT, SLICE_COUNT + 46);
+
+      if (musicFilePath) this.deleteFolder(musicFilePath);
+      if (coverFilePath) this.deleteFolder(coverFilePath);
+
+      return music.music_id;
+    } catch {
+      this.logger.error(`music.service - deleteMusicById : SERVICE_ERROR`);
+      throw new CatchyException(
+        'SERVICE_ERROR',
+        HTTP_STATUS_CODE.SERVER_ERROR,
+        ERROR_CODE.SERVICE_ERROR,
+      );
+    }
+  }
+
+  async deleteFolder(folderPath) {
+    let params = {
+      Bucket: 'catchy-tape-bucket2',
+      Delete: {
+        Objects: [],
+      },
+    };
+
+    // 폴더 내의 파일들을 삭제할 객체 목록에 추가
+    const filesInFolder = await this.listFilesInFolder(folderPath);
+    filesInFolder.forEach((file) => {
+      params.Delete.Objects.push({ Key: file.Key });
+    });
+
+    try {
+      // 폴더 내의 파일들을 삭제
+      await this.objectStorage.deleteObjects(params).promise();
+
+      // 폴더를 삭제
+      await this.objectStorage
+        .deleteObject({ Bucket: 'catchy-tape-bucket2', Key: folderPath })
+        .promise();
+    } catch (error) {
+      this.logger.error(`music.service - deleteFolder : SERVICE_ERROR`);
+      throw new CatchyException(
+        'SERVICE_ERROR',
+        HTTP_STATUS_CODE.SERVER_ERROR,
+        ERROR_CODE.SERVICE_ERROR,
+      );
+    }
+  }
+
+  async listFilesInFolder(folderPath) {
+    let params = {
+      Bucket: 'catchy-tape-bucket2',
+      Prefix: folderPath,
+    };
+
+    try {
+      const data = await this.objectStorage.listObjectsV2(params).promise();
+      return data.Contents;
+    } catch (error) {
+      this.logger.error(`music.service - listFilesInFolder : SERVICE_ERROR`);
+      throw new CatchyException(
+        'SERVICE_ERROR',
+        HTTP_STATUS_CODE.SERVER_ERROR,
+        ERROR_CODE.SERVICE_ERROR,
       );
     }
   }

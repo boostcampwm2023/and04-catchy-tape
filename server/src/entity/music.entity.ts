@@ -136,4 +136,22 @@ export class Music extends BaseEntity {
       },
     });
   }
+
+  static async isExistMusicId(musicId: string): Promise<boolean> {
+    const count: number = await this.count({ where: { music_id: musicId } });
+    if (count === 0) {
+      return false;
+    }
+    return true;
+  }
+
+  static async isMusicOwner(musicId: string, userId: string): Promise<boolean> {
+    const count: number = await this.count({
+      where: { music_id: musicId, user: { user_id: userId } },
+    });
+    if (count === 0) {
+      return false;
+    }
+    return true;
+  }
 }
