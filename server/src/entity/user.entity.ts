@@ -28,6 +28,9 @@ export class User extends BaseEntity {
   @CreateDateColumn()
   created_at: Date;
 
+  @Column({ default: false })
+  is_deleted: boolean;
+
   @OneToMany(() => Music, (music) => music.user)
   musics: Music[];
 
