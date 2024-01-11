@@ -30,6 +30,16 @@ export class Music_Playlist extends BaseEntity {
   @Index()
   created_at: Date;
 
+  static async countMusicNumberInPlaylist(
+    musicId: string,
+    playlistId: number,
+  ): Promise<number> {
+    return this.countBy({
+      music: { music_id: musicId },
+      playlist: { playlist_id: playlistId },
+    });
+  }
+
   static async getMusicListByPlaylistId(playlistId: number): Promise<Music[]> {
     return this.find({
       relations: {
