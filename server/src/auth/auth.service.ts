@@ -21,6 +21,7 @@ export class AuthService {
   async login(email: string): Promise<{ accessToken: string }> {
     const user: User = await this.userRepository.findOneBy({
       user_email: email,
+      is_deleted: false,
     });
 
     if (user) {
@@ -106,6 +107,7 @@ export class AuthService {
   async isExistEmail(email: string): Promise<boolean> {
     const user: User = await this.userRepository.findOneBy({
       user_email: email,
+      is_deleted: false,
     });
 
     if (!user) {
@@ -119,8 +121,10 @@ export class AuthService {
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.startTransaction();
 
+    const user_id: string = user.user_id;
+
     try {
-      await queryRunner.manager.remove(user);
+      await queryRunner.manager.update(User, { user_id }, { is_deleted: true });
       await queryRunner.commitTransaction();
 
       return { userId: user.user_id };
