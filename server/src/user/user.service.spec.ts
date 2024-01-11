@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { UserService } from './user.service';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { DataSource, Repository } from 'typeorm';
 import { User } from '../entity/user.entity';
 import { Recent_Played } from 'src/entity/recent_played.entity';
 import { PassportModule } from '@nestjs/passport';
@@ -9,6 +9,7 @@ import { PassportModule } from '@nestjs/passport';
 describe('UserService', () => {
   let service: UserService;
   let userRepository: Repository<User>;
+  let mockDataSource: jest.Mocked<DataSource>;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -22,6 +23,10 @@ describe('UserService', () => {
         {
           provide: getRepositoryToken(Recent_Played),
           useClass: Repository,
+        },
+        {
+          provide: DataSource,
+          useValue: mockDataSource,
         },
       ],
     }).compile();
