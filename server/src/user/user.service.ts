@@ -2,7 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { HTTP_STATUS_CODE } from 'src/httpStatusCode.enum';
 import { User } from 'src/entity/user.entity';
 import { Music } from 'src/entity/music.entity';
-import { Repository } from 'typeorm';
+import { DataSource, Repository, UpdateResult } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CatchyException } from 'src/config/catchyException';
 import { ERROR_CODE } from 'src/config/errorCode.enum';
@@ -16,6 +16,7 @@ export class UserService {
     @InjectRepository(User) private userRepository: Repository<User>,
     @InjectRepository(Recent_Played)
     private recentPlayedRepository: Repository<Recent_Played>,
+    private readonly dataSource: DataSource,
   ) {}
 
   async isDuplicatedUserNickname(userNickname: string): Promise<boolean> {
@@ -61,12 +62,10 @@ export class UserService {
     user_id: string,
     userUpdateDto: UserUpdateDto,
   ): Promise<string> {
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.startTransaction();
     try {
-      const targetUser: User = await this.userRepository.findOne({
-        where: { user_id, is_deleted: false },
-      });
-
-      if (!targetUser) {
+      if (!(await User.isExistUserId(user_id))) {
         this.logger.error(`user.service - updateUserImage : NOT_EXIST_USER`);
         throw new CatchyException(
           'NOT_EXIST_USER',
@@ -86,12 +85,15 @@ export class UserService {
         );
       }
 
-      targetUser.photo = image_url;
-      targetUser.nickname = nickname ? nickname : targetUser.nickname;
-
-      const savedUser: User = await this.userRepository.save(targetUser);
-      return savedUser.user_id;
+      await queryRunner.manager.update(
+        User,
+        { user_id },
+        { photo: image_url, nickname: nickname },
+      );
+      await queryRunner.commitTransaction();
+      return user_id;
     } catch (err) {
+      await queryRunner.rollbackTransaction();
       if (err instanceof CatchyException) {
         throw err;
       }
@@ -102,6 +104,8 @@ export class UserService {
         HTTP_STATUS_CODE.SERVER_ERROR,
         ERROR_CODE.SERVICE_ERROR,
       );
+    } finally {
+      await queryRunner.release();
     }
   }
 
@@ -157,6 +161,8 @@ export class UserService {
   }
 
   async updateRecentMusic(music_id: string, user_id: string): Promise<number> {
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.startTransaction();
     try {
       if (!(await Music.getMusicById(music_id))) {
         this.logger.error(
@@ -179,15 +185,16 @@ export class UserService {
         return addedRow.recent_played_id;
       }
 
-      const targetRow: Recent_Played =
-        await this.recentPlayedRepository.findOne({
-          where: { music: { music_id }, user: { user_id } },
-        });
-      targetRow.played_at = new Date();
-      const updatedRow: Recent_Played =
-        await this.recentPlayedRepository.save(targetRow);
-      return updatedRow.recent_played_id;
+      await queryRunner.manager.update(
+        Recent_Played,
+        { music: { music_id }, user: { user_id } },
+        { played_at: new Date() },
+      );
+      await queryRunner.commitTransaction();
+
+      return await Recent_Played.getRecentPlayedId(music_id, user_id);
     } catch (err) {
+      await queryRunner.rollbackTransaction();
       if (err instanceof CatchyException) throw err;
 
       this.logger.error(`user.service - updateRecentMusic : SERVICE_ERROR`);
@@ -196,6 +203,8 @@ export class UserService {
         HTTP_STATUS_CODE.SERVER_ERROR,
         ERROR_CODE.SERVICE_ERROR,
       );
+    } finally {
+      await queryRunner.release();
     }
   }
 

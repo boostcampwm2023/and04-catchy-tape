@@ -58,4 +58,13 @@ export class User extends BaseEntity {
       },
     });
   }
+
+  static async isExistUserId(user_id: string): Promise<boolean> {
+    const count: number = await this.count({ where: { user_id } });
+    if (count === 0) {
+      return false;
+    } else {
+      return true;
+    }
+  }
 }
