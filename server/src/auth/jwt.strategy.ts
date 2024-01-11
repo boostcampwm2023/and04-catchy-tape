@@ -25,9 +25,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   async validate(payload): Promise<User> {
     const { user_id } = payload;
 
-    const user: User = await this.userRepository.findOne({
-      where: { user_id, is_deleted: false },
-    });
+    const user: User = await User.findUserById(user_id);
 
     if (!user || !user_id) {
       this.logger.error(`request user_id=${user_id} : NOT_EXIST_USER`);

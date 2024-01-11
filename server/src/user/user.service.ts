@@ -21,9 +21,7 @@ export class UserService {
 
   async isDuplicatedUserNickname(userNickname: string): Promise<boolean> {
     try {
-      const user = await this.userRepository.findOneBy({
-        nickname: userNickname,
-      });
+      const user = await User.findUserByNickName(userNickname);
 
       if (user) {
         return true;
@@ -65,7 +63,7 @@ export class UserService {
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.startTransaction();
     try {
-      if (!(await User.isExistUserId(user_id))) {
+      if ((await User.countNumberOfUserById(user_id)) == 0) {
         this.logger.error(`user.service - updateUserImage : NOT_EXIST_USER`);
         throw new CatchyException(
           'NOT_EXIST_USER',
@@ -111,9 +109,7 @@ export class UserService {
 
   async getUserInformation(user_id: string): Promise<User> {
     try {
-      return await this.userRepository.findOne({
-        where: { user_id, is_deleted: false },
-      });
+      return await User.findUserById(user_id);
     } catch {
       this.logger.error(`user.service - getUserInfomation : SERVICE_ERROR`);
       throw new CatchyException(
@@ -144,9 +140,11 @@ export class UserService {
     user_id: string,
   ): Promise<boolean> {
     try {
-      const musicCount: number = await this.recentPlayedRepository.count({
-        where: { music: { music_id }, user: { user_id } },
-      });
+      const musicCount: number = await Recent_Played.countMusicNumberById(
+        music_id,
+        user_id,
+      );
+
       return musicCount != 0;
     } catch {
       this.logger.error(
@@ -210,9 +208,7 @@ export class UserService {
 
   async getRecentPlaylistMusicCount(user_id: string): Promise<number> {
     try {
-      return await this.recentPlayedRepository.count({
-        where: { user: { user_id } },
-      });
+      return await Recent_Played.getNumberOfRecentPlayedMusic(user_id);
     } catch {
       this.logger.error(
         `user.service - getRecentPlaylistMusicCount : QUERY_ERROR`,
@@ -227,13 +223,7 @@ export class UserService {
 
   async getRecentPlaylistThumbnail(user_id: string): Promise<string> {
     try {
-      const recentMusic: Recent_Played =
-        await this.recentPlayedRepository.findOne({
-          relations: { music: true, user: true },
-          select: { music: { cover: true } },
-          where: { user: { user_id } },
-          order: { played_at: 'DESC' },
-        });
+      const recentMusic = await Recent_Played.getRecentPlayedMusic(user_id);
 
       return recentMusic.music.cover;
     } catch {
