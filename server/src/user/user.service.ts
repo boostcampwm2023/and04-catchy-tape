@@ -2,7 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { HTTP_STATUS_CODE } from 'src/httpStatusCode.enum';
 import { User } from 'src/entity/user.entity';
 import { Music } from 'src/entity/music.entity';
-import { DataSource, Repository } from 'typeorm';
+import { DataSource, Repository, UpdateResult } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CatchyException } from 'src/config/catchyException';
 import { ERROR_CODE } from 'src/config/errorCode.enum';
@@ -161,6 +161,8 @@ export class UserService {
   }
 
   async updateRecentMusic(music_id: string, user_id: string): Promise<number> {
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.startTransaction();
     try {
       if (!(await Music.getMusicById(music_id))) {
         this.logger.error(
@@ -183,15 +185,16 @@ export class UserService {
         return addedRow.recent_played_id;
       }
 
-      const targetRow: Recent_Played =
-        await this.recentPlayedRepository.findOne({
-          where: { music: { music_id }, user: { user_id } },
-        });
-      targetRow.played_at = new Date();
-      const updatedRow: Recent_Played =
-        await this.recentPlayedRepository.save(targetRow);
-      return updatedRow.recent_played_id;
+      await queryRunner.manager.update(
+        Recent_Played,
+        { music: { music_id }, user: { user_id } },
+        { played_at: new Date() },
+      );
+      await queryRunner.commitTransaction();
+
+      return await Recent_Played.getRecentPlayedId(music_id, user_id);
     } catch (err) {
+      await queryRunner.rollbackTransaction();
       if (err instanceof CatchyException) throw err;
 
       this.logger.error(`user.service - updateRecentMusic : SERVICE_ERROR`);
@@ -200,6 +203,8 @@ export class UserService {
         HTTP_STATUS_CODE.SERVER_ERROR,
         ERROR_CODE.SERVICE_ERROR,
       );
+    } finally {
+      await queryRunner.release();
     }
   }
 
