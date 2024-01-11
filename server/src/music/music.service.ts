@@ -199,24 +199,38 @@ export class MusicService {
       );
     }
 
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.startTransaction();
+
     try {
       const music: Music = await Music.getMusicById(musicId);
-      this.musicRepository.delete(music.music_id);
+      await queryRunner.manager.remove(music);
 
-      const musicFilePath: string = music.music_file.slice(SLICE_COUNT, SLICE_COUNT + 41);
-      const coverFilePath: string = music.cover.slice(SLICE_COUNT, SLICE_COUNT + 46);
+      const musicFilePath: string = music.music_file.slice(
+        SLICE_COUNT,
+        SLICE_COUNT + 41,
+      );
+      const coverFilePath: string = music.cover.slice(
+        SLICE_COUNT,
+        SLICE_COUNT + 46,
+      );
 
       if (musicFilePath) this.deleteFolder(musicFilePath);
       if (coverFilePath) this.deleteFolder(coverFilePath);
 
+      await queryRunner.commitTransaction();
       return music.music_id;
     } catch {
+      await queryRunner.rollbackTransaction();
+
       this.logger.error(`music.service - deleteMusicById : SERVICE_ERROR`);
       throw new CatchyException(
         'SERVICE_ERROR',
         HTTP_STATUS_CODE.SERVER_ERROR,
         ERROR_CODE.SERVICE_ERROR,
       );
+    } finally {
+      await queryRunner.release();
     }
   }
 
