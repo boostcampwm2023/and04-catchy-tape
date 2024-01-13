@@ -269,18 +269,21 @@ export class PlaylistService {
     await queryRunner.startTransaction();
 
     try {
+      await queryRunner.manager.delete(Music_Playlist, {
+        playlist: {
+          playlist_id: playlistId,
+        },
+      });
+
       await queryRunner.manager.delete(Playlist, {
         playlist_id: playlistId,
         user: { user_id: userId },
       });
 
-      await queryRunner.manager.delete(Music_Playlist, {
-        playlist_id: playlistId,
-      });
-
       await queryRunner.commitTransaction();
       return playlistId;
     } catch (error) {
+      console.log(error);
       await queryRunner.rollbackTransaction();
 
       if (error instanceof CatchyException) {
