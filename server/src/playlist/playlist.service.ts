@@ -111,13 +111,12 @@ export class PlaylistService {
           created_at: new Date(),
         });
 
-      const targetPlaylist: Playlist = await this.playlistRepository.findOne({
-        where: { playlist_id: playlistId },
-      });
-      targetPlaylist.updated_at = new Date();
-
       await queryRunner.manager.save(new_music_playlist);
-      await queryRunner.manager.save(targetPlaylist);
+      await queryRunner.manager.update(
+        Playlist,
+        { playlist_id: playlistId },
+        { updated_at: new Date() },
+      );
 
       await queryRunner.commitTransaction();
 
@@ -140,11 +139,12 @@ export class PlaylistService {
 
   async isAlreadyAdded(playlistId: number, musicId: string): Promise<boolean> {
     try {
-      const count: number = await this.music_playlistRepository.countBy({
-        music: { music_id: musicId },
-        playlist: { playlist_id: playlistId },
-      });
-      return count !== 0;
+      const musicNumber = await Music_Playlist.countMusicNumberInPlaylist(
+        musicId,
+        playlistId,
+      );
+
+      return musicNumber !== 0;
     } catch {
       this.logger.error(`playlist.service - isAlreadyAdded : SERVICE_ERROR`);
       throw new CatchyException(
@@ -160,11 +160,12 @@ export class PlaylistService {
     userId: string,
   ): Promise<boolean> {
     try {
-      const playlistCount: number = await this.playlistRepository.countBy({
-        playlist_id: playlistId,
-        user: { user_id: userId },
-      });
-      return playlistCount !== 0;
+      const playlistNumber = await Playlist.isExistPlaylistOnUser(
+        userId,
+        playlistId,
+      );
+
+      return playlistNumber !== 0;
     } catch {
       this.logger.error(
         `playlist.service - isExistPlaylistOnUser : SERVICE_ERROR`,
@@ -179,9 +180,7 @@ export class PlaylistService {
 
   async isExistMusic(musicId: string): Promise<boolean> {
     try {
-      const musicCount: number = await this.MusicRepository.countBy({
-        music_id: musicId,
-      });
+      const musicCount: number = await Music.countMusicById(musicId);
 
       return musicCount !== 0;
     } catch {
@@ -197,18 +196,22 @@ export class PlaylistService {
   async getUserPlaylists(userId: string): Promise<Playlist[]> {
     try {
       const playlists: Playlist[] = await Playlist.getPlaylistsByUserId(userId);
+
       const countPromises = playlists.map(async (playlist) => {
         playlist['music_count'] =
           await Music_Playlist.getMusicCountByPlaylistId(playlist.playlist_id);
       });
+
       const thumbnailPromises = playlists.map(async (playlist) => {
         const target = await Music_Playlist.getThumbnailByPlaylistId(
           playlist.playlist_id,
         );
         playlist['thumbnail'] = !target ? null : target.music.cover;
       });
+
       await Promise.all(countPromises);
       await Promise.all(thumbnailPromises);
+
       return playlists;
     } catch {
       this.logger.error(`playlist.service - getUserPlaylists : SERVICE_ERROR`);
@@ -266,30 +269,21 @@ export class PlaylistService {
     await queryRunner.startTransaction();
 
     try {
-      const target: Playlist = await this.playlistRepository.findOne({
-        where: {
+      await queryRunner.manager.delete(Music_Playlist, {
+        playlist: {
           playlist_id: playlistId,
-          user: {
-            user_id: userId,
-          },
         },
       });
 
-      const targetMusics: Music_Playlist[] =
-        await this.music_playlistRepository.find({
-          where: {
-            playlist: {
-              playlist_id: playlistId,
-            },
-          },
-        });
-
-      await queryRunner.manager.remove(targetMusics);
-      await queryRunner.manager.remove(target);
+      await queryRunner.manager.delete(Playlist, {
+        playlist_id: playlistId,
+        user: { user_id: userId },
+      });
 
       await queryRunner.commitTransaction();
       return playlistId;
     } catch (error) {
+      console.log(error);
       await queryRunner.rollbackTransaction();
 
       if (error instanceof CatchyException) {
@@ -349,7 +343,7 @@ export class PlaylistService {
           },
         });
 
-      const deletedMusicId: number = target.music_playlist_id;
+      const deletedMusicPlaylistId: number = target.music_playlist_id;
 
       if (target == undefined) {
         this.logger.error(
@@ -366,7 +360,7 @@ export class PlaylistService {
 
       await queryRunner.commitTransaction();
 
-      return deletedMusicId;
+      return deletedMusicPlaylistId;
     } catch (error) {
       await queryRunner.rollbackTransaction();
 

@@ -40,6 +40,29 @@ export class User extends BaseEntity {
   @OneToMany(() => Recent_Played, (recent_played) => recent_played.user)
   recent_played: Recent_Played[];
 
+  static async countNumberOfUserById(user_id: string): Promise<number> {
+    return this.count({ where: { user_id } });
+  }
+
+  static async findUserByNickName(nickname: string): Promise<User> {
+    return this.findOneBy({
+      nickname,
+    });
+  }
+
+  static async findUserById(user_id: string): Promise<User> {
+    return this.findOne({
+      where: { user_id, is_deleted: false },
+    });
+  }
+
+  static async findUserByEmail(user_email: string): Promise<User> {
+    return this.findOneBy({
+      user_email,
+      is_deleted: false,
+    });
+  }
+
   static async getCertainUserByNickname(keyword: string): Promise<User[]> {
     return this.find({
       relations: {
@@ -57,14 +80,5 @@ export class User extends BaseEntity {
         nickname: ILike(`%${keyword}%`),
       },
     });
-  }
-
-  static async isExistUserId(user_id: string): Promise<boolean> {
-    const count: number = await this.count({ where: { user_id } });
-    if (count === 0) {
-      return false;
-    } else {
-      return true;
-    }
   }
 }

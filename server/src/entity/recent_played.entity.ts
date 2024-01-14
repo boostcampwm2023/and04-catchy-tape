@@ -30,6 +30,41 @@ export class Recent_Played extends BaseEntity {
   @Index()
   played_at: Date;
 
+  static async countMusicNumberById(
+    music_id: string,
+    user_id: string,
+  ): Promise<number> {
+    return this.count({
+      where: { music: { music_id }, user: { user_id } },
+    });
+  }
+
+  static async getRecentPlayedId(
+    music_id: string,
+    user_id: string,
+  ): Promise<number> {
+    return (
+      await this.findOne({
+        where: { music: { music_id }, user: { user_id } },
+      })
+    ).recent_played_id;
+  }
+
+  static async getNumberOfRecentPlayedMusic(user_id: string): Promise<number> {
+    return this.count({
+      where: { user: { user_id } },
+    });
+  }
+
+  static async getRecentPlayedMusic(user_id: string): Promise<Recent_Played> {
+    return this.findOne({
+      relations: { music: true, user: true },
+      select: { music: { cover: true } },
+      where: { user: { user_id } },
+      order: { played_at: 'DESC' },
+    });
+  }
+
   static async getRecentPlayedMusicByUserId(
     user_id: string,
     count: number,
@@ -60,16 +95,5 @@ export class Recent_Played extends BaseEntity {
     }).then((recent_played: Recent_Played[]) =>
       recent_played.map((recent) => recent.music),
     );
-  }
-
-  static async getRecentPlayedId(
-    music_id: string,
-    user_id: string,
-  ): Promise<number> {
-    return (
-      await this.findOne({
-        where: { music: { music_id }, user: { user_id } },
-      })
-    ).recent_played_id;
   }
 }

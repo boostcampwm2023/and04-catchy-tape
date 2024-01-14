@@ -77,6 +77,10 @@ export class Music extends BaseEntity {
     });
   }
 
+  static async countMusicById(musicId: string): Promise<number> {
+    return this.countBy({ music_id: musicId });
+  }
+
   static async getRecentMusic(): Promise<Music[]> {
     return this.find({
       relations: {
