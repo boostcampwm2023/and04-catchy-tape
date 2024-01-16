@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.ohdodok.catchytape.core.domain.model.CtErrorType
 import com.ohdodok.catchytape.core.domain.model.CtException
 import com.ohdodok.catchytape.core.domain.repository.MusicRepository
+import com.ohdodok.catchytape.core.domain.repository.UuidRepository
 import com.ohdodok.catchytape.core.domain.usecase.upload.UploadFileUseCase
 import com.ohdodok.catchytape.core.domain.usecase.upload.UploadMusicUseCase
 import com.ohdodok.catchytape.core.domain.usecase.upload.ValidateMusicTitleUseCase
@@ -19,6 +20,7 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.flow.retry
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.plus
@@ -63,7 +65,8 @@ class UploadViewModel @Inject constructor(
     private val musicRepository: MusicRepository,
     private val uploadFileUseCase: UploadFileUseCase,
     private val uploadMusicUseCase: UploadMusicUseCase,
-    private val validateMusicTitleUseCase: ValidateMusicTitleUseCase
+    private val validateMusicTitleUseCase: ValidateMusicTitleUseCase,
+    private val uuidRepository: UuidRepository,
 ) : ViewModel() {
 
     private val _events = MutableSharedFlow<UploadEvent>()
@@ -79,6 +82,8 @@ class UploadViewModel @Inject constructor(
         }
     }
 
+    private lateinit var uuid: String
+
     private val viewModelScopeWithExceptionHandler = viewModelScope + exceptionHandler
 
     private val _uiState: MutableStateFlow<UploadUiState> = MutableStateFlow(UploadUiState())
@@ -86,12 +91,20 @@ class UploadViewModel @Inject constructor(
 
     init {
         fetchGenres()
+        generateUuid()
     }
 
     private fun fetchGenres() {
         musicRepository.getGenres().onEach { genres ->
             _uiState.update { it.copy(musicGenres = genres) }
         }.launchIn(viewModelScope)
+    }
+
+    private fun generateUuid() {
+        uuidRepository.getUuid().onEach { generatedUuid ->
+            uuid = generatedUuid
+        }.retry(3)
+            .launchIn(viewModelScopeWithExceptionHandler)
     }
 
     fun updateMusicTitle(title: CharSequence) {
@@ -110,7 +123,7 @@ class UploadViewModel @Inject constructor(
     }
 
     fun uploadImage(imageFile: File) {
-        uploadFileUseCase.uploadMusicCover(imageFile).onStart {
+        uploadFileUseCase.uploadMusicCover(imageFile, uuid).onStart {
             _uiState.update { it.copy(imageState = it.imageState.copy(isLoading = true)) }
         }.onEach { url ->
             _uiState.update { it.copy(imageState = it.imageState.copy(url = url)) }
@@ -120,7 +133,7 @@ class UploadViewModel @Inject constructor(
     }
 
     fun uploadAudio(audioFile: File) {
-        uploadFileUseCase.uploadAudio(audioFile).onStart {
+        uploadFileUseCase.uploadAudio(audioFile, uuid).onStart {
             _uiState.update { it.copy(audioState = it.audioState.copy(isLoading = true)) }
         }.onEach { url ->
             _uiState.update { it.copy(audioState = it.audioState.copy(url = url)) }
@@ -142,4 +155,3 @@ class UploadViewModel @Inject constructor(
         }.launchIn(viewModelScopeWithExceptionHandler)
     }
 }
-
