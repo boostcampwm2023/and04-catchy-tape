@@ -7,7 +7,6 @@ import com.ohdodok.catchytape.core.domain.model.CtException
 import com.ohdodok.catchytape.core.domain.repository.MusicRepository
 import com.ohdodok.catchytape.core.domain.repository.UuidRepository
 import com.ohdodok.catchytape.core.domain.usecase.upload.UploadFileUseCase
-import com.ohdodok.catchytape.core.domain.usecase.upload.UploadMusicUseCase
 import com.ohdodok.catchytape.core.domain.usecase.upload.ValidateMusicTitleUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
@@ -64,7 +63,6 @@ sealed interface UploadEvent {
 class UploadViewModel @Inject constructor(
     private val musicRepository: MusicRepository,
     private val uploadFileUseCase: UploadFileUseCase,
-    private val uploadMusicUseCase: UploadMusicUseCase,
     private val validateMusicTitleUseCase: ValidateMusicTitleUseCase,
     private val uuidRepository: UuidRepository,
 ) : ViewModel() {
@@ -145,7 +143,8 @@ class UploadViewModel @Inject constructor(
     fun uploadMusic() {
         if (!uiState.value.isUploadEnable) return
 
-        uploadMusicUseCase(
+        musicRepository.postMusic(
+            musicId = uuid,
             imageUrl = uiState.value.imageState.url,
             audioUrl = uiState.value.audioState.url,
             title = uiState.value.musicTitleState.title,
