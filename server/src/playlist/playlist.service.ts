@@ -69,42 +69,7 @@ export class PlaylistService {
       );
     }
 
-    const queryRunner = this.dataSource.createQueryRunner();
-    await queryRunner.startTransaction();
-
-    // 관계테이블에 추가
-    try {
-      const new_music_playlist: Music_Playlist =
-        this.music_playlistRepository.create({
-          music: { music_id: musicId },
-          playlist: { playlist_id: playlistId },
-          created_at: new Date(),
-        });
-
-      await queryRunner.manager.save(new_music_playlist);
-      await queryRunner.manager.update(
-        Playlist,
-        { playlist_id: playlistId },
-        { updated_at: new Date() },
-      );
-
-      await queryRunner.commitTransaction();
-
-      return new_music_playlist.music_playlist_id;
-    } catch {
-      await queryRunner.rollbackTransaction();
-
-      this.logger.error(
-        `playlist.service - addMusicToPlaylist : SERVICE_ERROR`,
-      );
-      throw new CatchyException(
-        'SERVER_ERROR',
-        HTTP_STATUS_CODE.SERVER_ERROR,
-        ERROR_CODE.SERVICE_ERROR,
-      );
-    } finally {
-      await queryRunner.release();
-    }
+    return Music_Playlist.addMusicToPlaylist(musicId, playlistId);
   }
 
   async isAlreadyAdded(playlistId: number, musicId: string): Promise<boolean> {

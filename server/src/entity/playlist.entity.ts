@@ -100,6 +100,4 @@ export class Playlist extends BaseEntity {
       await queryRunner.release();
     }
   }
-
-  static async
 }
