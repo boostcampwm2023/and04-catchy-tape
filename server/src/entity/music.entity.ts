@@ -14,6 +14,7 @@ import { User } from './user.entity';
 import { Genres } from 'src/constants';
 import { Music_Playlist } from './music_playlist.entity';
 import { Recent_Played } from './recent_played.entity';
+import { MusicCreateDto } from 'src/dto/musicCreate.dto';
 
 @Entity({ name: 'music' })
 export class Music extends BaseEntity {
@@ -157,5 +158,56 @@ export class Music extends BaseEntity {
       return false;
     }
     return true;
+  }
+
+  static async saveMusic(
+    musicCreateDto: MusicCreateDto,
+    user_id: string,
+  ): Promise<void> {
+    const { music_id, title, cover, file: music_file, genre } = musicCreateDto;
+
+    const entityManager = this.getRepository().manager;
+    const queryRunner = entityManager.connection.createQueryRunner();
+    await queryRunner.startTransaction();
+
+    try {
+      const newMusic: Music = this.create({
+        music_id,
+        title,
+        cover,
+        music_file,
+        created_at: new Date(),
+        genre,
+        user: { user_id },
+      });
+
+      await queryRunner.manager.save(newMusic);
+
+      await queryRunner.commitTransaction();
+    } catch {
+      await queryRunner.rollbackTransaction();
+
+      throw new Error();
+    } finally {
+      await queryRunner.release();
+    }
+  }
+
+  static async deleteMusic(music: Music): Promise<void> {
+    const entityManager = this.getRepository().manager;
+    const queryRunner = entityManager.connection.createQueryRunner();
+    await queryRunner.startTransaction();
+
+    try {
+      await this.remove(music);
+
+      await queryRunner.commitTransaction();
+    } catch {
+      await queryRunner.rollbackTransaction();
+
+      throw new Error();
+    } finally {
+      await queryRunner.release();
+    }
   }
 }

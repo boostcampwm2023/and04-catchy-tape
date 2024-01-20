@@ -37,7 +37,7 @@ export class MusicService {
     musicCreateDto: MusicCreateDto,
     user_id: string,
   ): Promise<string> {
-    const { music_id, title, cover, file: music_file, genre } = musicCreateDto;
+    const { music_id, genre } = musicCreateDto;
 
     if (!this.isValidGenre(genre)) {
       this.logger.error(`music.service - createMusic : NOT_EXIST_GENRE`);
@@ -48,28 +48,11 @@ export class MusicService {
       );
     }
 
-    const queryRunner = this.dataSource.createQueryRunner();
-    await queryRunner.startTransaction();
-
     try {
-      const newMusic: Music = this.musicRepository.create({
-        music_id,
-        title,
-        cover,
-        music_file,
-        created_at: new Date(),
-        genre,
-        user: { user_id },
-      });
-
-      await queryRunner.manager.save(newMusic);
-
-      await queryRunner.commitTransaction();
+      await Music.saveMusic(musicCreateDto, user_id);
 
       return music_id;
     } catch (err) {
-      await queryRunner.rollbackTransaction();
-
       if (err instanceof CatchyException) {
         throw err;
       }
@@ -80,8 +63,6 @@ export class MusicService {
         HTTP_STATUS_CODE.SERVER_ERROR,
         ERROR_CODE.SERVICE_ERROR,
       );
-    } finally {
-      await queryRunner.release();
     }
   }
 
@@ -199,12 +180,10 @@ export class MusicService {
       );
     }
 
-    const queryRunner = this.dataSource.createQueryRunner();
-    await queryRunner.startTransaction();
-
     try {
       const music: Music = await Music.getMusicById(musicId);
-      await queryRunner.manager.remove(music);
+
+      await Music.deleteMusic(music);
 
       const musicFilePath: string = music.music_file.slice(
         SLICE_COUNT,
@@ -218,19 +197,14 @@ export class MusicService {
       if (musicFilePath) this.deleteFolder(musicFilePath);
       if (coverFilePath) this.deleteFolder(coverFilePath);
 
-      await queryRunner.commitTransaction();
-      return music.music_id;
+      return musicId;
     } catch {
-      await queryRunner.rollbackTransaction();
-
       this.logger.error(`music.service - deleteMusicById : SERVICE_ERROR`);
       throw new CatchyException(
         'SERVICE_ERROR',
         HTTP_STATUS_CODE.SERVER_ERROR,
         ERROR_CODE.SERVICE_ERROR,
       );
-    } finally {
-      await queryRunner.release();
     }
   }
 
