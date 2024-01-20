@@ -6,10 +6,13 @@ import {
   PrimaryColumn,
   OneToMany,
   ILike,
+  DataSource,
+  EntityManager,
 } from 'typeorm';
 import { Playlist } from './playlist.entity';
 import { Music } from './music.entity';
 import { Recent_Played } from './recent_played.entity';
+import { UserUpdateDto } from 'src/dto/userUpdate.dto';
 
 @Entity({ name: 'user' })
 export class User extends BaseEntity {
@@ -80,5 +83,55 @@ export class User extends BaseEntity {
         nickname: ILike(`%${keyword}%`),
       },
     });
+  }
+
+  static async updateRecentPlaylist(
+    music_id: string,
+    user_id: string,
+  ): Promise<void> {
+    const entityManager: EntityManager = this.getRepository().manager;
+    const queryRunner = entityManager.connection.createQueryRunner();
+    await queryRunner.startTransaction();
+
+    try {
+      await queryRunner.manager.update(
+        Recent_Played,
+        { music: { music_id }, user: { user_id } },
+        { played_at: new Date() },
+      );
+
+      await queryRunner.commitTransaction();
+    } catch {
+      await queryRunner.rollbackTransaction();
+
+      throw new Error();
+    } finally {
+      await queryRunner.release();
+    }
+  }
+
+  static async updateUserInformation(
+    user_id: string,
+    image_url: string,
+    nickname: string | null,
+  ): Promise<void> {
+    const entityManager: EntityManager = this.getRepository().manager;
+    const queryRunner = entityManager.connection.createQueryRunner();
+    await queryRunner.startTransaction();
+
+    try {
+      await queryRunner.manager.update(
+        User,
+        { user_id },
+        { photo: image_url, nickname },
+      );
+      await queryRunner.commitTransaction();
+    } catch {
+      await queryRunner.rollbackTransaction();
+
+      throw new Error();
+    } finally {
+      await queryRunner.release();
+    }
   }
 }

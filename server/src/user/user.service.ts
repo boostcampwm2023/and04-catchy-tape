@@ -60,8 +60,6 @@ export class UserService {
     user_id: string,
     userUpdateDto: UserUpdateDto,
   ): Promise<string> {
-    const queryRunner = this.dataSource.createQueryRunner();
-    await queryRunner.startTransaction();
     try {
       if ((await User.countNumberOfUserById(user_id)) == 0) {
         this.logger.error(`user.service - updateUserImage : NOT_EXIST_USER`);
@@ -83,27 +81,19 @@ export class UserService {
         );
       }
 
-      await queryRunner.manager.update(
-        User,
-        { user_id },
-        { photo: image_url, nickname: nickname },
-      );
-      await queryRunner.commitTransaction();
+      await User.updateUserInformation(user_id, image_url, nickname);
+
       return user_id;
     } catch (err) {
-      await queryRunner.rollbackTransaction();
       if (err instanceof CatchyException) {
         throw err;
       }
-
       this.logger.error(`user.service - updateUserImage : SERVICE_ERROR`);
       throw new CatchyException(
         'SERVER_ERROR',
         HTTP_STATUS_CODE.SERVER_ERROR,
         ERROR_CODE.SERVICE_ERROR,
       );
-    } finally {
-      await queryRunner.release();
     }
   }
 
@@ -159,8 +149,6 @@ export class UserService {
   }
 
   async updateRecentMusic(music_id: string, user_id: string): Promise<number> {
-    const queryRunner = this.dataSource.createQueryRunner();
-    await queryRunner.startTransaction();
     try {
       if (!(await Music.getMusicById(music_id))) {
         this.logger.error(
@@ -183,16 +171,11 @@ export class UserService {
         return addedRow.recent_played_id;
       }
 
-      await queryRunner.manager.update(
-        Recent_Played,
-        { music: { music_id }, user: { user_id } },
-        { played_at: new Date() },
-      );
-      await queryRunner.commitTransaction();
+      await User.updateRecentPlaylist(music_id, user_id);
 
       return await Recent_Played.getRecentPlayedId(music_id, user_id);
     } catch (err) {
-      await queryRunner.rollbackTransaction();
+      console.log(err);
       if (err instanceof CatchyException) throw err;
 
       this.logger.error(`user.service - updateRecentMusic : SERVICE_ERROR`);
@@ -201,8 +184,6 @@ export class UserService {
         HTTP_STATUS_CODE.SERVER_ERROR,
         ERROR_CODE.SERVICE_ERROR,
       );
-    } finally {
-      await queryRunner.release();
     }
   }
 
