@@ -12,7 +12,7 @@ import {
 import { Playlist } from './playlist.entity';
 import { Music } from './music.entity';
 import { Recent_Played } from './recent_played.entity';
-import { UserUpdateDto } from 'src/dto/userUpdate.dto';
+import { v4 as uuid } from 'uuid';
 
 @Entity({ name: 'user' })
 export class User extends BaseEntity {
@@ -125,6 +125,50 @@ export class User extends BaseEntity {
         { user_id },
         { photo: image_url, nickname },
       );
+      await queryRunner.commitTransaction();
+    } catch {
+      await queryRunner.rollbackTransaction();
+
+      throw new Error();
+    } finally {
+      await queryRunner.release();
+    }
+  }
+
+  static async saveUser(nickname: string, email: string): Promise<void> {
+    const entityManager: EntityManager = this.getRepository().manager;
+    const queryRunner = entityManager.connection.createQueryRunner();
+    await queryRunner.startTransaction();
+
+    try {
+      const newUser = this.create({
+        user_id: uuid(),
+        nickname,
+        photo: null,
+        user_email: email,
+        created_at: new Date(),
+      });
+
+      await queryRunner.manager.save(newUser);
+
+      await queryRunner.commitTransaction();
+    } catch {
+      await queryRunner.rollbackTransaction();
+
+      throw new Error();
+    } finally {
+      await queryRunner.release();
+    }
+  }
+
+  static async deleteUser(user_id: string): Promise<void> {
+    const entityManager: EntityManager = this.getRepository().manager;
+    const queryRunner = entityManager.connection.createQueryRunner();
+    await queryRunner.startTransaction();
+
+    try {
+      await queryRunner.manager.update(User, { user_id }, { is_deleted: true });
+
       await queryRunner.commitTransaction();
     } catch {
       await queryRunner.rollbackTransaction();
