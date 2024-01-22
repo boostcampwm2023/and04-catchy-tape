@@ -2,6 +2,7 @@ import {
   BaseEntity,
   Column,
   Entity,
+  EntityManager,
   Index,
   JoinColumn,
   ManyToOne,
@@ -9,9 +10,15 @@ import {
 } from 'typeorm';
 import { Music } from './music.entity';
 import { Playlist } from './playlist.entity';
+import { Logger } from '@nestjs/common';
+import { CatchyException } from 'src/config/catchyException';
+import { HTTP_STATUS_CODE } from 'src/httpStatusCode.enum';
+import { ERROR_CODE } from 'src/config/errorCode.enum';
 
 @Entity({ name: 'music_playlist' })
 export class Music_Playlist extends BaseEntity {
+  private static readonly logger: Logger = new Logger('MusicPlaylistEntity');
+
   @PrimaryGeneratedColumn()
   music_playlist_id: number;
 
@@ -78,5 +85,47 @@ export class Music_Playlist extends BaseEntity {
       where: { playlist: { playlist_id } },
       order: { created_at: 'DESC' },
     });
+  }
+
+  static async addMusicToPlaylist(
+    musicId: string,
+    playlistId: number,
+  ): Promise<number> {
+    const entityManager: EntityManager = this.getRepository().manager;
+    const queryRunner = entityManager.connection.createQueryRunner();
+    await queryRunner.startTransaction();
+
+    // 관계테이블에 추가
+    try {
+      const new_music_playlist: Music_Playlist = this.create({
+        music: { music_id: musicId },
+        playlist: { playlist_id: playlistId },
+        created_at: new Date(),
+      });
+
+      await queryRunner.manager.save(new_music_playlist);
+      await queryRunner.manager.update(
+        Playlist,
+        { playlist_id: playlistId },
+        { updated_at: new Date() },
+      );
+
+      await queryRunner.commitTransaction();
+
+      return new_music_playlist.music_playlist_id;
+    } catch {
+      await queryRunner.rollbackTransaction();
+
+      this.logger.error(
+        `playlist.entity - addMusicToPlaylist : ENTITY_ERROR`,
+      );
+      throw new CatchyException(
+        'ENTITY_ERROR',
+        HTTP_STATUS_CODE.SERVER_ERROR,
+        ERROR_CODE.ENTITY_ERROR,
+      );
+    } finally {
+      await queryRunner.release();
+    }
   }
 }

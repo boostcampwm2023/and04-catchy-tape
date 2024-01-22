@@ -11,7 +11,7 @@ import { DataSource, Repository } from 'typeorm';
 
 @Injectable()
 export class PlaylistService {
-  private readonly logger = new Logger('PlaylistService');
+  private readonly logger: Logger = new Logger('PlaylistService');
   constructor(
     @InjectRepository(Playlist)
     private playlistRepository: Repository<Playlist>,
@@ -26,37 +26,7 @@ export class PlaylistService {
     userId: string,
     playlistCreateDto: PlaylistCreateDto,
   ): Promise<number> {
-    const queryRunner = this.dataSource.createQueryRunner();
-    await queryRunner.startTransaction();
-
-    try {
-      const title: string = playlistCreateDto.title;
-      const newPlaylist: Playlist = this.playlistRepository.create({
-        playlist_title: title,
-        created_at: new Date(),
-        updated_at: new Date(),
-        user: { user_id: userId },
-      });
-
-      const result: Playlist = await queryRunner.manager.save(newPlaylist);
-
-      await queryRunner.commitTransaction();
-
-      const playlistId: number = result.playlist_id;
-
-      return playlistId;
-    } catch {
-      await queryRunner.rollbackTransaction();
-
-      this.logger.error(`playlist.service - createPlaylist : SERVICE_ERROR`);
-      throw new CatchyException(
-        'SERVER_ERROR',
-        HTTP_STATUS_CODE.SERVER_ERROR,
-        ERROR_CODE.SERVICE_ERROR,
-      );
-    } finally {
-      await queryRunner.release();
-    }
+    return Playlist.createPlaylist(userId, playlistCreateDto);
   }
 
   async addMusicToPlaylist(
@@ -99,42 +69,7 @@ export class PlaylistService {
       );
     }
 
-    const queryRunner = this.dataSource.createQueryRunner();
-    await queryRunner.startTransaction();
-
-    // 관계테이블에 추가
-    try {
-      const new_music_playlist: Music_Playlist =
-        this.music_playlistRepository.create({
-          music: { music_id: musicId },
-          playlist: { playlist_id: playlistId },
-          created_at: new Date(),
-        });
-
-      await queryRunner.manager.save(new_music_playlist);
-      await queryRunner.manager.update(
-        Playlist,
-        { playlist_id: playlistId },
-        { updated_at: new Date() },
-      );
-
-      await queryRunner.commitTransaction();
-
-      return new_music_playlist.music_playlist_id;
-    } catch {
-      await queryRunner.rollbackTransaction();
-
-      this.logger.error(
-        `playlist.service - addMusicToPlaylist : SERVICE_ERROR`,
-      );
-      throw new CatchyException(
-        'SERVER_ERROR',
-        HTTP_STATUS_CODE.SERVER_ERROR,
-        ERROR_CODE.SERVICE_ERROR,
-      );
-    } finally {
-      await queryRunner.release();
-    }
+    return Music_Playlist.addMusicToPlaylist(musicId, playlistId);
   }
 
   async isAlreadyAdded(playlistId: number, musicId: string): Promise<boolean> {
