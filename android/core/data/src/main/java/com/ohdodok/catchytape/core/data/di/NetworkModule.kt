@@ -48,7 +48,12 @@ object NetworkModule {
     @Singleton
     @Provides
     fun provideLoggingInterceptor(): HttpLoggingInterceptor {
-        val logger = HttpLoggingInterceptor.Logger { message -> Timber.tag("okHttp").d(message) }
+        val logger = HttpLoggingInterceptor.Logger { message ->
+            if (message.contains("�")) return@Logger
+
+            Timber.tag("okHttp").d(message)
+        }
+
         return HttpLoggingInterceptor(logger)
             .setLevel(HttpLoggingInterceptor.Level.BODY)
     }
