@@ -176,7 +176,6 @@ export class UserService {
 
       return await Recent_Played.getRecentPlayedId(music_id, user_id);
     } catch (err) {
-      console.log(err);
       if (err instanceof CatchyException) throw err;
 
       this.logger.error(`user.service - updateRecentMusic : SERVICE_ERROR`);
