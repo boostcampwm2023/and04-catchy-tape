@@ -88,6 +88,7 @@ export class UserService {
       if (err instanceof CatchyException) {
         throw err;
       }
+
       this.logger.error(`user.service - updateUserImage : SERVICE_ERROR`);
       throw new CatchyException(
         'SERVER_ERROR',

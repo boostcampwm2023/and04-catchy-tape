@@ -15,9 +15,15 @@ import { Genres } from 'src/constants';
 import { Music_Playlist } from './music_playlist.entity';
 import { Recent_Played } from './recent_played.entity';
 import { MusicCreateDto } from 'src/dto/musicCreate.dto';
+import { CatchyException } from 'src/config/catchyException';
+import { HTTP_STATUS_CODE } from 'src/httpStatusCode.enum';
+import { ERROR_CODE } from 'src/config/errorCode.enum';
+import { Logger } from '@nestjs/common';
 
 @Entity({ name: 'music' })
 export class Music extends BaseEntity {
+  private static readonly logger: Logger = new Logger('MusicEntity');
+
   @PrimaryColumn()
   music_id: string;
 
@@ -187,7 +193,12 @@ export class Music extends BaseEntity {
     } catch {
       await queryRunner.rollbackTransaction();
 
-      throw new Error();
+      this.logger.error(`music.entity - saveMusic : ENTITY_ERROR`);
+      throw new CatchyException(
+        'ENTITY_ERROR',
+        HTTP_STATUS_CODE.SERVER_ERROR,
+        ERROR_CODE.ENTITY_ERROR,
+      );
     } finally {
       await queryRunner.release();
     }
@@ -205,7 +216,12 @@ export class Music extends BaseEntity {
     } catch {
       await queryRunner.rollbackTransaction();
 
-      throw new Error();
+      this.logger.error(`music.entity - deleteMusic : ENTITY_ERROR`);
+      throw new CatchyException(
+        'ENTITY_ERROR',
+        HTTP_STATUS_CODE.SERVER_ERROR,
+        ERROR_CODE.ENTITY_ERROR,
+      );
     } finally {
       await queryRunner.release();
     }

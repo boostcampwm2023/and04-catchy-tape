@@ -198,7 +198,11 @@ export class MusicService {
       if (coverFilePath) this.deleteFolder(coverFilePath);
 
       return musicId;
-    } catch {
+    } catch (err) {
+      if (err instanceof CatchyException) {
+        throw err;
+      }
+
       this.logger.error(`music.service - deleteMusicById : SERVICE_ERROR`);
       throw new CatchyException(
         'SERVICE_ERROR',

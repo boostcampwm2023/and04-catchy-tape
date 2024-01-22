@@ -13,9 +13,15 @@ import { Playlist } from './playlist.entity';
 import { Music } from './music.entity';
 import { Recent_Played } from './recent_played.entity';
 import { v4 as uuid } from 'uuid';
+import { Logger } from '@nestjs/common';
+import { CatchyException } from 'src/config/catchyException';
+import { HTTP_STATUS_CODE } from 'src/httpStatusCode.enum';
+import { ERROR_CODE } from 'src/config/errorCode.enum';
 
 @Entity({ name: 'user' })
 export class User extends BaseEntity {
+  private static readonly logger: Logger = new Logger('MusicEntity');
+
   @PrimaryColumn()
   user_id: string;
 
@@ -104,7 +110,12 @@ export class User extends BaseEntity {
     } catch {
       await queryRunner.rollbackTransaction();
 
-      throw new Error();
+      this.logger.error(`user.entity - updateRecentPlaylist : ENTITY_ERROR`);
+      throw new CatchyException(
+        'ENTITY_ERROR',
+        HTTP_STATUS_CODE.SERVER_ERROR,
+        ERROR_CODE.ENTITY_ERROR,
+      );
     } finally {
       await queryRunner.release();
     }
@@ -129,7 +140,12 @@ export class User extends BaseEntity {
     } catch {
       await queryRunner.rollbackTransaction();
 
-      throw new Error();
+      this.logger.error(`user.entity - updateUserInformation : ENTITY_ERROR`);
+      throw new CatchyException(
+        'ENTITY_ERROR',
+        HTTP_STATUS_CODE.SERVER_ERROR,
+        ERROR_CODE.ENTITY_ERROR,
+      );
     } finally {
       await queryRunner.release();
     }
@@ -155,7 +171,12 @@ export class User extends BaseEntity {
     } catch {
       await queryRunner.rollbackTransaction();
 
-      throw new Error();
+      this.logger.error(`user.entity - saveUser : ENTITY_ERROR`);
+      throw new CatchyException(
+        'ENTITY_ERROR',
+        HTTP_STATUS_CODE.SERVER_ERROR,
+        ERROR_CODE.ENTITY_ERROR,
+      );
     } finally {
       await queryRunner.release();
     }
@@ -173,7 +194,12 @@ export class User extends BaseEntity {
     } catch {
       await queryRunner.rollbackTransaction();
 
-      throw new Error();
+      this.logger.error(`user.entity - deleteUser : ENTITY_ERROR`);
+      throw new CatchyException(
+        'ENTITY_ERROR',
+        HTTP_STATUS_CODE.SERVER_ERROR,
+        ERROR_CODE.ENTITY_ERROR,
+      );
     } finally {
       await queryRunner.release();
     }

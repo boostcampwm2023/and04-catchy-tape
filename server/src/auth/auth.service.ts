@@ -108,7 +108,11 @@ export class AuthService {
       await User.deleteUser(user.user_id);
 
       return { userId: user.user_id };
-    } catch {
+    } catch (err) {
+      if (err instanceof CatchyException) {
+        throw err;
+      }
+
       throw new CatchyException(
         'SERVICE_ERROR',
         HTTP_STATUS_CODE.BAD_REQUEST,
