@@ -8,17 +8,15 @@ import { Music_Playlist } from 'src/entity/music_playlist.entity';
 import { Playlist } from 'src/entity/playlist.entity';
 import { HTTP_STATUS_CODE } from 'src/httpStatusCode.enum';
 import { DataSource, Repository } from 'typeorm';
+import { PlaylistRepository } from './playlist.repository';
 
 @Injectable()
 export class PlaylistService {
   private readonly logger: Logger = new Logger('PlaylistService');
   constructor(
-    @InjectRepository(Playlist)
-    private playlistRepository: Repository<Playlist>,
+    private readonly playlistRepository: PlaylistRepository,
     @InjectRepository(Music_Playlist)
     private music_playlistRepository: Repository<Music_Playlist>,
-    @InjectRepository(Music)
-    private MusicRepository: Repository<Music>,
     private readonly dataSource: DataSource,
   ) {}
 
@@ -26,7 +24,7 @@ export class PlaylistService {
     userId: string,
     playlistCreateDto: PlaylistCreateDto,
   ): Promise<number> {
-    return Playlist.createPlaylist(userId, playlistCreateDto);
+    return this.playlistRepository.createPlaylist(userId, playlistCreateDto);
   }
 
   async addMusicToPlaylist(
@@ -95,10 +93,8 @@ export class PlaylistService {
     userId: string,
   ): Promise<boolean> {
     try {
-      const playlistNumber = await Playlist.isExistPlaylistOnUser(
-        userId,
-        playlistId,
-      );
+      const playlistNumber =
+        await this.playlistRepository.isExistPlaylistOnUser(userId, playlistId);
 
       return playlistNumber !== 0;
     } catch {
@@ -130,7 +126,8 @@ export class PlaylistService {
 
   async getUserPlaylists(userId: string): Promise<Playlist[]> {
     try {
-      const playlists: Playlist[] = await Playlist.getPlaylistsByUserId(userId);
+      const playlists: Playlist[] =
+        await this.playlistRepository.getPlaylistsByUserId(userId);
 
       const countPromises = playlists.map(async (playlist) => {
         playlist['music_count'] =
@@ -200,42 +197,7 @@ export class PlaylistService {
       );
     }
 
-    const queryRunner = this.dataSource.createQueryRunner();
-    await queryRunner.startTransaction();
-
-    try {
-      await queryRunner.manager.delete(Music_Playlist, {
-        playlist: {
-          playlist_id: playlistId,
-        },
-      });
-
-      await queryRunner.manager.delete(Playlist, {
-        playlist_id: playlistId,
-        user: { user_id: userId },
-      });
-
-      await queryRunner.commitTransaction();
-      return playlistId;
-    } catch (error) {
-      console.log(error);
-      await queryRunner.rollbackTransaction();
-
-      if (error instanceof CatchyException) {
-        throw error;
-      }
-
-      this.logger.error(
-        `playlist.service - deleteSinglePlaylist : SERVICE_ERROR`,
-      );
-      throw new CatchyException(
-        'SERVICE_ERROR',
-        HTTP_STATUS_CODE.BAD_REQUEST,
-        ERROR_CODE.SERVICE_ERROR,
-      );
-    } finally {
-      await queryRunner.release();
-    }
+    return this.playlistRepository.deleteSinglePlaylist(userId, playlistId);
   }
 
   async deleteMusicInPlaylist(
