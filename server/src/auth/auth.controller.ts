@@ -20,9 +20,7 @@ import { User } from 'src/entity/user.entity';
 @Controller('users')
 export class AuthController {
   private readonly logger = new Logger('Auth');
-  constructor(
-    private authService: AuthService,
-  ) {}
+  constructor(private authService: AuthService) {}
 
   @Post('login')
   @HttpCode(HTTP_STATUS_CODE.SUCCESS)
@@ -42,6 +40,15 @@ export class AuthController {
   ): Promise<{ accessToken: string }> {
     this.logger.log(`POST /users/signup - body=${userCreateDto}`);
     return this.authService.signup(userCreateDto);
+  }
+
+  @Post('refresh')
+  @HttpCode(HTTP_STATUS_CODE.SUCCESS)
+  async refreshTokens(
+    @Body('refreshToken') refreshToken: string,
+  ): Promise<{ accessToken: string; refreshToken: string }> {
+    this.logger.log(`POST /users/refresh - refreshToken = ${refreshToken}`);
+    return await this.authService.refreshTokens(refreshToken);
   }
 
   @Get('verify')
