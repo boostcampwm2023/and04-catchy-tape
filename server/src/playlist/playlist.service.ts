@@ -1,5 +1,4 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
 import { CatchyException } from 'src/config/catchyException';
 import { ERROR_CODE } from 'src/config/errorCode.enum';
 import { PlaylistCreateDto } from 'src/dto/playlistCreate.dto';
@@ -7,18 +6,12 @@ import { Music } from 'src/entity/music.entity';
 import { Music_Playlist } from 'src/entity/music_playlist.entity';
 import { Playlist } from 'src/entity/playlist.entity';
 import { HTTP_STATUS_CODE } from 'src/httpStatusCode.enum';
-import { DataSource, Repository } from 'typeorm';
 import { PlaylistRepository } from './playlist.repository';
 
 @Injectable()
 export class PlaylistService {
   private readonly logger: Logger = new Logger('PlaylistService');
-  constructor(
-    private readonly playlistRepository: PlaylistRepository,
-    @InjectRepository(Music_Playlist)
-    private music_playlistRepository: Repository<Music_Playlist>,
-    private readonly dataSource: DataSource,
-  ) {}
+  constructor(private readonly playlistRepository: PlaylistRepository) {}
 
   async createPlaylist(
     userId: string,
@@ -228,53 +221,6 @@ export class PlaylistService {
       );
     }
 
-    const queryRunner = this.dataSource.createQueryRunner();
-    await queryRunner.startTransaction();
-
-    try {
-      const target: Music_Playlist =
-        await this.music_playlistRepository.findOne({
-          where: {
-            music: { music_id: musicId },
-            playlist: { playlist_id: playlistId },
-          },
-        });
-
-      const deletedMusicPlaylistId: number = target.music_playlist_id;
-
-      if (target == undefined) {
-        this.logger.error(
-          `playlist.service - deleteMusicInPlaylist : NOT_ADDED_MUSIC`,
-        );
-        throw new CatchyException(
-          'NOT_ADDED_MUSIC',
-          HTTP_STATUS_CODE.BAD_REQUEST,
-          ERROR_CODE.NOT_ADDED_MUSIC,
-        );
-      }
-
-      await queryRunner.manager.remove(target);
-
-      await queryRunner.commitTransaction();
-
-      return deletedMusicPlaylistId;
-    } catch (error) {
-      await queryRunner.rollbackTransaction();
-
-      if (error instanceof CatchyException) {
-        throw error;
-      }
-
-      this.logger.error(
-        `playlist.service - deleteMusicInPlaylist : SERVICE_ERROR`,
-      );
-      throw new CatchyException(
-        'SERVICE_ERROR',
-        HTTP_STATUS_CODE.BAD_REQUEST,
-        ERROR_CODE.SERVICE_ERROR,
-      );
-    } finally {
-      await queryRunner.release();
-    }
+    return this.playlistRepository.deleteMusicInPlaylist(playlistId, musicId);
   }
 }
