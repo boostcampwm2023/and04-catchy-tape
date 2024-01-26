@@ -11,6 +11,7 @@ import { User } from 'src/entity/user.entity';
 import { HTTP_STATUS_CODE } from 'src/httpStatusCode.enum';
 import { Repository, DataSource } from 'typeorm';
 import { v4 } from 'uuid';
+import { ONE_WEEK_TO_SECONDS } from 'src/constants';
 
 @Injectable()
 export class AuthService {
@@ -26,7 +27,6 @@ export class AuthService {
   ) {
     this.refreshOptions = {
       secret: this.configService.get<string>('REFRESH_SECRET_KEY'),
-      expiresIn: '7d',
     };
   }
 
@@ -40,7 +40,9 @@ export class AuthService {
 
       const refreshUuid = v4();
       const refreshPayload = { refresh_id: refreshUuid };
-      await this.cacheManager.set(refreshUuid, user.user_id);
+      await this.cacheManager.set(refreshUuid, user.user_id, {
+        ttl: ONE_WEEK_TO_SECONDS,
+      });
 
       const accessToken = this.jwtService.sign(accessPayload);
       const refreshToken = this.jwtService.sign(
@@ -107,9 +109,7 @@ export class AuthService {
         this.refreshOptions,
       );
 
-      console.log(refresh_id);
       const user_id: string = await this.cacheManager.get(refresh_id);
-      console.log(user_id);
 
       if (!user_id) {
         this.logger.error(
@@ -135,12 +135,14 @@ export class AuthService {
       const newRefreshTokenUuid = v4();
       const newAccessToken = this.jwtService.sign(payload);
       const newRefreshToken = this.jwtService.sign(
-        newRefreshTokenUuid,
+        { newRefreshTokenUuid },
         this.refreshOptions,
       );
 
       await this.cacheManager.del(refresh_id);
-      await this.cacheManager.set(newRefreshTokenUuid, user_id);
+      await this.cacheManager.set(newRefreshTokenUuid, user_id, {
+        ttl: ONE_WEEK_TO_SECONDS,
+      });
 
       return { accessToken: newAccessToken, refreshToken: newRefreshToken };
     } catch (error) {
