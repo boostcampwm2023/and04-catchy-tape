@@ -9,7 +9,8 @@ import { User } from 'src/entity/user.entity';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { Logger } from 'winston';
-import { redisStore } from 'cache-manager-redis-store';
+import { ONE_HOUR_TO_SECONDS } from 'src/constants';
+import * as redisStore from 'cache-manager-redis-store';
 
 @Module({
   imports: [
@@ -18,28 +19,19 @@ import { redisStore } from 'cache-manager-redis-store';
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => ({
         secret: configService.get<string>('JWT_SECRET_KEY'),
-        signOptions: { expiresIn: '60s' },
+        signOptions: { expiresIn: ONE_HOUR_TO_SECONDS },
       }),
       inject: [ConfigService],
     }),
-    CacheModule.register({
-      isGlobal: true,
+    CacheModule.registerAsync({
       imports: [ConfigModule],
-      useFactory: async (configService: ConfigService) => {
-        const store = await redisStore({
-          socket: {
-            host: configService.get<string>('REDIS_HOST_IP'),
-            port: configService.get<number>('REDIS_PORT'),
-          },
-          password: configService.get<string>('REDIS_PASSWORD'),
-          legacyMode: true,
-        });
-
-        return {
-          store: store as unknown as CacheStore,
-          ttl: configService.get<number>('REDIS_TTL'),
-        };
-      },
+      useFactory: async (configService: ConfigService) => ({
+        store: redisStore,
+        host: configService.get<string>('REDIS_HOST_IP'),
+        port: configService.get<number>('REDIS_PORT'),
+        password: configService.get<string>('REDIS_PASSWORD'),
+        ttl: configService.get<number>('REDIS_TTL'),
+      }),
       inject: [ConfigService],
     }),
     TypeOrmModule.forFeature([User]),
