@@ -4,7 +4,7 @@ import * as request from 'supertest';
 import { MusicService } from './music.service';
 import { UploadService } from 'src/upload/upload.service';
 import { NcloudConfigService } from 'src/config/ncloud.config';
-import { ConfigService } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { DataSource, Repository } from 'typeorm';
 import { Music } from 'src/entity/music.entity';
@@ -16,6 +16,7 @@ import { JwtService } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { GreenEyeService } from 'src/config/greenEye.service';
 import { JwtStrategy } from 'src/auth/jwt.strategy';
+import { CacheModule } from '@nestjs/cache-manager';
 
 describe('UploadController', () => {
   let app: INestApplication;
@@ -31,7 +32,7 @@ describe('UploadController', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      imports: [PassportModule],
+      imports: [PassportModule, CacheModule.register({}), ConfigModule],
       controllers: [MusicController],
       providers: [
         MusicService,
