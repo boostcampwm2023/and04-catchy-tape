@@ -5,6 +5,7 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { User } from 'src/entity/user.entity';
 import { DataSource, Repository } from 'typeorm';
 import { Recent_Played } from 'src/entity/recent_played.entity';
+import { MusicRepository } from 'src/music/music.repository';
 
 describe('UserController', () => {
   let controller: UserController;
@@ -23,6 +24,10 @@ describe('UserController', () => {
         },
         {
           provide: getRepositoryToken(Recent_Played),
+          useClass: Repository,
+        },
+        {
+          provide: MusicRepository,
           useClass: Repository,
         },
         {
