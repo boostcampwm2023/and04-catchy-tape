@@ -36,7 +36,7 @@ export class MusicService {
     musicCreateDto: MusicCreateDto,
     user_id: string,
   ): Promise<string> {
-    const { music_id, title, cover, file: music_file, genre } = musicCreateDto;
+    const { music_id, genre } = musicCreateDto;
 
     if (!this.isValidGenre(genre)) {
       this.logger.error(`music.service - createMusic : NOT_EXIST_GENRE`);
@@ -165,9 +165,6 @@ export class MusicService {
       );
     }
 
-    const queryRunner = this.dataSource.createQueryRunner();
-    await queryRunner.startTransaction();
-
     try {
       const music: Music = await this.musicRepository.getMusicById(musicId);
       await queryRunner.manager.remove(music);
@@ -184,10 +181,11 @@ export class MusicService {
       if (musicFilePath) this.deleteFolder(musicFilePath);
       if (coverFilePath) this.deleteFolder(coverFilePath);
 
-      await queryRunner.commitTransaction();
-      return music.music_id;
-    } catch {
-      await queryRunner.rollbackTransaction();
+      return musicId;
+    } catch (err) {
+      if (err instanceof CatchyException) {
+        throw err;
+      }
 
       this.logger.error(`music.service - deleteMusicById : SERVICE_ERROR`);
       throw new CatchyException(
@@ -195,8 +193,6 @@ export class MusicService {
         HTTP_STATUS_CODE.SERVER_ERROR,
         ERROR_CODE.SERVICE_ERROR,
       );
-    } finally {
-      await queryRunner.release();
     }
   }
 

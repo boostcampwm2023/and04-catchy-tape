@@ -6,13 +6,22 @@ import {
   PrimaryColumn,
   OneToMany,
   ILike,
+  DataSource,
+  EntityManager,
 } from 'typeorm';
 import { Playlist } from './playlist.entity';
 import { Music } from './music.entity';
 import { Recent_Played } from './recent_played.entity';
+import { v4 as uuid } from 'uuid';
+import { Logger } from '@nestjs/common';
+import { CatchyException } from 'src/config/catchyException';
+import { HTTP_STATUS_CODE } from 'src/httpStatusCode.enum';
+import { ERROR_CODE } from 'src/config/errorCode.enum';
 
 @Entity({ name: 'user' })
 export class User extends BaseEntity {
+  private static readonly logger: Logger = new Logger('MusicEntity');
+
   @PrimaryColumn()
   user_id: string;
 
@@ -80,5 +89,119 @@ export class User extends BaseEntity {
         nickname: ILike(`%${keyword}%`),
       },
     });
+  }
+
+  static async updateRecentPlaylist(
+    music_id: string,
+    user_id: string,
+  ): Promise<void> {
+    const entityManager: EntityManager = this.getRepository().manager;
+    const queryRunner = entityManager.connection.createQueryRunner();
+    await queryRunner.startTransaction();
+
+    try {
+      await queryRunner.manager.update(
+        Recent_Played,
+        { music: { music_id }, user: { user_id } },
+        { played_at: new Date() },
+      );
+
+      await queryRunner.commitTransaction();
+    } catch {
+      await queryRunner.rollbackTransaction();
+
+      this.logger.error(`user.entity - updateRecentPlaylist : ENTITY_ERROR`);
+      throw new CatchyException(
+        'ENTITY_ERROR',
+        HTTP_STATUS_CODE.SERVER_ERROR,
+        ERROR_CODE.ENTITY_ERROR,
+      );
+    } finally {
+      await queryRunner.release();
+    }
+  }
+
+  static async updateUserInformation(
+    user_id: string,
+    image_url: string,
+    nickname: string | null,
+  ): Promise<void> {
+    const entityManager: EntityManager = this.getRepository().manager;
+    const queryRunner = entityManager.connection.createQueryRunner();
+    await queryRunner.startTransaction();
+
+    try {
+      await queryRunner.manager.update(
+        User,
+        { user_id },
+        { photo: image_url, nickname },
+      );
+      await queryRunner.commitTransaction();
+    } catch {
+      await queryRunner.rollbackTransaction();
+
+      this.logger.error(`user.entity - updateUserInformation : ENTITY_ERROR`);
+      throw new CatchyException(
+        'ENTITY_ERROR',
+        HTTP_STATUS_CODE.SERVER_ERROR,
+        ERROR_CODE.ENTITY_ERROR,
+      );
+    } finally {
+      await queryRunner.release();
+    }
+  }
+
+  static async saveUser(nickname: string, email: string): Promise<void> {
+    const entityManager: EntityManager = this.getRepository().manager;
+    const queryRunner = entityManager.connection.createQueryRunner();
+    await queryRunner.startTransaction();
+
+    try {
+      const newUser = this.create({
+        user_id: uuid(),
+        nickname,
+        photo: null,
+        user_email: email,
+        created_at: new Date(),
+      });
+
+      await queryRunner.manager.save(newUser);
+
+      await queryRunner.commitTransaction();
+    } catch {
+      await queryRunner.rollbackTransaction();
+
+      this.logger.error(`user.entity - saveUser : ENTITY_ERROR`);
+      throw new CatchyException(
+        'ENTITY_ERROR',
+        HTTP_STATUS_CODE.SERVER_ERROR,
+        ERROR_CODE.ENTITY_ERROR,
+      );
+    } finally {
+      await queryRunner.release();
+    }
+  }
+
+  static async deleteUser(user_id: string): Promise<void> {
+    const entityManager: EntityManager = this.getRepository().manager;
+    const queryRunner = entityManager.connection.createQueryRunner();
+    await queryRunner.startTransaction();
+
+    try {
+      await queryRunner.manager.update(User, { user_id }, { is_deleted: true });
+
+      await queryRunner.commitTransaction();
+    } catch {
+      await queryRunner.rollbackTransaction();
+
+      this.logger.error(`user.entity - deleteUser : ENTITY_ERROR`);
+      throw new CatchyException(
+        'ENTITY_ERROR',
+        HTTP_STATUS_CODE.SERVER_ERROR,
+        ERROR_CODE.ENTITY_ERROR,
+      );
+    } finally {
+      await queryRunner.release();
+    }
   }
 }

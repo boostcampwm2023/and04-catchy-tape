@@ -7,7 +7,6 @@ import { UserCreateDto } from 'src/dto/userCreate.dto';
 import { User } from 'src/entity/user.entity';
 import { HTTP_STATUS_CODE } from 'src/httpStatusCode.enum';
 import { Repository, DataSource } from 'typeorm';
-import { v4 as uuid } from 'uuid';
 
 @Injectable()
 export class AuthService {
@@ -49,22 +48,9 @@ export class AuthService {
       );
     }
 
-    const queryRunner = this.dataSource.createQueryRunner();
-    await queryRunner.startTransaction();
-
     try {
       if (email) {
-        const newUser: User = this.userRepository.create({
-          user_id: uuid(),
-          nickname,
-          photo: null,
-          user_email: email,
-          created_at: new Date(),
-        });
-
-        await queryRunner.manager.save(newUser);
-
-        await queryRunner.commitTransaction();
+        await User.saveUser(nickname, email);
 
         return await this.login(email);
       }
@@ -75,10 +61,16 @@ export class AuthService {
         HTTP_STATUS_CODE.WRONG_TOKEN,
         ERROR_CODE.WRONG_TOKEN,
       );
-    } catch {
-      await queryRunner.rollbackTransaction();
-    } finally {
-      await queryRunner.release();
+    } catch (error) {
+      if (error instanceof CatchyException) {
+        throw error;
+      }
+
+      throw new CatchyException(
+        'SERVICE_ERROR',
+        HTTP_STATUS_CODE.BAD_REQUEST,
+        ERROR_CODE.SERVICE_ERROR,
+      );
     }
   }
 
@@ -112,20 +104,20 @@ export class AuthService {
   }
 
   async deleteUser(user: User): Promise<{ userId: string }> {
-    const queryRunner = this.dataSource.createQueryRunner();
-    await queryRunner.startTransaction();
-
-    const user_id: string = user.user_id;
-
     try {
-      await queryRunner.manager.update(User, { user_id }, { is_deleted: true });
-      await queryRunner.commitTransaction();
+      await User.deleteUser(user.user_id);
 
       return { userId: user.user_id };
-    } catch {
-      await queryRunner.rollbackTransaction();
-    } finally {
-      await queryRunner.release();
+    } catch (err) {
+      if (err instanceof CatchyException) {
+        throw err;
+      }
+
+      throw new CatchyException(
+        'SERVICE_ERROR',
+        HTTP_STATUS_CODE.BAD_REQUEST,
+        ERROR_CODE.SERVICE_ERROR,
+      );
     }
   }
 }

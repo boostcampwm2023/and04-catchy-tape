@@ -13,9 +13,16 @@ import { User } from './user.entity';
 import { Genres } from 'src/constants';
 import { Music_Playlist } from './music_playlist.entity';
 import { Recent_Played } from './recent_played.entity';
+import { MusicCreateDto } from 'src/dto/musicCreate.dto';
+import { CatchyException } from 'src/config/catchyException';
+import { HTTP_STATUS_CODE } from 'src/httpStatusCode.enum';
+import { ERROR_CODE } from 'src/config/errorCode.enum';
+import { Logger } from '@nestjs/common';
 
 @Entity({ name: 'music' })
 export class Music extends BaseEntity {
+  private static readonly logger: Logger = new Logger('MusicEntity');
+
   @PrimaryColumn()
   music_id: string;
 
