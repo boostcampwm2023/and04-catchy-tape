@@ -2,7 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { HTTP_STATUS_CODE } from 'src/httpStatusCode.enum';
 import { User } from 'src/entity/user.entity';
 import { Music } from 'src/entity/music.entity';
-import { DataSource, Repository, UpdateResult } from 'typeorm';
+import { DataSource, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CatchyException } from 'src/config/catchyException';
 import { ERROR_CODE } from 'src/config/errorCode.enum';
@@ -15,7 +15,6 @@ export class UserService {
   private readonly logger = new Logger('UserService');
   constructor(
     private musicRepository: MusicRepository,
-    @InjectRepository(User) private userRepository: Repository<User>,
     @InjectRepository(Recent_Played)
     private recentPlayedRepository: Repository<Recent_Played>,
     private readonly dataSource: DataSource,

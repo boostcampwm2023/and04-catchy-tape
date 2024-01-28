@@ -1,7 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { HTTP_STATUS_CODE } from 'src/httpStatusCode.enum';
-import { Repository, DataSource } from 'typeorm';
-import { InjectRepository } from '@nestjs/typeorm';
+import { DataSource } from 'typeorm';
 import { MusicCreateDto } from 'src/dto/musicCreate.dto';
 import { Music } from 'src/entity/music.entity';
 import { Genres, SLICE_COUNT } from 'src/constants';
@@ -10,7 +9,6 @@ import { ERROR_CODE } from 'src/config/errorCode.enum';
 import { UploadService } from 'src/upload/upload.service';
 import { NcloudConfigService } from 'src/config/ncloud.config';
 import { AWSError } from 'aws-sdk';
-import { DeleteObjectOutput } from 'aws-sdk/clients/s3';
 import { MusicRepository } from './music.repository';
 
 @Injectable()
@@ -19,7 +17,6 @@ export class MusicService {
   private objectStorage: AWS.S3;
   constructor(
     private musicRepository: MusicRepository,
-    // @InjectRepository(Music) private musicRepository: Repository<Music>,
     private uploadService: UploadService,
     private readonly ncloudConfigService: NcloudConfigService,
     private readonly dataSource: DataSource,
@@ -51,41 +48,6 @@ export class MusicService {
     }
 
     return this.musicRepository.addMusic(musicCreateDto, user_id);
-    // const queryRunner = this.dataSource.createQueryRunner();
-    // await queryRunner.startTransaction();
-
-    // try {
-    //   const newMusic: Music = this.musicRepository.create({
-    //     music_id,
-    //     title,
-    //     cover,
-    //     music_file,
-    //     created_at: new Date(),
-    //     genre,
-    //     user: { user_id },
-    //   });
-
-    //   await queryRunner.manager.save(newMusic);
-
-    //   await queryRunner.commitTransaction();
-
-    //   return music_id;
-    // } catch (err) {
-    //   await queryRunner.rollbackTransaction();
-
-    //   if (err instanceof CatchyException) {
-    //     throw err;
-    //   }
-
-    //   this.logger.error(`music.service - createMusic : SERVICE_ERROR`);
-    //   throw new CatchyException(
-    //     'SERVER ERROR',
-    //     HTTP_STATUS_CODE.SERVER_ERROR,
-    //     ERROR_CODE.SERVICE_ERROR,
-    //   );
-    // } finally {
-    //   await queryRunner.release();
-    // }
   }
 
   async getRecentMusic(): Promise<Music[]> {

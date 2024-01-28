@@ -153,7 +153,7 @@ export class MusicRepository {
         throw err;
       }
 
-      this.logger.error(`music.service - createMusic : SERVICE_ERROR`);
+      this.logger.error(`music.repository - addMusic : SERVICE_ERROR`);
       throw new CatchyException(
         'SERVER ERROR',
         HTTP_STATUS_CODE.SERVER_ERROR,
