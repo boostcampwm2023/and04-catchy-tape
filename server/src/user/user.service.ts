@@ -8,11 +8,13 @@ import { CatchyException } from 'src/config/catchyException';
 import { ERROR_CODE } from 'src/config/errorCode.enum';
 import { Recent_Played } from 'src/entity/recent_played.entity';
 import { UserUpdateDto } from './../dto/userUpdate.dto';
+import { MusicRepository } from 'src/music/music.repository';
 
 @Injectable()
 export class UserService {
   private readonly logger = new Logger('UserService');
   constructor(
+    private musicRepository: MusicRepository,
     @InjectRepository(User) private userRepository: Repository<User>,
     @InjectRepository(Recent_Played)
     private recentPlayedRepository: Repository<Recent_Played>,
@@ -162,7 +164,7 @@ export class UserService {
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.startTransaction();
     try {
-      if (!(await Music.getMusicById(music_id))) {
+      if (!(await this.musicRepository.getMusicById(music_id))) {
         this.logger.error(
           `user.service - updateRecentMusic : NOT_EXIST_MUSIC_ID`,
         );

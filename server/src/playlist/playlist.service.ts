@@ -7,11 +7,15 @@ import { Music_Playlist } from 'src/entity/music_playlist.entity';
 import { Playlist } from 'src/entity/playlist.entity';
 import { HTTP_STATUS_CODE } from 'src/httpStatusCode.enum';
 import { PlaylistRepository } from './playlist.repository';
+import { MusicRepository } from 'src/music/music.repository';
 
 @Injectable()
 export class PlaylistService {
   private readonly logger: Logger = new Logger('PlaylistService');
-  constructor(private readonly playlistRepository: PlaylistRepository) {}
+  constructor(
+    private readonly playlistRepository: PlaylistRepository,
+    private musicRepository: MusicRepository,
+  ) {}
 
   async createPlaylist(
     userId: string,
@@ -104,7 +108,7 @@ export class PlaylistService {
 
   async isExistMusic(musicId: string): Promise<boolean> {
     try {
-      const musicCount: number = await Music.countMusicById(musicId);
+      const musicCount: number = await this.musicRepository.countMusicById(musicId);
 
       return musicCount !== 0;
     } catch {

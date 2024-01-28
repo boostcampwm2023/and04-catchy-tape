@@ -11,13 +11,15 @@ import { UploadService } from 'src/upload/upload.service';
 import { NcloudConfigService } from 'src/config/ncloud.config';
 import { AWSError } from 'aws-sdk';
 import { DeleteObjectOutput } from 'aws-sdk/clients/s3';
+import { MusicRepository } from './music.repository';
 
 @Injectable()
 export class MusicService {
   private readonly logger = new Logger('MusicService');
   private objectStorage: AWS.S3;
   constructor(
-    @InjectRepository(Music) private musicRepository: Repository<Music>,
+    private musicRepository: MusicRepository,
+    // @InjectRepository(Music) private musicRepository: Repository<Music>,
     private uploadService: UploadService,
     private readonly ncloudConfigService: NcloudConfigService,
     private readonly dataSource: DataSource,
@@ -48,46 +50,47 @@ export class MusicService {
       );
     }
 
-    const queryRunner = this.dataSource.createQueryRunner();
-    await queryRunner.startTransaction();
+    return this.musicRepository.addMusic(musicCreateDto, user_id);
+    // const queryRunner = this.dataSource.createQueryRunner();
+    // await queryRunner.startTransaction();
 
-    try {
-      const newMusic: Music = this.musicRepository.create({
-        music_id,
-        title,
-        cover,
-        music_file,
-        created_at: new Date(),
-        genre,
-        user: { user_id },
-      });
+    // try {
+    //   const newMusic: Music = this.musicRepository.create({
+    //     music_id,
+    //     title,
+    //     cover,
+    //     music_file,
+    //     created_at: new Date(),
+    //     genre,
+    //     user: { user_id },
+    //   });
 
-      await queryRunner.manager.save(newMusic);
+    //   await queryRunner.manager.save(newMusic);
 
-      await queryRunner.commitTransaction();
+    //   await queryRunner.commitTransaction();
 
-      return music_id;
-    } catch (err) {
-      await queryRunner.rollbackTransaction();
+    //   return music_id;
+    // } catch (err) {
+    //   await queryRunner.rollbackTransaction();
 
-      if (err instanceof CatchyException) {
-        throw err;
-      }
+    //   if (err instanceof CatchyException) {
+    //     throw err;
+    //   }
 
-      this.logger.error(`music.service - createMusic : SERVICE_ERROR`);
-      throw new CatchyException(
-        'SERVER ERROR',
-        HTTP_STATUS_CODE.SERVER_ERROR,
-        ERROR_CODE.SERVICE_ERROR,
-      );
-    } finally {
-      await queryRunner.release();
-    }
+    //   this.logger.error(`music.service - createMusic : SERVICE_ERROR`);
+    //   throw new CatchyException(
+    //     'SERVER ERROR',
+    //     HTTP_STATUS_CODE.SERVER_ERROR,
+    //     ERROR_CODE.SERVICE_ERROR,
+    //   );
+    // } finally {
+    //   await queryRunner.release();
+    // }
   }
 
   async getRecentMusic(): Promise<Music[]> {
     try {
-      return Music.getRecentMusic();
+      return this.musicRepository.getRecentMusic();
     } catch {
       this.logger.error(`music.service - getRecentMusic : SERVICE_ERROR`);
       throw new CatchyException(
@@ -100,7 +103,7 @@ export class MusicService {
 
   async getMyUploads(userId: string, count: number): Promise<Music[]> {
     try {
-      return Music.getMusicListByUserId(userId, count);
+      return this.musicRepository.getMusicListByUserId(userId, count);
     } catch {
       this.logger.error(`music.service - getMyUploads : SERVICE_ERROR`);
       throw new CatchyException(
@@ -113,7 +116,8 @@ export class MusicService {
 
   async getMusicInfo(music_id: string): Promise<Music> {
     try {
-      const targetMusic: Music = await Music.getMusicById(music_id);
+      const targetMusic: Music =
+        await this.musicRepository.getMusicById(music_id);
 
       if (!targetMusic) {
         this.logger.error(`music.service - getMusicInfo : NOT_EXIST_MUSIC`);
@@ -176,7 +180,7 @@ export class MusicService {
 
   async getCertainKeywordNicknameUser(keyword: string): Promise<Music[]> {
     try {
-      return await Music.getCertainMusicByTitle(keyword);
+      return await this.musicRepository.getCertainMusicByTitle(keyword);
     } catch {
       this.logger.error(
         `music.service - getCertainKeywordNicknameUser : QUERY_ERROR`,
@@ -190,7 +194,7 @@ export class MusicService {
   }
 
   async deleteMusicById(musicId: string, userId: string): Promise<string> {
-    if (!(await Music.isMusicOwner(musicId, userId))) {
+    if (!(await this.musicRepository.isMusicOwner(musicId, userId))) {
       this.logger.error(`music.service - deleteMusicById : NOT_EXIST_MUSIC`);
       throw new CatchyException(
         'NOT_EXIST_MUSIC',
@@ -203,7 +207,7 @@ export class MusicService {
     await queryRunner.startTransaction();
 
     try {
-      const music: Music = await Music.getMusicById(musicId);
+      const music: Music = await this.musicRepository.getMusicById(musicId);
       await queryRunner.manager.remove(music);
 
       const musicFilePath: string = music.music_file.slice(
