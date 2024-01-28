@@ -165,6 +165,9 @@ export class MusicService {
       );
     }
 
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.startTransaction();
+    
     try {
       const music: Music = await this.musicRepository.getMusicById(musicId);
       await queryRunner.manager.remove(music);
