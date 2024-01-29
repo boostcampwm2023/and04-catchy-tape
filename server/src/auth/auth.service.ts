@@ -33,7 +33,7 @@ export class AuthService {
   async login(
     email: string,
   ): Promise<{ accessToken: string; refreshToken: string }> {
-    const user: User = await User.findUserByEmail(email);
+    const user = await User.findUserByEmail(email);
 
     if (user) {
       const accessPayload = { user_id: user.user_id };
@@ -109,7 +109,8 @@ export class AuthService {
         this.refreshOptions,
       );
 
-      const user_id: string | undefined = await this.cacheManager.get(refresh_id);
+      const user_id: string | undefined =
+        await this.cacheManager.get(refresh_id);
 
       if (!user_id) {
         this.logger.error(
@@ -178,13 +179,13 @@ export class AuthService {
   }
 
   async isExistEmail(email: string): Promise<boolean> {
-    const user: User = await User.findUserByEmail(email);
+    const user = await User.findUserByEmail(email);
 
     if (!user) {
       return false;
-    } else {
-      return true;
     }
+
+    return true;
   }
 
   async deleteUser(user: User): Promise<{ userId: string }> {

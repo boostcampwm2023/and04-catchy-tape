@@ -19,7 +19,7 @@ import { ERROR_CODE } from 'src/config/errorCode.enum';
 
 @Entity({ name: 'user' })
 export class User extends BaseEntity {
-  private static readonly logger: Logger = new Logger('MusicEntity');
+  private static readonly logger: Logger = new Logger('UserEntity');
 
   @PrimaryColumn()
   user_id: string;
@@ -28,7 +28,7 @@ export class User extends BaseEntity {
   nickname: string;
 
   @Column({ nullable: true })
-  photo: string | null;
+  photo?: string;
 
   @Column()
   user_email: string;
@@ -160,7 +160,6 @@ export class User extends BaseEntity {
       const newUser = this.create({
         user_id: uuid(),
         nickname,
-        photo: null,
         user_email: email,
         created_at: new Date(),
       });
