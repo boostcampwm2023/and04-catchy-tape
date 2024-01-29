@@ -6,7 +6,6 @@ import {
   HttpCode,
   Logger,
   Post,
-  Req,
   UseGuards,
   UsePipes,
   ValidationPipe,
@@ -16,6 +15,7 @@ import { HTTP_STATUS_CODE } from 'src/httpStatusCode.enum';
 import { UserCreateDto } from 'src/dto/userCreate.dto';
 import { AuthGuard } from '@nestjs/passport';
 import { User } from 'src/entity/user.entity';
+import { ReqUser } from 'src/config/decorators';
 
 @Controller('users')
 export class AuthController {
@@ -54,8 +54,7 @@ export class AuthController {
   @Get('verify')
   @UseGuards(AuthGuard())
   @HttpCode(HTTP_STATUS_CODE.SUCCESS)
-  verifyToken(@Req() req): { userId: string } {
-    const user: User = req.user;
+  verifyToken(@ReqUser() user: User): { userId: string } {
     this.logger.log(
       `GET /users/verify - nickname=${user.nickname} : response - userId=${user.user_id}`,
     );
@@ -65,8 +64,7 @@ export class AuthController {
   @Delete()
   @UseGuards(AuthGuard())
   @HttpCode(HTTP_STATUS_CODE.SUCCESS)
-  async deleteUser(@Req() req): Promise<{ userId: string }> {
-    const user: User = req.user;
+  async deleteUser(@ReqUser() user: User): Promise<{ userId: string }> {
     this.logger.log(`DELETE /users - nickname=${user.nickname}`);
     return await this.authService.deleteUser(user);
   }

@@ -15,10 +15,10 @@ export class GreenEyeService {
   contentType: string = 'application/json';
 
   constructor(private readonly configService: ConfigService) {
-    this.greenEyeSecretKey = configService.get<string>('GREEN_EYE_SECRET_KEY');
+    this.greenEyeSecretKey = configService.get<string>('GREEN_EYE_SECRET_KEY', '');
     this.greenEyeRequestUrl = configService.get<string>(
-      'GREEN_EYE_REQUEST_URL',
-    );
+      'GREEN_EYE_REQUEST_URL',''
+    )
   }
 
   private getTimeStamp(): number {

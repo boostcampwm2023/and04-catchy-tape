@@ -13,14 +13,14 @@ export class NcloudConfigService {
   private readonly requestActionsUrl: string;
 
   constructor(private readonly configService: ConfigService) {
-    this.accessKey = this.configService.get<string>('ACCESS_ID');
-    this.secretKey = this.configService.get<string>('SECRET_ACCESS_KEY');
-    this.gatewayKey = this.configService.get<string>('API_GW_ACCESS_KEY');
+    this.accessKey = this.configService.get<string>('ACCESS_ID', '') ;
+    this.secretKey = this.configService.get<string>('SECRET_ACCESS_KEY', '') ;
+    this.gatewayKey = this.configService.get<string>('API_GW_ACCESS_KEY', '') ;
     this.executeActionsUrl = this.configService.get<string>(
-      'CLOUD_FUNCTIONS_EXECUTE_URL',
+      'CLOUD_FUNCTIONS_EXECUTE_URL',''
     );
     this.requestActionsUrl = this.configService.get<string>(
-      'CLOUD_FUNCTIONS_REQUEST_URL',
+      'CLOUD_FUNCTIONS_REQUEST_URL',''
     );
   }
 

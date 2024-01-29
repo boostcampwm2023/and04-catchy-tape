@@ -16,7 +16,7 @@ import { ONE_WEEK_TO_SECONDS } from 'src/constants';
 @Injectable()
 export class AuthService {
   private readonly logger = new Logger('AuthService');
-  private readonly refreshOptions;
+  private readonly refreshOptions: {};
 
   constructor(
     @InjectRepository(User) private userRepository: Repository<User>,
@@ -109,7 +109,7 @@ export class AuthService {
         this.refreshOptions,
       );
 
-      const user_id: string = await this.cacheManager.get(refresh_id);
+      const user_id: string | undefined = await this.cacheManager.get(refresh_id);
 
       if (!user_id) {
         this.logger.error(
