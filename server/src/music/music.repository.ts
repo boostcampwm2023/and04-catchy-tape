@@ -14,10 +14,6 @@ export class MusicRepository {
   constructor(private readonly dataSource: DataSource) {
     this.musicRepository = this.dataSource.getRepository(Music);
   }
-
-  async countMusicById(musicId: string): Promise<number> {
-    return this.musicRepository.countBy({ music_id: musicId });
-  }
   
   async getMusicListByUserId(userId: string, count: number): Promise<Music[]> {
     return this.musicRepository.find({
@@ -42,6 +38,10 @@ export class MusicRepository {
       },
       take: count,
     });
+  }
+
+  async countMusicById(musicId: string): Promise<number> {
+    return this.musicRepository.countBy({ music_id: musicId });
   }
 
   async getRecentMusic(): Promise<Music[]> {
