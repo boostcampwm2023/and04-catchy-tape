@@ -10,6 +10,8 @@ import { Music } from 'src/entity/music.entity';
 import { Music_Playlist } from 'src/entity/music_playlist.entity';
 import { Logger } from '@nestjs/common';
 import { PassportModule } from '@nestjs/passport';
+import { CacheModule } from '@nestjs/cache-manager';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 
 describe('AuthController', () => {
   let controller: AuthController;
@@ -20,11 +22,17 @@ describe('AuthController', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      imports: [PassportModule.register({ defaultStrategy: 'jwt' }), JwtModule],
+      imports: [
+        PassportModule.register({ defaultStrategy: 'jwt' }),
+        JwtModule,
+        CacheModule.register({}),
+        ConfigModule,
+      ],
       controllers: [AuthController],
       providers: [
         Logger,
         AuthService,
+        ConfigService,
         {
           provide: getRepositoryToken(User),
           useClass: Repository,

@@ -3,14 +3,14 @@ import { AuthService } from './auth.service';
 import { Repository, DataSource } from 'typeorm';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { User } from 'src/entity/user.entity';
-import { JwtModule, JwtService } from '@nestjs/jwt';
+import { JwtModule } from '@nestjs/jwt';
 import { PlaylistService } from 'src/playlist/playlist.service';
-import { Playlist } from 'src/entity/playlist.entity';
-import { Music } from 'src/entity/music.entity';
 import { Music_Playlist } from 'src/entity/music_playlist.entity';
 import { PassportModule } from '@nestjs/passport';
 import { PlaylistRepository } from 'src/playlist/playlist.repository';
 import { MusicRepository } from 'src/music/music.repository';
+import { CacheModule } from '@nestjs/cache-manager';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 
 describe('AuthService', () => {
   let service: AuthService;
@@ -21,9 +21,15 @@ describe('AuthService', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      imports: [PassportModule.register({ defaultStrategy: 'jwt' }), JwtModule],
+      imports: [
+        PassportModule.register({ defaultStrategy: 'jwt' }),
+        JwtModule,
+        CacheModule.register({}),
+        ConfigModule,
+      ],
       providers: [
         AuthService,
+        ConfigService,
         {
           provide: getRepositoryToken(User),
           useClass: Repository,
