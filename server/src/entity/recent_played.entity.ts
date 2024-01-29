@@ -47,7 +47,7 @@ export class Recent_Played extends BaseEntity {
       where: { music: { music_id }, user: { user_id } },
     });
 
-    if(recentPlayed instanceof Recent_Played) {
+    if (recentPlayed instanceof Recent_Played) {
       return recentPlayed.recent_played_id;
     }
 
@@ -60,7 +60,9 @@ export class Recent_Played extends BaseEntity {
     });
   }
 
-  static async getRecentPlayedMusic(user_id: string): Promise<Recent_Played> {
+  static async getRecentPlayedMusic(
+    user_id: string,
+  ): Promise<Recent_Played | null> {
     return this.findOne({
       relations: { music: true, user: true },
       select: { music: { cover: true } },

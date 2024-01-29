@@ -8,6 +8,7 @@ import { Playlist } from 'src/entity/playlist.entity';
 import { HTTP_STATUS_CODE } from 'src/httpStatusCode.enum';
 import { PlaylistRepository } from './playlist.repository';
 import { MusicRepository } from 'src/music/music.repository';
+import { playlistInfo } from 'src/dto/playlistInfo.dto';
 
 @Injectable()
 export class PlaylistService {
@@ -108,7 +109,8 @@ export class PlaylistService {
 
   async isExistMusic(musicId: string): Promise<boolean> {
     try {
-      const musicCount: number = await this.musicRepository.countMusicById(musicId);
+      const musicCount: number =
+        await this.musicRepository.countMusicById(musicId);
 
       return musicCount !== 0;
     } catch {
@@ -121,27 +123,36 @@ export class PlaylistService {
     }
   }
 
-  async getUserPlaylists(userId: string): Promise<Playlist[]> {
+  async getUserPlaylists(userId: string): Promise<playlistInfo[]> {
     try {
       const playlists: Playlist[] =
         await this.playlistRepository.getPlaylistsByUserId(userId);
 
-      const countPromises = playlists.map(async (playlist) => {
-        playlist['music_count'] =
-          await Music_Playlist.getMusicCountByPlaylistId(playlist.playlist_id);
-      });
+      const playlistsInfo: playlistInfo[] = [];
 
-      const thumbnailPromises = playlists.map(async (playlist) => {
-        const target = await Music_Playlist.getThumbnailByPlaylistId(
+      /*TODO: 이 과정에서 DTO를 추가하게 되어 개선 필요*/
+      const countPromises = playlists.map(async (playlist) => {
+        const music_count = await Music_Playlist.getMusicCountByPlaylistId(
           playlist.playlist_id,
         );
-        playlist['thumbnail'] = !target ? null : target.music.cover;
+
+        const targetMusic = await Music_Playlist.getThumbnailByPlaylistId(
+          playlist.playlist_id,
+        );
+
+        const thumbnail = !targetMusic ? null : targetMusic.music.cover;
+
+        playlistsInfo.push({
+          playlist_id: playlist.playlist_id,
+          playlist_title: playlist.playlist_title,
+          music_count,
+          thumbnail,
+        });
       });
 
       await Promise.all(countPromises);
-      await Promise.all(thumbnailPromises);
 
-      return playlists;
+      return playlistsInfo;
     } catch {
       this.logger.error(`playlist.service - getUserPlaylists : SERVICE_ERROR`);
       throw new CatchyException(

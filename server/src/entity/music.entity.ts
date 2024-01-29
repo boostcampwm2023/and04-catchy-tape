@@ -26,7 +26,7 @@ export class Music extends BaseEntity {
   title: string;
 
   @Column({ nullable: true })
-  lyrics: string | null;
+  lyrics?: string;
 
   @Column()
   cover: string;
