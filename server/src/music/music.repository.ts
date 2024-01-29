@@ -14,7 +14,7 @@ export class MusicRepository {
   constructor(private readonly dataSource: DataSource) {
     this.musicRepository = this.dataSource.getRepository(Music);
   }
-  
+
   async getMusicListByUserId(userId: string, count: number): Promise<Music[]> {
     return this.musicRepository.find({
       relations: {
@@ -69,7 +69,7 @@ export class MusicRepository {
     });
   }
 
-  async getMusicById(music_id: string): Promise<Music> {
+  async getMusicById(music_id: string): Promise<Music | null> {
     return this.musicRepository.findOne({
       relations: { user: true },
       select: { user: { user_id: true, nickname: true } },
@@ -124,7 +124,10 @@ export class MusicRepository {
     return true;
   }
 
-  async addMusic(musicCreateDto: MusicCreateDto, user_id): Promise<string> {
+  async addMusic(
+    musicCreateDto: MusicCreateDto,
+    user_id: string,
+  ): Promise<string> {
     const { music_id, title, cover, file: music_file, genre } = musicCreateDto;
 
     const queryRunner = this.dataSource.createQueryRunner();
