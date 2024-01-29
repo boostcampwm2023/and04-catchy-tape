@@ -6,7 +6,6 @@ import {
   PrimaryColumn,
   OneToMany,
   ILike,
-  DataSource,
   EntityManager,
 } from 'typeorm';
 import { Playlist } from './playlist.entity';
@@ -53,19 +52,19 @@ export class User extends BaseEntity {
     return this.count({ where: { user_id } });
   }
 
-  static async findUserByNickName(nickname: string): Promise<User> {
+  static async findUserByNickName(nickname: string): Promise<User | null> {
     return this.findOneBy({
       nickname,
     });
   }
 
-  static async findUserById(user_id: string): Promise<User> {
+  static async findUserById(user_id: string): Promise<User | null> {
     return this.findOne({
       where: { user_id, is_deleted: false },
     });
   }
 
-  static async findUserByEmail(user_email: string): Promise<User> {
+  static async findUserByEmail(user_email: string): Promise<User | null> {
     return this.findOneBy({
       user_email,
       is_deleted: false,
@@ -124,7 +123,7 @@ export class User extends BaseEntity {
   static async updateUserInformation(
     user_id: string,
     image_url: string,
-    nickname: string | null,
+    nickname?: string,
   ): Promise<void> {
     const entityManager: EntityManager = this.getRepository().manager;
     const queryRunner = entityManager.connection.createQueryRunner();
@@ -136,6 +135,7 @@ export class User extends BaseEntity {
         { user_id },
         { photo: image_url, nickname },
       );
+
       await queryRunner.commitTransaction();
     } catch {
       await queryRunner.rollbackTransaction();
