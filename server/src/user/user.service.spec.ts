@@ -5,6 +5,7 @@ import { DataSource, Repository } from 'typeorm';
 import { User } from '../entity/user.entity';
 import { Recent_Played } from 'src/entity/recent_played.entity';
 import { PassportModule } from '@nestjs/passport';
+import { MusicRepository } from 'src/music/music.repository';
 
 describe('UserService', () => {
   let service: UserService;
@@ -22,6 +23,10 @@ describe('UserService', () => {
         },
         {
           provide: getRepositoryToken(Recent_Played),
+          useClass: Repository,
+        },
+        {
+          provide: MusicRepository,
           useClass: Repository,
         },
         {

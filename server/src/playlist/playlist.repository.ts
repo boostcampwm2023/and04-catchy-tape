@@ -11,7 +11,7 @@ import { DataSource, QueryRunner, Repository } from 'typeorm';
 export class PlaylistRepository {
   private playlistRepository: Repository<Playlist>;
   private music_playlistRepository: Repository<Music_Playlist>;
-  private readonly logger: Logger = new Logger('PlaylistEntity');
+  private readonly logger: Logger = new Logger('PlaylistRepository');
 
   constructor(private readonly dataSource: DataSource) {
     this.playlistRepository = this.dataSource.getRepository(Playlist);

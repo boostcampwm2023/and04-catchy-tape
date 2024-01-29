@@ -2,18 +2,19 @@ import { Injectable, Logger } from '@nestjs/common';
 import { HTTP_STATUS_CODE } from 'src/httpStatusCode.enum';
 import { User } from 'src/entity/user.entity';
 import { Music } from 'src/entity/music.entity';
-import { DataSource, Repository, UpdateResult } from 'typeorm';
+import { DataSource, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CatchyException } from 'src/config/catchyException';
 import { ERROR_CODE } from 'src/config/errorCode.enum';
 import { Recent_Played } from 'src/entity/recent_played.entity';
 import { UserUpdateDto } from './../dto/userUpdate.dto';
+import { MusicRepository } from 'src/music/music.repository';
 
 @Injectable()
 export class UserService {
   private readonly logger = new Logger('UserService');
   constructor(
-    @InjectRepository(User) private userRepository: Repository<User>,
+    private musicRepository: MusicRepository,
     @InjectRepository(Recent_Played)
     private recentPlayedRepository: Repository<Recent_Played>,
     private readonly dataSource: DataSource,
@@ -151,7 +152,7 @@ export class UserService {
 
   async updateRecentMusic(music_id: string, user_id: string): Promise<number> {
     try {
-      if (!(await Music.getMusicById(music_id))) {
+      if (!(await this.musicRepository.getMusicById(music_id))) {
         this.logger.error(
           `user.service - updateRecentMusic : NOT_EXIST_MUSIC_ID`,
         );
