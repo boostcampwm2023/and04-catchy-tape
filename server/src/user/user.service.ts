@@ -74,7 +74,7 @@ export class UserService {
       const nickname = userUpdateDto.nickname;
       const image_url = userUpdateDto.image_url;
 
-      if (await this.isDuplicatedUserNickname(nickname)) {
+      if (nickname && (await this.isDuplicatedUserNickname(nickname))) {
         throw new CatchyException(
           'DUPLICATED_NICKNAME',
           HTTP_STATUS_CODE.DUPLICATED_NICKNAME,
@@ -82,7 +82,12 @@ export class UserService {
         );
       }
 
-      await User.updateUserInformation(user_id, image_url, nickname);
+      if (nickname) {
+        await User.updateUserInformation(user_id, image_url, nickname);
+        return user_id;
+      }
+
+      await User.updateUserInformation(user_id, image_url);
 
       return user_id;
     } catch (err) {
@@ -101,8 +106,22 @@ export class UserService {
 
   async getUserInformation(user_id: string): Promise<User> {
     try {
-      return await User.findUserById(user_id);
-    } catch {
+      const user = await User.findUserById(user_id);
+
+      if (!user) {
+        throw new CatchyException(
+          'NOT_EXIST_USER',
+          HTTP_STATUS_CODE.NOT_FOUND,
+          ERROR_CODE.NOT_EXIST_USER,
+        );
+      }
+
+      return user;
+    } catch (err) {
+      if (err instanceof CatchyException) {
+        throw err;
+      }
+
       this.logger.error(`user.service - getUserInfomation : SERVICE_ERROR`);
       throw new CatchyException(
         'SERVER_ERROR',
@@ -207,8 +226,20 @@ export class UserService {
     try {
       const recentMusic = await Recent_Played.getRecentPlayedMusic(user_id);
 
-      return recentMusic.music.cover;
-    } catch {
+      if (recentMusic instanceof Recent_Played) {
+        return recentMusic.music.cover;
+      }
+
+      throw new CatchyException(
+        'NO_RECENT_PLAYED_MUSIC',
+        HTTP_STATUS_CODE.NOT_FOUND,
+        ERROR_CODE.NO_RECENT_PLAYED_MUSIC,
+      );
+    } catch (err) {
+      if (err instanceof CatchyException) {
+        throw err;
+      }
+
       this.logger.error(
         `user.service - getRecentPlaylistThumbnail : QUERY_ERROR`,
       );
