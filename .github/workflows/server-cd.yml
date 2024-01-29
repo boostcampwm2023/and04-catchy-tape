@@ -47,6 +47,11 @@ jobs:
           CLOUD_FUNCTIONS_EXECUTE_URL: ${{secrets.CLOUD_FUNCTIONS_EXECUTE_URL}}
           CLOUD_FUNCTIONS_REQUEST_URL: ${{secrets.CLOUD_FUNCTIONS_REQUEST_URL}}
           API_GW_ACCESS_KEY: ${{secrets.API_GW_ACCESS_KEY}}
+          REFRESH_SECRET_KEY: ${{secrets.REFRESH_SECRET_KEY}}
+          REDIS_HOST_IP: ${{secrets.REDIS_HOST_IP}}
+          REDIS_PASSWORD: ${{secrets.REDIS_PASSWORD}}
+          REDIS_PORT: ${{secrets.REDIS_PORT}}
+          REDIS_TTL: ${{secrets.REDIS_TTL}}
         run: |
           cd server
           touch prod.env
