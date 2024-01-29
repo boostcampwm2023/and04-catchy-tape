@@ -16,7 +16,7 @@ import {
 } from 'test/constants/music.mockData';
 import { GreenEyeService } from 'src/config/greenEye.service';
 import { Recent_Played } from 'src/entity/recent_played.entity';
-import { CacheModule } from '@nestjs/cache-manager';
+import { MusicRepository } from './music.repository';
 
 describe('UploadController', () => {
   let app: INestApplication;
@@ -24,7 +24,8 @@ describe('UploadController', () => {
   let uploadService: UploadService;
   let cloudService: NcloudConfigService;
   let configService: ConfigService;
-  let mockRepository: jest.Mocked<Repository<Music>>;
+  // let mockRepository: jest.Mocked<Repository<Music>>;
+  let mockRepository: jest.Mocked<MusicRepository>;
   let mockDataSource: jest.Mocked<DataSource>;
 
   beforeEach(async () => {
@@ -38,7 +39,7 @@ describe('UploadController', () => {
         ConfigService,
         GreenEyeService,
         {
-          provide: getRepositoryToken(Music),
+          provide: MusicRepository,
           useClass: Repository,
         },
         {
@@ -66,7 +67,7 @@ describe('UploadController', () => {
     mockRepository = {
       create: jest.fn(),
       save: jest.fn(),
-    } as unknown as jest.Mocked<Repository<Music>>;
+    } as unknown as jest.Mocked<MusicRepository>;
     musicService = new MusicService(
       mockRepository,
       uploadService,

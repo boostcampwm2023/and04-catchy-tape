@@ -10,8 +10,7 @@ import { Music } from 'src/entity/music.entity';
 import { Music_Playlist } from 'src/entity/music_playlist.entity';
 import { PassportModule } from '@nestjs/passport';
 import { PlaylistRepository } from 'src/playlist/playlist.repository';
-import { CacheModule } from '@nestjs/cache-manager';
-import { ConfigModule, ConfigService } from '@nestjs/config';
+import { MusicRepository } from 'src/music/music.repository';
 
 describe('AuthService', () => {
   let service: AuthService;
@@ -40,7 +39,7 @@ describe('AuthService', () => {
           useClass: Repository,
         },
         {
-          provide: getRepositoryToken(Music),
+          provide: MusicRepository,
           useClass: Repository,
         },
         {
