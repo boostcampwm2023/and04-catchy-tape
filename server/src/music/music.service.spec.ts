@@ -4,16 +4,15 @@ import { MusicService } from './music.service';
 import { UploadService } from 'src/upload/upload.service';
 import { NcloudConfigService } from 'src/config/ncloud.config';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { getRepositoryToken } from '@nestjs/typeorm';
 import { DataSource, Repository } from 'typeorm';
 import { MusicCreateDto } from 'src/dto/musicCreate.dto';
 import { CatchyException } from 'src/config/catchyException';
 import { faultGenreMusicCreateInfo } from 'test/constants/music.mockData';
 import { GreenEyeService } from 'src/config/greenEye.service';
-import { Recent_Played } from 'src/entity/recent_played.entity';
-import { MusicRepository } from './music.repository';
+import { MusicRepository } from '../repository/music.repository';
 import { CacheModule } from '@nestjs/cache-manager';
-import { UserRepository } from 'src/user/user.repository';
+import { UserRepository } from 'src/repository/user.repository';
+import { Recent_PlayedRepository } from 'src/repository/recent_played.repository';
 
 describe('UploadController', () => {
   let app: INestApplication;
@@ -43,7 +42,7 @@ describe('UploadController', () => {
           useClass: Repository,
         },
         {
-          provide: getRepositoryToken(Recent_Played),
+          provide: Recent_PlayedRepository,
           useClass: Repository,
         },
         {

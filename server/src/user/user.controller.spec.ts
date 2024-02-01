@@ -1,12 +1,10 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { UserController } from './user.controller';
 import { UserService } from './user.service';
-import { getRepositoryToken } from '@nestjs/typeorm';
-import { User } from 'src/entity/user.entity';
 import { DataSource, Repository } from 'typeorm';
-import { Recent_Played } from 'src/entity/recent_played.entity';
-import { MusicRepository } from 'src/music/music.repository';
-import { UserRepository } from './user.repository';
+import { MusicRepository } from 'src/repository/music.repository';
+import { UserRepository } from '../repository/user.repository';
+import { Recent_PlayedRepository } from 'src/repository/recent_played.repository';
 
 describe('UserController', () => {
   let controller: UserController;
@@ -24,7 +22,7 @@ describe('UserController', () => {
           useClass: Repository,
         },
         {
-          provide: getRepositoryToken(Recent_Played),
+          provide: Recent_PlayedRepository,
           useClass: Repository,
         },
         {

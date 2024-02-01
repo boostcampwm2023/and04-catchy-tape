@@ -1,19 +1,16 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
-import { getRepositoryToken } from '@nestjs/typeorm';
-import { User } from 'src/entity/user.entity';
 import { Repository, DataSource } from 'typeorm';
 import { JwtModule } from '@nestjs/jwt';
-import { Playlist } from 'src/entity/playlist.entity';
-import { Music } from 'src/entity/music.entity';
-import { Music_Playlist } from 'src/entity/music_playlist.entity';
 import { Logger } from '@nestjs/common';
 import { PassportModule } from '@nestjs/passport';
 import { CacheModule } from '@nestjs/cache-manager';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { UserRepository } from 'src/user/user.repository';
-import { MusicRepository } from 'src/music/music.repository';
+import { UserRepository } from 'src/repository/user.repository';
+import { MusicRepository } from 'src/repository/music.repository';
+import { PlaylistRepository } from 'src/repository/playlist.repository';
+import { Music_PlaylistRepository } from 'src/repository/music_playlist.repository';
 
 describe('AuthController', () => {
   let controller: AuthController;
@@ -40,7 +37,7 @@ describe('AuthController', () => {
           useClass: Repository,
         },
         {
-          provide: getRepositoryToken(Playlist),
+          provide: PlaylistRepository,
           useClass: Repository,
         },
         {
@@ -48,7 +45,7 @@ describe('AuthController', () => {
           useClass: Repository,
         },
         {
-          provide: getRepositoryToken(Music_Playlist),
+          provide: Music_PlaylistRepository,
           useClass: Repository,
         },
         {
