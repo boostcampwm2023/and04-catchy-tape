@@ -11,7 +11,7 @@ import { AuthService } from './auth.service';
 import { Logger } from 'winston';
 import { ONE_HOUR_TO_SECONDS } from 'src/constants';
 import * as redisStore from 'cache-manager-redis-store';
-import { UserRepository } from 'src/user/user.repository';
+import { UserRepository } from 'src/repository/user.repository';
 
 @Module({
   imports: [

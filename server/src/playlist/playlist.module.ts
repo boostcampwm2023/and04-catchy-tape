@@ -6,9 +6,10 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from 'src/auth/auth.module';
 import { Music_Playlist } from 'src/entity/music_playlist.entity';
 import { Music } from 'src/entity/music.entity';
-import { PlaylistRepository } from './playlist.repository';
+import { PlaylistRepository } from '../repository/playlist.repository';
 import { Logger } from 'winston';
-import { MusicRepository } from 'src/music/music.repository';
+import { MusicRepository } from 'src/repository/music.repository';
+import { Music_PlaylistRepository } from 'src/repository/music_playlist.repository';
 
 @Module({
   imports: [
@@ -16,7 +17,13 @@ import { MusicRepository } from 'src/music/music.repository';
     AuthModule,
   ],
   controllers: [PlaylistController],
-  providers: [PlaylistService, PlaylistRepository, Logger, MusicRepository],
+  providers: [
+    PlaylistService,
+    PlaylistRepository,
+    Logger,
+    MusicRepository,
+    Music_PlaylistRepository,
+  ],
   exports: [PlaylistService],
 })
 export class PlaylistModule {}

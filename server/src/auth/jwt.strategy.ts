@@ -6,7 +6,7 @@ import { CatchyException } from 'src/config/catchyException';
 import { ERROR_CODE } from 'src/config/errorCode.enum';
 import { User } from 'src/entity/user.entity';
 import { HTTP_STATUS_CODE } from 'src/httpStatusCode.enum';
-import { UserRepository } from 'src/user/user.repository';
+import { UserRepository } from 'src/repository/user.repository';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {

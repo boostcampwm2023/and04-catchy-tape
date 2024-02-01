@@ -156,11 +156,11 @@ export class MusicRepository {
         throw err;
       }
 
-      this.logger.error(`music.repository - addMusic : SERVICE_ERROR`);
+      this.logger.error(`music.repository - addMusic : REPOSITORY_ERROR`);
       throw new CatchyException(
-        'SERVER ERROR',
+        'REPOSITORY_ERROR',
         HTTP_STATUS_CODE.SERVER_ERROR,
-        ERROR_CODE.SERVICE_ERROR,
+        ERROR_CODE.REPOSITORY_ERROR,
       );
     } finally {
       await queryRunner.release();

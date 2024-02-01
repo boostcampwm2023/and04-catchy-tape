@@ -1,17 +1,15 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AuthService } from './auth.service';
 import { Repository, DataSource } from 'typeorm';
-import { getRepositoryToken } from '@nestjs/typeorm';
-import { User } from 'src/entity/user.entity';
 import { JwtModule } from '@nestjs/jwt';
 import { PlaylistService } from 'src/playlist/playlist.service';
-import { Music_Playlist } from 'src/entity/music_playlist.entity';
 import { PassportModule } from '@nestjs/passport';
-import { PlaylistRepository } from 'src/playlist/playlist.repository';
-import { MusicRepository } from 'src/music/music.repository';
+import { PlaylistRepository } from 'src/repository/playlist.repository';
+import { MusicRepository } from 'src/repository/music.repository';
 import { CacheModule } from '@nestjs/cache-manager';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { UserRepository } from 'src/user/user.repository';
+import { UserRepository } from 'src/repository/user.repository';
+import { Music_PlaylistRepository } from 'src/repository/music_playlist.repository';
 
 describe('AuthService', () => {
   let service: AuthService;
@@ -44,7 +42,7 @@ describe('AuthService', () => {
           useClass: Repository,
         },
         {
-          provide: getRepositoryToken(Music_Playlist),
+          provide: Music_PlaylistRepository,
           useClass: Repository,
         },
         PlaylistService,

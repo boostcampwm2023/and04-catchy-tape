@@ -8,16 +8,16 @@ import { CatchyException } from 'src/config/catchyException';
 import { ERROR_CODE } from 'src/config/errorCode.enum';
 import { Recent_Played } from 'src/entity/recent_played.entity';
 import { UserUpdateDto } from './../dto/userUpdate.dto';
-import { MusicRepository } from 'src/music/music.repository';
-import { UserRepository } from './user.repository';
+import { MusicRepository } from 'src/repository/music.repository';
+import { UserRepository } from '../repository/user.repository';
+import { Recent_PlayedRepository } from 'src/repository/recent_played.repository';
 
 @Injectable()
 export class UserService {
   private readonly logger = new Logger('UserService');
   constructor(
     private musicRepository: MusicRepository,
-    @InjectRepository(Recent_Played)
-    private recentPlayedRepository: Repository<Recent_Played>,
+    private recentPlayedRepository: Recent_PlayedRepository,
     private userRepository: UserRepository,
     private readonly dataSource: DataSource,
   ) {}
@@ -46,7 +46,10 @@ export class UserService {
     count: number,
   ): Promise<Music[]> {
     try {
-      return await Recent_Played.getRecentPlayedMusicByUserId(userId, count);
+      return await this.recentPlayedRepository.getRecentPlayedMusicByUserId(
+        userId,
+        count,
+      );
     } catch {
       this.logger.error(
         `user.service - getRecentPlayedMusicByUserId : QUERY_ERROR`,
@@ -157,10 +160,11 @@ export class UserService {
     user_id: string,
   ): Promise<boolean> {
     try {
-      const musicCount: number = await Recent_Played.countMusicNumberById(
-        music_id,
-        user_id,
-      );
+      const musicCount: number =
+        await this.recentPlayedRepository.countMusicNumberById(
+          music_id,
+          user_id,
+        );
 
       return musicCount != 0;
     } catch {
@@ -188,19 +192,21 @@ export class UserService {
         );
       }
       if (!(await this.isExistMusicInRecentPlaylist(music_id, user_id))) {
-        const newRow: Recent_Played = this.recentPlayedRepository.create({
-          music: { music_id },
-          user: { user_id },
-          played_at: new Date(),
-        });
-        const addedRow: Recent_Played =
-          await this.recentPlayedRepository.save(newRow);
-        return addedRow.recent_played_id;
+        const recent_played_id: number =
+          await this.recentPlayedRepository.saveNewRecentMusic(
+            music_id,
+            user_id,
+          );
+
+        return recent_played_id;
       }
 
       await this.userRepository.updateRecentPlaylist(music_id, user_id);
 
-      return await Recent_Played.getRecentPlayedId(music_id, user_id);
+      return await this.recentPlayedRepository.getRecentPlayedId(
+        music_id,
+        user_id,
+      );
     } catch (err) {
       if (err instanceof CatchyException) throw err;
 
@@ -215,7 +221,9 @@ export class UserService {
 
   async getRecentPlaylistMusicCount(user_id: string): Promise<number> {
     try {
-      return await Recent_Played.getNumberOfRecentPlayedMusic(user_id);
+      return await this.recentPlayedRepository.getNumberOfRecentPlayedMusic(
+        user_id,
+      );
     } catch {
       this.logger.error(
         `user.service - getRecentPlaylistMusicCount : QUERY_ERROR`,
@@ -230,7 +238,8 @@ export class UserService {
 
   async getRecentPlaylistThumbnail(user_id: string): Promise<string> {
     try {
-      const recentMusic = await Recent_Played.getRecentPlayedMusic(user_id);
+      const recentMusic =
+        await this.recentPlayedRepository.getRecentPlayedMusic(user_id);
 
       if (recentMusic instanceof Recent_Played) {
         return recentMusic.music.cover;

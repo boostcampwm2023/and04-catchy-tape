@@ -9,7 +9,7 @@ import { ERROR_CODE } from 'src/config/errorCode.enum';
 import { UploadService } from 'src/upload/upload.service';
 import { NcloudConfigService } from 'src/config/ncloud.config';
 import { AWSError, S3 } from 'aws-sdk';
-import { MusicRepository } from './music.repository';
+import { MusicRepository } from '../repository/music.repository';
 @Injectable()
 export class MusicService {
   private readonly logger = new Logger('MusicService');
