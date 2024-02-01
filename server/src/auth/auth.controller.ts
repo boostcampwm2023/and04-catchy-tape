@@ -37,7 +37,7 @@ export class AuthController {
   @HttpCode(HTTP_STATUS_CODE.SUCCESS)
   async signup(
     @Body() userCreateDto: UserCreateDto,
-  ): Promise<{ accessToken: string }> {
+  ): Promise<{ accessToken: string; refreshToken: string }> {
     this.logger.log(`POST /users/signup - body=${userCreateDto}`);
     return this.authService.signup(userCreateDto);
   }
