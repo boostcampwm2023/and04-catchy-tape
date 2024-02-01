@@ -66,11 +66,13 @@ export class PlaylistRepository {
     } catch {
       await queryRunner.rollbackTransaction();
 
-      this.logger.error(`playlist.repository - createPlaylist : ENTITY_ERROR`);
+      this.logger.error(
+        `playlist.repository - createPlaylist : REPOSITORY_ERROR`,
+      );
       throw new CatchyException(
-        'ENTITY_ERROR',
+        'REPOSITORY_ERROR',
         HTTP_STATUS_CODE.SERVER_ERROR,
-        ERROR_CODE.ENTITY_ERROR,
+        ERROR_CODE.REPOSITORY_ERROR,
       );
     } finally {
       await queryRunner.release();
@@ -106,12 +108,12 @@ export class PlaylistRepository {
       }
 
       this.logger.error(
-        `playlist.repository - deleteSinglePlaylist : SERVICE_ERROR`,
+        `playlist.repository - deleteSinglePlaylist : REPOSITORY_ERROR`,
       );
       throw new CatchyException(
-        'SERVICE_ERROR',
+        'REPOSITORY_ERROR',
         HTTP_STATUS_CODE.BAD_REQUEST,
-        ERROR_CODE.SERVICE_ERROR,
+        ERROR_CODE.REPOSITORY_ERROR,
       );
     } finally {
       await queryRunner.release();
@@ -159,12 +161,12 @@ export class PlaylistRepository {
       }
 
       this.logger.error(
-        `playlist.service - deleteMusicInPlaylist : SERVICE_ERROR`,
+        `playlist.service - deleteMusicInPlaylist : REPOSITORY_ERROR`,
       );
       throw new CatchyException(
-        'SERVICE_ERROR',
+        'REPOSITORY_ERROR',
         HTTP_STATUS_CODE.BAD_REQUEST,
-        ERROR_CODE.SERVICE_ERROR,
+        ERROR_CODE.REPOSITORY_ERROR,
       );
     } finally {
       await queryRunner.release();

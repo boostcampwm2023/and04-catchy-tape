@@ -74,12 +74,12 @@ export class UserRepository {
       await queryRunner.rollbackTransaction();
 
       this.logger.error(
-        `user.repository - updateRecentPlaylist : ENTITY_ERROR`,
+        `user.repository - updateRecentPlaylist : REPOSITORY_ERROR`,
       );
       throw new CatchyException(
-        'ENTITY_ERROR',
+        'REPOSITORY_ERROR',
         HTTP_STATUS_CODE.SERVER_ERROR,
-        ERROR_CODE.ENTITY_ERROR,
+        ERROR_CODE.REPOSITORY_ERROR,
       );
     } finally {
       await queryRunner.release();
@@ -106,12 +106,12 @@ export class UserRepository {
       await queryRunner.rollbackTransaction();
 
       this.logger.error(
-        `user.repository - updateUserInformation : ENTITY_ERROR`,
+        `user.repository - updateUserInformation : REPOSITORY_ERROR`,
       );
       throw new CatchyException(
-        'ENTITY_ERROR',
+        'REPOSITORY_ERROR',
         HTTP_STATUS_CODE.SERVER_ERROR,
-        ERROR_CODE.ENTITY_ERROR,
+        ERROR_CODE.REPOSITORY_ERROR,
       );
     } finally {
       await queryRunner.release();
