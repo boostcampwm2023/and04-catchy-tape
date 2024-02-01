@@ -73,7 +73,9 @@ export class UserRepository {
     } catch {
       await queryRunner.rollbackTransaction();
 
-      this.logger.error(`user.entity - updateRecentPlaylist : ENTITY_ERROR`);
+      this.logger.error(
+        `user.repository - updateRecentPlaylist : ENTITY_ERROR`,
+      );
       throw new CatchyException(
         'ENTITY_ERROR',
         HTTP_STATUS_CODE.SERVER_ERROR,
@@ -103,7 +105,9 @@ export class UserRepository {
     } catch {
       await queryRunner.rollbackTransaction();
 
-      this.logger.error(`user.entity - updateUserInformation : ENTITY_ERROR`);
+      this.logger.error(
+        `user.repository - updateUserInformation : ENTITY_ERROR`,
+      );
       throw new CatchyException(
         'ENTITY_ERROR',
         HTTP_STATUS_CODE.SERVER_ERROR,
@@ -132,7 +136,7 @@ export class UserRepository {
     } catch {
       await queryRunner.rollbackTransaction();
 
-      this.logger.error(`user.entity - saveUser : ENTITY_ERROR`);
+      this.logger.error(`user.repository - saveUser : ENTITY_ERROR`);
       throw new CatchyException(
         'ENTITY_ERROR',
         HTTP_STATUS_CODE.SERVER_ERROR,
@@ -154,7 +158,7 @@ export class UserRepository {
     } catch {
       await queryRunner.rollbackTransaction();
 
-      this.logger.error(`user.entity - deleteUser : ENTITY_ERROR`);
+      this.logger.error(`user.repository - deleteUser : ENTITY_ERROR`);
       throw new CatchyException(
         'ENTITY_ERROR',
         HTTP_STATUS_CODE.SERVER_ERROR,

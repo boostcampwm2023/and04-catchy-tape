@@ -12,13 +12,7 @@
     "baseUrl": "./",
     "incremental": true,
     "skipLibCheck": true,
-    /* TODO - 나중에 삭제 필요 */
-    // "strictNullChecks": false,
-    // "noImplicitAny": false,
-    // "strictBindCallApply": false,
-    // "forceConsistentCasingInFileNames": false,
-    // "noFallthroughCasesInSwitch": false,
-    "strictPropertyInitialization": false, 
+    "strictPropertyInitialization": false,
     "strict": true
   }
 }
