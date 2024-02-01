@@ -137,7 +137,7 @@ export class PlaylistRepository {
 
       if (target == undefined) {
         this.logger.error(
-          `playlist.service - deleteMusicInPlaylist : NOT_ADDED_MUSIC`,
+          `playlist.repository - deleteMusicInPlaylist : NOT_ADDED_MUSIC`,
         );
         throw new CatchyException(
           'NOT_ADDED_MUSIC',
@@ -161,7 +161,7 @@ export class PlaylistRepository {
       }
 
       this.logger.error(
-        `playlist.service - deleteMusicInPlaylist : REPOSITORY_ERROR`,
+        `playlist.repository - deleteMusicInPlaylist : REPOSITORY_ERROR`,
       );
       throw new CatchyException(
         'REPOSITORY_ERROR',

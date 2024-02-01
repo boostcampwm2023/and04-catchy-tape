@@ -100,7 +100,7 @@ export class Music_PlaylistRepository {
       await queryRunner.rollbackTransaction();
 
       this.logger.error(
-        `playlist.entity - addMusicToPlaylist : REPOSITORY_ERROR`,
+        `playlist.repository - addMusicToPlaylist : REPOSITORY_ERROR`,
       );
       throw new CatchyException(
         'REPOSITORY_ERROR',
