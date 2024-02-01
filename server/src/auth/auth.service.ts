@@ -62,7 +62,9 @@ export class AuthService {
     );
   }
 
-  async signup(userCreateDto: UserCreateDto): Promise<{ accessToken: string }> {
+  async signup(
+    userCreateDto: UserCreateDto,
+  ): Promise<{ accessToken: string; refreshToken: string }> {
     const { nickname, idToken } = userCreateDto;
     const email: string = await this.getGoogleEmail(idToken);
 
