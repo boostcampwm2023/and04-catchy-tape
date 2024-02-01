@@ -11,6 +11,7 @@ import { AuthService } from './auth.service';
 import { Logger } from 'winston';
 import { ONE_HOUR_TO_SECONDS } from 'src/constants';
 import * as redisStore from 'cache-manager-redis-store';
+import { UserRepository } from 'src/user/user.repository';
 
 @Module({
   imports: [
@@ -36,7 +37,7 @@ import * as redisStore from 'cache-manager-redis-store';
     }),
     TypeOrmModule.forFeature([User]),
   ],
-  providers: [JwtStrategy, AuthService, Logger],
+  providers: [JwtStrategy, AuthService, Logger, UserRepository],
   exports: [JwtStrategy, PassportModule],
   controllers: [AuthController],
 })
