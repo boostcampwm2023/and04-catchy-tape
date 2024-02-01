@@ -11,11 +11,12 @@ import { PlaylistRepository } from 'src/playlist/playlist.repository';
 import { MusicRepository } from 'src/music/music.repository';
 import { CacheModule } from '@nestjs/cache-manager';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { UserRepository } from 'src/user/user.repository';
 
 describe('AuthService', () => {
   let service: AuthService;
   let jwtModule: JwtModule;
-  let userRepository: Repository<User>;
+  let userRepository: UserRepository;
   let playlistService: PlaylistService;
   let mockDataSource: jest.Mocked<DataSource>;
 
@@ -31,7 +32,7 @@ describe('AuthService', () => {
         AuthService,
         ConfigService,
         {
-          provide: getRepositoryToken(User),
+          provide: UserRepository,
           useClass: Repository,
         },
         {
@@ -56,7 +57,7 @@ describe('AuthService', () => {
 
     service = module.get<AuthService>(AuthService);
     jwtModule = module.get<JwtModule>(JwtModule);
-    userRepository = module.get(getRepositoryToken(User));
+    userRepository = module.get<UserRepository>(UserRepository);
     playlistService = module.get<PlaylistService>(PlaylistService);
   });
 

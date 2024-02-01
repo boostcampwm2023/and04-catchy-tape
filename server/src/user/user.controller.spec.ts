@@ -6,11 +6,12 @@ import { User } from 'src/entity/user.entity';
 import { DataSource, Repository } from 'typeorm';
 import { Recent_Played } from 'src/entity/recent_played.entity';
 import { MusicRepository } from 'src/music/music.repository';
+import { UserRepository } from './user.repository';
 
 describe('UserController', () => {
   let controller: UserController;
   let userService: UserService;
-  let userRepository: Repository<User>;
+  let userRepository: UserRepository;
   let mockDataSource: jest.Mocked<DataSource>;
 
   beforeEach(async () => {
@@ -19,7 +20,7 @@ describe('UserController', () => {
       providers: [
         UserService,
         {
-          provide: getRepositoryToken(User),
+          provide: UserRepository,
           useClass: Repository,
         },
         {
@@ -39,7 +40,7 @@ describe('UserController', () => {
 
     controller = module.get<UserController>(UserController);
     userService = module.get<UserService>(UserService);
-    userRepository = module.get(getRepositoryToken(User));
+    userRepository = module.get<UserRepository>(UserRepository);
   });
 
   it('should be defined', () => {
