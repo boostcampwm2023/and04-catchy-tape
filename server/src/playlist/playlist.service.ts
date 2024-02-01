@@ -3,12 +3,12 @@ import { CatchyException } from 'src/config/catchyException';
 import { ERROR_CODE } from 'src/config/errorCode.enum';
 import { PlaylistCreateDto } from 'src/dto/playlistCreate.dto';
 import { Music } from 'src/entity/music.entity';
-import { Music_Playlist } from 'src/entity/music_playlist.entity';
 import { Playlist } from 'src/entity/playlist.entity';
 import { HTTP_STATUS_CODE } from 'src/httpStatusCode.enum';
-import { PlaylistRepository } from './playlist.repository';
-import { MusicRepository } from 'src/music/music.repository';
+import { PlaylistRepository } from '../repository/playlist.repository';
+import { MusicRepository } from 'src/repository/music.repository';
 import { playlistInfo } from 'src/dto/playlistInfo.dto';
+import { Music_PlaylistRepository } from 'src/repository/music_playlist.repository';
 
 @Injectable()
 export class PlaylistService {
@@ -16,6 +16,7 @@ export class PlaylistService {
   constructor(
     private readonly playlistRepository: PlaylistRepository,
     private musicRepository: MusicRepository,
+    private music_PlaylistRepository: Music_PlaylistRepository,
   ) {}
 
   async createPlaylist(
@@ -65,15 +66,19 @@ export class PlaylistService {
       );
     }
 
-    return Music_Playlist.addMusicToPlaylist(musicId, playlistId);
+    return this.music_PlaylistRepository.addMusicToPlaylist(
+      musicId,
+      playlistId,
+    );
   }
 
   async isAlreadyAdded(playlistId: number, musicId: string): Promise<boolean> {
     try {
-      const musicNumber = await Music_Playlist.countMusicNumberInPlaylist(
-        musicId,
-        playlistId,
-      );
+      const musicNumber =
+        await this.music_PlaylistRepository.countMusicNumberInPlaylist(
+          musicId,
+          playlistId,
+        );
 
       return musicNumber !== 0;
     } catch {
@@ -132,13 +137,15 @@ export class PlaylistService {
 
       /*TODO: 이 과정에서 DTO를 추가하게 되어 개선 필요*/
       const countPromises = playlists.map(async (playlist) => {
-        const music_count = await Music_Playlist.getMusicCountByPlaylistId(
-          playlist.playlist_id,
-        );
+        const music_count =
+          await this.music_PlaylistRepository.getMusicCountByPlaylistId(
+            playlist.playlist_id,
+          );
 
-        const targetMusic = await Music_Playlist.getThumbnailByPlaylistId(
-          playlist.playlist_id,
-        );
+        const targetMusic =
+          await this.music_PlaylistRepository.getThumbnailByPlaylistId(
+            playlist.playlist_id,
+          );
 
         const thumbnail = !targetMusic ? null : targetMusic.music.cover;
 
@@ -178,7 +185,7 @@ export class PlaylistService {
       );
     }
     try {
-      return Music_Playlist.getMusicListByPlaylistId(playlistId);
+      return this.music_PlaylistRepository.getMusicListByPlaylistId(playlistId);
     } catch {
       this.logger.error(`playlist.service - getPlaylistMusics : SERVICE_ERROR`);
       throw new CatchyException(

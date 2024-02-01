@@ -12,7 +12,7 @@ import { HTTP_STATUS_CODE } from 'src/httpStatusCode.enum';
 import { Repository, DataSource } from 'typeorm';
 import { v4 } from 'uuid';
 import { ONE_WEEK_TO_SECONDS } from 'src/constants';
-import { UserRepository } from 'src/user/user.repository';
+import { UserRepository } from 'src/repository/user.repository';
 
 @Injectable()
 export class AuthService {
