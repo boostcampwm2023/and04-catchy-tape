@@ -43,11 +43,15 @@ export class Recent_Played extends BaseEntity {
     music_id: string,
     user_id: string,
   ): Promise<number> {
-    return (
-      await this.findOne({
-        where: { music: { music_id }, user: { user_id } },
-      })
-    ).recent_played_id;
+    const recentPlayed = await this.findOne({
+      where: { music: { music_id }, user: { user_id } },
+    });
+
+    if (recentPlayed instanceof Recent_Played) {
+      return recentPlayed.recent_played_id;
+    }
+
+    return 0;
   }
 
   static async getNumberOfRecentPlayedMusic(user_id: string): Promise<number> {
@@ -56,7 +60,9 @@ export class Recent_Played extends BaseEntity {
     });
   }
 
-  static async getRecentPlayedMusic(user_id: string): Promise<Recent_Played> {
+  static async getRecentPlayedMusic(
+    user_id: string,
+  ): Promise<Recent_Played | null> {
     return this.findOne({
       relations: { music: true, user: true },
       select: { music: { cover: true } },

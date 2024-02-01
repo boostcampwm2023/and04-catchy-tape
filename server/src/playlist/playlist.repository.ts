@@ -126,15 +126,12 @@ export class PlaylistRepository {
     await queryRunner.startTransaction();
 
     try {
-      const target: Music_Playlist =
-        await this.music_playlistRepository.findOne({
-          where: {
-            music: { music_id: musicId },
-            playlist: { playlist_id: playlistId },
-          },
-        });
-
-      const deletedMusicPlaylistId: number = target.music_playlist_id;
+      const target = await this.music_playlistRepository.findOne({
+        where: {
+          music: { music_id: musicId },
+          playlist: { playlist_id: playlistId },
+        },
+      });
 
       if (target == undefined) {
         this.logger.error(
@@ -146,6 +143,8 @@ export class PlaylistRepository {
           ERROR_CODE.NOT_ADDED_MUSIC,
         );
       }
+
+      const deletedMusicPlaylistId: number = target.music_playlist_id;
 
       await queryRunner.manager.remove(target);
 

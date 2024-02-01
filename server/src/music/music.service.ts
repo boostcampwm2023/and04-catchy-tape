@@ -8,9 +8,8 @@ import { CatchyException } from 'src/config/catchyException';
 import { ERROR_CODE } from 'src/config/errorCode.enum';
 import { UploadService } from 'src/upload/upload.service';
 import { NcloudConfigService } from 'src/config/ncloud.config';
-import { AWSError } from 'aws-sdk';
+import { AWSError, S3 } from 'aws-sdk';
 import { MusicRepository } from './music.repository';
-
 @Injectable()
 export class MusicService {
   private readonly logger = new Logger('MusicService');
@@ -78,8 +77,7 @@ export class MusicService {
 
   async getMusicInfo(music_id: string): Promise<Music> {
     try {
-      const targetMusic: Music =
-        await this.musicRepository.getMusicById(music_id);
+      const targetMusic = await this.musicRepository.getMusicById(music_id);
 
       if (!targetMusic) {
         this.logger.error(`music.service - getMusicInfo : NOT_EXIST_MUSIC`);
@@ -89,6 +87,7 @@ export class MusicService {
           ERROR_CODE.NOT_EXIST_MUSIC,
         );
       }
+
       return targetMusic;
     } catch (err) {
       if (err instanceof CatchyException) throw err;
@@ -105,18 +104,18 @@ export class MusicService {
   async getEncodedChunkFiles(
     musicId: string,
     fileName: string,
-  ): Promise<AWS.S3.Body> {
+  ): Promise<S3.GetObjectOutput> {
     try {
       const filePath = `music/${musicId}/${fileName}`;
 
-      const result = await this.objectStorage
+      const result: S3.GetObjectOutput = await this.objectStorage
         .getObject({
           Bucket: 'catchy-tape-bucket2',
           Key: filePath,
         })
         .promise();
 
-      return result.Body;
+      return result;
     } catch (err) {
       const awsError = err as AWSError;
 
@@ -167,9 +166,18 @@ export class MusicService {
 
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.startTransaction();
-    
+
     try {
-      const music: Music = await this.musicRepository.getMusicById(musicId);
+      const music = await this.musicRepository.getMusicById(musicId);
+
+      if (!music) {
+        throw new CatchyException(
+          'NOT_EXIST_MUSIC',
+          HTTP_STATUS_CODE.NOT_FOUND,
+          ERROR_CODE.NOT_EXIST_MUSIC,
+        );
+      }
+
       await queryRunner.manager.remove(music);
 
       const musicFilePath: string = music.music_file.slice(
@@ -199,19 +207,23 @@ export class MusicService {
     }
   }
 
-  async deleteFolder(folderPath) {
+  /* TODO: 여기서부터 타입 단언한 부분 수정할 방법 고려*/
+  async deleteFolder(folderPath: string): Promise<void> {
     let params = {
       Bucket: 'catchy-tape-bucket2',
       Delete: {
-        Objects: [],
+        Objects: [] as { Key: string }[],
       },
     };
 
     // 폴더 내의 파일들을 삭제할 객체 목록에 추가
-    const filesInFolder = await this.listFilesInFolder(folderPath);
-    filesInFolder.forEach((file) => {
-      params.Delete.Objects.push({ Key: file.Key });
-    });
+    const folder: S3.ListObjectsV2Output =
+      await this.listFilesInFolder(folderPath);
+
+    const filesInFolder = folder.Contents;
+    if (!filesInFolder) {
+      return;
+    }
 
     try {
       // 폴더 내의 파일들을 삭제
@@ -231,7 +243,7 @@ export class MusicService {
     }
   }
 
-  async listFilesInFolder(folderPath) {
+  async listFilesInFolder(folderPath: string): Promise<S3.ListObjectsV2Output> {
     let params = {
       Bucket: 'catchy-tape-bucket2',
       Prefix: folderPath,
@@ -239,7 +251,8 @@ export class MusicService {
 
     try {
       const data = await this.objectStorage.listObjectsV2(params).promise();
-      return data.Contents;
+
+      return data as S3.ListObjectsV2Output;
     } catch (error) {
       this.logger.error(`music.service - listFilesInFolder : SERVICE_ERROR`);
       throw new CatchyException(

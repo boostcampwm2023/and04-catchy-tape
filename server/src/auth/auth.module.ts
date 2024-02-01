@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { CacheModule, CacheStore } from '@nestjs/cache-manager';
+import { CacheModule } from '@nestjs/cache-manager';
 import { JwtStrategy } from './jwt.strategy';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from 'src/entity/user.entity';
@@ -11,6 +11,7 @@ import { AuthService } from './auth.service';
 import { Logger } from 'winston';
 import { ONE_HOUR_TO_SECONDS } from 'src/constants';
 import * as redisStore from 'cache-manager-redis-store';
+import { UserRepository } from 'src/user/user.repository';
 
 @Module({
   imports: [
@@ -36,7 +37,7 @@ import * as redisStore from 'cache-manager-redis-store';
     }),
     TypeOrmModule.forFeature([User]),
   ],
-  providers: [JwtStrategy, AuthService, Logger],
+  providers: [JwtStrategy, AuthService, Logger, UserRepository],
   exports: [JwtStrategy, PassportModule],
   controllers: [AuthController],
 })

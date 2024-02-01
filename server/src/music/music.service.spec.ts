@@ -13,6 +13,7 @@ import { GreenEyeService } from 'src/config/greenEye.service';
 import { Recent_Played } from 'src/entity/recent_played.entity';
 import { MusicRepository } from './music.repository';
 import { CacheModule } from '@nestjs/cache-manager';
+import { UserRepository } from 'src/user/user.repository';
 
 describe('UploadController', () => {
   let app: INestApplication;
@@ -33,6 +34,10 @@ describe('UploadController', () => {
         NcloudConfigService,
         ConfigService,
         GreenEyeService,
+        {
+          provide: UserRepository,
+          useClass: Repository,
+        },
         {
           provide: MusicRepository,
           useClass: Repository,

@@ -16,10 +16,10 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Use NodeJS
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v4
         with:
           node-version: 20.8.1
 
@@ -49,6 +49,11 @@ jobs:
           CLOUD_FUNCTIONS_EXECUTE_URL: ${{secrets.CLOUD_FUNCTIONS_EXECUTE_URL}}
           CLOUD_FUNCTIONS_REQUEST_URL: ${{secrets.CLOUD_FUNCTIONS_REQUEST_URL}}
           API_GW_ACCESS_KEY: ${{secrets.API_GW_ACCESS_KEY}}
+          REFRESH_SECRET_KEY: ${{secrets.REFRESH_SECRET_KEY}}
+          REDIS_HOST_IP: ${{secrets.REDIS_HOST_IP}}
+          REDIS_PASSWORD: ${{secrets.REDIS_PASSWORD}}
+          REDIS_PORT: ${{secrets.REDIS_PORT}}
+          REDIS_TTL: ${{secrets.REDIS_TTL}}
         run: |
           touch dev.env
           echo "DB_HOST_IP=$DB_HOST_IP" >> dev.env
@@ -64,6 +69,11 @@ jobs:
           echo "CLOUD_FUNCTIONS_EXECUTE_URL" >> dev.env
           echo "CLOUD_FUNCTIONS_REQUEST_URL" >> dev.env
           echo "API_GW_ACCESS_KEY" >> dev.env
+          echo "REFRESH_SECRET_KEY=$REFRESH_SECRET_KEY" >> prod.env
+          echo "REDIS_HOST_IP=$REDIS_HOST_IP" >> prod.env
+          echo "REDIS_PASSWORD=$REDIS_PASSWORD" >> prod.env
+          echo "REDIS_PORT=$REDIS_PORT" >> prod.env
+          echo "REDIS_TTL=$REDIS_TTL" >> prod.env
 
       - name: Execute Test
         run: npm run test

@@ -18,10 +18,10 @@ import {
 import { UploadService } from './upload.service';
 import { HTTP_STATUS_CODE } from 'src/httpStatusCode.enum';
 import { AuthGuard } from '@nestjs/passport';
-import { CatchyException } from 'src/config/catchyException';
-import { ERROR_CODE } from 'src/config/errorCode.enum';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { fileSize } from 'src/constants';
+import { ReqUser } from 'src/config/decorators';
+import { User } from 'src/entity/user.entity';
 
 @Controller('upload')
 export class UploadController {
@@ -42,7 +42,7 @@ export class UploadController {
   @UseInterceptors(FileInterceptor('file'))
   @HttpCode(HTTP_STATUS_CODE.SUCCESS)
   async uploadMusic(
-    @Req() req,
+    @ReqUser() user: User,
     @UploadedFile(
       new ParseFilePipe({
         validators: [
@@ -55,7 +55,7 @@ export class UploadController {
     @Body('uuid') uuid: string,
   ): Promise<{ url: string }> {
     this.logger.log(
-      `POST /upload/music - nickname=${req.user.nickname}, uuid=${uuid}`,
+      `POST /upload/music - nickname=${user.nickname}, uuid=${uuid}`,
     );
     const { url } = await this.uploadService.uploadMusic(file, uuid);
     return { url };
@@ -67,7 +67,7 @@ export class UploadController {
   @UseInterceptors(FileInterceptor('file'))
   @HttpCode(HTTP_STATUS_CODE.SUCCESS)
   async uploadImage(
-    @Req() req,
+    @ReqUser() user: User,
     @UploadedFile(
       new ParseFilePipe({
         validators: [
@@ -81,10 +81,10 @@ export class UploadController {
     @Body('uuid') uuid: string | null,
   ): Promise<{ url: string }> {
     this.logger.log(
-      `POST /upload/image - nickname=${req.user.nickname}, type=${type}, uuid=${uuid}`,
+      `POST /upload/image - nickname=${user.nickname}, type=${type}, uuid=${uuid}`,
     );
 
-    const userId = req.user.user_id;
+    const userId = user.user_id;
     const id = type === 'user' ? userId : uuid;
 
     const { url } = await this.uploadService.uploadImage(file, id, type);

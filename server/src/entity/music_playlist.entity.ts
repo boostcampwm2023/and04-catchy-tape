@@ -78,7 +78,7 @@ export class Music_Playlist extends BaseEntity {
 
   static async getThumbnailByPlaylistId(
     playlist_id: number,
-  ): Promise<Music_Playlist> {
+  ): Promise<Music_Playlist|null> {
     return this.findOne({
       relations: { music: true },
       select: { music: { cover: true } },

@@ -17,6 +17,7 @@ import { GreenEyeService } from 'src/config/greenEye.service';
 import { JwtStrategy } from 'src/auth/jwt.strategy';
 import { MusicRepository } from './music.repository';
 import { CacheModule } from '@nestjs/cache-manager';
+import { UserRepository } from 'src/user/user.repository';
 
 describe('UploadController', () => {
   let app: INestApplication;
@@ -44,11 +45,11 @@ describe('UploadController', () => {
         JwtService,
         JwtStrategy,
         {
-          provide: MusicRepository,
+          provide: UserRepository,
           useClass: Repository,
         },
         {
-          provide: getRepositoryToken(User),
+          provide: MusicRepository,
           useClass: Repository,
         },
         {

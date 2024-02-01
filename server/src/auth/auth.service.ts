@@ -12,18 +12,19 @@ import { HTTP_STATUS_CODE } from 'src/httpStatusCode.enum';
 import { Repository, DataSource } from 'typeorm';
 import { v4 } from 'uuid';
 import { ONE_WEEK_TO_SECONDS } from 'src/constants';
+import { UserRepository } from 'src/user/user.repository';
 
 @Injectable()
 export class AuthService {
   private readonly logger = new Logger('AuthService');
-  private readonly refreshOptions;
+  private readonly refreshOptions: {};
 
   constructor(
-    @InjectRepository(User) private userRepository: Repository<User>,
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
     private jwtService: JwtService,
     private readonly dataSource: DataSource,
     private readonly configService: ConfigService,
+    private userRepository: UserRepository,
   ) {
     this.refreshOptions = {
       secret: this.configService.get<string>('REFRESH_SECRET_KEY'),
@@ -33,7 +34,7 @@ export class AuthService {
   async login(
     email: string,
   ): Promise<{ accessToken: string; refreshToken: string }> {
-    const user: User = await User.findUserByEmail(email);
+    const user = await this.userRepository.findUserByEmail(email);
 
     if (user) {
       const accessPayload = { user_id: user.user_id };
@@ -76,7 +77,7 @@ export class AuthService {
 
     try {
       if (email) {
-        await User.saveUser(nickname, email);
+        await this.userRepository.saveUser(nickname, email);
 
         return await this.login(email);
       }
@@ -109,7 +110,8 @@ export class AuthService {
         this.refreshOptions,
       );
 
-      const user_id: string = await this.cacheManager.get(refresh_id);
+      const user_id: string | undefined =
+        await this.cacheManager.get(refresh_id);
 
       if (!user_id) {
         this.logger.error(
@@ -122,7 +124,7 @@ export class AuthService {
         );
       }
 
-      if ((await User.countNumberOfUserById(user_id)) == 0) {
+      if ((await this.userRepository.countNumberOfUserById(user_id)) == 0) {
         this.logger.error(`auth.service - refreshTokens : NOT_EXIST_USER`);
         throw new CatchyException(
           'NOT_EXIST_USER',
@@ -178,18 +180,18 @@ export class AuthService {
   }
 
   async isExistEmail(email: string): Promise<boolean> {
-    const user: User = await User.findUserByEmail(email);
+    const user = await this.userRepository.findUserByEmail(email);
 
     if (!user) {
       return false;
-    } else {
-      return true;
     }
+
+    return true;
   }
 
   async deleteUser(user: User): Promise<{ userId: string }> {
     try {
-      await User.deleteUser(user.user_id);
+      await this.userRepository.deleteUser(user.user_id);
 
       return { userId: user.user_id };
     } catch (err) {

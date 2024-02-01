@@ -19,6 +19,9 @@ import { HTTP_STATUS_CODE } from 'src/httpStatusCode.enum';
 import { PlaylistCreateDto } from 'src/dto/playlistCreate.dto';
 import { Playlist } from 'src/entity/playlist.entity';
 import { Music } from 'src/entity/music.entity';
+import { ReqUser } from 'src/config/decorators';
+import { User } from 'src/entity/user.entity';
+import { playlistInfo } from 'src/dto/playlistInfo.dto';
 
 @Controller('playlists')
 export class PlaylistController {
@@ -30,13 +33,13 @@ export class PlaylistController {
   @UsePipes(ValidationPipe)
   @HttpCode(HTTP_STATUS_CODE.SUCCESS)
   async createPlaylist(
-    @Req() req,
+    @ReqUser() user: User,
     @Body() playlistCreateDto: PlaylistCreateDto,
   ): Promise<{ playlist_id: number }> {
     this.logger.log(
-      `POST /playlists - nickname=${req.user.nickname}, body=${playlistCreateDto}`,
+      `POST /playlists - nickname=${user.nickname}, body=${playlistCreateDto}`,
     );
-    const userId: string = req.user.user_id;
+    const userId: string = user.user_id;
     const playlistId: number = await this.playlistService.createPlaylist(
       userId,
       playlistCreateDto,
@@ -48,14 +51,14 @@ export class PlaylistController {
   @UseGuards(AuthGuard())
   @HttpCode(HTTP_STATUS_CODE.SUCCESS)
   async addMusicToPlaylist(
-    @Req() req,
+    @ReqUser() user: User,
     @Param('playlistId') playlistId: number,
     @Body('musicId') music_id: string,
   ): Promise<{ music_playlist_id: number }> {
     this.logger.log(
-      `POST /playlists/${playlistId} - nickname=${req.user.nickname}, musicId=${music_id}`,
+      `POST /playlists/${playlistId} - nickname=${user.nickname}, musicId=${music_id}`,
     );
-    const userId: string = req.user.user_id;
+    const userId: string = user.user_id;
     const music_playlist_id: number =
       await this.playlistService.addMusicToPlaylist(
         userId,
@@ -68,10 +71,10 @@ export class PlaylistController {
   @Get()
   @UseGuards(AuthGuard())
   @HttpCode(HTTP_STATUS_CODE.SUCCESS)
-  async getUserPlaylists(@Req() req): Promise<Playlist[]> {
-    this.logger.log(`GET /playlists - nickname=${req.user.nickname}`);
-    const userId: string = req.user.user_id;
-    const playlists: Playlist[] =
+  async getUserPlaylists(@ReqUser() user: User): Promise<playlistInfo[]> {
+    this.logger.log(`GET /playlists - nickname=${user.nickname}`);
+    const userId: string = user.user_id;
+    const playlists: playlistInfo[] =
       await this.playlistService.getUserPlaylists(userId);
     return playlists;
   }
@@ -80,13 +83,11 @@ export class PlaylistController {
   @UseGuards(AuthGuard())
   @HttpCode(HTTP_STATUS_CODE.SUCCESS)
   async getPlaylistMusics(
-    @Req() req,
+    @ReqUser() user: User,
     @Param('playlistId') playlistId: number,
   ): Promise<Music[]> {
-    this.logger.log(
-      `GET /playlists/${playlistId} - nickname=${req.user.nickname}`,
-    );
-    const userId: string = req.user.user_id;
+    this.logger.log(`GET /playlists/${playlistId} - nickname=${user.nickname}`);
+    const userId: string = user.user_id;
     return await this.playlistService.getPlaylistMusics(userId, playlistId);
   }
 
@@ -94,13 +95,13 @@ export class PlaylistController {
   @UseGuards(AuthGuard())
   @HttpCode(HTTP_STATUS_CODE.SUCCESS)
   async deletePlaylist(
-    @Req() req,
+    @ReqUser() user: User,
     @Body('playlistId') playlistId: number,
   ): Promise<{ playlistId: number }> {
     this.logger.log(
-      `DELETE /playlists - nickname=${req.user.nickname}, playlistId=${playlistId}`,
+      `DELETE /playlists - nickname=${user.nickname}, playlistId=${playlistId}`,
     );
-    const userId: string = req.user.user_id;
+    const userId: string = user.user_id;
     const deletedPlaylistId: number =
       await this.playlistService.deleteSinglePlaylist(userId, playlistId);
     return { playlistId: deletedPlaylistId };
@@ -110,14 +111,14 @@ export class PlaylistController {
   @UseGuards(AuthGuard())
   @HttpCode(HTTP_STATUS_CODE.SUCCESS)
   async deleteMusicInPlaylist(
-    @Req() req,
+    @ReqUser() user: User,
     @Param('playlistId') playlistId: number,
     @Body('musicId') music_id: string,
   ): Promise<{ music_playlist_id: number }> {
     this.logger.log(
-      `DELETE /playlists/${playlistId} - nickname=${req.user.nickname}, musicId=${music_id}`,
+      `DELETE /playlists/${playlistId} - nickname=${user.nickname}, musicId=${music_id}`,
     );
-    const userId: string = req.user.user_id;
+    const userId: string = user.user_id;
     const music_playlist_id: number =
       await this.playlistService.deleteMusicInPlaylist(
         userId,

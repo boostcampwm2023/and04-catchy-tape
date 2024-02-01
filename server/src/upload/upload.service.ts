@@ -171,7 +171,7 @@ export class UploadService {
 
   async uploadImage(
     file: Express.Multer.File,
-    id: string,
+    id: string | null,
     type: string,
   ): Promise<{ url: string }> {
     try {
