@@ -78,18 +78,9 @@ export class AuthService {
     }
 
     try {
-      if (email) {
-        await this.userRepository.saveUser(nickname, email);
+      await this.userRepository.saveUser(nickname, email);
 
-        return await this.login(email);
-      }
-
-      this.logger.error(`auth.service - signup : WRONG_TOKEN`);
-      throw new CatchyException(
-        'WRONG_TOKEN',
-        HTTP_STATUS_CODE.WRONG_TOKEN,
-        ERROR_CODE.WRONG_TOKEN,
-      );
+      return await this.login(email);
     } catch (error) {
       if (error instanceof CatchyException) {
         throw error;
