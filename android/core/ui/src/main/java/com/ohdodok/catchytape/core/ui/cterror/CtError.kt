@@ -21,6 +21,7 @@ fun CtErrorType.toMessageId(): Int {
         CtErrorType.ALREADY_EXIST_EMAIL -> R.string.error_message_already_exist_email
         CtErrorType.NOT_EXIST_GENRE -> R.string.error_message_not_exist_genre
         CtErrorType.EXPIRED_TOKEN -> R.string.error_message_expired_token
+        CtErrorType.NOT_EXIST_REFRESH_TOKEN -> R.string.error_message_not_exist_refresh_token
         CtErrorType.SERVICE -> R.string.error_message_service
         CtErrorType.BAD_IMAGE -> R.string.error_message_bad_image
         CtErrorType.ENCODING_FAILURE -> R.string.error_encoding_failure

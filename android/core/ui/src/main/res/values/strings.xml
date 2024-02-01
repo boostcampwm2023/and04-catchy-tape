@@ -55,6 +55,7 @@
     <string name="error_message_already_exist_email">이미 회원가입이 완료된 이메일이에요 !</string>
     <string name="error_message_not_exist_genre">장르를 선택해 주세요.</string>
     <string name="error_message_expired_token">로그인 토큰이 만료 되었어요.</string>
+    <string name="error_message_not_exist_refresh_token">리프레쉬 토큰이 만료 되었어요.</string>
     <string name="error_message_service">서버에 오류가 생겼어요.</string>
     <string name="error_message_bad_image">유해 이미지에요. 다른 이미지로 바꿔주세요.</string>
     <string name="error_encoding_failure">인코딩에 실패했어요. 다시 시도해 주세요.</string>

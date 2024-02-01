@@ -20,6 +20,7 @@ enum class CtErrorType(val errorCode: Int) {
     BAD_IMAGE(4013),
     WRONG_TOKEN(4100),
     EXPIRED_TOKEN(4101),
+    NOT_EXIST_REFRESH_TOKEN(4102),
     SERVER(5000),
     SERVICE(5001),
     ENCODING_FAILURE(5002),
@@ -29,5 +30,3 @@ enum class CtErrorType(val errorCode: Int) {
         val ctErrorEnums = CtErrorType.values().toList()
     }
 }
-
-
