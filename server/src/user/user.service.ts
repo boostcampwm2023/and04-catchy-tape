@@ -9,6 +9,7 @@ import { ERROR_CODE } from 'src/config/errorCode.enum';
 import { Recent_Played } from 'src/entity/recent_played.entity';
 import { UserUpdateDto } from './../dto/userUpdate.dto';
 import { MusicRepository } from 'src/music/music.repository';
+import { UserRepository } from './user.repository';
 
 @Injectable()
 export class UserService {
@@ -17,12 +18,13 @@ export class UserService {
     private musicRepository: MusicRepository,
     @InjectRepository(Recent_Played)
     private recentPlayedRepository: Repository<Recent_Played>,
+    private userRepository: UserRepository,
     private readonly dataSource: DataSource,
   ) {}
 
   async isDuplicatedUserNickname(userNickname: string): Promise<boolean> {
     try {
-      const user = await User.findUserByNickName(userNickname);
+      const user = await this.userRepository.findUserByNickName(userNickname);
 
       if (user) {
         return true;
@@ -62,7 +64,7 @@ export class UserService {
     userUpdateDto: UserUpdateDto,
   ): Promise<string> {
     try {
-      if ((await User.countNumberOfUserById(user_id)) == 0) {
+      if ((await this.userRepository.countNumberOfUserById(user_id)) == 0) {
         this.logger.error(`user.service - updateUserImage : NOT_EXIST_USER`);
         throw new CatchyException(
           'NOT_EXIST_USER',
@@ -83,11 +85,15 @@ export class UserService {
       }
 
       if (nickname) {
-        await User.updateUserInformation(user_id, image_url, nickname);
+        await this.userRepository.updateUserInformation(
+          user_id,
+          image_url,
+          nickname,
+        );
         return user_id;
       }
 
-      await User.updateUserInformation(user_id, image_url);
+      await this.userRepository.updateUserInformation(user_id, image_url);
 
       return user_id;
     } catch (err) {
@@ -106,7 +112,7 @@ export class UserService {
 
   async getUserInformation(user_id: string): Promise<User> {
     try {
-      const user = await User.findUserById(user_id);
+      const user = await this.userRepository.findUserById(user_id);
 
       if (!user) {
         throw new CatchyException(
@@ -133,7 +139,7 @@ export class UserService {
 
   async getCertainKeywordNicknameUser(keyword: string): Promise<User[]> {
     try {
-      return User.getCertainUserByNickname(keyword);
+      return this.userRepository.getCertainUserByNickname(keyword);
     } catch {
       this.logger.error(
         `user.service - getCertainKeywordNicknameUser : QUERY_ERROR`,
@@ -192,7 +198,7 @@ export class UserService {
         return addedRow.recent_played_id;
       }
 
-      await User.updateRecentPlaylist(music_id, user_id);
+      await this.userRepository.updateRecentPlaylist(music_id, user_id);
 
       return await Recent_Played.getRecentPlayedId(music_id, user_id);
     } catch (err) {
