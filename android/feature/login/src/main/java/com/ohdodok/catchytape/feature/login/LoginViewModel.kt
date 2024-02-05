@@ -1,43 +1,34 @@
 package com.ohdodok.catchytape.feature.login
 
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ohdodok.catchytape.core.domain.model.CtErrorType
 import com.ohdodok.catchytape.core.domain.model.CtException
 import com.ohdodok.catchytape.core.domain.usecase.login.AutomaticallyLoginUseCase
 import com.ohdodok.catchytape.core.domain.usecase.login.LoginUseCase
+import com.ohdodok.catchytape.core.ui.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.plus
 import javax.inject.Inject
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
     private val loginUseCase: LoginUseCase,
     private val automaticallyLoginUseCase: AutomaticallyLoginUseCase
-) : ViewModel() {
+) : BaseViewModel() {
+    override suspend fun onError(errorType: CtErrorType) {
+        _events.emit(LoginEvent.ShowMessage(errorType))
+    }
 
     private val _events = MutableSharedFlow<LoginEvent>()
     val events = _events.asSharedFlow()
 
     var isAutoLoginFinished: Boolean = false
         private set
-
-    private val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
-        viewModelScope.launch {
-            if (throwable is CtException) {
-                _events.emit(LoginEvent.ShowMessage(throwable.ctError))
-            } else {
-                _events.emit(LoginEvent.ShowMessage(CtErrorType.UN_KNOWN))
-            }
-        }
-    }
 
     fun login(token: String) {
         loginUseCase(token).onEach {
@@ -49,9 +40,8 @@ class LoginViewModel @Inject constructor(
                     _events.emit(LoginEvent.NavigateToNickName(token))
                 }
             }
-        }.launchIn(viewModelScope + exceptionHandler)
+        }.launchIn(viewModelScopeWithExceptionHandler)
     }
-
 
     fun automaticallyLogin() {
         viewModelScope.launch(exceptionHandler) {
