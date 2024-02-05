@@ -1,15 +1,13 @@
 package com.ohdodok.catchytape.feature.upload
 
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ohdodok.catchytape.core.domain.model.CtErrorType
-import com.ohdodok.catchytape.core.domain.model.CtException
 import com.ohdodok.catchytape.core.domain.repository.MusicRepository
 import com.ohdodok.catchytape.core.domain.usecase.upload.UploadFileUseCase
 import com.ohdodok.catchytape.core.domain.usecase.upload.UploadMusicUseCase
 import com.ohdodok.catchytape.core.domain.usecase.upload.ValidateMusicTitleUseCase
+import com.ohdodok.catchytape.core.ui.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -20,8 +18,6 @@ import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.plus
 import java.io.File
 import javax.inject.Inject
 
@@ -64,22 +60,13 @@ class UploadViewModel @Inject constructor(
     private val uploadFileUseCase: UploadFileUseCase,
     private val uploadMusicUseCase: UploadMusicUseCase,
     private val validateMusicTitleUseCase: ValidateMusicTitleUseCase
-) : ViewModel() {
+) : BaseViewModel() {
+    override suspend fun onError(errorType: CtErrorType) {
+        _events.emit(UploadEvent.ShowMessage(errorType))
+    }
 
     private val _events = MutableSharedFlow<UploadEvent>()
     val events = _events.asSharedFlow()
-
-    private val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
-        viewModelScope.launch {
-            if (throwable is CtException) {
-                _events.emit(UploadEvent.ShowMessage(throwable.ctError))
-            } else {
-                _events.emit(UploadEvent.ShowMessage(CtErrorType.UN_KNOWN))
-            }
-        }
-    }
-
-    private val viewModelScopeWithExceptionHandler = viewModelScope + exceptionHandler
 
     private val _uiState: MutableStateFlow<UploadUiState> = MutableStateFlow(UploadUiState())
     val uiState: StateFlow<UploadUiState> = _uiState.asStateFlow()
@@ -142,4 +129,3 @@ class UploadViewModel @Inject constructor(
         }.launchIn(viewModelScopeWithExceptionHandler)
     }
 }
-
