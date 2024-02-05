@@ -11,7 +11,7 @@ import kotlinx.coroutines.plus
 abstract class BaseViewModel : ViewModel() {
     abstract suspend fun onError(errorType: CtErrorType)
 
-    private val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
+    protected val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
         val errorType =
             if (throwable is CtException) throwable.ctError
             else CtErrorType.UN_KNOWN
