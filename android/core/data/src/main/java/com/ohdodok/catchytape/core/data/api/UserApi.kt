@@ -5,6 +5,7 @@ import com.ohdodok.catchytape.core.data.model.LoginResponse
 import com.ohdodok.catchytape.core.data.model.MusicIdRequest
 import com.ohdodok.catchytape.core.data.model.MusicResponse
 import com.ohdodok.catchytape.core.data.model.NicknameResponse
+import com.ohdodok.catchytape.core.data.model.RefreshRequest
 import com.ohdodok.catchytape.core.data.model.SignUpRequest
 import retrofit2.Response
 import retrofit2.http.Body
@@ -24,6 +25,11 @@ interface UserApi {
     @POST("users/signup")
     suspend fun signUp(
         @Body signUpRequest: SignUpRequest
+    ): LoginResponse
+
+    @POST("users/signup")
+    suspend fun refresh(
+        @Body refreshRequest: RefreshRequest
     ): LoginResponse
 
     @GET("users/duplicate/{nickname}")
