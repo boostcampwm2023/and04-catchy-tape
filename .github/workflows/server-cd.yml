@@ -91,8 +91,8 @@ jobs:
           password: ${{ secrets.SERVER_SSH_PASSWORD }}
           port: ${{ secrets.SERVER_SSH_PORT }}
           script: |
-            NCP_REGISTRY=${{ secrets.NCP_REGISTRY }}
-            NCP_DOCKER_ACCESS_KEY_ID=${{ secrets.NCP_DOCKER_ACCESS_KEY_ID }}
-            NCP_DOCKER_SECRET_KEY=${{ secrets.NCP_DOCKER_SECRET_KEY }}
+            export NCP_REGISTRY=${{ secrets.NCP_REGISTRY }}
+            export NCP_DOCKER_ACCESS_KEY_ID=${{ secrets.NCP_DOCKER_ACCESS_KEY_ID }}
+            export NCP_DOCKER_SECRET_KEY=${{ secrets.NCP_DOCKER_SECRET_KEY }}
             sh server/deploy.sh
             curl -X POST -H 'Content-type: application/json' --data '{"text":"서버 배포 성공!"}' ${{ secrets.SLACK_WEBHOOK_URL }}

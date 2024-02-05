@@ -2,7 +2,7 @@
 
 
 # blue 컨테이너가 띄워져 있는지 확인 (3000 포트 == blue)
-EXIST_BLUE=$(sudo netstat -lntp | grep 3000)
+EXIST_BLUE=$(netstat -lntp | grep 3000)
 
 if [ -n "$EXIST_BLUE" ]; then
   TARGET_COLOR="green"
@@ -20,16 +20,6 @@ else
   NOW_SERVER_NAME="catchy-tape-green"
 fi
 
-
-# green의 경우 was 환경변수 PORT 변경
-ENV_FILE="/server/prod.env"
-PORT_CHANGE_FROM="PORT=3000"
-PORT_CHANGE_TO="PORT=3001"
-
-if [ "$TARGET_COLOR" = "green" ]; then
-  sed -i "s/$PORT_CHANGE_FROM/$PORT_CHANGE_TO/" "$ENV_FILE"
-fi
-
 # 1 새로운 서버를 띄운다
 docker login $NCP_REGISTRY -u $NCP_DOCKER_ACCESS_KEY_ID -p $NCP_DOCKER_SECRET_KEY
 docker pull $NCP_REGISTRY/catchy-tape:latest
@@ -43,14 +33,16 @@ nginx -s reload
 # 3 원래 서버 종료 & 삭제
 FIRST_DEPLOYED_SERVER="catchy-tape-latest"
 FIRST_DEPLOYED_SERVER_ID=$(docker ps --filter "name=$FIRST_DEPLOYED_SERVER" -q)
-if ["$FIRST_DEPLYOED_SERVER_ID"]; then
-  docker stop $FIRST_DEPLOYED_SERVER_ID
-  docerk rm $FIRST_DEPLOYED_SERVER
+if [ -n "$FIRST_DEPLOYED_SERVER_ID" ]; then
+  docker stop $FIRST_DEPLOYED_SERVER
+  docker rm $FIRST_DEPLOYED_SERVER
 fi
 
 STOP_SERVER_ID=$(docker ps --filter "name=$NOW_SERVER_NAME" -q)
-docker stop $STOP_SERVER_ID
-docker rm $NOW_SERVER_NAME
+if [ -n "$STOP_SERVER_ID" ]; then
+  docker stop $STOP_SERVER_ID
+  docker rm $NOW_SERVER_NAME
+fi
 
 # 사용하지 않는 도커 이미지 정리
 docker image prune -a -f
