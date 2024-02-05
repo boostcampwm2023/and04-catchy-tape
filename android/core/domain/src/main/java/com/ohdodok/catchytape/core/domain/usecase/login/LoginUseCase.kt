@@ -13,6 +13,7 @@ class LoginUseCase @Inject constructor(
 
     operator fun invoke(googleToken: String): Flow<Unit> =
         authRepository.loginWithGoogle(googleToken).map {
-            userTokenRepository.saveAccessToken(it)
+            userTokenRepository.saveAccessToken(it.accessToken)
+            userTokenRepository.saveRefreshToken(it.refreshToken)
         }
 }

@@ -14,6 +14,7 @@ class UserTokenRepositoryImpl @Inject constructor(
 ) : UserTokenRepository {
 
     private val accessTokenKey = stringPreferencesKey("accessToken")
+    private val refreshTokenKey = stringPreferencesKey("refreshToken")
 
     override suspend fun getAccessToken(): String =
         dataStore.data.map { preferences -> preferences[accessTokenKey] ?: "" }.first()
@@ -22,4 +23,10 @@ class UserTokenRepositoryImpl @Inject constructor(
         dataStore.edit { preferences -> preferences[accessTokenKey] = token }
     }
 
+    override suspend fun getRefreshToken(): String =
+        dataStore.data.map { preferences -> preferences[refreshTokenKey] ?: "" }.first()
+
+    override suspend fun saveRefreshToken(token: String) {
+        dataStore.edit { preferences -> preferences[refreshTokenKey] = token }
+    }
 }

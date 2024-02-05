@@ -13,7 +13,7 @@ class SignUpUseCase @Inject constructor(
 
     operator fun invoke(googleToken: String, nickname: String): Flow<Unit> =
         authRepository.signUpWithGoogle(googleToken, nickname).map {
-            userTokenRepository.saveAccessToken(it)
+            userTokenRepository.saveAccessToken(it.accessToken)
+            userTokenRepository.saveRefreshToken(it.refreshToken)
         }
-
 }
