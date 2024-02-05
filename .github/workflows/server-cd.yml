@@ -91,9 +91,8 @@ jobs:
           password: ${{ secrets.SERVER_SSH_PASSWORD }}
           port: ${{ secrets.SERVER_SSH_PORT }}
           script: |
-            docker login ${{ secrets.NCP_REGISTRY }} -u ${{ secrets.NCP_DOCKER_ACCESS_KEY_ID }} -p ${{ secrets.NCP_DOCKER_SECRET_KEY }}
-            docker pull ${{ secrets.NCP_REGISTRY }}/catchy-tape:latest
-            docker stop catchy-tape-latest
-            docker rm catchy-tape-latest
-            docker run -v /home/hyung/logs:/catchy-tape/logs -d -p 3000:3000 --name catchy-tape-latest ${{ secrets.NCP_REGISTRY }}/catchy-tape:latest
+            NCP_REGISTRY=${{ secrets.NCP_REGISTRY }}
+            NCP_DOCKER_ACCESS_KEY_ID=${{ secrets.NCP_DOCKER_ACCESS_KEY_ID }}
+            NCP_DOCKER_SECRET_KEY=${{ secrets.NCP_DOCKER_SECRET_KEY }}
+            sh server/deploy.sh
             curl -X POST -H 'Content-type: application/json' --data '{"text":"서버 배포 성공!"}' ${{ secrets.SLACK_WEBHOOK_URL }}
