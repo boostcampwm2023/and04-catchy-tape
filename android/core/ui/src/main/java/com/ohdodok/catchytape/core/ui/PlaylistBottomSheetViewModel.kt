@@ -1,15 +1,12 @@
 package com.ohdodok.catchytape.core.ui
 
 import androidx.lifecycle.SavedStateHandle
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ohdodok.catchytape.core.domain.model.CtErrorType
-import com.ohdodok.catchytape.core.domain.model.CtException
 import com.ohdodok.catchytape.core.domain.model.Playlist
 import com.ohdodok.catchytape.core.domain.repository.PlaylistRepository
 import com.ohdodok.catchytape.core.ui.model.PlaylistUiModel
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -29,7 +26,10 @@ sealed interface PlaylistBottomSheetEvent {
 class PlaylistBottomSheetViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val playlistRepository: PlaylistRepository,
-) : ViewModel() {
+) : BaseViewModel() {
+    override suspend fun onError(errorType: CtErrorType) {
+        _events.emit(PlaylistBottomSheetEvent.ShowMessage(errorType))
+    }
 
     private val musicId: String = requireNotNull(savedStateHandle["musicId"]) {
         "musicId 정보가 누락되었어요."
@@ -40,14 +40,6 @@ class PlaylistBottomSheetViewModel @Inject constructor(
 
     private val _events = MutableSharedFlow<PlaylistBottomSheetEvent>()
     val events: SharedFlow<PlaylistBottomSheetEvent> = _events.asSharedFlow()
-
-    private val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
-        val errorType =
-            if (throwable is CtException) throwable.ctError
-            else CtErrorType.UN_KNOWN
-
-        viewModelScope.launch { _events.emit(PlaylistBottomSheetEvent.ShowMessage(errorType)) }
-    }
 
     init {
         fetchPlaylists()

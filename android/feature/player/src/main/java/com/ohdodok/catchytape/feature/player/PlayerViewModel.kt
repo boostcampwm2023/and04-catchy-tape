@@ -1,16 +1,13 @@
 package com.ohdodok.catchytape.feature.player
 
-import androidx.lifecycle.ViewModel
-
 import androidx.lifecycle.viewModelScope
 import com.ohdodok.catchytape.core.domain.model.CtErrorType
-import com.ohdodok.catchytape.core.domain.model.CtException
 import com.ohdodok.catchytape.core.domain.model.CurrentPlaylist
 import com.ohdodok.catchytape.core.domain.model.Music
 import com.ohdodok.catchytape.core.domain.repository.MusicRepository
 import com.ohdodok.catchytape.core.domain.usecase.player.CurrentPlaylistUseCase
+import com.ohdodok.catchytape.core.ui.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -19,7 +16,6 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.plus
 import javax.inject.Inject
 
 data class PlayerState(
@@ -43,7 +39,10 @@ sealed interface PlayerEvent {
 class PlayerViewModel @Inject constructor(
     private val currentPlaylistUseCase: CurrentPlaylistUseCase,
     private val musicRepository: MusicRepository,
-) : ViewModel(), PlayerEventListener {
+) : BaseViewModel(), PlayerEventListener {
+    override suspend fun onError(errorType: CtErrorType) {
+        _events.emit(PlayerEvent.ShowError(errorType))
+    }
 
     private val _currentPlaylist = MutableStateFlow<List<Music>?>(null)
     val currentPlaylist: StateFlow<List<Music>?> = _currentPlaylist.asStateFlow()
@@ -53,13 +52,6 @@ class PlayerViewModel @Inject constructor(
 
     private val _events = MutableSharedFlow<PlayerEvent>()
     val events: SharedFlow<PlayerEvent> = _events.asSharedFlow()
-
-    private val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
-        val errorType = if (throwable is CtException) throwable.ctError else CtErrorType.UN_KNOWN
-        viewModelScope.launch { _events.emit(PlayerEvent.ShowError(errorType)) }
-    }
-
-    private val viewModelScopeWithExceptionHandler = viewModelScope + exceptionHandler
 
     init {
         observePlaylistChange()
