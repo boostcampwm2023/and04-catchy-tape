@@ -1,16 +1,14 @@
 package com.ohdodok.catchytape.feature.home
 
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ohdodok.catchytape.core.domain.model.CtErrorType
-import com.ohdodok.catchytape.core.domain.model.CtException
 import com.ohdodok.catchytape.core.domain.model.Music
 import com.ohdodok.catchytape.core.domain.repository.MusicRepository
 import com.ohdodok.catchytape.core.domain.repository.PlaylistRepository
 import com.ohdodok.catchytape.core.domain.usecase.player.CurrentPlaylistUseCase
+import com.ohdodok.catchytape.core.ui.BaseViewModel
 import com.ohdodok.catchytape.core.ui.MusicAdapter
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -20,7 +18,6 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.plus
 import javax.inject.Inject
 
 data class HomeUiState(
@@ -35,19 +32,11 @@ class HomeViewModel @Inject constructor(
     private val musicRepository: MusicRepository,
     private val playlistRepository: PlaylistRepository,
     private val currentPlaylistUseCase: CurrentPlaylistUseCase,
-) : ViewModel(), MusicAdapter.Listener {
+) : BaseViewModel(), MusicAdapter.Listener {
 
-    private val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
-        viewModelScope.launch {
-            if (throwable is CtException) {
-                _events.emit(HomeEvent.ShowMessage(throwable.ctError))
-            } else {
-                _events.emit(HomeEvent.ShowMessage(CtErrorType.UN_KNOWN))
-            }
-        }
+    override suspend fun onError(errorType: CtErrorType) {
+        _events.emit(HomeEvent.ShowMessage(errorType))
     }
-
-    private val viewModelScopeWithExceptionHandler = viewModelScope + exceptionHandler
 
     private val _events = MutableSharedFlow<HomeEvent>()
     val events = _events.asSharedFlow()
@@ -74,7 +63,10 @@ class HomeViewModel @Inject constructor(
     }
 
     fun playRecentlyPlayedMusic() {
-        currentPlaylistUseCase.playMusics(uiState.value.recentlyPlayedMusics.first(), uiState.value.recentlyPlayedMusics)
+        currentPlaylistUseCase.playMusics(
+            uiState.value.recentlyPlayedMusics.first(),
+            uiState.value.recentlyPlayedMusics
+        )
         viewModelScope.launch {
             _events.emit(HomeEvent.NavigateToPlayerScreen)
         }
