@@ -13,4 +13,5 @@ interface AuthRepository {
 
     suspend fun verifyToken(token: String): Boolean
 
+    fun refreshToken()
 }

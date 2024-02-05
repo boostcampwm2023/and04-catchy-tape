@@ -44,4 +44,7 @@ class AuthRepositoryImpl @Inject constructor(
         return userApi.verify("Bearer ${token}").isSuccessful
     }
 
+    override fun refreshToken() {
+        
+    }
 }
