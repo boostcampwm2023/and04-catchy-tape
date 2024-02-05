@@ -27,7 +27,7 @@ docker run -v /home/hyung/logs:/catchy-tape/logs -d -p $WEB_SERVER_TARGET_PORT:3
 
 # 2 nginx 포트 설정 변경 후 reload
 NGINX_CONFIG="/etc/nginx/nginx.conf"
-sed -i 's/WEB_SERVER_STOP_PORT/WEB_SERVER_TARGET_PORT/' $NGINX_CONFIG
+sed -i "s/$WEB_SERVER_STOP_PORT/$WEB_SERVER_TARGET_PORT/" $NGINX_CONFIG
 nginx -s reload
 
 # 3 원래 서버 종료 & 삭제
