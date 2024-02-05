@@ -20,15 +20,6 @@ else
   NOW_SERVER_NAME="catchy-tape-green"
 fi
 
-# green의 경우 was 환경변수 PORT 변경
-# ENV_FILE="/server/prod.env"
-# PORT_CHANGE_FROM="PORT=3000"
-# PORT_CHANGE_TO="PORT=3001"
-
-# if [ "$TARGET_COLOR" = "green" ]; then
-#   sed -i "s/$PORT_CHANGE_FROM/$PORT_CHANGE_TO/" "$ENV_FILE"
-# fi
-
 # 1 새로운 서버를 띄운다
 docker login $NCP_REGISTRY -u $NCP_DOCKER_ACCESS_KEY_ID -p $NCP_DOCKER_SECRET_KEY
 docker pull $NCP_REGISTRY/catchy-tape:latest
