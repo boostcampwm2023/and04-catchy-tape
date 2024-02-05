@@ -21,6 +21,7 @@ import { CatchyException } from 'src/config/catchyException';
 import { ERROR_CODE } from 'src/config/errorCode.enum';
 import { User } from 'src/entity/user.entity';
 import { UserUpdateDto } from 'src/dto/userUpdate.dto';
+import { ReqUser } from 'src/config/decorators';
 
 @Controller('users')
 export class UserController {
@@ -32,13 +33,13 @@ export class UserController {
   @UsePipes(ValidationPipe)
   @HttpCode(HTTP_STATUS_CODE.SUCCESS)
   async updateUserImage(
-    @Req() req,
+    @ReqUser() user: User,
     @Body() userUpdateDto: UserUpdateDto,
   ): Promise<{ user_id: string }> {
     this.logger.log(
-      `PATCH /users - nickname=${req.user.nickname}->${userUpdateDto.nickname}, image_url=${userUpdateDto.image_url}`,
+      `PATCH /users - nickname=${user.nickname}->${userUpdateDto.nickname}, image_url=${userUpdateDto.image_url}`,
     );
-    const user_id = req.user.user_id;
+    const user_id = user.user_id;
     return {
       user_id: await this.userService.updateUserInformation(
         user_id,
@@ -68,11 +69,11 @@ export class UserController {
   @UseGuards(AuthGuard())
   @HttpCode(HTTP_STATUS_CODE.SUCCESS)
   async getUserRecentPlayedMusics(
-    @Req() req,
+    @ReqUser() user: User,
     @Query('count') count: number,
   ): Promise<Music[]> {
-    this.logger.log(`GET /users/recent-played - nickname=${req.user.nickname}`);
-    const userId = req.user.user_id;
+    this.logger.log(`GET /users/recent-played - nickname=${user.nickname}`);
+    const userId = user.user_id;
     const userMusicData = await this.userService.getRecentPlayedMusicByUserId(
       userId,
       count,
@@ -84,9 +85,9 @@ export class UserController {
   @Get('my-info')
   @UseGuards(AuthGuard())
   @HttpCode(HTTP_STATUS_CODE.SUCCESS)
-  async getMyInformation(@Req() req): Promise<User> {
-    this.logger.log(`GET /users/my-info - nickname=${req.user.nickname}`);
-    const user_id = req.user.user_id;
+  async getMyInformation(@ReqUser() user: User): Promise<User> {
+    this.logger.log(`GET /users/my-info - nickname=${user.nickname}`);
+    const user_id = user.user_id;
     return this.userService.getUserInformation(user_id);
   }
 
@@ -104,13 +105,13 @@ export class UserController {
   @UseGuards(AuthGuard())
   @HttpCode(HTTP_STATUS_CODE.SUCCESS)
   async updateRecentPlayMusic(
-    @Req() req,
+    @ReqUser() user: User,
     @Body('musicId') music_id: string,
   ): Promise<{ recent_played_id: number }> {
     this.logger.log(
-      `PUT /user/recent-played - nickname=${req.user.nickname}, music_id=${music_id}`,
+      `PUT /user/recent-played - nickname=${user.nickname}, music_id=${music_id}`,
     );
-    const user_id: string = req.user.user_id;
+    const user_id: string = user.user_id;
     const recent_played_id: number = await this.userService.updateRecentMusic(
       music_id,
       user_id,
@@ -122,10 +123,10 @@ export class UserController {
   @UseGuards(AuthGuard())
   @HttpCode(HTTP_STATUS_CODE.SUCCESS)
   async getRecentPlaylistInfo(
-    @Req() req,
+    @ReqUser() user: User,
   ): Promise<{ music_count: number; thumbnail: string }> {
-    const user_id: string = req.user.user_id;
-    this.logger.log(`GET /user/recent-info - nickname=${req.user.nickname}`);
+    const user_id: string = user.user_id;
+    this.logger.log(`GET /user/recent-info - nickname=${user.nickname}`);
     const music_count: number =
       await this.userService.getRecentPlaylistMusicCount(user_id);
     const thumbnail: string =

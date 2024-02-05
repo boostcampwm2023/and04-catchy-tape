@@ -1,15 +1,16 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { UserController } from './user.controller';
 import { UserService } from './user.service';
-import { getRepositoryToken } from '@nestjs/typeorm';
-import { User } from 'src/entity/user.entity';
-import { Repository } from 'typeorm';
-import { Recent_Played } from 'src/entity/recent_played.entity';
+import { DataSource, Repository } from 'typeorm';
+import { MusicRepository } from 'src/repository/music.repository';
+import { UserRepository } from '../repository/user.repository';
+import { Recent_PlayedRepository } from 'src/repository/recent_played.repository';
 
 describe('UserController', () => {
   let controller: UserController;
   let userService: UserService;
-  let userRepository: Repository<User>;
+  let userRepository: UserRepository;
+  let mockDataSource: jest.Mocked<DataSource>;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -17,19 +18,27 @@ describe('UserController', () => {
       providers: [
         UserService,
         {
-          provide: getRepositoryToken(User),
+          provide: UserRepository,
           useClass: Repository,
         },
         {
-          provide: getRepositoryToken(Recent_Played),
+          provide: Recent_PlayedRepository,
           useClass: Repository,
+        },
+        {
+          provide: MusicRepository,
+          useClass: Repository,
+        },
+        {
+          provide: DataSource,
+          useValue: mockDataSource,
         },
       ],
     }).compile();
 
     controller = module.get<UserController>(UserController);
     userService = module.get<UserService>(UserService);
-    userRepository = module.get(getRepositoryToken(User));
+    userRepository = module.get<UserRepository>(UserRepository);
   });
 
   it('should be defined', () => {

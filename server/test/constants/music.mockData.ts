@@ -6,7 +6,6 @@ import { User } from 'src/entity/user.entity';
 export const user: User = {
   user_id: '2d4b574c-b370-4e2e-ac4f-e1eca8eea090',
   nickname: 'master2',
-  photo: null,
   user_email: 'sugamypapa@gmail.com',
   created_at: new Date('2023-12-04 23:57:50.693000'),
 } as User;
@@ -43,7 +42,6 @@ export const newMusicData: Music = {
   genre: 'dance' as Genres,
   music_file: 'encodedURL',
   created_at: new Date(),
-  lyrics: null,
   user: {
     user_id: '아이디',
     nickname: '나',
@@ -53,4 +51,4 @@ export const newMusicData: Music = {
   } as User,
   music_playlist: [],
   recent_played: [],
-} as Music;
+} as unknown as Music;

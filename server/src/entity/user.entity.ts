@@ -5,14 +5,16 @@ import {
   BaseEntity,
   PrimaryColumn,
   OneToMany,
-  ILike,
 } from 'typeorm';
 import { Playlist } from './playlist.entity';
 import { Music } from './music.entity';
 import { Recent_Played } from './recent_played.entity';
+import { Logger } from '@nestjs/common';
 
 @Entity({ name: 'user' })
 export class User extends BaseEntity {
+  private static readonly logger: Logger = new Logger('UserEntity');
+
   @PrimaryColumn()
   user_id: string;
 
@@ -20,13 +22,16 @@ export class User extends BaseEntity {
   nickname: string;
 
   @Column({ nullable: true })
-  photo: string | null;
+  photo?: string;
 
   @Column()
   user_email: string;
 
   @CreateDateColumn()
   created_at: Date;
+
+  @Column({ default: false })
+  is_deleted: boolean;
 
   @OneToMany(() => Music, (music) => music.user)
   musics: Music[];
@@ -36,23 +41,4 @@ export class User extends BaseEntity {
 
   @OneToMany(() => Recent_Played, (recent_played) => recent_played.user)
   recent_played: Recent_Played[];
-
-  static async getCertainUserByNickname(keyword: string): Promise<User[]> {
-    return this.find({
-      relations: {
-        musics: false,
-        playlists: false,
-      },
-      select: {
-        user_id: true,
-        nickname: true,
-        user_email: true,
-        photo: true,
-        created_at: true,
-      },
-      where: {
-        nickname: ILike(`%${keyword}%`),
-      },
-    });
-  }
 }

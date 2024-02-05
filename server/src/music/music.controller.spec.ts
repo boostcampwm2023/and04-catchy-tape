@@ -4,10 +4,9 @@ import * as request from 'supertest';
 import { MusicService } from './music.service';
 import { UploadService } from 'src/upload/upload.service';
 import { NcloudConfigService } from 'src/config/ncloud.config';
-import { ConfigService } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { DataSource, Repository } from 'typeorm';
-import { Music } from 'src/entity/music.entity';
 import { musicCreateInfo, user } from 'test/constants/music.mockData';
 import { MusicController } from './music.controller';
 import { User } from 'src/entity/user.entity';
@@ -16,6 +15,9 @@ import { JwtService } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { GreenEyeService } from 'src/config/greenEye.service';
 import { JwtStrategy } from 'src/auth/jwt.strategy';
+import { MusicRepository } from '../repository/music.repository';
+import { CacheModule } from '@nestjs/cache-manager';
+import { UserRepository } from 'src/repository/user.repository';
 
 describe('UploadController', () => {
   let app: INestApplication;
@@ -25,13 +27,13 @@ describe('UploadController', () => {
   let cloudService: NcloudConfigService;
   let configService: ConfigService;
   let authService: AuthService;
-  let musicRepository: Repository<Music>;
+  let musicRepository: MusicRepository;
   let mockJwtStrategy = { validate: () => user };
   let mockDataSource: jest.Mocked<DataSource>;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      imports: [PassportModule],
+      imports: [PassportModule, CacheModule.register({}), ConfigModule],
       controllers: [MusicController],
       providers: [
         MusicService,
@@ -43,11 +45,11 @@ describe('UploadController', () => {
         JwtService,
         JwtStrategy,
         {
-          provide: getRepositoryToken(Music),
+          provide: UserRepository,
           useClass: Repository,
         },
         {
-          provide: getRepositoryToken(User),
+          provide: MusicRepository,
           useClass: Repository,
         },
         {
@@ -66,7 +68,7 @@ describe('UploadController', () => {
     authService = module.get<AuthService>(AuthService);
     musicController = module.get<MusicController>(MusicController);
     musicService = module.get<MusicService>(MusicService);
-    musicRepository = module.get(getRepositoryToken(Music));
+    musicRepository = module.get<MusicRepository>(MusicRepository);
     mockDataSource = {
       createQueryRunner: jest.fn(),
     } as unknown as jest.Mocked<DataSource>;

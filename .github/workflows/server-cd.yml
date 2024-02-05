@@ -18,10 +18,10 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Set up Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
           cache: "npm"
@@ -47,6 +47,11 @@ jobs:
           CLOUD_FUNCTIONS_EXECUTE_URL: ${{secrets.CLOUD_FUNCTIONS_EXECUTE_URL}}
           CLOUD_FUNCTIONS_REQUEST_URL: ${{secrets.CLOUD_FUNCTIONS_REQUEST_URL}}
           API_GW_ACCESS_KEY: ${{secrets.API_GW_ACCESS_KEY}}
+          REFRESH_SECRET_KEY: ${{secrets.REFRESH_SECRET_KEY}}
+          REDIS_HOST_IP: ${{secrets.REDIS_HOST_IP}}
+          REDIS_PASSWORD: ${{secrets.REDIS_PASSWORD}}
+          REDIS_PORT: ${{secrets.REDIS_PORT}}
+          REDIS_TTL: ${{secrets.REDIS_TTL}}
         run: |
           cd server
           touch prod.env
@@ -63,6 +68,11 @@ jobs:
           echo "CLOUD_FUNCTIONS_EXECUTE_URL=$CLOUD_FUNCTIONS_EXECUTE_URL" >> prod.env
           echo "CLOUD_FUNCTIONS_REQUEST_URL=$CLOUD_FUNCTIONS_REQUEST_URL" >> prod.env
           echo "API_GW_ACCESS_KEY=$API_GW_ACCESS_KEY" >> prod.env
+          echo "REFRESH_SECRET_KEY=$REFRESH_SECRET_KEY" >> prod.env
+          echo "REDIS_HOST_IP=$REDIS_HOST_IP" >> prod.env
+          echo "REDIS_PASSWORD=$REDIS_PASSWORD" >> prod.env
+          echo "REDIS_PORT=$REDIS_PORT" >> prod.env
+          echo "REDIS_TTL=$REDIS_TTL" >> prod.env
 
       - name: Build Docker image
         run: docker build --platform linux/amd64 ./server -t ${{ secrets.NCP_REGISTRY }}/catchy-tape:latest

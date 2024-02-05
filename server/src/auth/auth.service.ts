@@ -1,4 +1,7 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
+import { Cache } from 'cache-manager';
+import { Injectable, Logger, Inject } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CatchyException } from 'src/config/catchyException';
@@ -7,27 +10,48 @@ import { UserCreateDto } from 'src/dto/userCreate.dto';
 import { User } from 'src/entity/user.entity';
 import { HTTP_STATUS_CODE } from 'src/httpStatusCode.enum';
 import { Repository, DataSource } from 'typeorm';
-import { v4 as uuid } from 'uuid';
+import { v4 } from 'uuid';
+import { ONE_WEEK_TO_SECONDS } from 'src/constants';
+import { UserRepository } from 'src/repository/user.repository';
 
 @Injectable()
 export class AuthService {
   private readonly logger = new Logger('AuthService');
+  private readonly refreshOptions: {};
+
   constructor(
-    @InjectRepository(User) private userRepository: Repository<User>,
+    @Inject(CACHE_MANAGER) private cacheManager: Cache,
     private jwtService: JwtService,
     private readonly dataSource: DataSource,
-  ) {}
+    private readonly configService: ConfigService,
+    private userRepository: UserRepository,
+  ) {
+    this.refreshOptions = {
+      secret: this.configService.get<string>('REFRESH_SECRET_KEY'),
+    };
+  }
 
-  async login(email: string): Promise<{ accessToken: string }> {
-    const user: User = await this.userRepository.findOneBy({
-      user_email: email,
-    });
+  async login(
+    email: string,
+  ): Promise<{ accessToken: string; refreshToken: string }> {
+    const user = await this.userRepository.findUserByEmail(email);
 
     if (user) {
-      const payload = { user_id: user['user_id'] };
-      const accessToken = this.jwtService.sign(payload);
+      const accessPayload = { user_id: user.user_id };
 
-      return { accessToken };
+      const refreshUuid = v4();
+      const refreshPayload = { refresh_id: refreshUuid };
+      await this.cacheManager.set(refreshUuid, user.user_id, {
+        ttl: ONE_WEEK_TO_SECONDS,
+      });
+
+      const accessToken = this.jwtService.sign(accessPayload);
+      const refreshToken = this.jwtService.sign(
+        refreshPayload,
+        this.refreshOptions,
+      );
+
+      return { accessToken, refreshToken };
     }
 
     this.logger.error(`auth.service - login : NOT_EXIST_USER`);
@@ -38,7 +62,9 @@ export class AuthService {
     );
   }
 
-  async signup(userCreateDto: UserCreateDto): Promise<{ accessToken: string }> {
+  async signup(
+    userCreateDto: UserCreateDto,
+  ): Promise<{ accessToken: string; refreshToken: string }> {
     const { nickname, idToken } = userCreateDto;
     const email: string = await this.getGoogleEmail(idToken);
 
@@ -51,36 +77,79 @@ export class AuthService {
       );
     }
 
-    const queryRunner = this.dataSource.createQueryRunner();
-    await queryRunner.startTransaction();
-
     try {
-      if (email) {
-        const newUser: User = this.userRepository.create({
-          user_id: uuid(),
-          nickname,
-          photo: null,
-          user_email: email,
-          created_at: new Date(),
-        });
+      await this.userRepository.saveUser(nickname, email);
 
-        await queryRunner.manager.save(newUser);
-
-        await queryRunner.commitTransaction();
-
-        return await this.login(email);
+      return await this.login(email);
+    } catch (error) {
+      if (error instanceof CatchyException) {
+        throw error;
       }
 
-      this.logger.error(`auth.service - signup : WRONG_TOKEN`);
       throw new CatchyException(
-        'WRONG_TOKEN',
-        HTTP_STATUS_CODE.WRONG_TOKEN,
-        ERROR_CODE.WRONG_TOKEN,
+        'SERVICE_ERROR',
+        HTTP_STATUS_CODE.BAD_REQUEST,
+        ERROR_CODE.SERVICE_ERROR,
       );
-    } catch {
-      await queryRunner.rollbackTransaction();
-    } finally {
-      await queryRunner.release();
+    }
+  }
+
+  async refreshTokens(
+    refreshToken: string,
+  ): Promise<{ accessToken: string; refreshToken: string }> {
+    try {
+      const { refresh_id } = this.jwtService.decode(
+        refreshToken,
+        this.refreshOptions,
+      );
+
+      const user_id: string | undefined =
+        await this.cacheManager.get(refresh_id);
+
+      if (!user_id) {
+        this.logger.error(
+          `auth.service - refreshTokens : NOT_EXIST_REFRESH_TOKEN`,
+        );
+        throw new CatchyException(
+          'NOT_EXIST_REFRESH_TOKEN',
+          HTTP_STATUS_CODE.WRONG_TOKEN,
+          ERROR_CODE.NOT_EXIST_REFRESH_TOKEN,
+        );
+      }
+
+      if ((await this.userRepository.countNumberOfUserById(user_id)) == 0) {
+        this.logger.error(`auth.service - refreshTokens : NOT_EXIST_USER`);
+        throw new CatchyException(
+          'NOT_EXIST_USER',
+          HTTP_STATUS_CODE.WRONG_TOKEN,
+          ERROR_CODE.NOT_EXIST_USER,
+        );
+      }
+
+      const payload = { user_id };
+      const newRefreshTokenUuid = v4();
+      const newAccessToken = this.jwtService.sign(payload);
+      const newRefreshToken = this.jwtService.sign(
+        { newRefreshTokenUuid },
+        this.refreshOptions,
+      );
+
+      await this.cacheManager.del(refresh_id);
+      await this.cacheManager.set(newRefreshTokenUuid, user_id, {
+        ttl: ONE_WEEK_TO_SECONDS,
+      });
+
+      return { accessToken: newAccessToken, refreshToken: newRefreshToken };
+    } catch (error) {
+      if (error instanceof CatchyException) {
+        throw error;
+      }
+
+      throw new CatchyException(
+        'SERVICE_ERROR',
+        HTTP_STATUS_CODE.BAD_REQUEST,
+        ERROR_CODE.SERVICE_ERROR,
+      );
     }
   }
 
@@ -104,30 +173,30 @@ export class AuthService {
   }
 
   async isExistEmail(email: string): Promise<boolean> {
-    const user: User = await this.userRepository.findOneBy({
-      user_email: email,
-    });
+    const user = await this.userRepository.findUserByEmail(email);
 
     if (!user) {
       return false;
-    } else {
-      return true;
     }
+
+    return true;
   }
 
   async deleteUser(user: User): Promise<{ userId: string }> {
-    const queryRunner = this.dataSource.createQueryRunner();
-    await queryRunner.startTransaction();
-
     try {
-      await queryRunner.manager.remove(user);
-      await queryRunner.commitTransaction();
+      await this.userRepository.deleteUser(user.user_id);
 
       return { userId: user.user_id };
-    } catch {
-      await queryRunner.rollbackTransaction();
-    } finally {
-      await queryRunner.release();
+    } catch (err) {
+      if (err instanceof CatchyException) {
+        throw err;
+      }
+
+      throw new CatchyException(
+        'SERVICE_ERROR',
+        HTTP_STATUS_CODE.BAD_REQUEST,
+        ERROR_CODE.SERVICE_ERROR,
+      );
     }
   }
 }

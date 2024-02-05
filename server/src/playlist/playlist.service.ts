@@ -1,62 +1,29 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
 import { CatchyException } from 'src/config/catchyException';
 import { ERROR_CODE } from 'src/config/errorCode.enum';
 import { PlaylistCreateDto } from 'src/dto/playlistCreate.dto';
 import { Music } from 'src/entity/music.entity';
-import { Music_Playlist } from 'src/entity/music_playlist.entity';
 import { Playlist } from 'src/entity/playlist.entity';
 import { HTTP_STATUS_CODE } from 'src/httpStatusCode.enum';
-import { DataSource, Repository } from 'typeorm';
+import { PlaylistRepository } from '../repository/playlist.repository';
+import { MusicRepository } from 'src/repository/music.repository';
+import { playlistInfo } from 'src/dto/playlistInfo.dto';
+import { Music_PlaylistRepository } from 'src/repository/music_playlist.repository';
 
 @Injectable()
 export class PlaylistService {
-  private readonly logger = new Logger('PlaylistService');
+  private readonly logger: Logger = new Logger('PlaylistService');
   constructor(
-    @InjectRepository(Playlist)
-    private playlistRepository: Repository<Playlist>,
-    @InjectRepository(Music_Playlist)
-    private music_playlistRepository: Repository<Music_Playlist>,
-    @InjectRepository(Music)
-    private MusicRepository: Repository<Music>,
-    private readonly dataSource: DataSource,
+    private readonly playlistRepository: PlaylistRepository,
+    private musicRepository: MusicRepository,
+    private music_PlaylistRepository: Music_PlaylistRepository,
   ) {}
 
   async createPlaylist(
     userId: string,
     playlistCreateDto: PlaylistCreateDto,
   ): Promise<number> {
-    const queryRunner = this.dataSource.createQueryRunner();
-    await queryRunner.startTransaction();
-
-    try {
-      const title: string = playlistCreateDto.title;
-      const newPlaylist: Playlist = this.playlistRepository.create({
-        playlist_title: title,
-        created_at: new Date(),
-        updated_at: new Date(),
-        user: { user_id: userId },
-      });
-
-      const result: Playlist = await queryRunner.manager.save(newPlaylist);
-
-      await queryRunner.commitTransaction();
-
-      const playlistId: number = result.playlist_id;
-
-      return playlistId;
-    } catch {
-      await queryRunner.rollbackTransaction();
-
-      this.logger.error(`playlist.service - createPlaylist : SERVICE_ERROR`);
-      throw new CatchyException(
-        'SERVER_ERROR',
-        HTTP_STATUS_CODE.SERVER_ERROR,
-        ERROR_CODE.SERVICE_ERROR,
-      );
-    } finally {
-      await queryRunner.release();
-    }
+    return this.playlistRepository.createPlaylist(userId, playlistCreateDto);
   }
 
   async addMusicToPlaylist(
@@ -99,52 +66,21 @@ export class PlaylistService {
       );
     }
 
-    const queryRunner = this.dataSource.createQueryRunner();
-    await queryRunner.startTransaction();
-
-    // 관계테이블에 추가
-    try {
-      const new_music_playlist: Music_Playlist =
-        this.music_playlistRepository.create({
-          music: { music_id: musicId },
-          playlist: { playlist_id: playlistId },
-          created_at: new Date(),
-        });
-
-      const targetPlaylist: Playlist = await this.playlistRepository.findOne({
-        where: { playlist_id: playlistId },
-      });
-      targetPlaylist.updated_at = new Date();
-
-      await queryRunner.manager.save(new_music_playlist);
-      await queryRunner.manager.save(targetPlaylist);
-
-      await queryRunner.commitTransaction();
-
-      return new_music_playlist.music_playlist_id;
-    } catch {
-      await queryRunner.rollbackTransaction();
-
-      this.logger.error(
-        `playlist.service - addMusicToPlaylist : SERVICE_ERROR`,
-      );
-      throw new CatchyException(
-        'SERVER_ERROR',
-        HTTP_STATUS_CODE.SERVER_ERROR,
-        ERROR_CODE.SERVICE_ERROR,
-      );
-    } finally {
-      await queryRunner.release();
-    }
+    return this.music_PlaylistRepository.addMusicToPlaylist(
+      musicId,
+      playlistId,
+    );
   }
 
   async isAlreadyAdded(playlistId: number, musicId: string): Promise<boolean> {
     try {
-      const count: number = await this.music_playlistRepository.countBy({
-        music: { music_id: musicId },
-        playlist: { playlist_id: playlistId },
-      });
-      return count !== 0;
+      const musicNumber =
+        await this.music_PlaylistRepository.countMusicNumberInPlaylist(
+          musicId,
+          playlistId,
+        );
+
+      return musicNumber !== 0;
     } catch {
       this.logger.error(`playlist.service - isAlreadyAdded : SERVICE_ERROR`);
       throw new CatchyException(
@@ -160,11 +96,10 @@ export class PlaylistService {
     userId: string,
   ): Promise<boolean> {
     try {
-      const playlistCount: number = await this.playlistRepository.countBy({
-        playlist_id: playlistId,
-        user: { user_id: userId },
-      });
-      return playlistCount !== 0;
+      const playlistNumber =
+        await this.playlistRepository.isExistPlaylistOnUser(userId, playlistId);
+
+      return playlistNumber !== 0;
     } catch {
       this.logger.error(
         `playlist.service - isExistPlaylistOnUser : SERVICE_ERROR`,
@@ -179,9 +114,8 @@ export class PlaylistService {
 
   async isExistMusic(musicId: string): Promise<boolean> {
     try {
-      const musicCount: number = await this.MusicRepository.countBy({
-        music_id: musicId,
-      });
+      const musicCount: number =
+        await this.musicRepository.countMusicById(musicId);
 
       return musicCount !== 0;
     } catch {
@@ -194,22 +128,38 @@ export class PlaylistService {
     }
   }
 
-  async getUserPlaylists(userId: string): Promise<Playlist[]> {
+  async getUserPlaylists(userId: string): Promise<playlistInfo[]> {
     try {
-      const playlists: Playlist[] = await Playlist.getPlaylistsByUserId(userId);
+      const playlists: Playlist[] =
+        await this.playlistRepository.getPlaylistsByUserId(userId);
+
+      const playlistsInfo: playlistInfo[] = [];
+
+      /*TODO: 이 과정에서 DTO를 추가하게 되어 개선 필요*/
       const countPromises = playlists.map(async (playlist) => {
-        playlist['music_count'] =
-          await Music_Playlist.getMusicCountByPlaylistId(playlist.playlist_id);
+        const music_count =
+          await this.music_PlaylistRepository.getMusicCountByPlaylistId(
+            playlist.playlist_id,
+          );
+
+        const targetMusic =
+          await this.music_PlaylistRepository.getThumbnailByPlaylistId(
+            playlist.playlist_id,
+          );
+
+        const thumbnail = !targetMusic ? null : targetMusic.music.cover;
+
+        playlistsInfo.push({
+          playlist_id: playlist.playlist_id,
+          playlist_title: playlist.playlist_title,
+          music_count,
+          thumbnail,
+        });
       });
-      const thumbnailPromises = playlists.map(async (playlist) => {
-        const target = await Music_Playlist.getThumbnailByPlaylistId(
-          playlist.playlist_id,
-        );
-        playlist['thumbnail'] = !target ? null : target.music.cover;
-      });
+
       await Promise.all(countPromises);
-      await Promise.all(thumbnailPromises);
-      return playlists;
+
+      return playlistsInfo;
     } catch {
       this.logger.error(`playlist.service - getUserPlaylists : SERVICE_ERROR`);
       throw new CatchyException(
@@ -235,7 +185,7 @@ export class PlaylistService {
       );
     }
     try {
-      return Music_Playlist.getMusicListByPlaylistId(playlistId);
+      return this.music_PlaylistRepository.getMusicListByPlaylistId(playlistId);
     } catch {
       this.logger.error(`playlist.service - getPlaylistMusics : SERVICE_ERROR`);
       throw new CatchyException(
@@ -244,6 +194,25 @@ export class PlaylistService {
         ERROR_CODE.SERVICE_ERROR,
       );
     }
+  }
+
+  async deleteSinglePlaylist(
+    userId: string,
+    playlistId: number,
+  ): Promise<number> {
+    // 사용자 플리가 있는지 확인
+    if (!(await this.isExistPlaylistOnUser(playlistId, userId))) {
+      this.logger.error(
+        `playlist.service - deleteSinglePlaylist : NOT_EXIST_PLAYLIST_ON_USER`,
+      );
+      throw new CatchyException(
+        'NOT_EXIST_PLAYLIST_ON_USER',
+        HTTP_STATUS_CODE.BAD_REQUEST,
+        ERROR_CODE.NOT_EXIST_PLAYLIST_ON_USER,
+      );
+    }
+
+    return this.playlistRepository.deleteSinglePlaylist(userId, playlistId);
   }
 
   async deleteMusicInPlaylist(
@@ -274,53 +243,6 @@ export class PlaylistService {
       );
     }
 
-    const queryRunner = this.dataSource.createQueryRunner();
-    await queryRunner.startTransaction();
-
-    try {
-      const target: Music_Playlist =
-        await this.music_playlistRepository.findOne({
-          where: {
-            music: { music_id: musicId },
-            playlist: { playlist_id: playlistId },
-          },
-        });
-
-      const deletedMusicId: number = target.music_playlist_id;
-
-      if (target == undefined) {
-        this.logger.error(
-          `playlist.service - deleteMusicInPlaylist : NOT_ADDED_MUSIC`,
-        );
-        throw new CatchyException(
-          'NOT_ADDED_MUSIC',
-          HTTP_STATUS_CODE.BAD_REQUEST,
-          ERROR_CODE.NOT_ADDED_MUSIC,
-        );
-      }
-
-      await queryRunner.manager.remove(target);
-
-      await queryRunner.commitTransaction();
-
-      return deletedMusicId;
-    } catch (error) {
-      await queryRunner.rollbackTransaction();
-
-      if (error instanceof CatchyException) {
-        throw error;
-      }
-
-      this.logger.error(
-        `playlist.service - deleteMusicInPlaylist : SERVICE_ERROR`,
-      );
-      throw new CatchyException(
-        'SERVICE_ERROR',
-        HTTP_STATUS_CODE.BAD_REQUEST,
-        ERROR_CODE.SERVICE_ERROR,
-      );
-    } finally {
-      await queryRunner.release();
-    }
+    return this.playlistRepository.deleteMusicInPlaylist(playlistId, musicId);
   }
 }

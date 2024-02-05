@@ -24,3 +24,10 @@ export const contentTypeHandler: Record<string, string> = {
 export const getTimeStamp = (): number => {
   return new Date().getTime();
 };
+
+export const SLICE_COUNT: number =
+  'https://catchy-tape-bucket2.kr.object.ncloudstorage.com/'.length;
+
+export const ONE_WEEK_TO_SECONDS: number = 60 * 60 * 24 * 7;
+
+export const ONE_HOUR_TO_SECONDS: number = 60 * 60;

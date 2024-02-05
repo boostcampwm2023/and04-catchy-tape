@@ -7,16 +7,18 @@ import {
   ManyToOne,
   OneToMany,
   PrimaryColumn,
-  ILike,
   Index,
 } from 'typeorm';
 import { User } from './user.entity';
 import { Genres } from 'src/constants';
 import { Music_Playlist } from './music_playlist.entity';
 import { Recent_Played } from './recent_played.entity';
+import { Logger } from '@nestjs/common';
 
 @Entity({ name: 'music' })
 export class Music extends BaseEntity {
+  private static readonly logger: Logger = new Logger('MusicEntity');
+
   @PrimaryColumn()
   music_id: string;
 
@@ -24,7 +26,7 @@ export class Music extends BaseEntity {
   title: string;
 
   @Column({ nullable: true })
-  lyrics: string | null;
+  lyrics?: string;
 
   @Column()
   cover: string;
@@ -48,92 +50,4 @@ export class Music extends BaseEntity {
 
   @OneToMany(() => Recent_Played, (recent_played) => recent_played.music)
   recent_played: Recent_Played[];
-
-  static async getMusicListByUserId(
-    userId: string,
-    count: number,
-  ): Promise<Music[]> {
-    return this.find({
-      relations: {
-        user: true,
-      },
-      where: {
-        user: { user_id: userId },
-      },
-      select: {
-        music_id: true,
-        title: true,
-        lyrics: true,
-        cover: true,
-        music_file: true,
-        genre: true,
-        created_at: true,
-        user: { user_id: true, nickname: true },
-      },
-      order: {
-        created_at: 'DESC',
-      },
-      take: count,
-    });
-  }
-
-  static async getRecentMusic(): Promise<Music[]> {
-    return this.find({
-      relations: {
-        user: true,
-      },
-      select: {
-        music_id: true,
-        title: true,
-        lyrics: true,
-        cover: true,
-        music_file: true,
-        genre: true,
-        created_at: true,
-        user: {
-          user_id: true,
-          nickname: true,
-        },
-      },
-      order: {
-        created_at: 'DESC',
-      },
-      take: 10,
-    });
-  }
-
-  static async getMusicById(music_id: string): Promise<Music> {
-    return this.findOne({
-      relations: { user: true },
-      select: { user: { user_id: true, nickname: true } },
-      where: { music_id },
-    });
-  }
-
-  static async getCertainMusicByTitle(keyword: string): Promise<Music[]> {
-    return await this.find({
-      relations: {
-        user: true,
-        music_playlist: false,
-      },
-      select: {
-        music_id: true,
-        lyrics: true,
-        title: true,
-        cover: true,
-        music_file: true,
-        genre: true,
-        user: {
-          user_id: true,
-          nickname: true,
-        },
-      },
-      where: {
-        title: ILike(`%${keyword}%`),
-      },
-      order: {
-        created_at: 'DESC',
-      },
-    });
-  }
 }

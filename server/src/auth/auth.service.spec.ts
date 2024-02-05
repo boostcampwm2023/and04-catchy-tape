@@ -1,41 +1,48 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AuthService } from './auth.service';
 import { Repository, DataSource } from 'typeorm';
-import { getRepositoryToken } from '@nestjs/typeorm';
-import { User } from 'src/entity/user.entity';
-import { JwtModule, JwtService } from '@nestjs/jwt';
+import { JwtModule } from '@nestjs/jwt';
 import { PlaylistService } from 'src/playlist/playlist.service';
-import { Playlist } from 'src/entity/playlist.entity';
-import { Music } from 'src/entity/music.entity';
-import { Music_Playlist } from 'src/entity/music_playlist.entity';
 import { PassportModule } from '@nestjs/passport';
+import { PlaylistRepository } from 'src/repository/playlist.repository';
+import { MusicRepository } from 'src/repository/music.repository';
+import { CacheModule } from '@nestjs/cache-manager';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { UserRepository } from 'src/repository/user.repository';
+import { Music_PlaylistRepository } from 'src/repository/music_playlist.repository';
 
 describe('AuthService', () => {
   let service: AuthService;
   let jwtModule: JwtModule;
-  let userRepository: Repository<User>;
+  let userRepository: UserRepository;
   let playlistService: PlaylistService;
   let mockDataSource: jest.Mocked<DataSource>;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      imports: [PassportModule.register({ defaultStrategy: 'jwt' }), JwtModule],
+      imports: [
+        PassportModule.register({ defaultStrategy: 'jwt' }),
+        JwtModule,
+        CacheModule.register({}),
+        ConfigModule,
+      ],
       providers: [
         AuthService,
+        ConfigService,
         {
-          provide: getRepositoryToken(User),
+          provide: UserRepository,
           useClass: Repository,
         },
         {
-          provide: getRepositoryToken(Playlist),
+          provide: PlaylistRepository,
           useClass: Repository,
         },
         {
-          provide: getRepositoryToken(Music),
+          provide: MusicRepository,
           useClass: Repository,
         },
         {
-          provide: getRepositoryToken(Music_Playlist),
+          provide: Music_PlaylistRepository,
           useClass: Repository,
         },
         PlaylistService,
@@ -48,7 +55,7 @@ describe('AuthService', () => {
 
     service = module.get<AuthService>(AuthService);
     jwtModule = module.get<JwtModule>(JwtModule);
-    userRepository = module.get(getRepositoryToken(User));
+    userRepository = module.get<UserRepository>(UserRepository);
     playlistService = module.get<PlaylistService>(PlaylistService);
   });
 

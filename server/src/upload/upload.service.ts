@@ -11,6 +11,7 @@ import { Readable } from 'stream';
 import { GreenEyeService } from '../config/greenEye.service';
 import { DeleteObjectOutput } from 'aws-sdk/clients/s3';
 import { CloudFunctionsResponseDto } from 'src/dto/cloudFunctions.response.dto';
+import { v4 } from 'uuid';
 
 @Injectable()
 export class UploadService {
@@ -49,6 +50,19 @@ export class UploadService {
         Key: path,
       })
       .promise();
+  }
+
+  getUUID(): string {
+    try {
+      return v4();
+    } catch {
+      this.logger.error(`upload.controller - getMusicUUID : SERVER_ERROR`);
+      throw new CatchyException(
+        'SERVER ERROR',
+        HTTP_STATUS_CODE.SERVER_ERROR,
+        ERROR_CODE.SERVER_ERROR,
+      );
+    }
   }
 
   async checkImageNormal(
@@ -157,10 +171,21 @@ export class UploadService {
 
   async uploadImage(
     file: Express.Multer.File,
-    id: string,
+    id: string | null,
     type: string,
   ): Promise<{ url: string }> {
     try {
+      if (!id) {
+        this.logger.error(
+          `upload.controller - uploadImage : NOT_EXIST_MUSIC_ID`,
+        );
+        throw new CatchyException(
+          'NOT_EXIST_MUSIC_ID',
+          HTTP_STATUS_CODE.BAD_REQUEST,
+          ERROR_CODE.NOT_EXIST_MUSIC_ID,
+        );
+      }
+
       if (!this.isValidUUIDPattern(id)) {
         this.logger.error(
           `upload.service - uploadImage : INVALID_INPUT_UUID_VALUE`,

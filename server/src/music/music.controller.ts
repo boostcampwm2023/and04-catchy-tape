@@ -10,6 +10,7 @@ import {
   ValidationPipe,
   Query,
   Logger,
+  Delete,
 } from '@nestjs/common';
 import { MusicService } from './music.service';
 import { HTTP_STATUS_CODE } from 'src/httpStatusCode.enum';
@@ -17,14 +18,14 @@ import { MusicCreateDto } from 'src/dto/musicCreate.dto';
 import { AuthGuard } from '@nestjs/passport';
 import { Genres } from 'src/constants';
 import { Music } from 'src/entity/music.entity';
+import { ReqUser } from 'src/config/decorators';
+import { User } from 'src/entity/user.entity';
 
 @Controller('musics')
 export class MusicController {
   private readonly logger = new Logger('Music');
   private objectStorage: AWS.S3;
-  constructor(
-    private readonly musicService: MusicService,
-  ) {}
+  constructor(private readonly musicService: MusicService) {}
 
   @Post()
   @UsePipes(ValidationPipe)
@@ -32,10 +33,10 @@ export class MusicController {
   @HttpCode(HTTP_STATUS_CODE.SUCCESS)
   async upload(
     @Body() musicCreateDto: MusicCreateDto,
-    @Req() req,
+    @ReqUser() user: User,
   ): Promise<{ music_id: string }> {
-    const userId = req.user.user_id;
-    this.logger.log(`POST /musics - nickname=${req.user.nickname}`);
+    const userId = user.user_id;
+    this.logger.log(`POST /musics - nickname=${user.nickname}`);
     const savedMusicId: string = await this.musicService.createMusic(
       musicCreateDto,
       userId,
@@ -63,13 +64,13 @@ export class MusicController {
   @UseGuards(AuthGuard())
   @HttpCode(HTTP_STATUS_CODE.SUCCESS)
   async getMyUploads(
-    @Req() req,
+    @ReqUser() user: User,
     @Query('count') count: number,
   ): Promise<Music[]> {
     this.logger.log(
-      `GET /musics/my-uploads - nickname=${req.user.nickname}, count=${count}`,
+      `GET /musics/my-uploads - nickname=${user.nickname}, count=${count}`,
     );
-    const userId: string = req.user.user_id;
+    const userId: string = user.user_id;
     return this.musicService.getMyUploads(userId, count);
   }
 
@@ -102,5 +103,16 @@ export class MusicController {
   ): Promise<Music[]> {
     this.logger.log(`GET /musics/search - keyword=${keyword}`);
     return this.musicService.getCertainKeywordNicknameUser(keyword);
+  }
+
+  @Delete()
+  @UseGuards(AuthGuard())
+  @HttpCode(HTTP_STATUS_CODE.SUCCESS)
+  async deleteMusic(
+    @ReqUser() user: User,
+    @Body('music_id') music_id: string,
+  ): Promise<string> {
+    const userId = user.user_id;
+    return await this.musicService.deleteMusicById(music_id, userId);
   }
 }

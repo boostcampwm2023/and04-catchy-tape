@@ -8,6 +8,8 @@ import { UploadService } from 'src/upload/upload.service';
 import { NcloudConfigService } from 'src/config/ncloud.config';
 import { Logger } from 'winston';
 import { GreenEyeService } from 'src/config/greenEye.service';
+import { MusicRepository } from '../repository/music.repository';
+import { UserRepository } from 'src/repository/user.repository';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Music]), AuthModule],
@@ -18,6 +20,8 @@ import { GreenEyeService } from 'src/config/greenEye.service';
     NcloudConfigService,
     Logger,
     GreenEyeService,
+    MusicRepository,
+    UserRepository,
   ],
 })
 export class MusicModule {}
