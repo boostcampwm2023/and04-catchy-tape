@@ -47,7 +47,8 @@
 
 
 ### 📡 Server
-<img width="700" alt="image" src="https://github.com/boostcampwm2023/and04-catchy-tape/assets/84065420/cfdf4c35-f94d-47fa-a0aa-2cb6cc1c56b7">
+<img width="800" alt="기술스택" src="https://github.com/boostcampwm2023/and04-catchy-tape/assets/84065420/10c9827e-7802-40d8-9fee-c22b1285a3d4">
+
 
 | Category  | TechStack | 기록 |
 | ------------- | ------------- | -------------|
