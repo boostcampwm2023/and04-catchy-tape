@@ -34,32 +34,44 @@ export class AuthService {
   async login(
     email: string,
   ): Promise<{ accessToken: string; refreshToken: string }> {
-    const user = await this.userRepository.findUserByEmail(email);
+    try {
+      const user = await this.userRepository.findUserByEmail(email);
 
-    if (user) {
-      const accessPayload = { user_id: user.user_id };
+      if (user) {
+        const accessPayload = { user_id: user.user_id };
 
-      const refreshUuid = v4();
-      const refreshPayload = { refresh_id: refreshUuid };
-      await this.cacheManager.set(refreshUuid, user.user_id, {
-        ttl: ONE_WEEK_TO_SECONDS,
-      });
+        const refreshUuid = v4();
+        const refreshPayload = { refresh_id: refreshUuid };
+        await this.cacheManager.set(refreshUuid, user.user_id, {
+          ttl: ONE_WEEK_TO_SECONDS,
+        });
 
-      const accessToken = this.jwtService.sign(accessPayload);
-      const refreshToken = this.jwtService.sign(
-        refreshPayload,
-        this.refreshOptions,
+        const accessToken = this.jwtService.sign(accessPayload);
+        const refreshToken = this.jwtService.sign(
+          refreshPayload,
+          this.refreshOptions,
+        );
+
+        return { accessToken, refreshToken };
+      }
+
+      this.logger.error(`auth.service - login : NOT_EXIST_USER`);
+      throw new CatchyException(
+        'NOT_EXIST_USER',
+        HTTP_STATUS_CODE['WRONG_TOKEN'],
+        ERROR_CODE.NOT_EXIST_USER,
       );
+    } catch (error) {
+      if (error instanceof CatchyException) {
+        throw error;
+      }
 
-      return { accessToken, refreshToken };
+      throw new CatchyException(
+        'SERVICE_ERROR',
+        HTTP_STATUS_CODE.BAD_REQUEST,
+        ERROR_CODE.SERVICE_ERROR,
+      );
     }
-
-    this.logger.error(`auth.service - login : NOT_EXIST_USER`);
-    throw new CatchyException(
-      'NOT_EXIST_USER',
-      HTTP_STATUS_CODE['WRONG_TOKEN'],
-      ERROR_CODE.NOT_EXIST_USER,
-    );
   }
 
   async signup(
