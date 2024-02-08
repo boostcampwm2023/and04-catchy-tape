@@ -136,11 +136,11 @@ export class UserRepository {
     } catch {
       await queryRunner.rollbackTransaction();
 
-      this.logger.error(`user.repository - saveUser : ENTITY_ERROR`);
+      this.logger.error(`user.repository - saveUser : REPOSITORY_ERROR`);
       throw new CatchyException(
-        'ENTITY_ERROR',
+        'REPOSITORY_ERROR',
         HTTP_STATUS_CODE.SERVER_ERROR,
-        ERROR_CODE.ENTITY_ERROR,
+        ERROR_CODE.REPOSITORY_ERROR,
       );
     } finally {
       await queryRunner.release();
@@ -158,11 +158,11 @@ export class UserRepository {
     } catch {
       await queryRunner.rollbackTransaction();
 
-      this.logger.error(`user.repository - deleteUser : ENTITY_ERROR`);
+      this.logger.error(`user.repository - deleteUser : REPOSITORY_ERROR`);
       throw new CatchyException(
-        'ENTITY_ERROR',
+        'REPOSITORY_ERROR',
         HTTP_STATUS_CODE.SERVER_ERROR,
-        ERROR_CODE.ENTITY_ERROR,
+        ERROR_CODE.REPOSITORY_ERROR,
       );
     } finally {
       await queryRunner.release();
