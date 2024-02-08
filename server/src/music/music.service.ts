@@ -144,12 +144,12 @@ export class MusicService {
       return await this.musicRepository.getCertainMusicByTitle(keyword);
     } catch {
       this.logger.error(
-        `music.service - getCertainKeywordNicknameUser : QUERY_ERROR`,
+        `music.service - getCertainKeywordNicknameUser : REPOSITORY_ERROR`,
       );
       throw new CatchyException(
-        'QUERY_ERROR',
+        'REPOSITORY_ERROR',
         HTTP_STATUS_CODE.SERVER_ERROR,
-        ERROR_CODE.QUERY_ERROR,
+        ERROR_CODE.REPOSITORY_ERROR,
       );
     }
   }
