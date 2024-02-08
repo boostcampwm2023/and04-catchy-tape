@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { CatchyException } from 'src/config/catchyException';
-import { ERROR_CODE } from 'src/config/errorCode.enum';
+import { ERROR_CODE } from 'src/codes/errorCode.enum';
 import { GreenEyeResponseDto } from 'src/dto/greenEye.response.dto';
-import { HTTP_STATUS_CODE } from 'src/httpStatusCode.enum';
+import { HTTP_STATUS_CODE } from 'src/codes/httpStatusCode.enum';
 import { Logger } from '@nestjs/common';
 
 @Injectable()
@@ -15,10 +15,14 @@ export class GreenEyeService {
   contentType: string = 'application/json';
 
   constructor(private readonly configService: ConfigService) {
-    this.greenEyeSecretKey = configService.get<string>('GREEN_EYE_SECRET_KEY', '');
+    this.greenEyeSecretKey = configService.get<string>(
+      'GREEN_EYE_SECRET_KEY',
+      '',
+    );
     this.greenEyeRequestUrl = configService.get<string>(
-      'GREEN_EYE_REQUEST_URL',''
-    )
+      'GREEN_EYE_REQUEST_URL',
+      '',
+    );
   }
 
   private getTimeStamp(): number {

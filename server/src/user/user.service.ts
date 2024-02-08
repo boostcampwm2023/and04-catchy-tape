@@ -1,11 +1,11 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { HTTP_STATUS_CODE } from 'src/httpStatusCode.enum';
+import { HTTP_STATUS_CODE } from 'src/codes/httpStatusCode.enum';
 import { User } from 'src/entity/user.entity';
 import { Music } from 'src/entity/music.entity';
 import { DataSource, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CatchyException } from 'src/config/catchyException';
-import { ERROR_CODE } from 'src/config/errorCode.enum';
+import { ERROR_CODE } from 'src/codes/errorCode.enum';
 import { Recent_Played } from 'src/entity/recent_played.entity';
 import { UserUpdateDto } from './../dto/userUpdate.dto';
 import { MusicRepository } from 'src/repository/music.repository';

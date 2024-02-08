@@ -1,9 +1,9 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { CatchyException } from 'src/config/catchyException';
-import { ERROR_CODE } from 'src/config/errorCode.enum';
+import { ERROR_CODE } from 'src/codes/errorCode.enum';
 import { Recent_Played } from 'src/entity/recent_played.entity';
 import { User } from 'src/entity/user.entity';
-import { HTTP_STATUS_CODE } from 'src/httpStatusCode.enum';
+import { HTTP_STATUS_CODE } from 'src/codes/httpStatusCode.enum';
 import { DataSource, ILike, QueryRunner, Repository } from 'typeorm';
 import { v4 as uuid } from 'uuid';
 

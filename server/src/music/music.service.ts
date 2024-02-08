@@ -1,11 +1,11 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { HTTP_STATUS_CODE } from 'src/httpStatusCode.enum';
+import { HTTP_STATUS_CODE } from 'src/codes/httpStatusCode.enum';
 import { DataSource } from 'typeorm';
 import { MusicCreateDto } from 'src/dto/musicCreate.dto';
 import { Music } from 'src/entity/music.entity';
 import { Genres, SLICE_COUNT } from 'src/constants';
 import { CatchyException } from 'src/config/catchyException';
-import { ERROR_CODE } from 'src/config/errorCode.enum';
+import { ERROR_CODE } from 'src/codes/errorCode.enum';
 import { UploadService } from 'src/upload/upload.service';
 import { NcloudConfigService } from 'src/config/ncloud.config';
 import { AWSError, S3 } from 'aws-sdk';

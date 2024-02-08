@@ -16,7 +16,7 @@ import {
   Logger,
 } from '@nestjs/common';
 import { UploadService } from './upload.service';
-import { HTTP_STATUS_CODE } from 'src/httpStatusCode.enum';
+import { HTTP_STATUS_CODE } from 'src/codes/httpStatusCode.enum';
 import { AuthGuard } from '@nestjs/passport';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { fileSize } from 'src/constants';

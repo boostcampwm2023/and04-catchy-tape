@@ -3,9 +3,9 @@ import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
 import { Strategy, ExtractJwt } from 'passport-jwt';
 import { CatchyException } from 'src/config/catchyException';
-import { ERROR_CODE } from 'src/config/errorCode.enum';
+import { ERROR_CODE } from 'src/codes/errorCode.enum';
 import { User } from 'src/entity/user.entity';
-import { HTTP_STATUS_CODE } from 'src/httpStatusCode.enum';
+import { HTTP_STATUS_CODE } from 'src/codes/httpStatusCode.enum';
 import { UserRepository } from 'src/repository/user.repository';
 
 @Injectable()

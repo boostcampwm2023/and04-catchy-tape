@@ -11,7 +11,7 @@ import {
   ValidationPipe,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { HTTP_STATUS_CODE } from 'src/httpStatusCode.enum';
+import { HTTP_STATUS_CODE } from 'src/codes/httpStatusCode.enum';
 import { UserCreateDto } from 'src/dto/userCreate.dto';
 import { AuthGuard } from '@nestjs/passport';
 import { User } from 'src/entity/user.entity';
