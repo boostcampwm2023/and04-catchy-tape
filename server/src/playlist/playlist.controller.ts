@@ -15,7 +15,7 @@ import {
 } from '@nestjs/common';
 import { PlaylistService } from './playlist.service';
 import { AuthGuard } from '@nestjs/passport';
-import { HTTP_STATUS_CODE } from 'src/httpStatusCode.enum';
+import { HTTP_STATUS_CODE } from 'src/codes/httpStatusCode.enum';
 import { PlaylistCreateDto } from 'src/dto/playlistCreate.dto';
 import { Playlist } from 'src/entity/playlist.entity';
 import { Music } from 'src/entity/music.entity';

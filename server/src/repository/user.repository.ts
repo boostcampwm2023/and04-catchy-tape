@@ -1,9 +1,9 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { CatchyException } from 'src/config/catchyException';
-import { ERROR_CODE } from 'src/config/errorCode.enum';
+import { ERROR_CODE } from 'src/codes/errorCode.enum';
 import { Recent_Played } from 'src/entity/recent_played.entity';
 import { User } from 'src/entity/user.entity';
-import { HTTP_STATUS_CODE } from 'src/httpStatusCode.enum';
+import { HTTP_STATUS_CODE } from 'src/codes/httpStatusCode.enum';
 import { DataSource, ILike, QueryRunner, Repository } from 'typeorm';
 import { v4 as uuid } from 'uuid';
 
@@ -136,11 +136,11 @@ export class UserRepository {
     } catch {
       await queryRunner.rollbackTransaction();
 
-      this.logger.error(`user.repository - saveUser : ENTITY_ERROR`);
+      this.logger.error(`user.repository - saveUser : REPOSITORY_ERROR`);
       throw new CatchyException(
-        'ENTITY_ERROR',
+        'REPOSITORY_ERROR',
         HTTP_STATUS_CODE.SERVER_ERROR,
-        ERROR_CODE.ENTITY_ERROR,
+        ERROR_CODE.REPOSITORY_ERROR,
       );
     } finally {
       await queryRunner.release();
@@ -158,11 +158,11 @@ export class UserRepository {
     } catch {
       await queryRunner.rollbackTransaction();
 
-      this.logger.error(`user.repository - deleteUser : ENTITY_ERROR`);
+      this.logger.error(`user.repository - deleteUser : REPOSITORY_ERROR`);
       throw new CatchyException(
-        'ENTITY_ERROR',
+        'REPOSITORY_ERROR',
         HTTP_STATUS_CODE.SERVER_ERROR,
-        ERROR_CODE.ENTITY_ERROR,
+        ERROR_CODE.REPOSITORY_ERROR,
       );
     } finally {
       await queryRunner.release();

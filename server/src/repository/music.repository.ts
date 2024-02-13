@@ -1,9 +1,9 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { CatchyException } from 'src/config/catchyException';
-import { ERROR_CODE } from 'src/config/errorCode.enum';
+import { ERROR_CODE } from 'src/codes/errorCode.enum';
 import { MusicCreateDto } from 'src/dto/musicCreate.dto';
 import { Music } from 'src/entity/music.entity';
-import { HTTP_STATUS_CODE } from 'src/httpStatusCode.enum';
+import { HTTP_STATUS_CODE } from 'src/codes/httpStatusCode.enum';
 import { DataSource, ILike, Repository } from 'typeorm';
 
 @Injectable()

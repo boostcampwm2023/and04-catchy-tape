@@ -8,7 +8,7 @@ import { DataSource, Repository } from 'typeorm';
 import { MusicCreateDto } from 'src/dto/musicCreate.dto';
 import { CatchyException } from 'src/config/catchyException';
 import { faultGenreMusicCreateInfo } from 'test/constants/music.mockData';
-import { GreenEyeService } from 'src/config/greenEye.service';
+import { GreenEyeService } from 'src/config/greenEye.config';
 import { MusicRepository } from '../repository/music.repository';
 import { CacheModule } from '@nestjs/cache-manager';
 import { UserRepository } from 'src/repository/user.repository';

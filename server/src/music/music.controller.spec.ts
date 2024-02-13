@@ -13,7 +13,7 @@ import { User } from 'src/entity/user.entity';
 import { AuthService } from 'src/auth/auth.service';
 import { JwtService } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
-import { GreenEyeService } from 'src/config/greenEye.service';
+import { GreenEyeService } from 'src/config/greenEye.config';
 import { JwtStrategy } from 'src/auth/jwt.strategy';
 import { MusicRepository } from '../repository/music.repository';
 import { CacheModule } from '@nestjs/cache-manager';

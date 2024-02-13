@@ -1,11 +1,11 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { HTTP_STATUS_CODE } from 'src/httpStatusCode.enum';
+import { HTTP_STATUS_CODE } from 'src/codes/httpStatusCode.enum';
 import { DataSource } from 'typeorm';
 import { MusicCreateDto } from 'src/dto/musicCreate.dto';
 import { Music } from 'src/entity/music.entity';
 import { Genres, SLICE_COUNT } from 'src/constants';
 import { CatchyException } from 'src/config/catchyException';
-import { ERROR_CODE } from 'src/config/errorCode.enum';
+import { ERROR_CODE } from 'src/codes/errorCode.enum';
 import { UploadService } from 'src/upload/upload.service';
 import { NcloudConfigService } from 'src/config/ncloud.config';
 import { AWSError, S3 } from 'aws-sdk';
@@ -144,12 +144,12 @@ export class MusicService {
       return await this.musicRepository.getCertainMusicByTitle(keyword);
     } catch {
       this.logger.error(
-        `music.service - getCertainKeywordNicknameUser : QUERY_ERROR`,
+        `music.service - getCertainKeywordNicknameUser : REPOSITORY_ERROR`,
       );
       throw new CatchyException(
-        'QUERY_ERROR',
+        'REPOSITORY_ERROR',
         HTTP_STATUS_CODE.SERVER_ERROR,
-        ERROR_CODE.QUERY_ERROR,
+        ERROR_CODE.REPOSITORY_ERROR,
       );
     }
   }

@@ -13,7 +13,7 @@ import {
   Delete,
 } from '@nestjs/common';
 import { MusicService } from './music.service';
-import { HTTP_STATUS_CODE } from 'src/httpStatusCode.enum';
+import { HTTP_STATUS_CODE } from 'src/codes/httpStatusCode.enum';
 import { MusicCreateDto } from 'src/dto/musicCreate.dto';
 import { AuthGuard } from '@nestjs/passport';
 import { Genres } from 'src/constants';

@@ -1,14 +1,14 @@
 import axios from 'axios';
 import * as fs from 'fs';
 import { Injectable, Logger } from '@nestjs/common';
-import { HTTP_STATUS_CODE } from 'src/httpStatusCode.enum';
+import { HTTP_STATUS_CODE } from 'src/codes/httpStatusCode.enum';
 import { NcloudConfigService } from './../config/ncloud.config';
 import { S3 } from 'aws-sdk';
 import { contentTypeHandler, keyFlags } from './../constants';
 import { CatchyException } from 'src/config/catchyException';
-import { ERROR_CODE } from 'src/config/errorCode.enum';
+import { ERROR_CODE } from 'src/codes/errorCode.enum';
 import { Readable } from 'stream';
-import { GreenEyeService } from '../config/greenEye.service';
+import { GreenEyeService } from '../config/greenEye.config';
 import { DeleteObjectOutput } from 'aws-sdk/clients/s3';
 import { CloudFunctionsResponseDto } from 'src/dto/cloudFunctions.response.dto';
 import { v4 } from 'uuid';

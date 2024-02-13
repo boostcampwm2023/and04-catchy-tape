@@ -1,11 +1,11 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { HTTP_STATUS_CODE } from 'src/httpStatusCode.enum';
+import { HTTP_STATUS_CODE } from 'src/codes/httpStatusCode.enum';
 import { User } from 'src/entity/user.entity';
 import { Music } from 'src/entity/music.entity';
 import { DataSource, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CatchyException } from 'src/config/catchyException';
-import { ERROR_CODE } from 'src/config/errorCode.enum';
+import { ERROR_CODE } from 'src/codes/errorCode.enum';
 import { Recent_Played } from 'src/entity/recent_played.entity';
 import { UserUpdateDto } from './../dto/userUpdate.dto';
 import { MusicRepository } from 'src/repository/music.repository';
@@ -52,12 +52,12 @@ export class UserService {
       );
     } catch {
       this.logger.error(
-        `user.service - getRecentPlayedMusicByUserId : QUERY_ERROR`,
+        `user.service - getRecentPlayedMusicByUserId : REPOSITORY_ERROR`,
       );
       throw new CatchyException(
-        'QUERY_ERROR',
+        'REPOSITORY_ERROR',
         HTTP_STATUS_CODE.SERVER_ERROR,
-        ERROR_CODE.QUERY_ERROR,
+        ERROR_CODE.REPOSITORY_ERROR,
       );
     }
   }
@@ -133,7 +133,7 @@ export class UserService {
 
       this.logger.error(`user.service - getUserInfomation : SERVICE_ERROR`);
       throw new CatchyException(
-        'SERVER_ERROR',
+        'SERVICE_ERROR',
         HTTP_STATUS_CODE.SERVER_ERROR,
         ERROR_CODE.SERVICE_ERROR,
       );
@@ -145,12 +145,12 @@ export class UserService {
       return this.userRepository.getCertainUserByNickname(keyword);
     } catch {
       this.logger.error(
-        `user.service - getCertainKeywordNicknameUser : QUERY_ERROR`,
+        `user.service - getCertainKeywordNicknameUser : REPOSITORY_ERROR`,
       );
       throw new CatchyException(
-        'QUERY_ERROR',
+        'REPOSITORY_ERROR',
         HTTP_STATUS_CODE.SERVER_ERROR,
-        ERROR_CODE.QUERY_ERROR,
+        ERROR_CODE.REPOSITORY_ERROR,
       );
     }
   }
@@ -169,12 +169,12 @@ export class UserService {
       return musicCount != 0;
     } catch {
       this.logger.error(
-        `user.service - isExistMusicInRecentPlaylist : QUERY_ERROR`,
+        `user.service - isExistMusicInRecentPlaylist : REPOSITORY_ERROR`,
       );
       throw new CatchyException(
-        'QUERY_ERROR',
+        'REPOSITORY_ERROR',
         HTTP_STATUS_CODE.SERVER_ERROR,
-        ERROR_CODE.QUERY_ERROR,
+        ERROR_CODE.REPOSITORY_ERROR,
       );
     }
   }
@@ -226,12 +226,12 @@ export class UserService {
       );
     } catch {
       this.logger.error(
-        `user.service - getRecentPlaylistMusicCount : QUERY_ERROR`,
+        `user.service - getRecentPlaylistMusicCount : REPOSITORY_ERROR`,
       );
       throw new CatchyException(
-        'QUERY_ERROR',
+        'REPOSITORY_ERROR',
         HTTP_STATUS_CODE.SERVER_ERROR,
-        ERROR_CODE.QUERY_ERROR,
+        ERROR_CODE.REPOSITORY_ERROR,
       );
     }
   }
@@ -256,12 +256,12 @@ export class UserService {
       }
 
       this.logger.error(
-        `user.service - getRecentPlaylistThumbnail : QUERY_ERROR`,
+        `user.service - getRecentPlaylistThumbnail : REPOSITORY_ERROR`,
       );
       throw new CatchyException(
-        'QUERY_ERROR',
+        'REPOSITORY_ERROR',
         HTTP_STATUS_CODE.SERVER_ERROR,
-        ERROR_CODE.QUERY_ERROR,
+        ERROR_CODE.REPOSITORY_ERROR,
       );
     }
   }

@@ -1,10 +1,10 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { CatchyException } from 'src/config/catchyException';
-import { ERROR_CODE } from 'src/config/errorCode.enum';
+import { ERROR_CODE } from 'src/codes/errorCode.enum';
 import { PlaylistCreateDto } from 'src/dto/playlistCreate.dto';
 import { Music } from 'src/entity/music.entity';
 import { Playlist } from 'src/entity/playlist.entity';
-import { HTTP_STATUS_CODE } from 'src/httpStatusCode.enum';
+import { HTTP_STATUS_CODE } from 'src/codes/httpStatusCode.enum';
 import { PlaylistRepository } from '../repository/playlist.repository';
 import { MusicRepository } from 'src/repository/music.repository';
 import { playlistInfo } from 'src/dto/playlistInfo.dto';

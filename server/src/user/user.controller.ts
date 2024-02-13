@@ -14,11 +14,11 @@ import {
   ValidationPipe,
 } from '@nestjs/common';
 import { UserService } from './user.service';
-import { HTTP_STATUS_CODE } from 'src/httpStatusCode.enum';
+import { HTTP_STATUS_CODE } from 'src/codes/httpStatusCode.enum';
 import { AuthGuard } from '@nestjs/passport';
 import { Music } from 'src/entity/music.entity';
 import { CatchyException } from 'src/config/catchyException';
-import { ERROR_CODE } from 'src/config/errorCode.enum';
+import { ERROR_CODE } from 'src/codes/errorCode.enum';
 import { User } from 'src/entity/user.entity';
 import { UserUpdateDto } from 'src/dto/userUpdate.dto';
 import { ReqUser } from 'src/config/decorators';
