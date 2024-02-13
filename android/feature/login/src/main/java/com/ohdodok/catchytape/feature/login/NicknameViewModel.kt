@@ -2,8 +2,8 @@ package com.ohdodok.catchytape.feature.login
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.ohdodok.catchytape.core.domain.repository.AuthRepository
 import com.ohdodok.catchytape.core.domain.usecase.signup.NicknameValidationResult
-import com.ohdodok.catchytape.core.domain.usecase.signup.SignUpUseCase
 import com.ohdodok.catchytape.core.domain.usecase.signup.ValidateNicknameUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -18,7 +18,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class NicknameViewModel @Inject constructor(
-    private val signUpUseCase: SignUpUseCase,
+    private val authRepository: AuthRepository,
     private val validateNicknameUseCase: ValidateNicknameUseCase,
 ) : ViewModel() {
 
@@ -36,10 +36,9 @@ class NicknameViewModel @Inject constructor(
             )
 
     fun signUp(googleToken: String) {
-
         if (nicknameValidationState.value != NicknameValidationResult.VALID) return
 
-        signUpUseCase(googleToken = googleToken, nickname = nickname.value)
+        authRepository.signUpWithGoogle(googleToken = googleToken, nickname = nickname.value)
             .onEach {
                 _events.emit(NicknameEvent.NavigateToHome)
             }.launchIn(viewModelScope)
