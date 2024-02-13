@@ -1,6 +1,7 @@
 package com.ohdodok.catchytape.core.data.repository
 
 import com.ohdodok.catchytape.core.data.api.UserApi
+import com.ohdodok.catchytape.core.data.datasource.TokenLocalDataSource
 import com.ohdodok.catchytape.core.data.model.LoginRequest
 import com.ohdodok.catchytape.core.data.model.RefreshRequest
 import com.ohdodok.catchytape.core.data.model.SignUpRequest
@@ -14,21 +15,23 @@ import javax.inject.Inject
 
 class AuthRepositoryImpl @Inject constructor(
     private val userApi: UserApi,
+    private val tokenLocalDataSource: TokenLocalDataSource
 ) : AuthRepository {
 
     override fun loginWithGoogle(googleToken: String): Flow<AuthToken> = flow {
         val loginResponse = userApi.login(LoginRequest(idToken = googleToken))
-        emit(loginResponse.toDomain())
+        val authToken = loginResponse.toDomain()
+        saveAuthToken(authToken)
+        emit(authToken)
     }
 
     override fun signUpWithGoogle(googleToken: String, nickname: String): Flow<AuthToken> = flow {
         val loginResponse = userApi.signUp(
-            SignUpRequest(
-                idToken = googleToken,
-                nickname = nickname
-            )
+            SignUpRequest(idToken = googleToken, nickname = nickname)
         )
-        emit(loginResponse.toDomain())
+        val authToken = loginResponse.toDomain()
+        saveAuthToken(authToken)
+        emit(authToken)
     }
 
     override fun isDuplicatedNickname(nickname: String): Flow<Boolean> = flow {
@@ -41,12 +44,21 @@ class AuthRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun verifyToken(token: String): Boolean {
+    override suspend fun verifyAccessToken(): Boolean {
+        val accessToken = tokenLocalDataSource.getAccessToken()
+        if (accessToken.isBlank()) return false
         return userApi.verify().isSuccessful
     }
 
-    override fun refreshToken(refreshToken: String): Flow<AuthToken> = flow {
+    override fun refreshToken(): Flow<AuthToken> = flow {
+        val refreshToken = tokenLocalDataSource.getRefreshToken()
         val loginResponse = userApi.refresh(RefreshRequest(refreshToken))
-        emit(loginResponse.toDomain())
+
+        saveAuthToken(loginResponse.toDomain())
+    }
+
+    override suspend fun saveAuthToken(authToken: AuthToken) {
+        tokenLocalDataSource.saveAccessToken(authToken.accessToken)
+        tokenLocalDataSource.saveRefreshToken(authToken.refreshToken)
     }
 }

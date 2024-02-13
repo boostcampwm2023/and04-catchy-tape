@@ -23,4 +23,8 @@ class TokenLocalDataSource @Inject constructor(
 
     suspend fun getRefreshToken(): String =
         dataStore.data.map { preferences -> preferences[refreshTokenKey] ?: "" }.first()
+
+    suspend fun saveRefreshToken(token: String) {
+        dataStore.edit { preferences -> preferences[refreshTokenKey] = token }
+    }
 }

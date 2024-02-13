@@ -11,7 +11,9 @@ interface AuthRepository {
 
     fun isDuplicatedNickname(nickname: String): Flow<Boolean>
 
-    suspend fun verifyToken(token: String): Boolean
+    suspend fun verifyAccessToken(): Boolean
 
-    fun refreshToken()
+    fun refreshToken(): Flow<AuthToken>
+
+    suspend fun saveAuthToken(authToken: AuthToken)
 }
