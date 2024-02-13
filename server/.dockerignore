@@ -1,4 +1,5 @@
 .git
-Dockerfile
-node_modules
-dist
+Dockerfile.nest
+Dockerfile.spring
+nest/node_modules
+nest/dist

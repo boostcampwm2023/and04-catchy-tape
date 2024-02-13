@@ -4,7 +4,7 @@ ENV TZ=Asia/Seoul
 
 WORKDIR /catchy-tape
 
-COPY . .
+COPY nest .
 
 RUN npm install
 RUN npm run build
