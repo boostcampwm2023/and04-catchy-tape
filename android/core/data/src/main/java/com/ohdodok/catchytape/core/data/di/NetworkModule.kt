@@ -2,26 +2,30 @@ package com.ohdodok.catchytape.core.data.di
 
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import com.ohdodok.catchytape.core.data.BuildConfig
+import com.ohdodok.catchytape.core.data.datasource.TokenLocalDataSource
 import com.ohdodok.catchytape.core.data.di.qualifier.AuthInterceptor
 import com.ohdodok.catchytape.core.data.di.qualifier.ErrorInterceptor
 import com.ohdodok.catchytape.core.data.model.ErrorResponse
 import com.ohdodok.catchytape.core.domain.model.CtErrorType
 import com.ohdodok.catchytape.core.domain.model.CtErrorType.Companion.ctErrorEnums
 import com.ohdodok.catchytape.core.domain.model.CtException
-import com.ohdodok.catchytape.core.domain.repository.UserTokenRepository
+import com.ohdodok.catchytape.core.domain.repository.AuthRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.json.Json
 import okhttp3.Interceptor
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
+import okhttp3.Request
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import timber.log.Timber
 import java.net.ConnectException
+import javax.inject.Provider
 import javax.inject.Singleton
 import javax.net.ssl.SSLHandshakeException
 
@@ -33,10 +37,10 @@ object NetworkModule {
     @AuthInterceptor
     @Singleton
     @Provides
-    fun provideAuthInterceptor(userTokenRepository: UserTokenRepository): Interceptor {
+    fun provideAuthInterceptor(tokenLocalDataSource: TokenLocalDataSource): Interceptor {
 
         return Interceptor { chain ->
-            val accessToken = runBlocking { userTokenRepository.getAccessToken() }
+            val accessToken = runBlocking { tokenLocalDataSource.getAccessToken() }
             val newRequest = chain.request().newBuilder()
                 .addHeader("Authorization", "Bearer $accessToken")
                 .build()
@@ -87,16 +91,24 @@ object NetworkModule {
     @ErrorInterceptor
     @Singleton
     @Provides
-    fun provideErrorInterceptor(): Interceptor {
+    fun provideErrorInterceptor(
+        authRepository: Provider<AuthRepository>
+    ): Interceptor {
         return Interceptor { chain ->
             try {
-                val response = chain.proceed(chain.request())
+                val originalRequest = chain.request()
+                val response = chain.proceed(originalRequest)
                 if (response.isSuccessful) return@Interceptor response
                 val errorString = response.body?.string()
                 val errorResponse = Json.decodeFromString<ErrorResponse>(errorString ?: "")
 
                 if (errorResponse.statusCode == 401) {
-                    throw CtException(errorResponse.message, CtErrorType.UN_AUTHORIZED)
+                    val newAccessToken = runBlocking {
+                        val authTokenResponse = authRepository.get().refreshToken()
+                        authTokenResponse.first().accessToken
+                    }
+                    val newRequest = originalRequest.putTokenHeader(newAccessToken)
+                    chain.proceed(newRequest)
                 }
 
                 val ctError = ctErrorEnums.find { it.errorCode == errorResponse.errorCode }
@@ -118,5 +130,11 @@ object NetworkModule {
                 }
             }
         }
+    }
+
+    private fun Request.putTokenHeader(accessToken: String): Request {
+        return this.newBuilder()
+            .addHeader("Authorization", accessToken)
+            .build()
     }
 }

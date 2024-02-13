@@ -26,7 +26,7 @@ interface UserApi {
         @Body signUpRequest: SignUpRequest
     ): AuthTokenResponse
 
-    @POST("users/signup")
+    @POST("users/refresh")
     suspend fun refresh(
         @Body refreshRequest: RefreshRequest
     ): AuthTokenResponse
