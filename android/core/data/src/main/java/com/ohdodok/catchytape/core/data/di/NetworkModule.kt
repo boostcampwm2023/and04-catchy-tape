@@ -10,6 +10,7 @@ import com.ohdodok.catchytape.core.domain.model.CtErrorType
 import com.ohdodok.catchytape.core.domain.model.CtErrorType.Companion.ctErrorEnums
 import com.ohdodok.catchytape.core.domain.model.CtException
 import com.ohdodok.catchytape.core.domain.repository.AuthRepository
+import dagger.Lazy
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -25,7 +26,6 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import timber.log.Timber
 import java.net.ConnectException
-import javax.inject.Provider
 import javax.inject.Singleton
 import javax.net.ssl.SSLHandshakeException
 
@@ -92,7 +92,7 @@ object NetworkModule {
     @Singleton
     @Provides
     fun provideErrorInterceptor(
-        authRepository: Provider<AuthRepository>
+        authRepository: Lazy<AuthRepository>
     ): Interceptor {
         return Interceptor { chain ->
             try {
