@@ -2,13 +2,13 @@ package com.ohdodok.catchytape.core.data.di
 
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import com.ohdodok.catchytape.core.data.BuildConfig
-import com.ohdodok.catchytape.core.data.datasource.TokenLocalDataSource
 import com.ohdodok.catchytape.core.data.di.qualifier.AuthInterceptor
 import com.ohdodok.catchytape.core.data.di.qualifier.ErrorInterceptor
 import com.ohdodok.catchytape.core.data.model.ErrorResponse
 import com.ohdodok.catchytape.core.domain.model.CtErrorType
 import com.ohdodok.catchytape.core.domain.model.CtErrorType.Companion.ctErrorEnums
 import com.ohdodok.catchytape.core.domain.model.CtException
+import com.ohdodok.catchytape.core.domain.repository.UserTokenRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -33,10 +33,10 @@ object NetworkModule {
     @AuthInterceptor
     @Singleton
     @Provides
-    fun provideAuthInterceptor(tokenDataSource: TokenLocalDataSource): Interceptor {
+    fun provideAuthInterceptor(userTokenRepository: UserTokenRepository): Interceptor {
 
         return Interceptor { chain ->
-            val accessToken = runBlocking { tokenDataSource.getAccessToken() }
+            val accessToken = runBlocking { userTokenRepository.getAccessToken() }
             val newRequest = chain.request().newBuilder()
                 .addHeader("Authorization", "Bearer $accessToken")
                 .build()
@@ -63,7 +63,7 @@ object NetworkModule {
     fun provideOkHttpClient(
         loggingInterceptor: HttpLoggingInterceptor,
         @AuthInterceptor authInterceptor: Interceptor,
-        @ErrorInterceptor errorInterceptor : Interceptor
+        @ErrorInterceptor errorInterceptor: Interceptor
     ): OkHttpClient {
         return OkHttpClient.Builder()
             .addInterceptor(authInterceptor)
@@ -108,7 +108,11 @@ object NetworkModule {
             } catch (e: Exception) {
                 when (e) {
                     is ConnectException -> throw CtException(e.message, CtErrorType.CONNECTION)
-                    is SSLHandshakeException -> throw CtException(e.message, CtErrorType.SSL_HAND_SHAKE)
+                    is SSLHandshakeException -> throw CtException(
+                        e.message,
+                        CtErrorType.SSL_HAND_SHAKE
+                    )
+
                     is CtException -> throw e
                     else -> throw CtException(e.message, CtErrorType.IO)
                 }
