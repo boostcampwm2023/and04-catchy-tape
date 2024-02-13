@@ -4,7 +4,7 @@ import com.ohdodok.catchytape.core.domain.model.AuthToken
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class LoginResponse(
+data class AuthTokenResponse(
     val accessToken: String,
     val refreshToken: String,
 ) {

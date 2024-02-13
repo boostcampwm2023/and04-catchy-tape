@@ -19,17 +19,17 @@ class AuthRepositoryImpl @Inject constructor(
 ) : AuthRepository {
 
     override fun loginWithGoogle(googleToken: String): Flow<AuthToken> = flow {
-        val loginResponse = userApi.login(LoginRequest(idToken = googleToken))
-        val authToken = loginResponse.toDomain()
+        val authTokenResponse = userApi.login(LoginRequest(idToken = googleToken))
+        val authToken = authTokenResponse.toDomain()
         saveAuthToken(authToken)
         emit(authToken)
     }
 
     override fun signUpWithGoogle(googleToken: String, nickname: String): Flow<AuthToken> = flow {
-        val loginResponse = userApi.signUp(
+        val authTokenResponse = userApi.signUp(
             SignUpRequest(idToken = googleToken, nickname = nickname)
         )
-        val authToken = loginResponse.toDomain()
+        val authToken = authTokenResponse.toDomain()
         saveAuthToken(authToken)
         emit(authToken)
     }
@@ -52,9 +52,9 @@ class AuthRepositoryImpl @Inject constructor(
 
     override fun refreshToken(): Flow<AuthToken> = flow {
         val refreshToken = tokenLocalDataSource.getRefreshToken()
-        val loginResponse = userApi.refresh(RefreshRequest(refreshToken))
+        val authTokenResponse = userApi.refresh(RefreshRequest(refreshToken))
 
-        saveAuthToken(loginResponse.toDomain())
+        saveAuthToken(authTokenResponse.toDomain())
     }
 
     override suspend fun saveAuthToken(authToken: AuthToken) {
