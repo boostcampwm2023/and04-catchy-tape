@@ -2,6 +2,7 @@ package com.ohdodok.catchytape.core.data.repository
 
 import com.ohdodok.catchytape.core.data.api.UserApi
 import com.ohdodok.catchytape.core.data.model.LoginRequest
+import com.ohdodok.catchytape.core.data.model.RefreshRequest
 import com.ohdodok.catchytape.core.data.model.SignUpRequest
 import com.ohdodok.catchytape.core.domain.model.AuthToken
 import com.ohdodok.catchytape.core.domain.model.CtErrorType
@@ -41,10 +42,11 @@ class AuthRepositoryImpl @Inject constructor(
     }
 
     override suspend fun verifyToken(token: String): Boolean {
-        return userApi.verify("Bearer ${token}").isSuccessful
+        return userApi.verify().isSuccessful
     }
 
-    override fun refreshToken() {
-        
+    override fun refreshToken(refreshToken: String): Flow<AuthToken> = flow {
+        val loginResponse = userApi.refresh(RefreshRequest(refreshToken))
+        emit(loginResponse.toDomain())
     }
 }
