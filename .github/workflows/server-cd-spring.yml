@@ -18,7 +18,7 @@ jobs:
         uses: actions/setup-java@v4
         with:
           java-version: "17"
-          distribution: "temurin"
+          distribution: "adopt"
 
       - name: Run chmod to make gradlew executable
         run: |
