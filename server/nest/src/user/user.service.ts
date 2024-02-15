@@ -7,7 +7,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { CatchyException } from 'src/config/catchyException';
 import { ERROR_CODE } from 'src/codes/errorCode.enum';
 import { Recent_Played } from 'src/entity/recent_played.entity';
-import { UserUpdateDto } from './../dto/userUpdate.dto';
+import { UserUpdateDto } from '../dto/userUpdate.dto';
 import { MusicRepository } from 'src/repository/music.repository';
 import { UserRepository } from '../repository/user.repository';
 import { Recent_PlayedRepository } from 'src/repository/recent_played.repository';

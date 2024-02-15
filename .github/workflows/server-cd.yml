@@ -1,10 +1,10 @@
-name: Server CD
+name: Server Nest CD
 
 on:
   pull_request:
     branches: ["develop", "main"]
     paths:
-      - "server/**"
+      - "server/nest/**"
     types:
       - closed
 
@@ -75,7 +75,7 @@ jobs:
           echo "REDIS_TTL=$REDIS_TTL" >> prod.env
 
       - name: Build Docker image
-        run: docker build --platform linux/amd64 ./server -t ${{ secrets.NCP_REGISTRY }}/catchy-tape:latest
+        run: docker build --platform linux/amd64 ./server -t ${{ secrets.NCP_REGISTRY }}/catchy-tape:latest -f ./server/Dockerfile.nest
 
       - name: Login NCP container registry
         run: docker login ${{ secrets.NCP_REGISTRY }} -u ${{ secrets.NCP_DOCKER_ACCESS_KEY_ID }} -p ${{ secrets.NCP_DOCKER_SECRET_KEY }}

@@ -1,14 +1,14 @@
-name: Backend Dev CI
+name: Backend Nest CI
 
 on:
   pull_request:
     branches: [develop]
     paths:
-      - "server/**"
+      - "server/nest/**"
 
 defaults:
   run:
-    working-directory: ./server
+    working-directory: ./server/nest
 
 jobs:
   BACKEND-CI:

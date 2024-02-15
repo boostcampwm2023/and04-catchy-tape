@@ -1,0 +1,72 @@
+name: Backend Spring CI
+
+on:
+  pull_request:
+    branches: [develop]
+    paths:
+      - "server/spring/**"
+
+defaults:
+  run:
+    working-directory: ./server/spring
+
+jobs:
+  BACKEND-SPRING-CI:
+    runs-on: ubuntu-20.04
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: 17
+          distribution: "adopt"
+
+      - name: Create application.yml
+        env:
+          DB_HOST_IP: ${{ secrets.SERVER_ENV_DB_HOST_IP }}
+          DB_PORT: ${{ secrets.SERVER_ENV_DB_PORT }}
+          DB_USER_NAME: ${{ secrets.SERVER_ENV_DB_USER_NAME }}
+          DB_PASSWORD: ${{ secrets.SERVER_ENV_DB_PASSWORD }}
+          DB_DATABASE_NAME: ${{ secrets.SERVER_ENV_DB_DATABASE_NAME }}
+          ACCESS_ID: ${{ secrets.SERVER_ENV_ACCESS_ID }}
+          SECRET_ACCESS_KEY: ${{ secrets.SERVER_ENV_SECRET_ACCESS_KEY }}
+          JWT_SECRET_KEY: ${{ secrets.SERVER_ENV_JWT_SECRET_KEY }}
+          GREEN_EYE_SECRET_KEY: ${{secrets.GREEN_EYE_SECRET_KEY}}
+          GREEN_EYE_REQUEST_URL: ${{secrets.GREEN_EYE_REQUEST_URL}}
+          CLOUD_FUNCTIONS_EXECUTE_URL: ${{secrets.CLOUD_FUNCTIONS_EXECUTE_URL}}
+          CLOUD_FUNCTIONS_REQUEST_URL: ${{secrets.CLOUD_FUNCTIONS_REQUEST_URL}}
+          API_GW_ACCESS_KEY: ${{secrets.API_GW_ACCESS_KEY}}
+          REFRESH_SECRET_KEY: ${{secrets.REFRESH_SECRET_KEY}}
+          REDIS_HOST_IP: ${{secrets.REDIS_HOST_IP}}
+          REDIS_PASSWORD: ${{secrets.REDIS_PASSWORD}}
+          REDIS_PORT: ${{secrets.REDIS_PORT}}
+          REDIS_TTL: ${{secrets.REDIS_TTL}}
+        run: |
+          touch application.yml
+          echo "DB_HOST_IP=$DB_HOST_IP" >> application.yml
+          echo "DB_PORT=$DB_PORT" >> application.yml
+          echo "DB_USER_NAME=$DB_USER_NAME" >> application.yml
+          echo "DB_PASSWORD=$DB_PASSWORD" >> application.yml
+          echo "DB_DATABASE_NAME=$DB_DATABASE_NAME" >> application.yml
+          echo "ACCESS_ID=$ACCESS_ID" >> application.yml
+          echo "SECRET_ACCESS_KEY=$SECRET_ACCESS_KEY" >> application.yml
+          echo "JWT_SECRET_KEY=$JWT_SECRET_KEY" >> application.yml
+          echo "GREEN_EYE_SECRET_KEY=$GREEN_EYE_SECRET_KEY" >> application.yml
+          echo "GREEN_EYE_REQUEST_URL=$GREEN_EYE_REQUEST_URL" >> application.yml
+          echo "CLOUD_FUNCTIONS_EXECUTE_URL=$CLOUD_FUNCTIONS_EXECUTE_URL" >> application.yml
+          echo "CLOUD_FUNCTIONS_REQUEST_URL=$CLOUD_FUNCTIONS_REQUEST_URL" >> application.yml
+          echo "API_GW_ACCESS_KEY=$API_GW_ACCESS_KEY" >> application.yml
+          echo "REFRESH_SECRET_KEY=$REFRESH_SECRET_KEY" >> application.yml
+          echo "REDIS_HOST_IP=$REDIS_HOST_IP" >> application.yml
+          echo "REDIS_PASSWORD=$REDIS_PASSWORD" >> application.yml
+          echo "REDIS_PORT=$REDIS_PORT" >> application.yml
+          echo "REDIS_TTL=$REDIS_TTL" >> application.yml
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      - name: Test with Gradle
+        run: ./gradlew --info test
