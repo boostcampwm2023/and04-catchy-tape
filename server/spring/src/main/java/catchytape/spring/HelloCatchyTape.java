@@ -7,6 +7,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class HelloCatchyTape {
     @GetMapping("/test")
     public String test() {
-        return "hello this is catchy-tape!";
+        return "hello this is catchy-tape 📼";
     }
 }
