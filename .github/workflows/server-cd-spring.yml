@@ -22,13 +22,13 @@ jobs:
 
       - name: Run chmod to make gradlew executable
         run: |
-        cd server/spring
-        chmod +x ./gradlew
+          cd server/spring
+          chmod +x ./gradlew
 
       - name: Build with Gradle
         run: |
-        cd server/spring
-        ./gradlew clean build
+          cd server/spring
+          ./gradlew clean build
 
       - name: Create application.yml
         env:
