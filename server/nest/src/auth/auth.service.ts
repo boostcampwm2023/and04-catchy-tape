@@ -142,7 +142,7 @@ export class AuthService {
       const newRefreshTokenUuid = v4();
       const newAccessToken = this.jwtService.sign(payload);
       const newRefreshToken = this.jwtService.sign(
-        { newRefreshTokenUuid },
+        { refresh_id: newRefreshTokenUuid },
         this.refreshOptions,
       );
 
@@ -156,10 +156,12 @@ export class AuthService {
       if (error instanceof CatchyException) {
         throw error;
       }
+      this.logger.error(`auth.service - refreshTokens : SERVICE_ERROR`);
+      console.log(error);
 
       throw new CatchyException(
         'SERVICE_ERROR',
-        HTTP_STATUS_CODE.BAD_REQUEST,
+        HTTP_STATUS_CODE.SERVER_ERROR,
         ERROR_CODE.SERVICE_ERROR,
       );
     }
