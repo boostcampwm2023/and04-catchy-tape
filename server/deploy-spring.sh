@@ -23,7 +23,7 @@ fi
 # 1 새로운 서버를 띄운다
 docker login $NCP_SPRING_REGISTRY -u $NCP_DOCKER_ACCESS_KEY_ID -p $NCP_DOCKER_SECRET_KEY
 docker pull $NCP_SPRING_REGISTRY/catchy-tape-sub:latest
-docker run -v /home/hyung/logs:/catchy-tape-sub/logs -d -p $WEB_SERVER_TARGET_PORT:8080 --name $TARGET_SERVER_NAME $NCP_SPRING_REGISTRY/catchy-tape-sub:latest
+docker run -v /home/hyung/logs:/catchy-tape-sub/logs -d --net redis-bridge -p $WEB_SERVER_TARGET_PORT:8080 --name $TARGET_SERVER_NAME $NCP_SPRING_REGISTRY/catchy-tape-sub:latest
 
 # 2 nginx 포트 설정 변경 후 reload
 NGINX_CONFIG="/etc/nginx/nginx.conf"
