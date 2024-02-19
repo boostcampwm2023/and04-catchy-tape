@@ -51,7 +51,7 @@ jobs:
           REDIS_PORT: ${{secrets.REDIS_PORT}}
           REDIS_TTL: ${{secrets.REDIS_TTL}}
         run: |
-          cd server
+          cd server/spring
           touch ./application.yml
           echo "DB_HOST_IP=$DB_HOST_IP" >> application.yml
           echo "DB_PORT=$DB_PORT" >> application.yml

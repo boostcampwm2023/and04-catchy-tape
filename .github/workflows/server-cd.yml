@@ -53,7 +53,7 @@ jobs:
           REDIS_PORT: ${{secrets.REDIS_PORT}}
           REDIS_TTL: ${{secrets.REDIS_TTL}}
         run: |
-          cd server
+          cd server/nest
           touch prod.env
           echo "DB_HOST_IP=$DB_HOST_IP" >> prod.env
           echo "DB_PORT=$DB_PORT" >> prod.env
