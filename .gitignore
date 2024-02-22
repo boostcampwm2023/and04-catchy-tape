@@ -1,2 +1,5 @@
 # Mac Os
 .DS_Store
+
+# VSC setting
+.vscode
