@@ -68,7 +68,7 @@ export class AuthService {
 
       throw new CatchyException(
         'SERVICE_ERROR',
-        HTTP_STATUS_CODE.BAD_REQUEST,
+        HTTP_STATUS_CODE.SERVER_ERROR,
         ERROR_CODE.SERVICE_ERROR,
       );
     }
@@ -84,7 +84,7 @@ export class AuthService {
       this.logger.error(`auth.service - signup : ALREADY_EXIST_EMAIL`);
       throw new CatchyException(
         'ALREADY_EXIST_EMAIL',
-        HTTP_STATUS_CODE.BAD_REQUEST,
+        HTTP_STATUS_CODE.SERVER_ERROR,
         ERROR_CODE.ALREADY_EXIST_EMAIL,
       );
     }
@@ -100,7 +100,7 @@ export class AuthService {
 
       throw new CatchyException(
         'SERVICE_ERROR',
-        HTTP_STATUS_CODE.BAD_REQUEST,
+        HTTP_STATUS_CODE.SERVER_ERROR,
         ERROR_CODE.SERVICE_ERROR,
       );
     }
@@ -208,7 +208,7 @@ export class AuthService {
 
       throw new CatchyException(
         'SERVICE_ERROR',
-        HTTP_STATUS_CODE.BAD_REQUEST,
+        HTTP_STATUS_CODE.SERVER_ERROR,
         ERROR_CODE.SERVICE_ERROR,
       );
     }
