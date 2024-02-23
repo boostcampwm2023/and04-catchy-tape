@@ -195,22 +195,4 @@ export class AuthService {
 
     return true;
   }
-
-  async deleteUser(user: User): Promise<{ userId: string }> {
-    try {
-      await this.userRepository.deleteUser(user.user_id);
-
-      return { userId: user.user_id };
-    } catch (err) {
-      if (err instanceof CatchyException) {
-        throw err;
-      }
-
-      throw new CatchyException(
-        'SERVICE_ERROR',
-        HTTP_STATUS_CODE.SERVER_ERROR,
-        ERROR_CODE.SERVICE_ERROR,
-      );
-    }
-  }
 }
