@@ -15,10 +15,10 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object ApiModule {
-
+    
     @Provides
     @Singleton
-    fun provideSignupApi(retrofit: Retrofit): UserApi = retrofit.create()
+    fun provideUserApi(retrofit: Retrofit): UserApi = retrofit.create()
 
     @Provides
     @Singleton
@@ -28,9 +28,7 @@ object ApiModule {
     @Singleton
     fun provideUploadApi(retrofit: Retrofit): UploadApi = retrofit.create()
 
-
     @Provides
     @Singleton
     fun providePlaylistApi(retrofit: Retrofit): PlaylistApi = retrofit.create()
-
 }
