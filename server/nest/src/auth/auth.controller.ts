@@ -60,12 +60,4 @@ export class AuthController {
     );
     return { userId: user.user_id };
   }
-
-  @Delete()
-  @UseGuards(AuthGuard())
-  @HttpCode(HTTP_STATUS_CODE.SUCCESS)
-  async deleteUser(@ReqUser() user: User): Promise<{ userId: string }> {
-    this.logger.log(`DELETE /users - nickname=${user.nickname}`);
-    return await this.authService.deleteUser(user);
-  }
 }
