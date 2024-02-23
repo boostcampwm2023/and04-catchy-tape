@@ -112,7 +112,7 @@ export class PlaylistRepository {
       );
       throw new CatchyException(
         'REPOSITORY_ERROR',
-        HTTP_STATUS_CODE.BAD_REQUEST,
+        HTTP_STATUS_CODE.SERVER_ERROR,
         ERROR_CODE.REPOSITORY_ERROR,
       );
     } finally {
@@ -165,7 +165,7 @@ export class PlaylistRepository {
       );
       throw new CatchyException(
         'REPOSITORY_ERROR',
-        HTTP_STATUS_CODE.BAD_REQUEST,
+        HTTP_STATUS_CODE.SERVER_ERROR,
         ERROR_CODE.REPOSITORY_ERROR,
       );
     } finally {
