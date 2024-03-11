@@ -1,11 +1,14 @@
 package catchytape.spring.user;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.domain.Persistable;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import catchytape.spring.music.Music;
 import catchytape.spring.playlist.Playlist;
@@ -39,7 +42,7 @@ public class User implements Persistable<String> {
     @Column(name = "user_email")
     private String userEmail;
 
-    @Column(name = "created_at", updatable = false, nullable = false)
+    @Column(name = "created_at", updatable = false)
     @CreatedDate
     private LocalDateTime createdAt;
 
@@ -55,10 +58,12 @@ public class User implements Persistable<String> {
     @OneToMany(mappedBy = "user")
     private List<RecentPlayed> recent_played = new ArrayList<>();
 
-    public User(String userId, String email) {
+    public User(String userId, String nickname, String email) {
         this.userId = userId;
+        this.nickname = nickname;
         this.userEmail = email;
         this.photo = null;
+        this.createdAt = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
         this.isDeleted = false;
     }
 
