@@ -5,6 +5,10 @@ build/
 !**/src/main/**/build/
 !**/src/test/**/build/
 
+### env file ###
+application.properties
+application-prod.properties
+
 ### STS ###
 .apt_generated
 .classpath
