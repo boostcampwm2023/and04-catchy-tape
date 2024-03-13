@@ -45,7 +45,6 @@ jobs:
           REDIS_PORT: ${{secrets.REDIS_PORT}}
           REDIS_TTL: ${{secrets.REDIS_TTL}}
         run: |
-          cd ./src/main/resources
           touch application.properties
           echo "DB_HOST_IP=$DB_HOST_IP" >> application.properties
           echo "DB_PORT=$DB_PORT" >> application.properties
